@@ -18,7 +18,9 @@ UDTs enable templatized SQL transformation via Rasgo, through a pandas-like inte
 
 # Quick Start
 ```python
-    pip install pyrasgo[df]
+    pip install pyrasgo
+    api_key = '' #get your api key in the top right corner of the UI
+    rasgo = pyrasgo.connect(api_key)
     
     transforms = rasgo.get.transforms()
     print(transforms)
