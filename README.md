@@ -36,6 +36,7 @@ UDTs enable templatized SQL transformation via Rasgo, through a pandas-like inte
         "filter_val": "1001"
     }).preview()
     
+    #save the new source to Rasgo and your Snowflake Account
     new_source.to_source(new_source_name='New Filtered Source')
 
 ```
