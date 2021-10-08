@@ -43,11 +43,8 @@ UDTs enable templatized SQL transformation via Rasgo, through a pandas-like inte
 [Read the Docs →](https://docs.rasgoml.com/)
 
 # Available UDTs
-## Table Transforms
-- [rasgo_pivot](Transforms/Table%20Ops/rasgo_pivot.sql)
-
-## Column Transforms
-- [rasgo_lag](Transforms/Column%20Ops/rasgo_lag.sql)
+- [rasgo_pivot](Transforms/rasgo_pivot.sql)
+- [rasgo_lag](Transforms/rasgo_lag.sql)
 
 # About Us
 Rasgo UDTs are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.
