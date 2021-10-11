@@ -31,10 +31,11 @@ UDTs enable templatized SQL transformation via Rasgo, through a pandas-like inte
     #preview the UDT applied to a source with source.transform().preview()
     new_source = my_source.transform(
     transform_name='filter_transform',
-    arguments={
-        "filter_col": "CampaignID",
-        "filter_val": "1001"
-    }).preview()
+    filter_col='CampaignID',
+    filter_val='1001')
+    
+    preview the results of the UDT in a pandas dataframe
+    new_source.preview()
     
     #save the new source to Rasgo and your Snowflake Account
     new_source.to_source(new_source_name='New Filtered Source')
