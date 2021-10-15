@@ -1,0 +1,15 @@
+--
+
+name: rasgo_datetrunc
+source_code: rasgo_datetrunc.sql
+description: Truncates a date to the datepart you specify. For example, if you truncate the date '10-31-2022' to the 'month', you would get '10-1-2022'.
+arguments:
+  date_column:
+    type: string, list
+    description: names of columns you want to datetrunc
+  date_part:
+    type: enum
+    values: 'year','month','day','week','quarter','hour','minute','second','millisecond','microsecond'
+    description: the desired grain of the date
+
+--
