@@ -1,4 +1,4 @@
--- args: {{Columns}}, {{Amounts}}, {{Partition}}, {{OrderBy}}
+{# args: {{Columns}}, {{Amounts}}, {{Partition}}, {{OrderBy}} #}
 
 SELECT
     {%- for col in Columns -%}
