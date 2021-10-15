@@ -1,4 +1,4 @@
--- args: {{dimensions}}, {{pivot_column}}, {{value_column}}, {{agg_method}}
+{# args: {{dimensions}}, {{pivot_column}}, {{value_column}}, {{agg_method}} #}
 
 {%- set get_distinct_vals -%}
     select distinct {{ value_column }}
