@@ -7,7 +7,7 @@
     limit 1000
 {%- endset -%}
 
-{%- if list_of_vals is not none -%}
+{%- if list_of_vals is defined -%}
     {%- set distinct_vals = list_of_vals -%}
 {%- else -%}
     {%- set results = run_query(get_distinct_vals) -%}
