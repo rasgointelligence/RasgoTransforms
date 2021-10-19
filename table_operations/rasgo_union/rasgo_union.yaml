@@ -1,0 +1,7 @@
+name: union
+transform_type: table
+description:  Performs a SQL UNION for the parent source, and another source by entering the source_id. Operation will only merge columns with matching columns names in both datasets and drop all other columns.
+arguments:
+  source_id:
+    description: Source id of the other source to apply Union on
+    arg_type: source
