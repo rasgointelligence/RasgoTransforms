@@ -9,8 +9,17 @@ arguments:
     type: column_list
     description: names of column(s) you want to datetrunc
   date_part:
-    type: enum
+    type: string
     values: 'year','month','day','week','quarter','hour','minute','second','millisecond','microsecond'
     description: the desired grain of the date
+example_code: |
+    rasgo.read.source_data(w_source.id, limit=5)
+    
+    t1 = w_source.transform(
+      transform_name='rasgo_datetrunc',
+      date_part = 'month',
+      date_column = 'DATE')
+    
+    t1.preview()
 
 --
