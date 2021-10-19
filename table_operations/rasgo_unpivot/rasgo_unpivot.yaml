@@ -9,5 +9,5 @@ arguments:
     description: The name to assign to the generated column that will be populated with the names of the columns in the column list
     arg_type: string
   column_list_vals:
-    description: Columns in the source table that will be narrowed into a single pivot column. The column names will populate name_column, and the column values will populate value_column.
+    description: List of columns in the source table that will be narrowed into a single pivot column. The column names will populate name_column, and the column values will populate value_column.
     arg_type: column_list
