@@ -20,5 +20,4 @@ example_code: |
       date_column = 'DATE')
     
     t1.preview()
-
 --
