@@ -1,0 +1,10 @@
+name: rasgo_group_by
+transform_type: table
+description:  Groups rows with the same group-by-item expressions and computes aggregate functions for the resulting group
+arguments:
+  group_items:
+    arg_type: column_list
+    description: Columns to group by
+  aggregations:
+    arg_type: agg_dict
+    description: Aggregations to apply for columns after the group by
