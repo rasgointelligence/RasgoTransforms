@@ -4,7 +4,7 @@ SELECT
 {%- endfor -%}
 
 {%- for col, aggs in aggregations.items() %}
-    {%- set outer_loop = loop -%}
+        {%- set outer_loop = loop -%}
     {%- for agg in aggs %}
     {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
     {%- endfor -%}
