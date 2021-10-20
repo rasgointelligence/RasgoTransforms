@@ -1,28 +1,43 @@
+import os
 from typing import Dict
 
-from maintenance.docs_generation import utils, markdown as md
+from docs.docs_generation import markdown as md
+from docs.docs_generation import utils
 
 
-def save_transform_docs():
+DOCS_DIR = utils._get_root_dir() / 'docs'
+
+
+def save_transform_docs() -> None:
+    """
+    Load all transform YAML files, and write/overwrite them to their
+    respective Transform Docs Dir
+
+    If YAML file can't be loaded it will not write it
+    """
     transform_yamls = utils.load_all_yaml_files()
     for transform_type, transform_type_yamls in transform_yamls.items():
         for transform_name, transform_data in transform_type_yamls.items():
-            print(f"Generating Markdown for Transform {transform_name}")
+            print(f"Generating Markdown for Transform '{transform_name}'")
             markdown = _get_transform_markdown(
                 transform_data=transform_data,
                 transform_type=transform_type,
                 transform_name=transform_name
             )
-
+            # Write Transform Markdown to Docs directory
+            md_file_path = DOCS_DIR / transform_type / f"{transform_name}.md"
+            os.makedirs(md_file_path.parent, exist_ok=True)
+            with md_file_path.open('w') as fp:
+                print(f"Writing Markdown docs at {md_file_path}\n")
+                fp.write(markdown)
 
 
 def _get_transform_markdown(transform_data: Dict,
                             transform_type: str,
                             transform_name: str) -> str:
     """
-
-    :param transform_data:
-    :return:
+    Generate and return the markdown string to write as a MD
+    file for this transform based off the YAML file
     """
     # Generate Markdown Elements in Transform Doc
     markdown_elements = [
@@ -40,9 +55,5 @@ def _get_transform_markdown(transform_data: Dict,
     return '\n\n'.join(markdown_elements)
 
 
-
-save_transform_docs()
-
-
-
-
+if __name__ == '__main__':
+    save_transform_docs()
