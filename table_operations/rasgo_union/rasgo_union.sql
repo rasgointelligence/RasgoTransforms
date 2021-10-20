@@ -28,5 +28,5 @@
 
 {# Generate Union Query #}
 SELECT {{ '"' }}{{ union_cols | join('", "') }}{{ '"' }} FROM {{ rasgo_source_ref(source_id) }}
-UNION
+UNION {{ 'ALL' if union_all else '' }}
 SELECT {{ '"' }}{{ union_cols | join('", "') }}{{ '"' }} FROM {{ source_table }}
