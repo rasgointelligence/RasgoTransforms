@@ -8,8 +8,8 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 export PYTHONPATH=$PYTHONPATH:$ROOT_DIR
 echo $PYTHONPATH
 
-echo "Generating Transform Markdown Files from YAML files"
+echo "Generating Transform Markdown Files from YAML files\n"
 python $ROOT_DIR/docs/docs_generation/doc_generator.py
 
-echo "Adding new Markdown Files to Git Staging Area"
+echo "Adding new Markdown Files to Git Staging Area\n"
 git add *.md
