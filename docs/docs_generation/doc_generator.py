@@ -43,7 +43,7 @@ def _get_transform_markdown(transform_data: Dict,
     markdown_elements = [
         '',
         md.h1(transform_data['name']),
-        transform_data['description'],
+        md.text(transform_data['description']),
         md.h2('Parameters'),
         md.table(transform_data['arguments']),
         md.h2('Example'),
