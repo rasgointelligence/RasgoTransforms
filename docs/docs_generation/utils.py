@@ -19,7 +19,7 @@ def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     transform_yamls = defaultdict(dict)
 
     for transform_type_dir in TRANSFORM_TYPE_DIRS:
-        transform_type_dir_path = _get_root_dir() / transform_type_dir
+        transform_type_dir_path = get_root_dir() / transform_type_dir
 
         # Get list of all transform of certain type
         transform_names = [x.name for x in transform_type_dir_path.rglob("*/**")]
@@ -56,7 +56,7 @@ def get_table_values(transform_args: Dict) -> List[List[str]]:
     return all_data
 
 
-def _get_root_dir() -> Path:
+def get_root_dir() -> Path:
     """
     Get and return the root directory absolute path of this git repo
     """

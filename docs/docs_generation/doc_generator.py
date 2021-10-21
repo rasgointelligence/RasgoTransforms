@@ -5,7 +5,7 @@ from docs.docs_generation import markdown as md
 from docs.docs_generation import utils
 
 
-DOCS_DIR = utils._get_root_dir() / 'docs'
+DOCS_DIR = utils.get_root_dir() / 'docs'
 
 
 def save_transform_docs() -> None:
