@@ -6,10 +6,10 @@ source_code: rasgo_datetrunc.sql
 description: Truncates a date to the datepart you specify. For example, if you truncate the date '10-31-2022' to the 'month', you would get '10-1-2022'.
 arguments:
   date_column:
-    arg_type: column_list
+    type: column_list
     description: names of column(s) you want to datetrunc
   date_part:
-    arg_type: string
+    type: string
     description: the desired grain of the date
 example_code: |
     rasgo.read.source_data(w_source.id, limit=5)
