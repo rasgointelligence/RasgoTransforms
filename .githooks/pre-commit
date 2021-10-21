@@ -6,7 +6,7 @@
 # Will add all files to git staging area as well before the commit
 
 echo "Generating Transform Markdown Files from YAML files"
-python ./docs/docs_generation/doc_generator.py
+python docs/docs_generation/doc_generator.py
 
 echo "Adding new Markdown Files to Git Staging Area"
 git add *.md
