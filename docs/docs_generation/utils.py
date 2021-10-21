@@ -49,7 +49,7 @@ def get_table_values(transform_args: Dict) -> List[List[str]]:
     for arg_name, arg_info in transform_args.items():
         row_data = [
             arg_name,
-            arg_info['type'],
+            arg_info['arg_type'],
             arg_info['description']
         ]
         all_data.append(row_data)
