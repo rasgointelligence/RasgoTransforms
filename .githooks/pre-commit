@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Git pre-commit hook that runs a script to generate 
+# Markdown Docs for all Transform based on their YAML File
+#
+# Will add all files to git staging area as well before the commit
+
+echo "Generating Transform Markdown Files from YAML files"
+python ./docs/docs_generation/doc_generator.py
+
+echo "Adding new Markdown Files to Git Staging Area"
+git add *.md
