@@ -15,9 +15,9 @@ Truncates a date to the datepart you specify. For example, if you truncate the d
 ## Example
 
 ```py
-rasgo.read.source_data(w_source.id, limit=5)
+source = rasgo.read.source_data(source.id)
 
-t1 = w_source.transform(
+t1 = source.transform(
   transform_name='rasgo_datetrunc',
   date_part = 'month',
   date_column = 'DATE')
