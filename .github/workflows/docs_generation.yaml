@@ -25,8 +25,8 @@ jobs:
       - name: echo python path
         run: echo $PYTHONPATH
 
-      # - name: Generate Transform Docs
-      #   run: python docs/docs_generation/doc_generator.py
+      - name: Generate Transform Docs
+        run: python docs/docs_generation/doc_generator.py
 
       - name: pwd
         run: echo $PWD
