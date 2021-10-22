@@ -9,7 +9,7 @@ Truncates a date to the datepart you specify. For example, if you truncate the d
 |  Argument   |    Type     |               Description                |
 | ----------- | ----------- | ---------------------------------------- |
 | date_column | column_list | names of column(s) you want to datetrunc |
-| date_part   | string      | the desired grain of the date            |
+| date_part   | date_part   | the desired grain of the date            |
 
 
 ## Example
