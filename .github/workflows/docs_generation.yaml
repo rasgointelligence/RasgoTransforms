@@ -24,7 +24,7 @@ jobs:
       #   run: python docs/docs_generation/doc_generator.py
 
       - name: pwd
-        run: pwd
+        run: echo $PWD
 
       - name: ls
         run: ls
