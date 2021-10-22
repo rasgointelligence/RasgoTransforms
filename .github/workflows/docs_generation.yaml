@@ -21,3 +21,5 @@ jobs:
         run: pwd
       - name: ls
         run: ls
+      - name: Set PYTHONPATH
+        run: echo $PYTHONPATH
