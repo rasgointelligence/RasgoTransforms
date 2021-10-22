@@ -12,7 +12,7 @@ arguments:
 example_code: |
     source = rasgo.read.source_data(source.id)
     
-    t1 = source.transform(
+    t1 = source.transfor(
       transform_name='rasgo_datetrunc',
       date_part = 'month',
       date_column = 'DATE')
