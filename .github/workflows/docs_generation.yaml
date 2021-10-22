@@ -26,17 +26,10 @@ jobs:
         run: python docs/docs_generation/doc_generator.py
 
       - name: Git Commit Generated Transform Docs
+        if: git status --porcelain
         run: |
-          if [[ `git status --porcelain` ]]; then
-            echo hi
-          fi
-
-      # - name: Git Commit Generated Transform Docs
-      #   run: |
-      #     if [[ `git status --porcelain` ]]; then
-      #       git add -A
-      #       git config user.name GitHub
-      #       git config user.email noreply@github.com
-      #       git commit -m 'Added Auto Generated Transform docs'
-      #       git push
-      #     fi
+          git add -A
+          git config user.name GitHub
+          git config user.email noreply@github.com
+          git commit -m 'Added Auto Generated Transform docs'
+          git push
