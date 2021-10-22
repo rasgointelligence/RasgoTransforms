@@ -2,7 +2,7 @@
 
 # rasgo_datetrunc
 
-Truncates a date to the datepart you specify. For example, if you truncate the date '10-31-2022' to the 'month', you would get '10-1-2022'.
+Truncates a date to the datepart you specif. For example, if you truncate the date '10-31-2022' to the 'month', you would get '10-1-2022'.
 
 ## Parameters
 
