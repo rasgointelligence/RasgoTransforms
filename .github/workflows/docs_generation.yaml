@@ -25,11 +25,14 @@ jobs:
       - name: Generate Transform Docs
         run: python docs/docs_generation/doc_generator.py
 
+      - name: Check shell
+        run: echo $SHELL
+
       - name: Git Commit Generated Transform Docs
         run: |
           #!/bin/sh
-          
-          if [[ `git status --porcelain` ]]; then echo hi; fi
+
+          if [ `git status --porcelain` ]; then echo hi; fi
 
       # - name: Git Commit Generated Transform Docs
       #   run: |
