@@ -19,14 +19,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: pwd
-        run: pwd
+      - name: Generate Transform Docs
+        run: python docs/docs_generation/doc_generator.py
 
-      - name: ls
-        run: ls
+      # - name: pwd
+      #   run: pwd
 
-      - name: Set PYTHONPATH
-        run: |
-          ROOT_DIR=$(git rev-parse --show-toplevel)
-          export PYTHONPATH=$PYTHONPATH:$ROOT_DIR
-          echo $PYTHONPATH
+      # - name: ls
+      #   run: ls
+
+      # - name: Set PYTHONPATH
+      #   run: |
+      #     ROOT_DIR=$(git rev-parse --show-toplevel)
+      #     export PYTHONPATH=$PYTHONPATH:$ROOT_DIR
+      #     echo $PYTHONPATH
