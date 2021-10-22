@@ -1,3 +1,5 @@
+--
+
 name: union
 transform_type: table
 source_code: rasgo_union.sql
@@ -19,3 +21,4 @@ example_code: |
   )
   
   t1.preview()
+--
