@@ -27,7 +27,7 @@ jobs:
 
       - name: Git Commit Generated Transform Docs
         run: |
-          #!/bin/sh
+          #!/usr/bin/env bash
           if [[ `git status --porcelain` ]]; then echo hi; fi
 
       # - name: Git Commit Generated Transform Docs
