@@ -8,6 +8,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        
     container:
       image: "python:3"
     
@@ -27,7 +28,7 @@ jobs:
 
       - name: Generate Transform Docs
         run: python docs/docs_generation/doc_generator.py
-        
+
       - name: Git Commit Generated Transform Docs
         run: |
           if [[ `git status --porcelain` ]]; then
