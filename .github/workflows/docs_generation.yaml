@@ -18,10 +18,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Set PYTHONPATH
-        run: echo pwd >> $PYTHONPATH
-      - name: Generate Transform Docs
-        run: python docs/docs_generation/doc_generator.py
+      # - name: Set PYTHONPATH
+      #   run: echo pwd >> $PYTHONPATH
+      # - name: Generate Transform Docs
+      #   run: python docs/docs_generation/doc_generator.py
 
       - name: pwd
         run: pwd
