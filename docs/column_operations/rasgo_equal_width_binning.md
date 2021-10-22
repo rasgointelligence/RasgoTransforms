@@ -4,6 +4,9 @@
 
 Given some desired number of bins, this transformation will calculate the the boundaries for N bins and assign each value in a column a bin number between 1 and N, inclusive. These bins will be of equal width based on the min and max value within the source column.
 
+This transformation will create a new column called {{col_to_bin}}_{{bin_count}}_EWB. This ensures that multiple equal-weight binning operations will produce column names that don't overlap.
+
+
 ## Parameters
 
 |  Argument  |  Type  |              Description              |
