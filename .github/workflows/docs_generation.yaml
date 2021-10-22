@@ -26,8 +26,8 @@ jobs:
       - name: Generate Transform Docs
         run: python docs/docs_generation/doc_generator.py
 
-      # - name: pwd
-      #   run: pwd
+      - name: pwd
+        run: pwd
 
-      # - name: ls
-      #   run: ls
+      - name: ls
+        run: ls
