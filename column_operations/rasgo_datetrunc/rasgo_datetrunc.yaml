@@ -1,5 +1,3 @@
---
-
 name: rasgo_datetrunc
 transform_type: column
 source_code: rasgo_datetrunc.sql
@@ -20,5 +18,3 @@ example_code: |
       date_column = 'DATE')
     
     t1.preview()
-
---

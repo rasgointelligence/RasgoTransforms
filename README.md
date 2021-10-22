@@ -53,3 +53,7 @@ Rasgo UDTs are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise 
 
 <i>Built for Data Scientists, by Data Scientists</i>
 
+# Internal Development Setup
+1. Create and activate a Python 3 virtual environment and install packages in [requirements.txt](./requirements.txt)
+2. Change the githook dir to `./.githooks` with the command `git config core.hooksPath .githooks`
+    - Docs will now be auto-generated for community transforms in the [Docs](./docs) directory before each commit
