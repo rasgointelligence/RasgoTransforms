@@ -27,4 +27,4 @@ jobs:
         run: echo $PWD
 
       - name: ls
-        run: ls
+        run: ls /__w/RasgoUDTs/RasgoUDTs
