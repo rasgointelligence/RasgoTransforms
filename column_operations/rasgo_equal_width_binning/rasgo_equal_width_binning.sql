@@ -1,5 +1,5 @@
--- Args: {{bucket_count}}, {{col_to_bucket}}
+-- Args: {{bin_count}}, {{col_to_bin}}
 
 SELECT *,
-  width_bucket({{col_to_bucket}}, MIN({{col_to_bucket}}), MAX({{col_to_bucket}}), {{bucket_count}}) AS {{col_to_bucket}}_{{bucket_count}}_BUCKETS
+  width_bucket({{col_to_bin}}, MIN({{col_to_bin}}), MAX({{col_to_bin}}), {{bin_count}}) AS {{col_to_bin}}_{{bin_count}}_EWB
 FROM {{ source_table }}

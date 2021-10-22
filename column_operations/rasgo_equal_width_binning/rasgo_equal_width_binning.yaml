@@ -1,19 +1,19 @@
 name: rasgo_equal_width_binning
 transform_type: column
 source_code: rasgo_equal_width_binning.sql
-description: Given some desired number of bins, this transformation will calculate the the boundaries for N bins and assign each value in a column a bin number between 1 and N, inclusive.
+description: Given some desired number of bins, this transformation will calculate the the boundaries for N bins and assign each value in a column a bin number between 1 and N, inclusive. These bins will be of equal width based on the min and max value within the source column.
 arguments:
-  bucket_count:
+  bin_count:
     type: int
     description: the number of equal-width bins to use
-  col_to_bucket:
+  col_to_bin:
     type: column
-    description: which column to bucket
+    description: which column to bin
 example_code: |
     rasgo.read.source_data(w_source.id, limit=5)
 
     t1 = w_source.transform(
       transform_name='rasgo_equal_width_binning',
-      bucket_count = 6)
+      bin_count = 6)
 
     t1.preview()
