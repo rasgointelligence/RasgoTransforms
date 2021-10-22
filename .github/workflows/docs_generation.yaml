@@ -27,8 +27,10 @@ jobs:
 
       - name: Git Commit Generated Transform Docs
         run: |
-          git add -A
-          git config user.name GitHub
-          git config user.email noreply@github.com
-          git commit -m 'Added Auto Generated Transform docs'
-          git push
+          if [[ `git status --porcelain` ]]; then
+            git add -A
+            git config user.name GitHub
+            git config user.email noreply@github.com
+            git commit -m 'Added Auto Generated Transform docs'
+            git push
+          fi
