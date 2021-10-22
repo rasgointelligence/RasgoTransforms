@@ -9,7 +9,7 @@ arguments:
     type: column_list
     description: names of column(s) you want to datetrunc
   date_part:
-    type: string
+    type: date_part
     description: the desired grain of the date
 example_code: |
     rasgo.read.source_data(w_source.id, limit=5)
