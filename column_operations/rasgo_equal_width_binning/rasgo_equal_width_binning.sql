@@ -1,5 +1,3 @@
--- Args: {{bin_count}}, {{col_to_bin}}
-
 SELECT *,
   width_bucket({{col_to_bin}},
       (SELECT MIN({{col_to_bin}}) FROM {{source_table}}),
