@@ -3,11 +3,11 @@ with date_spine as (
            row_number() over (order by null) as interval_id,
            dateadd(
                '{{ interval_type }}',
-               {{ interval_amount}} * row_number() over (order by null),
+               {{ interval_amount}} * (interval_id - 1),
                '{{ start_timestamp }}'::timestamp_ntz) as ts_ntz_interval_start,
             dateadd(
                '{{ interval_type }}',
-               1 + ({{ interval_amount}} * row_number() over (order by null)),
+               {{ interval_amount}} * interval_id,
                '{{ start_timestamp }}'::timestamp_ntz) as ts_ntz_interval_end
 from table (generator(rowcount => {{ count }}))
     )
