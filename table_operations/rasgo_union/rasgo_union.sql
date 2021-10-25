@@ -1,6 +1,5 @@
 {# Jinja Macro to generate a query that would get all 
-   the columns in a table by source_Id or fqtn
-#}
+   the columns in a table by source_Id or fqtn #}
 {%- macro get_source_col_names(source_id=None, source_table_fqtn=None) -%}
     {%- set database, schema, table = '', '', '' -%}
     {%- if source_table_fqtn -%}
