@@ -6,9 +6,12 @@ arguments:
   start_timestamp:
     type: timestamp
     description: the timestamp to start calculating from; this will be included in the output set; this timestamp will have no timezone
-  interval:
-    type: interval
-    description: a Snowflake interval constant. See [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants)
+  interval_amount:
+    type: int
+    description: the `interval_amount` and `interval_type` combine to create a Snowflake interval. In the example of `3 days`, `3` is the interval amount. This number can be any non-zero integer.
+  interval_type:
+    type: string
+    description: the `interval_amount` and `interval_type` combine to create a Snowflake interval. In the example of `3 days`, `days` is the interval type. For interval types, see [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants)
   count:
     type: int
     description: the total number of rows to generate; must be 1 or greater
@@ -18,7 +21,8 @@ example_code: |
     t1 = w_source.transform(
       transform_name='rasgo_datespine',
       start_timestamp = '2017-01-01 12:00:00',
-      interval = ' 1 month',
+      interval_amount = 1,
+      interval_type = 'month'
       count = 100)
 
     t1.preview()
