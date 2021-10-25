@@ -1,0 +1,16 @@
+name: rasgo_levenshtein
+transform_type: column
+source_code: rasgo_levenshtein.sql
+description: Computes the Levenshtein distances between two or more string columns.
+arguments:
+  date_column:
+    type: columns
+    description: List of columns to compute the levenshtien distance for
+example_code: |
+    source = rasgo.read.source_data(source.id)
+    
+    t1 = source.transform(
+      transform_name='rasgo_levenshtein',
+      columns = ['col1', 'col2', 'col3'],
+    
+    t1.preview()
