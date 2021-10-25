@@ -10,9 +10,9 @@ arguments:
     type: date_part
     description: the desired grain of the date
 example_code: |
-    rasgo.read.source_data(w_source.id, limit=5)
+    source = rasgo.read.source_data(source.id)
     
-    t1 = w_source.transform(
+    t1 = source.transform(
       transform_name='rasgo_datetrunc',
       date_part = 'month',
       date_column = 'DATE')
