@@ -6,9 +6,9 @@ Computes the Levenshtein distances between two or more string columns.
 
 ## Parameters
 
-|  Argument   |  Type   |                       Description                       |
-| ----------- | ------- | ------------------------------------------------------- |
-| date_column | columns | List of columns to compute the levenshtien distance for |
+| Argument |    Type     |                       Description                       |
+| -------- | ----------- | ------------------------------------------------------- |
+| columns  | column_list | List of columns to compute the levenshtien distance for |
 
 
 ## Example
