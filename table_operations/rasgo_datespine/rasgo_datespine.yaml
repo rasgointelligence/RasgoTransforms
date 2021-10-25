@@ -1,0 +1,24 @@
+name: rasgo_datespine
+transform_type: table
+source_code: rasgo_datespine.sql
+description: Given a start timestamp, some interval, and the number of intervals to calculate, this operation gnerates a table N rows long with each row containing the sum of the interval and timestamp before it.
+arguments:
+  start_timestamp:
+    type: timestamp
+    description: the timestamp to start calculating from; this will be included in the output set; this timestamp will have no timezone
+  interval:
+    type: interval
+    description: a Snowflake interval constant. See [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants)
+  count:
+    type: int
+    description: the total number of rows to generate; must be 1 or greater
+example_code: |
+    rasgo.read.source_data(w_source.id, limit=5)
+
+    t1 = w_source.transform(
+      transform_name='rasgo_datespine',
+      start_timestamp = '2017-01-01 12:00:00',
+      interval = ' 1 month',
+      count = 100)
+
+    t1.preview()
