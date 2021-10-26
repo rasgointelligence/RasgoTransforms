@@ -1,6 +1,3 @@
--- Args: {{date_part}}, {{date_column}}
--- date_part: ['year','month','day','week','quarter','hour','minute','second','millisecond','microsecond']
-
 {% set date_list = None %}
 {%- if date_column is string -%}
     {% set date_list = [date_column] %}
