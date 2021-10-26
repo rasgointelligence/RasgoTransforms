@@ -22,6 +22,7 @@ else it will perform that impuattion stagety on column
 {%- macro get_impute_query(col, imputation) -%}
     {%- set quoted_col = '"' + col + '"' -%}
     {%- set impute_expression = '' -%}
+    {%- set imputation_strategy = '' -%}
     {%- if imputation | lower in  ['mean', 'median', 'mode'] -%}
         {%- set imputation = 'AVG' if imputation == "mean" else imputation -%}
         {%- set imputation_strategy = imputation | upper -%}
@@ -33,19 +34,18 @@ else it will perform that impuattion stagety on column
     IFNULL({{ quoted_col }}, {{ impute_expression }})
 {%- endmacro -%}
 
-{{get_impute_query("col1", 1)}}
-
-{# Get all Columns in Source Table
+{# Get all Columns in Source Table #}
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
 
 
-SELECT * FROM {{source_table}}
+SELECT
 {%- for col in source_col_names -%}
-    {%- if col in imputations -%}
-        {%- set quoted_col = '"' + col + '"' -%}
-            IFNULL({{ quoted_col }}, impute_val)
-    {%- else -%}
-
+    {%- set quoted_col = '"' + col + '"' -%}
+    {%- if col in imputations %}
+        {{ get_impute_query(col, imputations[col]) }} as {{ quoted_col }} {{ ',' if not loop.last else ''}}
+    {%- else %}
+        {{ quoted_col }}{{ ',' if not loop.last else ''}}
     {%- endif -%}
-{%- endfor -%} #}
+{%- endfor %}
+FROM {{source_table}}
