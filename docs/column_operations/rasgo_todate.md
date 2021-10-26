@@ -1,0 +1,31 @@
+
+
+# rasgo_todate
+
+Creates a column of a date/timestamp type from some other column
+
+## Parameters
+
+|     Argument      |    Type     |                                                                                                   Description                                                                                                   |
+| ----------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date_column       | column_list | names of column(s) you want to convert to dates/timestamps                                                                                                                                                      |
+| format_expression | string      | the format to use to parse the dates. See [this Snowflake doc](https://docs.snowflake.com/en/user-guide/date-time-input-output.html#about-the-format-specifiers-in-this-section) for information valid formats. |
+
+
+## Example
+
+```py
+source = rasgo.read.source_data(source.id)
+
+t1 = source.transform(
+  transform_name='rasgo_todate',
+  format_expression = 'YYYY-MM-DD',
+  date_column = 'dt_str')
+
+t1.preview()
+```
+
+## Source Code
+
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/column_operations/rasgo_todate/rasgo_todate.sql" %}
+
