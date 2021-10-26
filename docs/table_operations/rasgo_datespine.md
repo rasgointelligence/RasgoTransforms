@@ -2,22 +2,28 @@
 
 # rasgo_datespine
 
-Given a start timestamp, some interval, and the number of intervals to calculate, this operation gnerates a table N rows long with each interval. It will then join it on the source table.
+This operation generates a table that contains one row per interval that exists between the two input dates. It will then join it on the source table based on the user specified column.
 
 The table with the intervals will the in the form of `(id, start, end)`.
 
-When joining, all intervals are considered to be start-inclusive, end-exclusive.
+When joining, all intervals are considered to be start-inclusive, end-exclusive, or `(start, end]`. The join will be an outer join on the interval table such that all intervals are present and all data that does not fall into one of those intervals is excluded. It's essentially:
+
+```
+SELECT user_table.*, intervals.*
+FROM intervals
+  LEFT OUTER JOIN user_table
+  ON ...
+```
 
 
 ## Parameters
 
-|    Argument     |   Type    |                                                                                                                                    Description                                                                                                                                    |
-| --------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date_col        | column    | The name of the column from the source data set that we'll be binning into some interval. This must be some sort of date or time column.                                                                                                                                          |
-| start_timestamp | timestamp | The timestamp to start calculating from; this will be included in the output set; this timestamp will have no timezone                                                                                                                                                            |
-| interval_amount | int       | The `interval_amount` and `interval_type` combine to create a Snowflake interval. In the example of `3 days`, `3` is the interval amount. This number can be any non-zero integer.                                                                                                |
-| interval_type   | string    | the `interval_amount` and `interval_type` combine to create a Snowflake interval. In the example of `3 days`, `days` is the interval type. For interval types, see [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants) |
-| count           | int       | the total number of rows to generate; must be 1 or greater                                                                                                                                                                                                                        |
+|    Argument     |   Type    |                                                                           Description                                                                            |
+| --------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date_col        | column    | The name of the column from the source data set that we'll be binning into some interval. This must be some sort of date or time column.                         |
+| start_timestamp | timestamp | The timestamp to start calculating from; this will be included in the output set; this timestamp will have no timezone                                           |
+| end_timestamp   | timestamp | The timestamp to calculate to; this will be included in the output set; this timestamp will have no timezone                                                     |
+| interval_type   | string    | the datepart to slice by. For interval types, see [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants) |
 
 
 ## Example
@@ -29,9 +35,8 @@ t1 = w_source.transform(
   transform_name='rasgo_datespine',
   date_col = 'event_dt',
   start_timestamp = '2017-01-01 12:00:00',
-  interval_amount = 1,
-  interval_type = 'month'
-  count = 100)
+  start_timestamp = '2020-01-01 12:00:00',
+  interval_type = 'month')
 
 t1.preview()
 ```
