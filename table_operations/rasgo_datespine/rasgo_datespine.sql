@@ -16,7 +16,7 @@ select  {{ source_table }}.*,
   date_spine.ts_ntz_interval_start as {{ date_col }}_ts_ntz_interval_start,
   date_spine.ts_ntz_interval_end as {{ date_col }}_ts_ntz_interval_end
 from {{ source_table }}
-join date_spine on
+right outer join date_spine on
     {{ source_table }}.{{ date_col }} >= date_spine.ts_ntz_interval_start
     and
     {{ source_table }}.{{ date_col }} < date_spine.ts_ntz_interval_end

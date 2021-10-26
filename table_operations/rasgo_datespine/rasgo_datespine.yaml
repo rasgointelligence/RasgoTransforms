@@ -6,7 +6,14 @@ description: |
 
   The table with the intervals will the in the form of `(id, start, end)`.
 
-  When joining, all intervals are considered to be start-inclusive, end-exclusive.
+  When joining, all intervals are considered to be start-inclusive, end-exclusive. The join will be an outer join on the interval table such that all intervals are present and all data that does not fall into one of those intervals is excluded. It's essentially:
+
+  ```
+  SELECT user_table.*, intervals.*
+  FROM intervals
+    LEFT OUTER JOIN user_table
+    ON ...
+  ```
 arguments:
   date_col:
     type: column
