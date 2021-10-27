@@ -13,7 +13,7 @@ the columns in a table by fqtn
 
 {# 
 Macro to return the imputation query 
-for a specified imputation and col 
+for a specified imputation col 
 
 If startegy isn't 'mean', 'median', or 'mode'
 make query to fill with supplied scalar value
