@@ -15,7 +15,7 @@ the columns in a table by fqtn
 Macro to return the imputation query 
 for a specified imputation col 
 
-If startegy isn't 'mean', 'median', or 'mode'
+If startegy is not mean, median, or mode
 make query to fill with supplied scalar value
 else it will perform that impuattion stagety on column
 #}
