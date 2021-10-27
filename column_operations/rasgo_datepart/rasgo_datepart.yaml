@@ -3,7 +3,7 @@ transform_type: column
 source_code: rasgo_datetpart.sql
 description: Extracts a specific part of a date column. For example, if the input is '2021-01-01', you can ask for the year and get back 2021.
 arguments:
-  date_column:
+  date_columns:
     type: column_list
     description: names of column(s) you want to date-part
   date_part:
