@@ -3,7 +3,7 @@ transform_type: column
 source_code: rasgo_todate.sql
 description: Creates a column of a date/timestamp type from some other column
 arguments:
-  date_column:
+  date_columns:
     type: column_list
     description: names of column(s) you want to convert to dates/timestamps
   format_expression:
@@ -15,6 +15,6 @@ example_code: |
     t1 = source.transform(
       transform_name='rasgo_todate',
       format_expression = 'YYYY-MM-DD',
-      date_column = 'dt_str')
+      date_columns = ['dt_str', ])
     
     t1.preview()
