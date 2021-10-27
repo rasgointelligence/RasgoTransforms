@@ -49,6 +49,7 @@ new_source.to_source(new_source_name='New Filtered Source')
 - [rasgo_lag](./column_operations/rasgo_lag/rasgo_lag.sql)
 - [rasgo_datetrunc](./column_operations/rasgo_datetrunc/rasgo_datetrunc.sql)
 - [rasgo_levenshtein](./column_operations/rasgo_levenshtein/rasgo_levenshtein.sql)
+- [rasgo_todate](./column_operations/rasgo_todate/rasgo_todate.sql)
 
 ## Table Operations
 - [rasgo_pivot](./table_operations/rasgo_pivot/rasgo_pivot.sql)
