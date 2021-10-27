@@ -62,7 +62,7 @@ new_source.to_source(new_source_name='New Filtered Source')
 - [rasgo_filter](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/row-transforms/rasgo-filter)
 
 ## Row Operations
-- [rasgo_filter](./row_operations/rasgo_filter/rasgo_filter.sql)
+- [rasgo_impute](./row_operations/rasgo_impute/rasgo_impute.sql)
 
 # About Us
 Rasgo UDTs are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.
