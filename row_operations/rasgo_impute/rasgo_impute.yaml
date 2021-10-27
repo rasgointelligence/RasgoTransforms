@@ -1,0 +1,20 @@
+name: rasgo_impute
+transform_type: row
+source_code: rasgo_impute.sql
+description:  Impute missing values in column/columns with the mean, median, mode, or a value
+arguments:
+  imputations:
+    type: imputation_dict
+    description: Dictionary with keys as column names to impute missing values for, and dictionary values the type of imputation stratgey ('mean', 'median', 'mode', <value>)
+example_code: |
+    source.transform(
+      transform_name='rasgo_impute',
+      imputations={
+          'MONTH': 'mean',            # Impute with mean 
+          'FIPS': 'median',           # Impute with median
+          'COVID_NEW_CASES': 'mode',  # Impute with mode
+          'YEAR': '2021',             # Impute with the string '2021'
+          'COVID_DEATHS': 2.45,       # Impute with the float 2.45
+          'IS_2021': False            # Impute with the bool False
+      }
+    ).preview()

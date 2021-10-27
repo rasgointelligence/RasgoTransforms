@@ -20,32 +20,30 @@ make query to fill with supplied scalar value
 else it will perform that impuattion stagety on column
 #}
 {%- macro get_impute_query(col, imputation) -%}
-    {%- set quoted_col = '"' + col + '"' -%}
     {%- set impute_expression = '' -%}
     {%- set imputation_strategy = '' -%}
     {%- if imputation | lower in  ['mean', 'median', 'mode'] -%}
-        {%- set imputation = 'AVG' if imputation == "mean" else imputation -%}
+        {%- set imputation = 'AVG' if imputation == 'mean' else imputation -%}
         {%- set imputation_strategy = imputation | upper -%}
-        {%- set impute_expression = imputation_strategy + "(" + quoted_col + ")" -%}
+        {%- set impute_expression = imputation_strategy + '(' + col + ') over ()' -%}
     {%- else -%}
         {%- set imputation = "'" + imputation + "'" if imputation is string else imputation -%}
         {%- set impute_expression = imputation -%}
     {%- endif -%}
-    IFNULL({{ quoted_col }}, {{ impute_expression }})
+    COALESCE({{ col }}, {{ impute_expression }} ) as {{ col }}
 {%- endmacro -%}
 
 {# Get all Columns in Source Table #}
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
 
-
 SELECT
 {%- for col in source_col_names -%}
-    {%- set quoted_col = '"' + col + '"' -%}
     {%- if col in imputations %}
-        {{ get_impute_query(col, imputations[col]) }} as {{ quoted_col }} {{ ',' if not loop.last else ''}}
+    {{ get_impute_query(col, imputations[col]) }}{{ ',' if not loop.last else ''}}
     {%- else %}
-        {{ quoted_col }}{{ ',' if not loop.last else ''}}
+    {{ col }}{{ ',' if not loop.last else ''}}
     {%- endif -%}
 {%- endfor %}
 FROM {{source_table}}
+
