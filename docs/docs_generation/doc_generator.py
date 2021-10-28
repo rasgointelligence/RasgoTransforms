@@ -18,6 +18,7 @@ def save_transform_docs() -> None:
     transform_yamls = utils.load_all_yaml_files()
     for transform_type, transform_type_yamls in transform_yamls.items():
         for transform_name, transform_data in transform_type_yamls.items():
+            transform_name = transform_name.replace("_", "-")
             print(f"Generating Markdown for Transform '{transform_type}/{transform_name}.yaml'")
             markdown = _get_transform_markdown(
                 transform_data=transform_data,

@@ -17,7 +17,6 @@ TRANSFORM_TYPE_DIRS = [
     'row_operations'
 ]
 
-
 def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     """
     Load and return all the yaml files in the dirs <root>/<transform_type>>
