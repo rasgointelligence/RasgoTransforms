@@ -61,6 +61,9 @@ new_source.to_source(new_source_name='New Filtered Source')
 
 ## Row Operations
 - [rasgo_filter](./row_operations/rasgo_filter/rasgo_filter.sql)
+- [rasgo_lag](./docs/column_operations/rasgo_lag.md)
+- [rasgo_datetrunc](./docs/column_operations/rasgo_datetrunc.md)
+- [rasgo_levenshtein](./docs/column_operations/rasgo_levenshtein.md)
 
 # About Us
 Rasgo UDTs are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.
