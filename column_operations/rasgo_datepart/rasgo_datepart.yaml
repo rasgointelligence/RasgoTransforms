@@ -1,0 +1,20 @@
+name: rasgo_datetrunc
+transform_type: column
+source_code: rasgo_datetpart.sql
+description: Extracts a specific part of a date column. For example, if the input is '2021-01-01', you can ask for the year and get back 2021.
+arguments:
+  date_columns:
+    type: column_list
+    description: names of column(s) you want to date-part
+  date_part:
+    type: date_part
+    description: the desired grain of the date; an exhaustive list of valid date parts can be [found here](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts).
+example_code: |
+    source = rasgo.read.source_data(source.id)
+    
+    t1 = source.transform(
+      transform_name='rasgo_datetrunc',
+      date_parts = ['month', ],
+      date_column = 'DATE')
+    
+    t1.preview()
