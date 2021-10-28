@@ -56,6 +56,9 @@ new_source.to_source(new_source_name='New Filtered Source')
 - [rasgo_group_by](./table_operations/rasgo_group_by/rasgo_group_by.sql)
 - [rasgo_union](./table_operations/rasgo_union/rasgo_union.sql)
 
+## Row Operations
+- [rasgo_filter](./row_operations/rasgo_filter/rasgo_filter.sql)
+
 # About Us
 Rasgo UDTs are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.
 
