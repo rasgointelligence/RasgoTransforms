@@ -44,23 +44,22 @@ new_source.to_source(new_source_name='New Filtered Source')
 [Read the Docs →](https://docs.rasgoml.com/)
 
 # Available UDTs
+## Column Transforms
+- [rasgo_binning](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-binning)
+- [rasgo_datepart](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-datepart)
+- [rasgo_lag](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-lag)
+- [rasgo_datetrunc](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-datetrunc)
+- [rasgo_levenshtein](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-levenshtein)
+- [rasgo_todate](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-todate)
 
-## Column Operations
-- [rasgo_binning](./column_operations/rasgo_binning/rasgo_binning.sql)
-- [rasgo_datepart](./column_operations/rasgo_datepart/rasgo_datepart.sql)
-- [rasgo_datetrunc](./column_operations/rasgo_datetrunc/rasgo_datetrunc.sql)
-- [rasgo_lag](./column_operations/rasgo_lag/rasgo_lag.sql)
-- [rasgo_levenshtein](./column_operations/rasgo_levenshtein/rasgo_levenshtein.sql)
-- [rasgo_todate](./column_operations/rasgo_todate/rasgo_todate.sql)
+## Table Transforms
+- [rasgo_pivot](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-pivot)
+- [rasgo_unpivot](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-unpivot)
+- [rasgo_group_by](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-group-by)
+- [rasgo_union](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-union)
 
-## Table Operations
-- [rasgo_group_by](./table_operations/rasgo_group_by/rasgo_group_by.sql)
-- [rasgo_pivot](./table_operations/rasgo_pivot/rasgo_pivot.sql)
-- [rasgo_union](./table_operations/rasgo_union/rasgo_union.sql)
-- [rasgo_unpivot](./table_operations/rasgo_unpivot/rago_unpivot.sql)
-
-## Row Operations
-- [rasgo_filter](./row_operations/rasgo_filter/rasgo_filter.sql)
+## Row Transforms
+- [rasgo_filter](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/row-transforms/rasgo-filter)
 
 # About Us
 Rasgo UDTs are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.

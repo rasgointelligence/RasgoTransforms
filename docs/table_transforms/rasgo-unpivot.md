@@ -26,5 +26,5 @@ source.transform(
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/table_operations/rasgo_unpivot/rasgo_unpivot.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/table_transforms/rasgo-unpivot/rasgo-unpivot.sql" %}
 

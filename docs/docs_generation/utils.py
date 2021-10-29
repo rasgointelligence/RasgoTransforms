@@ -12,11 +12,10 @@ import yaml
 # This var is used to find all transforms in the 
 # directory <root_git_dir>/<transform_type>/...
 TRANSFORM_TYPE_DIRS = [
-    'column_operations',
-    'table_operations',
-    'row_operations'
+    'column_transforms',
+    'row_transforms',
+    'table_transforms'
 ]
-
 
 def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     """

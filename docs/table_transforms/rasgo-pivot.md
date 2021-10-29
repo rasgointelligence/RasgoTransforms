@@ -32,5 +32,5 @@ stock_source.transform(
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/table_operations/rasgo_pivot/rasgo_pivot.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/table_transforms/rasgo-pivot/rasgo-pivot.sql" %}
 

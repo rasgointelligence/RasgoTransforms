@@ -31,5 +31,5 @@ t1.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/column_operations/rasgo_lag/rasgo_lag.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/column_transforms/rasgo-lag/rasgo-lag.sql" %}
 

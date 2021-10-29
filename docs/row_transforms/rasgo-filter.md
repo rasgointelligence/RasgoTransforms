@@ -29,5 +29,5 @@ source.transform(
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/row_operations/rasgo_filter/rasgo_filter.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/row_transforms/rasgo-filter/rasgo-filter.sql" %}
 
