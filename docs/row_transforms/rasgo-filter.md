@@ -13,7 +13,7 @@ Apply one or more column filter to the source
 
 ## Example
 
-```py
+```python
 source = rasgo.get.data_source(id=363)
 
 source.transform(

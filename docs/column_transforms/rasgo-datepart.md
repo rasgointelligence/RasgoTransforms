@@ -14,7 +14,7 @@ Extracts a specific part of a date column. For example, if the input is '2021-01
 
 ## Example
 
-```py
+```python
 source = rasgo.read.source_data(source.id)
 
 t1 = source.transform(

@@ -24,7 +24,7 @@ The `equalwidth` method will calculate the boundraies of the such that they will
 
 ## Example
 
-```py
+```python
 rasgo.read.source_data(w_source.id, limit=5)
 
 t1 = w_source.transform(

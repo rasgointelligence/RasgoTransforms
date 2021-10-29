@@ -17,7 +17,7 @@ Transpose unique values in a single column to generate multiple columns, aggrega
 
 ## Example
 
-```py
+```python
 stock_source = rasgo.get.data_source(id=1151)
 
 stock_source.transform(

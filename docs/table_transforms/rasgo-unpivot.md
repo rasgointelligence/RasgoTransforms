@@ -15,7 +15,7 @@ Performs a UNPIVOT operation, rotating a table by transforming columns into rows
 
 ## Example
 
-```py
+```python
 source.transform(
   transform_name=unpivot_transform,
   value_column="COVID_NEW_CASES",
