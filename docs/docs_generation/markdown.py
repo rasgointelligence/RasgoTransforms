@@ -48,7 +48,7 @@ def python_code(code: str) -> str:
     """
     Make a return a markdown python code snippet
     """
-    return f"```py\n{code}\n```"""
+    return f"```python\n{code}\n```"""
 
 
 def github_url(transform_type: str, transform_name: str) -> str:
