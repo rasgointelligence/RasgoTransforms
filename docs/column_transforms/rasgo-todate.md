@@ -14,7 +14,7 @@ Creates a column of a date/timestamp type from some other column
 
 ## Example
 
-```py
+```python
 source = rasgo.read.source_data(source.id)
 
 t1 = source.transform(

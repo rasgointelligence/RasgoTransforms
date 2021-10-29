@@ -14,7 +14,7 @@ Performs a SQL UNION or UNION ALL for the parent source, and another source by e
 
 ## Example
 
-```py
+```python
 source = rasgo.read.source_data(source.id)
   
 t1 = source.transform(

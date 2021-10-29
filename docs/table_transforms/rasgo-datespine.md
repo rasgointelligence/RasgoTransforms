@@ -28,7 +28,7 @@ FROM intervals
 
 ## Example
 
-```py
+```python
 rasgo.read.source_data(w_source.id, limit=5)
 
 t1 = w_source.transform(
