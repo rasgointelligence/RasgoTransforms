@@ -16,7 +16,7 @@ Lag shifts your features on a partition index, creating a lookback feature offse
 
 ## Example
 
-```python
+```py
 source = rasgo.read.source_data(source.id)
 
 t1 = source.transform(

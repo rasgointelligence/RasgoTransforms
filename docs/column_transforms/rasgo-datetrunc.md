@@ -14,7 +14,7 @@ Truncates a date to the datepart you specify. For example, if you truncate the d
 
 ## Example
 
-```python
+```py
 source = rasgo.read.source_data(source.id)
 
 t1 = source.transform(

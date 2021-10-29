@@ -14,7 +14,7 @@ Groups rows by the group_by items applying aggregations functions for the result
 
 ## Example
 
-```python
+```py
 source.transform(
   transform_id=transform.id,
   group_items=['FIPS'],
