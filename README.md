@@ -46,6 +46,7 @@ new_source.to_source(new_source_name='New Filtered Source')
 # Available UDTs
 
 ## Column Operations
+- [rasgo_binning](./column_operations/rasgo_binning/rasgo_binning.sql)
 - [rasgo_lag](./column_operations/rasgo_lag/rasgo_lag.sql)
 - [rasgo_datepart](./column_operations/rasgo_datepart/rasgo_datepart.sql)
 - [rasgo_datetrunc](./column_operations/rasgo_datetrunc/rasgo_datetrunc.sql)
