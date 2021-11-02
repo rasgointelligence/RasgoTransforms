@@ -27,5 +27,5 @@ t1.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/column_transforms/rasgo-datepart/rasgo-datepart.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/column_transforms/rasgo-datepart/rasgo-datepart.sql" %}
 

@@ -30,5 +30,5 @@ source.transform(
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/row_transforms/rasgo-impute/rasgo-impute.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/row_transforms/rasgo-impute/rasgo-impute.sql" %}
 
