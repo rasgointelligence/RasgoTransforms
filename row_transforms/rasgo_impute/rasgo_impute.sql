@@ -33,6 +33,17 @@ else it will perform that impuattion stagety on column
     COALESCE({{ col }}, {{ impute_expression }} ) as {{ col }}
 {%- endmacro -%}
 
+{#
+Marco it generate a query to flag missing values 
+#}
+{%- macro get_flag_missing_query(col) -%}
+    CASE
+        WHEN {{ col }} IS NULL then 1
+        ELSE 0
+    END as {{ col }}_missing_flag
+{%- endmacro -%}
+
+
 {# Get all Columns in Source Table #}
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
@@ -40,7 +51,10 @@ else it will perform that impuattion stagety on column
 SELECT
 {%- for col in source_col_names -%}
     {%- if col in imputations %}
-    {{ get_impute_query(col, imputations[col]) }}{{ ',' if not loop.last else ''}}
+    {{ get_impute_query(col, imputations[col]) }}{{ ',' if flag_missing_vals or not loop.last else ''}}
+    {%- if flag_missing_vals %}
+    {{ get_flag_missing_query(col) }}{{ ',' if not loop.last else ''}}
+    {%- endif -%}
     {%- else %}
     {{ col }}{{ ',' if not loop.last else ''}}
     {%- endif -%}
