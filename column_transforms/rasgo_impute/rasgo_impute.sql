@@ -33,9 +33,7 @@ else it will perform that impuattion stagety on column
     COALESCE({{ col }}, {{ impute_expression }} ) as {{ col }}
 {%- endmacro -%}
 
-{#
-Marco it generate a query to flag missing values 
-#}
+{# Marco to generate a query to flag missing values #}
 {%- macro get_flag_missing_query(col) -%}
     CASE
         WHEN {{ col }} IS NULL then 1
