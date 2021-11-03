@@ -10,7 +10,7 @@ jobs:
         shell: bash
         
     container:
-      image: "python3"
+      image: "python:3.7"
     
     env:
       PYTHONPATH: /__w/RasgoUDTs/RasgoUDTs
