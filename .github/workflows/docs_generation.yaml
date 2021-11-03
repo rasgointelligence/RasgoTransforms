@@ -10,16 +10,13 @@ jobs:
         shell: bash
         
     container:
-      image: "python:3"
+      image: "python:3.7"
     
     env:
       PYTHONPATH: /__w/RasgoUDTs/RasgoUDTs
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.7' 
 
       - name: Install Python Requirments
         run: |
