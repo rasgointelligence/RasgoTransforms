@@ -5,17 +5,10 @@ import subprocess
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
+from create_transforms import TRANSFORM_TYPE_DIRS
 
 import yaml
 
-# Different Types of UDTs
-# This var is used to find all transforms in the 
-# directory <root_git_dir>/<transform_type>/...
-TRANSFORM_TYPE_DIRS = [
-    'column_transforms',
-    'row_transforms',
-    'table_transforms'
-]
 
 def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     """
