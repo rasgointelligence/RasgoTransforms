@@ -5,9 +5,10 @@ import subprocess
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
-from create_transforms import TRANSFORM_TYPE_DIRS
 
 import yaml
+
+from . import constants
 
 
 def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
@@ -17,7 +18,7 @@ def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     """
     transform_yamls = defaultdict(dict)
 
-    for transform_type_dir in TRANSFORM_TYPE_DIRS:
+    for transform_type_dir in constants.TRANSFORM_TYPE_DIRS:
         transform_type_dir_path = get_root_dir() / transform_type_dir
 
         # Get list of all transform of certain type

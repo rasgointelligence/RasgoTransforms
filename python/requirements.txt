@@ -1,0 +1,3 @@
+# These libs are needed for generation markdown documentation
+pyyaml
+pytablewriter

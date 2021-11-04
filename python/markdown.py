@@ -3,7 +3,7 @@ Module for converting text to different markdown elements
 """
 from typing import Dict
 
-from docs.docs_generation import utils
+from python import utils
 from pytablewriter import MarkdownTableWriter
 
 GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoUDTs/blob/main"
