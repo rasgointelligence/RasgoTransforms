@@ -25,6 +25,7 @@ def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     rasgo = pyrasgo.connect(rasgo_api_key)
     rasgo_transform_names = utils.get_all_rasgo_transform_names(rasgo)
 
+    # Loop through all transform and respective data in this repo
     transform_yamls = utils.load_all_yaml_files()
     for transform_type, transform_type_yamls in transform_yamls.items():
         for transform_name, transform_yaml in transform_type_yamls.items():
@@ -50,10 +51,6 @@ def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                     source_code=transform_source_code,
                     arguments=transform_args
                 )
-
-
-
-
 
 
 if __name__ == "__main__":
