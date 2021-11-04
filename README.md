@@ -18,42 +18,52 @@ UDTs enable templatized SQL transformation via Rasgo, through a pandas-like inte
 
 # Quick Start
 ```python
-    pip install pyrasgo
-    api_key = '' #get your api key in the top right corner of the UI
-    rasgo = pyrasgo.connect(api_key)
-    
-    transforms = rasgo.get.transforms()
-    print(transforms)
-    
-    #get a source that you want to apply the UDT to
-    my_source = rasgo.get.data_source(id=100)
+pip install pyrasgo
+api_key = '' # Get your api key in the top right corner of the UI
+rasgo = pyrasgo.connect(api_key)
 
-    #preview the UDT applied to a source with source.transform().preview()
-    new_source = my_source.transform(
-    transform_name='filter_transform',
-    filter_col='CampaignID',
-    filter_val='1001')
-    
-    #preview the results of the UDT in a pandas dataframe
-    new_source.preview()
-    
-    #save the new source to Rasgo and your Snowflake Account
-    new_source.to_source(new_source_name='New Filtered Source')
+transforms = rasgo.get.transforms()
+print(transforms)
 
+# Get a source that you want to apply the UDT to
+my_source = rasgo.get.data_source(id=100)
+
+#Preview the UDT applied to a source with source.transform().preview()
+new_source = my_source.transform(
+  transform_name='filter_transform',
+  filter_col='CampaignID',
+  filter_val='1001'
+)
+
+#Ppreview the results of the UDT in a pandas dataframe
+new_source.preview()
+
+# Save the new source to Rasgo and your Snowflake Account
+new_source.to_source(new_source_name='New Filtered Source')
 ```
 [Read the Docs →](https://docs.rasgoml.com/)
 
 # Available UDTs
-- [rasgo_pivot](Transforms/rasgo_pivot.sql)
-- [rasgo_lag](Transforms/rasgo_lag.sql)
+## Column Transforms
+- [rasgo_binning](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-binning)
+- [rasgo_datepart](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-datepart)
+- [rasgo_lag](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-lag)
+- [rasgo_datetrunc](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-datetrunc)
+- [rasgo_levenshtein](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-levenshtein)
+- [rasgo_todate](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-todate)
+- [rasgo_impute](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-impute)
+
+## Table Transforms
+- [rasgo_pivot](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-pivot)
+- [rasgo_unpivot](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-unpivot)
+- [rasgo_group_by](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-group-by)
+- [rasgo_union](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-union)
+
+## Row Transforms
+- [rasgo_filter](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/row-transforms/rasgo-filter)
 
 # About Us
 Rasgo UDTs are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.
 
 
 <i>Built for Data Scientists, by Data Scientists</i>
-
-# Internal Development Setup
-1. Create and activate a Python 3 virtual environment and install packages in [requirements.txt](./requirements.txt)
-2. Change the githook dir to `./.githooks` with the command `git config core.hooksPath .githooks`
-    - Docs will now be auto-generated for community transforms in the [Docs](./docs) directory before each commit

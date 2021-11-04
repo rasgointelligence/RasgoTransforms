@@ -17,21 +17,20 @@ Transpose unique values in a single column to generate multiple columns, aggrega
 
 ## Example
 
-```py
+```python
 stock_source = rasgo.get.data_source(id=1151)
 
-t1 = stock_source.transform(
+stock_source.transform(
   transform_name='rasgo_pivot',
   dimensions=['DATE'],
   pivot_column='CLOSE',
   value_column='SYMBOL',
   agg_method='AVG',
-  list_of_vals=['JP','GOOG','DIS','APLE'])
-
-t1.preview()
+  list_of_vals=['JP','GOOG','DIS','APLE']
+).preview()
 ```
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/tree/main/table_operations/rasgo_pivot/rasgo_pivot.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/table_transforms/rasgo_pivot/rasgo_pivot.sql" %}
 

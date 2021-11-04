@@ -6,7 +6,7 @@ from typing import Dict
 from docs.docs_generation import utils
 from pytablewriter import MarkdownTableWriter
 
-GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoUDTs/tree/main"
+GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoUDTs/blob/main"
 
 
 def h1(string: str) -> str:
@@ -48,7 +48,7 @@ def python_code(code: str) -> str:
     """
     Make a return a markdown python code snippet
     """
-    return f"```py\n{code}\n```"""
+    return f"```python\n{code}\n```"""
 
 
 def github_url(transform_type: str, transform_name: str) -> str:
