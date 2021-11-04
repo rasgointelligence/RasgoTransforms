@@ -7,5 +7,5 @@ SELECT *,
     {% endfor %}
 from {{ source_table }} a
 left join
-rasgo_source_ref({{event_dataset}}) b
+{{rasgo_source_ref(event_dataset)}} b
 on a.ID = b.ID
