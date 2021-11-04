@@ -1,0 +1,35 @@
+name: rasgo_lagagg
+transform_type: column
+source_code: rasgo_lagagg.sql
+description: Lag Agg uses a reference column to aggregate and join with a base dataset
+arguments:
+  columns:
+    type: column_list
+    description: names of column(s) you want to lagagg
+  windows:
+    type: value_list
+    description: Magnitude of windows you want to use for the lagagg.
+  date:
+    type: column
+    description: name of column with base dataset date
+  event_date:
+    type: column
+    description: date column in the event dataset
+  agg_type:
+    type: agg
+    description: aggregation method to use on the lag window
+  event_dataset:
+    type: source
+    description: data source with the event data
+  
+example_code: |
+    source = rasgo.read.source_data(source.id)
+    
+    t1 = source.transform(
+      transform_name='rasgo_lagagg',
+      columns = ['OPEN','CLOSE'],
+      amounts = [1,2,3,7],
+      order_by = ['DATE', 'TICKER'],
+      partition = ['TICKER'])
+    
+    t1.preview()
