@@ -11,7 +11,7 @@ generates moving averages per column and per window size
 | input_columns | column_list | names of column(s) you want to moving average                              |
 | window_sizes  | value_list  | the integer values for window sizes you want to use in your moving average |
 | date_dim      | column      | the date value to order by                                                 |
-| dimension     | column      | the dimension column to partition by                                       |
+| partition     | column_list | the dimension column to partition by                                       |
 
 
 ## Example
@@ -22,7 +22,7 @@ stock_source = rasgo.get.data_source(id=1151)
 t1 = stock_source.transform(
   transform_name='rasgo_movingavg',
   date_dim='DATE',
-  dimension='TICKER',
+  partition=['TICKER'],
   window_sizes=[3,7,14,21],
   input_columns=['OPEN','CLOSE','HIGH','LOW'])
 
