@@ -23,17 +23,17 @@ arguments:
     description: data source with the event data
   
 example_code: |
-    source = rasgo.read.source_data(source.id)
-    event_source = rasgo.read.source_data(101)
-    
-    t1 = my_source.transform(
-        transform_name='rasgo_lagagg',
-        columns=['CLOSE'],
-        windows=[7,14,30,60],
-        date='DATE',
-        event_date='EventDate',
-        agg_type='SUM',
-        event_dataset=event_source.id
-        )
-    
-    t1.preview()
+  source = rasgo.read.source_data(source.id)
+  event_source = rasgo.read.source_data(101)
+  
+  t1 = my_source.transform(
+      transform_name='rasgo_lagagg',
+      columns=['CLOSE'],
+      windows=[7,14,30,60],
+      date='DATE',
+      event_date='EventDate',
+      agg_type='SUM',
+      event_dataset=event_source.id
+      )
+  
+  t1.preview()
