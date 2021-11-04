@@ -1,7 +1,7 @@
 import os
 from typing import Dict
 
-from . import utils, markdown as md
+from python import utils, markdown as md
 
 DOCS_DIR = utils.get_root_dir() / 'docs'
 
