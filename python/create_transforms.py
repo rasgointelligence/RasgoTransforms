@@ -19,7 +19,7 @@ def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     :return:
     """
     # Set RASGO_DOMAIN Env
-    utils.set_rasgo_domain_env(args.rasgo_domain)
+    utils.set_rasgo_domain_env(rasgo_domain)
 
     # Get all Rasgo Transform Names Available to User
     rasgo = pyrasgo.connect(rasgo_api_key)
