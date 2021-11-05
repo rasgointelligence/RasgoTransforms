@@ -6,9 +6,9 @@ One hot encode a column and drop it from the dataset. Create a null value flag f
 
 ## Parameters
 
-|  Argument   |  Type  |          Description          |
-| ----------- | ------ | ----------------------------- |
-| imputations | column | Column name to one hot encode |
+| Argument |  Type  |          Description          |
+| -------- | ------ | ----------------------------- |
+| column   | column | Column name to one hot encode |
 
 
 ## Example
