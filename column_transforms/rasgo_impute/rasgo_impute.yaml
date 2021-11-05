@@ -1,5 +1,5 @@
 name: rasgo_impute
-transform_type: row
+transform_type: column
 source_code: rasgo_impute.sql
 description:  Impute missing values in column/columns with the mean, median, mode, or a value
 arguments:
@@ -20,5 +20,5 @@ example_code: |
           'COVID_DEATHS': 2.45,       # Impute with the float 2.45
           'IS_2021': False            # Impute with the bool False
       },
-    flag_missing_vals=True
+      flag_missing_vals=True
     ).preview()
