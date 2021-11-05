@@ -1,0 +1,27 @@
+
+
+# rasgo_one_hot_encode
+
+One hot encode a column and drop it from the dataset. Create a null value flag for the column too.
+
+## Parameters
+
+|  Argument   |  Type  |          Description          |
+| ----------- | ------ | ----------------------------- |
+| imputations | column | Column name to one hot encode |
+
+
+## Example
+
+```python
+source.transform(
+  transform_id=transform.id,
+  column="MONTH"
+).preview()
+
+```
+
+## Source Code
+
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/column_transforms/rasgo_one_hot_encode/rasgo_one_hot_encode.sql" %}
+

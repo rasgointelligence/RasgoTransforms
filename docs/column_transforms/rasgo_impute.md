@@ -25,7 +25,7 @@ source.transform(
       'COVID_DEATHS': 2.45,       # Impute with the float 2.45
       'IS_2021': False            # Impute with the bool False
   },
-flag_missing_vals=True
+  flag_missing_vals=True
 ).preview()
 
 ```
