@@ -45,6 +45,16 @@ def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     return transform_yamls
 
 
+def get_root_dir() -> Path:
+    """
+    Get and return the root directory absolute path of this git repo
+    """
+    cmd = ["git", "rev-parse", "--show-toplevel"]
+    root_dir_bytes = subprocess.check_output(cmd)
+    root_dir_str = root_dir_bytes.decode('utf-8').strip()
+    return Path(root_dir_str)
+
+
 # ----------------------------------------------
 #          Utils for Transform Creation
 # ----------------------------------------------
@@ -94,16 +104,6 @@ def parse_transform_args_from_yaml(transform_yaml: Dict) -> List[Dict[str, str]]
             {**{'name': arg_name}, **arg_meta_data}
         )
     return transform_args
-
-
-def get_root_dir() -> Path:
-    """
-    Get and return the root directory absolute path of this git repo
-    """
-    cmd = ["git", "rev-parse", "--show-toplevel"]
-    root_dir_bytes = subprocess.check_output(cmd)
-    root_dir_str = root_dir_bytes.decode('utf-8').strip()
-    return Path(root_dir_str)
 
 
 # ----------------------------------------------
