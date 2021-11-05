@@ -19,8 +19,9 @@ source = rasgo.read.source_data(source.id)
 
 t1 = source.transform(
   transform_name='rasgo_datetrunc',
-  date_parts = ['month', ],
-  date_column = 'DATE')
+  date_parts = ['month'],
+  date_column = 'DATE'
+)
 
 t1.preview()
 ```

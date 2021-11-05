@@ -28,8 +28,9 @@ The `equalwidth` method will calculate the boundraies of the such that they will
 rasgo.read.source_data(w_source.id, limit=5)
 
 t1 = w_source.transform(
-  transform_name='rasgo_n_tile_binning',
-  bucket_count = 6)
+    transform_name='rasgo_n_tile_binning',
+    bucket_count = 6
+  )
 
 t1.preview()
 ```
