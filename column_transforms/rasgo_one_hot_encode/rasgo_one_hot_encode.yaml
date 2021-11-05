@@ -3,7 +3,7 @@ transform_type: column
 source_code: rasgo_one_hot_encode.sql
 description:  One hot encode a column and drop it from the dataset. Create a null value flag for the column too.
 arguments:
-  imputations:
+  column:
     type: column
     description: Column name to one hot encode
 example_code: |
