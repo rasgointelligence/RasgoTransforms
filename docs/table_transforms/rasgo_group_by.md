@@ -16,7 +16,7 @@ Groups rows by the group_by items applying aggregations functions for the result
 
 ```python
 source.transform(
-  transform_id=transform.id,
+  transform_name=rasgo_group_by,
   group_items=['FIPS'],
   aggregations={
       'COL_1': ['SUM', 'AVG'],

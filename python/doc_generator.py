@@ -1,9 +1,7 @@
 import os
 from typing import Dict
 
-from docs.docs_generation import markdown as md
-from docs.docs_generation import utils
-
+from python import utils, markdown as md
 
 DOCS_DIR = utils.get_root_dir() / 'docs'
 
@@ -17,10 +15,10 @@ def save_transform_docs() -> None:
     """
     transform_yamls = utils.load_all_yaml_files()
     for transform_type, transform_type_yamls in transform_yamls.items():
-        for transform_name, transform_data in transform_type_yamls.items():
+        for transform_name, transform_yaml in transform_type_yamls.items():
             print(f"Generating Markdown for Transform '{transform_type}/{transform_name}.yaml'")
             markdown = _get_transform_markdown(
-                transform_data=transform_data,
+                transform_yaml=transform_yaml,
                 transform_type=transform_type,
                 transform_name=transform_name
             )
@@ -32,7 +30,7 @@ def save_transform_docs() -> None:
                 fp.write(markdown)
 
 
-def _get_transform_markdown(transform_data: Dict,
+def _get_transform_markdown(transform_yaml: Dict,
                             transform_type: str,
                             transform_name: str) -> str:
     """
@@ -42,12 +40,12 @@ def _get_transform_markdown(transform_data: Dict,
     # Generate Markdown Elements in Transform Doc
     markdown_elements = [
         '',
-        md.h1(transform_data['name']),
-        md.text(transform_data['description']),
+        md.h1(transform_yaml['name']),
+        md.text(transform_yaml['description']),
         md.h2('Parameters'),
-        md.table(transform_data['arguments']),
+        md.table(transform_yaml['arguments']),
         md.h2('Example'),
-        md.python_code(transform_data['example_code']),
+        md.python_code(transform_yaml['example_code']),
         md.h2('Source Code'),
         md.github_url(transform_type, transform_name),
         '',

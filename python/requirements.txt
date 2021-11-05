@@ -1,0 +1,3 @@
+pytablewriter
+pyrasgo==0.3.3a3
+pyyaml

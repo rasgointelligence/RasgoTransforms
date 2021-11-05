@@ -24,7 +24,8 @@ t1 = source.transform(
   columns = ['OPEN','CLOSE'],
   amounts = [1,2,3,7],
   order_by = ['DATE', 'TICKER'],
-  partition = ['TICKER'])
+  partition = ['TICKER']
+)
 
 t1.preview()
 ```

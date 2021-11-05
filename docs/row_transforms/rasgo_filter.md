@@ -17,7 +17,7 @@ Apply one or more column filter to the source
 source = rasgo.get.data_source(id=363)
 
 source.transform(
-  transform_id=transform.id,
+  transform_name=rasgo_filter,
   filter_statements=[
       'MONTH = 4',
       'FIPS < COVID_NEW_CASES',

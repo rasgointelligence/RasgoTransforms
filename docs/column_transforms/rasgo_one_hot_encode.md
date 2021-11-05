@@ -15,10 +15,9 @@ One hot encode a column and drop it from the dataset. Create a null value flag f
 
 ```python
 source.transform(
-  transform_id=transform.id,
+  transform_name='rasgo_one_hot_encode',
   column="MONTH"
 ).preview()
-
 ```
 
 ## Source Code

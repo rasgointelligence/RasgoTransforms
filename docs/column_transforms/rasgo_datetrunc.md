@@ -20,7 +20,8 @@ source = rasgo.read.source_data(source.id)
 t1 = source.transform(
   transform_name='rasgo_datetrunc',
   date_part = 'month',
-  date_column = 'DATE')
+  date_column = 'DATE'
+)
 
 t1.preview()
 ```

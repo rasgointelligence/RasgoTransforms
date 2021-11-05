@@ -20,7 +20,8 @@ source = rasgo.read.source_data(source.id)
 t1 = source.transform(
   transform_name='rasgo_levenshtein',
   columns1 = ['FIRSTNAME'],
-  columns2 = ['LASTNAME'])
+  columns2 = ['LASTNAME']
+)
 
 t1.preview()
 ```

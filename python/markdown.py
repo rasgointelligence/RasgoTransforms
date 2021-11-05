@@ -3,8 +3,11 @@ Module for converting text to different markdown elements
 """
 from typing import Dict
 
-from docs.docs_generation import utils
+from python import utils
 from pytablewriter import MarkdownTableWriter
+
+from . import constants
+
 
 GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoUDTs/blob/main"
 
@@ -55,5 +58,5 @@ def github_url(transform_type: str, transform_name: str) -> str:
     """
     Make and return the embedded url for transform source code
     """
-    return '{% embed url="' + f"{GITHUB_REPO_URL}/{transform_type}/{transform_name}" \
-                              f"/{transform_name}.sql" + '" %}'
+    return '{% embed url="' + f"{constants.GITHUB_REPO_URL}/{transform_type}" \
+                              f"/{transform_name}/{transform_name}.sql" + '" %}'

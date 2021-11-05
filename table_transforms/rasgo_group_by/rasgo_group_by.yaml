@@ -11,7 +11,7 @@ arguments:
     description: Aggregations to apply for other columns. Dict keys are column names, and values are a list of aggegations to apply for that column.
 example_code: |
     source.transform(
-      transform_id=transform.id,
+      transform_name=rasgo_group_by,
       group_items=['FIPS'],
       aggregations={
           'COL_1': ['SUM', 'AVG'],
