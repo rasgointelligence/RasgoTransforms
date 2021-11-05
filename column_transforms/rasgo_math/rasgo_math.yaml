@@ -1,0 +1,18 @@
+name: rasgo_math
+transform_type: column
+source_code: rasgo_math.sql
+description: Create one or more new columns 
+arguments:
+  math_ops:
+    type: math_list
+    description: List of math operations to generate new columns. Ex. ["<col_name> + 5", "<col_name> / 100"]
+example_code: |
+  source = rasgo.get.data_source(id=363)
+  
+  source.transform(
+    transform_id=transform.id,
+    filter_statements=[
+      'MONTH * 12',
+      'YEAR - 2000'
+    ]
+  ).preview()
