@@ -1,0 +1,27 @@
+name: rasgo_datediff
+transform_type: column
+source_code: rasgo_datediff.sql
+description: Calculates the difference between two date, time, or timestamp expressions based on the date or time part requested. The function returns the result of subtracting the second argument from the third argument.
+arguments:
+  date_part:
+    type: string
+    description: |
+       Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)
+  date_col_1:
+    type: column
+    description: Date column to subtract from `date_col_2`. Must be a date column.
+  date_col_2:
+    type: column
+    description: Date column to be subtracted by `date_col_1`. Must be a date column.
+example_code: |
+    source = rasgo.read.source_data(source.id)
+    
+    # Create DateDiff col for 'START_DATE' - 'END_DATE'
+    t1 = source.transform(
+      transform_name='rasgo_datediff',
+      date_part='year',
+      date_col_1='END_DATE',
+      date_col_2='START_DATE'
+    )
+    
+    t1.preview()
