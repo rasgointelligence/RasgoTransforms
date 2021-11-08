@@ -19,15 +19,15 @@ Calculates the difference between two date, time, or timestamp expressions based
 source = rasgo.read.source_data(source.id)
 
 # Create DateDiff col for year diff 'START_DATE' - 'END_DATE'
-t1 = source.transform(
+source.transform(
   transform_name='rasgo_datediff',
   date_part='year',
   date_val_1='END_DATE',
   date_col_2='START_DATE'
-)
+).preview()
 
 # Subtract 'END_DATE' from start of 2022 new year
-t2 = t1.transform(
+source.transform(
   transform_name='rasgo_datediff',
   date_val_1='END_DATE',
   date_val_2="'2022-01-01'"
