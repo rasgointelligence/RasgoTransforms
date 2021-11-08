@@ -19,8 +19,8 @@ source = rasgo.read.source_data(source.id)
 
 t1 = source.transform(
   transform_name='rasgo_todate',
-  format_expression = 'YYYY-MM-DD',
-  date_columns = ['dt_str', ]
+  format_expression='YYYY-MM-DD',
+  date_columns=['dt_str']
 )
 
 t1.preview()
