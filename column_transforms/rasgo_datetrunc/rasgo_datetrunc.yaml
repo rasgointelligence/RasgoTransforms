@@ -3,7 +3,7 @@ transform_type: column
 source_code: rasgo_datetrunc.sql
 description: Truncates a date to the datepart you specify. For example, if you truncate the date '10-31-2022' to the 'month', you would get '10-1-2022'.
 arguments:
-  date_column:
+  date_columns:
     type: column_list
     description: names of column(s) you want to datetrunc
   date_part:
@@ -15,7 +15,7 @@ example_code: |
     t1 = source.transform(
       transform_name='rasgo_datetrunc',
       date_part = 'month',
-      date_column = 'DATE'
+      date_columns = ['DATE']
     )
     
     t1.preview()
