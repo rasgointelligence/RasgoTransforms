@@ -3,7 +3,7 @@ transform_type: row
 source_code: rasgo_filter.sql
 description: Apply one or more column filter to the source
 arguments:
-  dimensions:
+  filter_statements:
     type: string_list
     description: List of where statements filter the table by. Ex. ["<col_name> = 'string'", "<col_name> IS NOT NULL"
 example_code: |
@@ -14,7 +14,7 @@ example_code: |
       filter_statements=[
           'MONTH = 4',
           'FIPS < COVID_NEW_CASES',
-          "YEAR = '2020'"
+          "YEAR = '2020'",
           'COVID_DEATHS IS NOT NULL'
       ]
     ).preview()
