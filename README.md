@@ -60,6 +60,7 @@ t1.to_source(new_source_name='New Filtered Source')
 - [rasgo_movingavg](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo_movingavg)
 - [rasgo_math](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo_math)
 - [rasgo_train_test_split](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo_train_test_split)
+- [rasgo_datediff](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo_datediff)
 
 ## Table Transforms
 - [rasgo_pivot](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo_pivot)
