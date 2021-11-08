@@ -6,10 +6,10 @@ Truncates a date to the datepart you specify. For example, if you truncate the d
 
 ## Parameters
 
-|  Argument   |    Type     |               Description                |
-| ----------- | ----------- | ---------------------------------------- |
-| date_column | column_list | names of column(s) you want to datetrunc |
-| date_part   | date_part   | the desired grain of the date            |
+|   Argument   |    Type     |               Description                |
+| ------------ | ----------- | ---------------------------------------- |
+| date_columns | column_list | names of column(s) you want to datetrunc |
+| date_part    | date_part   | the desired grain of the date            |
 
 
 ## Example
@@ -20,7 +20,7 @@ source = rasgo.read.source_data(source.id)
 t1 = source.transform(
   transform_name='rasgo_datetrunc',
   date_part = 'month',
-  date_column = 'DATE'
+  date_columns = ['DATE']
 )
 
 t1.preview()
