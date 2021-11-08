@@ -9,9 +9,9 @@ arguments:
   window_sizes:
     type: value_list
     description: the integer values for window sizes you want to use in your moving average
-  date_dim:
+  order_by:
     type: column
-    description: the date value to order by
+    description: the date or ordinal value to order by
   partition:
     type: column_list
     description: the dimension column to partition by
