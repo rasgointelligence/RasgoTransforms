@@ -12,8 +12,12 @@
 UDTs enable templatized SQL transformation via Rasgo, through a pandas-like interface in PyRasgo.
 - user-defined transforms are equivalent to SQL functions that accept a Rasgo Source and return a Rasgo Source
 - user-defined transforms are scoped to your organization so they can be shared with colleagues
-- Rasgo has built a starter library of transforms that will also be available to use or fork
+- Rasgo has built a starter library of transforms for you to use or fork
 - user-defined transforms are written in SQL but accept arguments passed through PyRasgo
+
+# Follow Along with a Tutorial
+
+[Here's a Jupyter Notebook](https://github.com/rasgointelligence/RasgoUDTs/blob/main/UDT%20Tutorial.ipynb) to help you get started with UDTs.
 
 
 # Quick Start
@@ -28,18 +32,18 @@ print(transforms)
 # Get a source that you want to apply the UDT to
 my_source = rasgo.get.data_source(id=100)
 
-#Preview the UDT applied to a source with source.transform().preview()
-new_source = my_source.transform(
-  transform_name='filter_transform',
-  filter_col='CampaignID',
-  filter_val='1001'
-)
+#Preview the SQL created by applying a UDT to a source
+t1 = my_source.transform(
+  transform_name='rasgo_train_test_split',
+  order_by = ['DATE'],
+  train_percent = .8
+).preview_sql()
 
-#Ppreview the results of the UDT in a pandas dataframe
-new_source.preview()
+#Ppreview the results of running the UDT in a pandas dataframe
+t1.preview()
 
 # Save the new source to Rasgo and your Snowflake Account
-new_source.to_source(new_source_name='New Filtered Source')
+t1.to_source(new_source_name='New Filtered Source')
 ```
 [Read the Docs →](https://docs.rasgoml.com/)
 
