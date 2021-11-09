@@ -21,6 +21,6 @@ example_code: |
     transform_name='rasgo_join',
     join_table_id=363,
     join_type='RIGHT',
-    source_columns=['MONTH_NUM', 'FIPS', 'COVID_DEATHS'],
+    source_columns=['MONTH', 'FIPS', 'COVID_DEATHS'],
     joined_colums=['MONTH_NUM', 'ZIP_CODE', 'COVID_DEATHS']
   ).preview()
