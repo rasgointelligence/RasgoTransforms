@@ -1,0 +1,27 @@
+name: rasgo_concat
+transform_type: column
+source_code: rasgo_concat.sql
+description: |
+  This function creates a new column that contains a substring of either a fixed value or another column in your dataset.
+
+  Caution! Executing this transformation on a large dataset can be computationally expensive!
+  # TODO: finish description
+arguments:
+  new_cols:
+    type: List[string, string]
+    description: A list representing each existing column to be replaced.
+  col_expr:
+    type: string
+    description: The column targeted for data type change
+  new_type:
+    type: string
+    description: The desired output data type for the new column
+example_code: |
+    rasgo.read.source_data(w_source.id, limit=5)
+
+    t1 = w_source.transform(
+        transform_name='rasgo_substring',
+        new_cols = [column_name, SNOWFLAKE_DATA_TYPE]
+      )
+
+    t1.preview()
