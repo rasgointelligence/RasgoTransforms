@@ -9,7 +9,7 @@ import argparse
 
 import pyrasgo
 
-from python import utils
+import utils
 
 
 def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
@@ -18,6 +18,8 @@ def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     :param rasgo_api_key:
     :return:
     """
+    print(rasgo_api_key)
+
     # Set RASGO_DOMAIN Env
     utils.set_rasgo_domain_env(rasgo_domain)
 
