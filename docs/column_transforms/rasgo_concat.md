@@ -2,18 +2,16 @@
 
 # rasgo_concat
 
-This function creates a new column that contains a substring of either a fixed value or another column in your dataset.
+This function creates a new column that concatenates fixed values and columns in your dataset.
 
-# TODO: finish description
+Pass in a list named "concat_list", containing the names of the columns and the static string values to concatenate, in order.
 
 
 ## Parameters
 
-| Argument |            Type            |                                Description                                 |
-| -------- | -------------------------- | -------------------------------------------------------------------------- |
-| new_cols | List[string, List[string]] | A list representing each new column to be created.                         |
-| col_expr | string                     | The column expression intended to be used as the base of the concatenation |
-| vals     | string                     | A list containing the expressions to concatenate to the base `col_expr`    |
+|  Argument   |    Type    |                    Description                     |
+| ----------- | ---------- | -------------------------------------------------- |
+| concat_list | mixed_list | A list representing each new column to be created. |
 
 
 ## Example
@@ -22,11 +20,12 @@ This function creates a new column that contains a substring of either a fixed v
 rasgo.read.source_data(w_source.id, limit=5)
 
 t1 = w_source.transform(
-    transform_name='rasgo_substring',
-    new_cols = [[column_name, ['this-fixed-string', second_col_name]]]
-  )
+  transform_name='rasgo_concat',
+  concat_list=["DS_WEATHER_ICON", "'some_str'", "'_5'"]
+)
 
 t1.preview()
+
 ```
 
 ## Source Code

@@ -2,19 +2,19 @@
 
 # rasgo_concat
 
-This function creates a new column that contains a substring of either a fixed value or another column in your dataset.
+This function creates new columns for all columns included in `col_list`. Each of the new columns is cast to a new data type, indicated in `type_list`.
+
+The ordinal position of columns in `col_list` must match the desired output data type in `type_list`.
 
 Caution! Executing this transformation on a large dataset can be computationally expensive!
-# TODO: finish description
 
 
 ## Parameters
 
-| Argument |         Type         |                       Description                        |
-| -------- | -------------------- | -------------------------------------------------------- |
-| new_cols | List[string, string] | A list representing each existing column to be replaced. |
-| col_expr | string               | The column targeted for data type change                 |
-| new_type | string               | The desired output data type for the new column          |
+| Argument  |    Type     |                             Description                              |
+| --------- | ----------- | -------------------------------------------------------------------- |
+| col_list  | column_list | A list representing each existing column to have a changed type.     |
+| type_list | value_list  | A list of strings containing the types to which to cast the columns. |
 
 
 ## Example
@@ -23,11 +23,13 @@ Caution! Executing this transformation on a large dataset can be computationally
 rasgo.read.source_data(w_source.id, limit=5)
 
 t1 = w_source.transform(
-    transform_name='rasgo_substring',
-    new_cols = [column_name, SNOWFLAKE_DATA_TYPE]
-  )
+    transform_name='rasgo_concat',
+    col_list=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP", "DS_DAILY_LOW_TEMP"],
+    type_list=["INT", "STRING", "STRING"]
+)
 
 t1.preview()
+
 ```
 
 ## Source Code
