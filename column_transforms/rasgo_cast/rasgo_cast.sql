@@ -1,7 +1,11 @@
+{% if col_list|length != type_list|length %}
+Rasgo Cast Error: The Column list must be the same length as the Type list.
+{% else %}
 SELECT
 *
-{%- for col_expr, new_type in new_cols %}
-    -- TODO: offer an option for inplace or new column for each change?
-    , TRY_CAST({{col_expr}} AS {{new_type}})
+{%- for target_col in col_list %}
+    , TRY_CAST({{target_col}} AS {{type_list[loop.index-1]}})
 {%- endfor %}
 FROM {{ source_table }}
+
+{% endif %}

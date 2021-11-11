@@ -1,10 +1,8 @@
 SELECT
 *
-{%- for col_expr, vals in new_cols %}
-    CONCAT({{col_expr}}
-    {%- for concatenation_val in vals %}
-        , concatenation_val
+, CONCAT(
+    {%- for obj in concat_list %}
+    {{obj}}{{ ", " if not loop.last else "" }}
     {%- endfor %}
-    )
-{%- endfor %}
+)
 FROM {{ source_table }}
