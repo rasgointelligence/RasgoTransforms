@@ -1,6 +1,6 @@
-name: rasgo_concat
+name: rasgo_cast
 transform_type: column
-source_code: rasgo_concat.sql
+source_code: rasgo_cast.sql
 description: |
   This function creates new columns for all columns included in `col_list`. Each of the new columns is cast to a new data type, indicated in `type_list`.
 
@@ -18,7 +18,7 @@ example_code: |
     rasgo.read.source_data(w_source.id, limit=5)
 
     t1 = w_source.transform(
-        transform_name='rasgo_concat',
+        transform_name='rasgo_cast',
         col_list=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP", "DS_DAILY_LOW_TEMP"],
         type_list=["INT", "STRING", "STRING"]
     )
