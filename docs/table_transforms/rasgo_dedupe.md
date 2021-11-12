@@ -2,7 +2,7 @@
 
 # rasgo_dedupe
 
-Deduplicate a table based on a passed-in composite key
+Deduplicate a table based on a passed-in composite key. Once an order column and an order method are selected, only the top record from the resulting grouped and ordered dataset will be kept.
 
 ## Parameters
 
