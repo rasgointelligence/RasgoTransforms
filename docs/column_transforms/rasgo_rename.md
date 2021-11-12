@@ -22,7 +22,7 @@ The ordinal position of columns in `col_list` must match the desired new names i
 t1 = source.transform(
     transform_name='rasgo_rename',
     col_list=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP", "DS_DAILY_LOW_TEMP"],
-    type_list=["WEATHER", "HIGH_TEMP", "LOW_TEMP"]
+    new_names=["WEATHER", "HIGH_TEMP", "LOW_TEMP"]
 )
 
 t1.preview()
