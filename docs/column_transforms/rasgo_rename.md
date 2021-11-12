@@ -11,7 +11,7 @@ The ordinal position of columns in `col_list` must match the desired new names i
 
 | Argument  |    Type     |                              Description                              |
 | --------- | ----------- | --------------------------------------------------------------------- |
-| col_list  | column_list | A list representing each existing column to have a changed type.      |
+| col_list  | column_list | A list representing each existing column that needs to be renamed.    |
 | new_names | value_list  | A list of strings containing the new names for the specified columns. |
 
 
