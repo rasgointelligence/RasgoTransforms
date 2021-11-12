@@ -20,4 +20,9 @@ example_code: |
         include_cols=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP", "DS_DAILY_LOW_TEMP"]
     )
 
+    t1 = source.transform(
+        transform_name='rasgo_drop_columns',
+        exclude_cols=["DS_CLOUD_COVER", "DS_TOTAL_RAINFALL"]
+    )
+
     t1.preview()
