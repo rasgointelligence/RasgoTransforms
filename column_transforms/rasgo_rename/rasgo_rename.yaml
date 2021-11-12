@@ -9,7 +9,7 @@ description: |
 arguments:
   col_list:
     type: column_list
-    description: A list representing each existing column to have a changed type.
+    description: A list representing each existing column that needs to be renamed.
   new_names:
     type: value_list
     description: A list of strings containing the new names for the specified columns.
