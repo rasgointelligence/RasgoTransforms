@@ -18,7 +18,7 @@ source = rasgo.get.data_source(id=363)
 
 source.transform(
   transform_id=transform.id,
-  filter_statements=[
+  math_ops=[
     'MONTH * 12',
     'YEAR - 2000'
   ]
