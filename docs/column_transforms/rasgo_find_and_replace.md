@@ -17,7 +17,7 @@ Replace certain values in a column/s on equality and add a specified reaplacemen
 source.transform(
     transform_name=rasgo_find_and_replace,
     replace_dict={
-        "MONTH": [[2, 22], [None, 44]],   # Also replace 2 with 22 in MONTH column. Also replace value NULL with 44 
+        "MONTH": [[2, 22], [None, 44]],   # Replace 2 with 22 in MONTH column. Also replace value NULL with 44 
         "FIPS": [['45001', '455001']]  # Replace value '45001' with '455001' in FIPS column.
     }
 ).preview()
