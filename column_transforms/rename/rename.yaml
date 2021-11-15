@@ -1,0 +1,25 @@
+name: rename
+transform_type: column
+source_code: rename.sql
+description: |
+  Rename columns in col_list with names specified in new_names.
+
+  The ordinal position of columns in `col_list` must match the desired new names in `new_names`.
+
+arguments:
+  col_list:
+    type: column_list
+    description: A list representing each existing column that needs to be renamed.
+  new_names:
+    type: value_list
+    description: A list of strings containing the new names for the specified columns.
+example_code: |
+    source = rasgo.read.source_data(source_id)
+    
+    t1 = source.transform(
+        transform_name='rename',
+        col_list=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP", "DS_DAILY_LOW_TEMP"],
+        new_names=["WEATHER", "HIGH_TEMP", "LOW_TEMP"]
+    )
+
+    t1.preview()

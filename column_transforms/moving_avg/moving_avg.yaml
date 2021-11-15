@@ -1,0 +1,28 @@
+name: moving_avg
+transform_type: column
+source_code: moving_avg.sql
+description: generates moving averages per column and per window size
+arguments:
+  input_columns:
+    type: column_list
+    description: names of column(s) you want to moving average
+  window_sizes:
+    type: value_list
+    description: the integer values for window sizes you want to use in your moving average
+  order_by:
+    type: column
+    description: the date or ordinal value to order by
+  partition:
+    type: column_list
+    description: the dimension column to partition by
+example_code: |
+    stock_source = rasgo.get.data_source(id=1151)
+    
+    t1 = stock_source.transform(
+      transform_name='moving_avg',
+      date_dim='DATE',
+      partition=['TICKER'],
+      window_sizes=[3,7,14,21],
+      input_columns=['OPEN','CLOSE','HIGH','LOW'])
+    
+    t1.preview()
