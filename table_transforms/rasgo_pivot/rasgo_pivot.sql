@@ -14,4 +14,8 @@ limit 1000
 
 SELECT {{ dimensions | join(", ") }}, {{ distinct_vals | join(", ") }}
 FROM ( SELECT {{ dimensions | join(", ") }}, {{ pivot_column }}, {{ value_column }} FROM {{ source_table }})
-PIVOT ( {{ agg_method }} ( {{ pivot_column }} ) FOR {{ value_column }} IN ( '{{ distinct_vals | join("', '") }}' ) ) as p ( {{ dimensions | join(", ") }}, {{ distinct_vals | join(", ") }} )
+PIVOT ( {{ agg_method }} ( {{ pivot_column }} ) FOR {{ value_column }} IN ( '{{ distinct_vals | join("', '") }}' ) ) as p
+( {{ dimensions | join(", ") }}, 
+{%- for val in distinct_vals -%}
+{{ cleanse_name(val) }}{{ ', ' if not loop.last else '' }}
+{%- endfor -%} )
