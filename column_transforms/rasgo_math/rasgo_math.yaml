@@ -11,7 +11,7 @@ example_code: |
   
   source.transform(
     transform_id=transform.id,
-    filter_statements=[
+    math_ops=[
       'MONTH * 12',
       'YEAR - 2000'
     ]

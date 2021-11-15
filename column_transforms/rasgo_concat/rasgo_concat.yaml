@@ -1,0 +1,21 @@
+name: rasgo_concat
+transform_type: column
+source_code: rasgo_concat.sql
+description: |
+  This function creates a new column that concatenates fixed values and columns in your dataset.
+
+  Pass in a list named "concat_list", containing the names of the columns and the static string values to concatenate, in order.
+
+arguments:
+  concat_list:
+    type: mixed_list
+    description: A list representing each new column to be created.
+example_code: |
+    rasgo.read.source_data(w_source.id, limit=5)
+
+    t1 = w_source.transform(
+      transform_name='rasgo_concat',
+      concat_list=["DS_WEATHER_ICON", "'some_str'", "'_5'"]
+    )
+
+    t1.preview()
