@@ -10,7 +10,7 @@ from typing import Dict, List, Set
 import yaml
 from pyrasgo.rasgo import Rasgo
 
-from . import constants
+import constants
 
 # ----------------------------------------------
 #      Utils for Doc and Transform Creation
