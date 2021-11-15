@@ -1,0 +1,25 @@
+name: dedupe
+transform_type: table
+source_code: dedupe.sql
+description:  Deduplicate a table based on a passed-in composite key. Once an order column and an order method are selected, only the top record from the resulting grouped and ordered dataset will be kept.
+arguments:
+  natural_key:
+    type: column_list
+    description: Columns forming the grain at which to remove duplicates
+  order_col:
+    type: column_list
+    description: Columns by which to order the result set, such that the first result is kept
+  order_method:
+    type: value
+    description: Can be "desc" or "asc". Sets the order behavior for the chosen `order_col`.
+example_code: |
+    source = rasgo.read.source_data(source_id)
+    
+    t1 = source.transform(
+        transform_name='dedupe',
+        natural_key=["FIPS", "DS_WEATHER_ICON", "DATE"],
+        order_col=["DATE", "FIPS"],
+        order_method="asc"
+    )
+
+    t1.preview()

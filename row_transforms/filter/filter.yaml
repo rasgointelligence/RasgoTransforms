@@ -1,0 +1,20 @@
+name: filter
+transform_type: row
+source_code: filter.sql
+description: Apply one or more column filter to the source
+arguments:
+  filter_statements:
+    type: string_list
+    description: List of where statements filter the table by. Ex. ["<col_name> = 'string'", "<col_name> IS NOT NULL"
+example_code: |
+    source = rasgo.get.data_source(id=363)
+    
+    source.transform(
+      transform_name='filter',
+      filter_statements=[
+          'MONTH = 4',
+          'FIPS < COVID_NEW_CASES',
+          "YEAR = '2020'",
+          'COVID_DEATHS IS NOT NULL'
+      ]
+    ).preview()
