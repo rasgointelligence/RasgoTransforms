@@ -26,6 +26,11 @@ t1 = source.transform(
   train_percent = 0.8
 )
 
+t1 = source.transform(
+  transform_name='rasgo_train_test_split',
+  train_percent = 0.8
+)
+
 t1.preview()
 ```
 
