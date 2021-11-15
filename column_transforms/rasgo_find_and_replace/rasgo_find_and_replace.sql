@@ -11,10 +11,23 @@ the columns in a table by fqtn
     AND   TABLE_NAME = '{{ table }}'
 {%- endmacro -%}
 
+{# Jinja Macro to single quote a value if a sting #}
 {%- macro quote_if_string(val) -%}
     {{ "'" + val + "'" if val is string else val }}
 {%- endmacro -%}
 
+{#
+Jinja Macro to create a WHEN statement in find and replace considering Nulls
+#}
+{%- macro make_when_statement(col, find_val, replace_val) -%}
+    {%- if find_val -%}
+    WHEN {{ col }} = {{ quote_if_string(find_val) }} THEN {{ quote_if_string(replace_val) }}
+    {%- else -%}
+    WHEN {{ col }} IS NULL THEN {{ quote_if_string(replace_val) }}
+    {%- endif -%}
+{%- endmacro -%}
+
+{# Get Source Col Names #}
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
 
@@ -27,7 +40,7 @@ SELECT
     CASE
         {% for replacement_pair in replace_dict[col] -%}
             {%- set find_val, replace_val = replacement_pair -%}
-        WHEN {{ col }} = {{ quote_if_string(find_val) }} THEN {{ quote_if_string(replace_val) }}
+        {{ make_when_statement(col, find_val, replace_val) }}
         {% endfor -%}
         ELSE {{ col }}
     END as {{ col }}{{ ',' if not loop.last else '' }}
