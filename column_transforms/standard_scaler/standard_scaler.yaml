@@ -4,15 +4,15 @@ source_code: standard_scaler.sql
 description: |
   This function scales a column by removing the mean and scaling by standard deviation.
 arguments:
-  column:
-    type: column
-    description: A numeric column that you want to scale
+  columns_to_scale:
+    type: column_list
+    description: A list of numeric columns that you want to scale
 example_code: |
     source = rasgo.read.source_data(source_id)
 
     t1 = source.transform(
         transform_name='standard_scaler',
-        column="COLUMN_NAME"
+        columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP']
       )
 
     t1.preview()
