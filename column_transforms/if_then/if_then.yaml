@@ -1,6 +1,6 @@
-name: if-then
+name: if_then
 transform_type: column
-source_code: if-then.sql
+source_code: if_then.sql
 description: |
   This function creates a new column based on the conditions provided in the `conditions` argument.
 
@@ -21,7 +21,7 @@ example_code: |
     source = rasgo.read.source_data(source_id)
 
     t1 = source.transform(
-        transform_name='if-then',
+        transform_name='if_then',
         conditions=[["DS_WEATHER_ICON like '%cloudy%'", 1]],
         default=2,
         alias="CLOUDY_WEATHER_FLAG"
@@ -30,7 +30,7 @@ example_code: |
     # OR
 
     t2 = source.transform(
-      transform_name="if-then",
+      transform_name="if_then",
       conditions=[["DS_DAILY_HIGH_TEMP >= 11.0", "HOT DAY"], ["DS_DAILY_HIGH_TEMP <= 0.0", "COLD DAY"]],
       default="Not too hot, not too cold",
       alias="TEMP_OUTCOME"
