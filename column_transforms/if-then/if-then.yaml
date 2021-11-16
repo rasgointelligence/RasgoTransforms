@@ -1,0 +1,39 @@
+name: if-then
+transform_type: column
+source_code: if-then.sql
+description: |
+  This function creates a new column based on the conditions provided in the `conditions` argument.
+
+  Output values should be of the same type, since they are constructing one new column.
+
+  A default value for the new column should be set, as should the output column name.
+arguments:
+  conditions:
+    type: list
+    description: A nested list. In each inner list the first element would be the condition to check, and the second the value with which to fill.
+  default:
+    type: string | int | column
+    description: The default value with which to fill the new column. Please enclose fixed strings in quotes inside of the argument (e.g., below)
+  alias:
+    type: string
+    description: The name of the output column in the new dataset.
+example_code: |
+    source = rasgo.read.source_data(source_id)
+
+    t1 = source.transform(
+        transform_name='if-then',
+        conditions=[["DS_WEATHER_ICON like '%cloudy%'", 1]],
+        default=2,
+        alias="CLOUDY_WEATHER_FLAG"
+    )
+
+    # OR
+
+    t2 = source.transform(
+      transform_name="if-then",
+      conditions=[["DS_DAILY_HIGH_TEMP >= 11.0", "HOT DAY"], ["DS_DAILY_HIGH_TEMP <= 0.0", "COLD DAY"]],
+      default="Not too hot, not too cold",
+      alias="TEMP_OUTCOME"
+    )
+
+    t1.preview()
