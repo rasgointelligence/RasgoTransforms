@@ -7,9 +7,9 @@ This function scales a column by removing the mean and scaling by standard devia
 
 ## Parameters
 
-| Argument |  Type  |               Description               |
-| -------- | ------ | --------------------------------------- |
-| column   | column | A numeric column that you want to scale |
+|     Argument     |    Type     |                   Description                    |
+| ---------------- | ----------- | ------------------------------------------------ |
+| columns_to_scale | column_list | A list of numeric columns that you want to scale |
 
 
 ## Example
@@ -19,7 +19,7 @@ source = rasgo.read.source_data(source_id)
 
 t1 = source.transform(
     transform_name='standard_scaler',
-    column="COLUMN_NAME"
+    columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP']
   )
 
 t1.preview()
