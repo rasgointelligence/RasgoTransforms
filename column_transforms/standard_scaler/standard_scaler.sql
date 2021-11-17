@@ -1,3 +1,4 @@
+{%- if averages is not defined -%}
 with
 {%- for column in columns_to_scale %}
   agg_{{column}} as (
@@ -15,3 +16,11 @@ FROM
 agg_{{column}},
 {%- endfor -%}
 {{source_table}}
+
+{%- else -%}
+select *,
+{%- for column in columns_to_scale %}
+({{column}} - {{averages[loop.index0]}}) / ({{standarddevs[loop.index0]}}) as {{column}}_standard_scaled{{ ", " if not loop.last else "" }}
+{% endfor -%}
+FROM {{source_table}}
+{%- endif -%}
