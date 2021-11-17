@@ -1,6 +1,4 @@
 name: moving_avg
-transform_type: column
-source_code: moving_avg.sql
 description: generates moving averages per column and per window size
 arguments:
   input_columns:

@@ -1,6 +1,4 @@
 name: union
-transform_type: table
-source_code: union.sql
 description:  Performs a SQL UNION or UNION ALL for the parent source, and another source by entering the source_id. Operation will only merge columns with matching columns names in both datasets and drop all other columns. Column data type validation does not happen.
 arguments:
   source_id:

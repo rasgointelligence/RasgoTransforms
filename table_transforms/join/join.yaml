@@ -1,6 +1,4 @@
 name: join
-transform_type: table
-source_code: join.sql
 description:  "Join a source table with another join table based on certain join keys between table. **NOTE**: If columns in the Join table are the same from the source table, the outputted column name from the join table will prefixxed with its table name. "
 arguments:
   join_table_id:

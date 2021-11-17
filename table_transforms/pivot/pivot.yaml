@@ -1,6 +1,4 @@
 name: pivot
-transform_type: table
-source_code: pivot.sql
 description: Transpose unique values in a single column to generate multiple columns, aggregating as needed. The pivot will dynamically generate a column per unique value, or you can pass a list_of_vals with the unique values you wish to create columsn for.
 arguments:
   dimensions:

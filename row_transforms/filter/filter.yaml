@@ -1,6 +1,4 @@
 name: filter
-transform_type: row
-source_code: filter.sql
 description: Apply one or more column filter to the source
 arguments:
   filter_statements:

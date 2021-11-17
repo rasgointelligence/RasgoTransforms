@@ -1,6 +1,4 @@
 name: to_date
-transform_type: column
-source_code: to_date.sql
 description: Creates a column of a date/timestamp type from some other column
 arguments:
   date_columns:

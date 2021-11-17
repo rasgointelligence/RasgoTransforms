@@ -1,6 +1,4 @@
 name: rename
-transform_type: column
-source_code: rename.sql
 description: |
   Rename columns in col_list with names specified in new_names.
 

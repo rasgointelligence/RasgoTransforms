@@ -1,6 +1,4 @@
 name: datepart
-transform_type: column
-source_code: datepart.sql
 description: Extracts a specific part of a date column. For example, if the input is '2021-01-01', you can ask for the year and get back 2021.
 arguments:
   date_columns:
