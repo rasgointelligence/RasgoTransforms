@@ -6,7 +6,7 @@ with
   from {{source_table}}){{ ", " if not loop.last else "" }}
 {% endfor -%}
 
-select *,
+select {{source_table}}.*,
 {%- for column in columns_to_scale %}
 ({{column}} - avg_{{column}}) / (stddev_{{column}}) as {{column}}_standard_scaled{{ ", " if not loop.last else "" }}
 {% endfor -%}
