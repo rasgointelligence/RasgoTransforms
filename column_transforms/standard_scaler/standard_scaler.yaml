@@ -15,19 +15,19 @@ arguments:
   standarddevs:
     type: value_list
     description: An optional argument representing a list of the static standard deviations to use for each column in columns_to_scale. If omitted, the values are calculated directly off each column.
-    example_code: |
+example_code: |
     source = rasgo.read.source_data(source_id)
 
     t1 = source.transform(
       transform_name='standard_scaler',
       columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP']
       )
+    t1.preview() 
 
-    t1 = source.transform(
+    t2 = source.transform(
       transform_name='standard_scaler',
       columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP'],
       averages=[68, 52],
       standarddevs=[12, 8]
       )
-
-    t1.preview()
+    t2.preview()
