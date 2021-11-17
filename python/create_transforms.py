@@ -14,9 +14,8 @@ import utils
 
 def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     """
-    Create all transforms in this repo with the supplied PyRasgo Api Key
-    :param rasgo_api_key:
-    :return:
+    Create all transforms in this repo with the supplied
+    PyRasgo Api Key and Domain
     """
     print(rasgo_api_key)
 
@@ -50,6 +49,7 @@ def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                       f"environment, with args {transform_args}")
                 rasgo.create.transform(
                     name=transform_name,
+                    type=transform_type,
                     source_code=transform_source_code,
                     arguments=transform_args
                 )

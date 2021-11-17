@@ -19,13 +19,13 @@ import constants
 
 def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     """
-    Load and return all the yaml files in the dirs <root>/<transform_type>>
-    If new transform type/dir added be sure to add above in List TRANSFORM_TYPE_DIRS
+    Load and return all the yaml files in the dirs <root>/<transform_type>_transforms
+    If new transform type/dir added be sure to add above in List TRANSFORM_TYPES
     """
     transform_yamls = defaultdict(dict)
 
-    for transform_type_dir in constants.TRANSFORM_TYPE_DIRS:
-        transform_type_dir_path = get_root_dir() / transform_type_dir
+    for transform_type in constants.TRANSFORM_TYPES:
+        transform_type_dir_path = get_root_dir() / f"{transform_type}_transforms"
 
         # Get list of all transform of certain type
         transform_names = [x.name for x in transform_type_dir_path.rglob("*/**")]
@@ -37,7 +37,7 @@ def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
             # If loaded successfully save in return dict
             try:
                 transform_data = _read_yaml(transform_yaml_path)
-                transform_yamls[transform_type_dir][transform_name] = transform_data
+                transform_yamls[transform_type][transform_name] = transform_data
             except Exception as e:
                 print(f"Can't read YAML file for transform {transform_name}\n"
                       f"Error Msg: {e}\n")
@@ -85,7 +85,7 @@ def get_transform_source_code(transform_type: str, transform_name: str) -> str:
     From a transform name and type load and return it's source code as a string
     """
     root_dir = get_root_dir()
-    source_code_path = root_dir / transform_type / transform_name / f"{transform_name}.sql"
+    source_code_path = root_dir / f"{transform_type}_transforms" / transform_name / f"{transform_name}.sql"
     fp = open(source_code_path)
     source_code = fp.read()
     fp.close()

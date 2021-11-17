@@ -15,15 +15,17 @@ def save_transform_docs() -> None:
     """
     transform_yamls = utils.load_all_yaml_files()
     for transform_type, transform_type_yamls in transform_yamls.items():
+        transform_type_dir_name = f"{transform_type}_transforms"
         for transform_name, transform_yaml in transform_type_yamls.items():
-            print(f"Generating Markdown for Transform '{transform_type}/{transform_name}.yaml'")
+            print(f"Generating Markdown for Transform "
+                  f"'{transform_type_dir_name}/{transform_name}.yaml'")
             markdown = _get_transform_markdown(
                 transform_yaml=transform_yaml,
-                transform_type=transform_type,
+                transform_type_dir_name=transform_type_dir_name,
                 transform_name=transform_name
             )
             # Write Transform Markdown to Docs directory
-            md_file_path = DOCS_DIR / transform_type / f"{transform_name}.md"
+            md_file_path = DOCS_DIR / transform_type_dir_name / f"{transform_name}.md"
             os.makedirs(md_file_path.parent, exist_ok=True)
             with md_file_path.open('w') as fp:
                 print(f"Writing Markdown docs at {md_file_path}\n")
@@ -31,7 +33,7 @@ def save_transform_docs() -> None:
 
 
 def _get_transform_markdown(transform_yaml: Dict,
-                            transform_type: str,
+                            transform_type_dir_name: str,
                             transform_name: str) -> str:
     """
     Generate and return the markdown string to write as a MD
@@ -47,7 +49,7 @@ def _get_transform_markdown(transform_yaml: Dict,
         md.h2('Example'),
         md.python_code(transform_yaml['example_code']),
         md.h2('Source Code'),
-        md.github_url(transform_type, transform_name),
+        md.github_url(transform_type_dir_name, transform_name),
         '',
     ]
     return '\n\n'.join(markdown_elements)
