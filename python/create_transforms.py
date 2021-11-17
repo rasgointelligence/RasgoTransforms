@@ -17,8 +17,6 @@ def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     Create all transforms in this repo with the supplied
     PyRasgo Api Key and Domain
     """
-    print(rasgo_api_key)
-
     # Set RASGO_DOMAIN Env
     utils.set_rasgo_domain_env(rasgo_domain)
 
@@ -45,8 +43,8 @@ def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                 transform_args = utils.parse_transform_args_from_yaml(transform_yaml)
 
                 # Create Transform
-                print(f"Creating '{transform_name}' transform in Rasgo {rasgo_domain.upper()} "
-                      f"environment, with args {transform_args}")
+                print(f"Creating '{transform_name}' {transform_type} transform in "
+                      f"Rasgo {rasgo_domain.upper()} environment, with args {transform_args}")
                 rasgo.create.transform(
                     name=transform_name,
                     type=transform_type,
