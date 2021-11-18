@@ -1,6 +1,4 @@
 name: levenshtein
-transform_type: column
-source_code: levenshtein.sql
 description: Calculate the edit distance between pairwise combinations of string columns
 arguments:
   columns1:

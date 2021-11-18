@@ -1,6 +1,4 @@
 name: substring
-transform_type: column
-source_code: substring.sql
 description: |
   This function creates a new column that contains a substring of either a fixed value or another column in your dataset.
 arguments:

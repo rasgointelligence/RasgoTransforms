@@ -1,6 +1,4 @@
 name: if_then
-transform_type: column
-source_code: if_then.sql
 description: |
   This function creates a new column based on the conditions provided in the `conditions` argument.
 

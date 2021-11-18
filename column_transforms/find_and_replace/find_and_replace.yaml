@@ -1,6 +1,4 @@
 name: find_and_replace
-transform_type: column
-source_code: find_and_replace.sql
 description:  Replace certain values in a column/s on equality and add a specified reaplacement
 arguments:
   replace_dict:

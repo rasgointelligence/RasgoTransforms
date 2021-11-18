@@ -1,6 +1,4 @@
 name: rasgo_train_test_split
-transform_type: column
-source_code: rasgo_train_test_split.sql
 description: |
   Label rows as part of the train or test set based off of percentage split you want to apply to the data.
   

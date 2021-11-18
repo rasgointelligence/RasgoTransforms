@@ -1,6 +1,4 @@
 name: datediff
-transform_type: column
-source_code: datediff.sql
 description: Calculates the difference between two date, time, or timestamp expressions based on the date or time part requested. The function returns the result of subtracting the second argument from the third argument.
 arguments:
   date_part:

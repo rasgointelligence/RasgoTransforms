@@ -1,6 +1,4 @@
 name: concat
-transform_type: column
-source_code: concat.sql
 description: |
   This function creates a new column that concatenates fixed values and columns in your dataset.
 

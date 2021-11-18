@@ -1,6 +1,4 @@
 name: one_hot_encode
-transform_type: column
-source_code: one_hot_encode.sql
 description:  One hot encode a column and drop it from the dataset. Create a null value flag for the column too.
 arguments:
   column:

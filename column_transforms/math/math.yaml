@@ -1,6 +1,4 @@
 name: math
-transform_type: column
-source_code: math.sql
 description: Create one or more new columns 
 arguments:
   math_ops:

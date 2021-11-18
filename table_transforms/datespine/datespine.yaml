@@ -1,6 +1,4 @@
 name: datespine
-transform_type: table
-source_code: datespine.sql
 description: |
   This operation generates a table that contains one row per interval that exists between the two input dates. It will then join it on the source table based on the user specified column.
 

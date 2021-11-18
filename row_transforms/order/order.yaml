@@ -1,6 +1,4 @@
 name: order
-transform_type: row
-source_code: order.sql
 description: Order a data set by a given list of columns
 arguments:
   col_list:
