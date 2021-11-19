@@ -1,6 +1,4 @@
-name: rasgo_lagagg
-transform_type: column
-source_code: rasgo_lagagg.sql
+name: lagagg
 description: Lag Agg uses a reference column to aggregate and join with a base dataset
 arguments:
   columns:
@@ -27,7 +25,7 @@ example_code: |
   event_source = rasgo.read.source_data(101)
   
   t1 = my_source.transform(
-      transform_name='rasgo_lagagg',
+      transform_name='lagagg',
       columns=['CLOSE'],
       windows=[7,14,30,60],
       date='DATE',
