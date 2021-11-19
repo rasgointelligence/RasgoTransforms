@@ -21,10 +21,10 @@ jobs:
       - name: Install Python Requirments
         run: |
           python -m pip install --upgrade pip
-          pip install -r docs/docs_generation/requirements.txt
+          pip install -r python/requirements.txt
 
       - name: Generate Transform Docs
-        run: python docs/docs_generation/doc_generator.py
+        run: python python/doc_generator.py
 
       - name: Git Commit Generated Transform Docs
         run: |

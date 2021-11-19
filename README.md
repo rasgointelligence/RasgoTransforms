@@ -12,8 +12,12 @@
 UDTs enable templatized SQL transformation via Rasgo, through a pandas-like interface in PyRasgo.
 - user-defined transforms are equivalent to SQL functions that accept a Rasgo Source and return a Rasgo Source
 - user-defined transforms are scoped to your organization so they can be shared with colleagues
-- Rasgo has built a starter library of transforms that will also be available to use or fork
+- Rasgo has built a starter library of transforms for you to use or fork
 - user-defined transforms are written in SQL but accept arguments passed through PyRasgo
+
+# Follow Along with a Tutorial
+
+[Here's a Jupyter Notebook](https://github.com/rasgointelligence/RasgoUDTs/blob/main/UDT%20Tutorial.ipynb) to help you get started with UDTs.
 
 
 # Quick Start
@@ -28,39 +32,56 @@ print(transforms)
 # Get a source that you want to apply the UDT to
 my_source = rasgo.get.data_source(id=100)
 
-#Preview the UDT applied to a source with source.transform().preview()
-new_source = my_source.transform(
-  transform_name='filter_transform',
-  filter_col='CampaignID',
-  filter_val='1001'
-)
+#Preview the SQL created by applying a UDT to a source
+t1 = my_source.transform(
+  transform_name='train_test_split',
+  order_by = ['DATE'],
+  train_percent = .8
+).preview_sql()
 
-#Ppreview the results of the UDT in a pandas dataframe
-new_source.preview()
+#Ppreview the results of running the UDT in a pandas dataframe
+t1.preview()
 
 # Save the new source to Rasgo and your Snowflake Account
-new_source.to_source(new_source_name='New Filtered Source')
+t1.to_source(new_source_name='New Filtered Source')
 ```
 [Read the Docs →](https://docs.rasgoml.com/)
 
 # Available UDTs
 ## Column Transforms
-- [rasgo_binning](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-binning)
-- [rasgo_datepart](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-datepart)
-- [rasgo_lag](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-lag)
-- [rasgo_datetrunc](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-datetrunc)
-- [rasgo_levenshtein](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-levenshtein)
-- [rasgo_todate](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-todate)
-- [rasgo_impute](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rasgo-impute)
+- [binning](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/binning)
+- [cast](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/cast)
+- [concat](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/concat)
+- [datediff](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/datediff)
+- [datepart](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/datepart)
+- [datetrunc](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/datetrunc)
+- [drop_columns](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/drop_columns)
+- [find_and_replace](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/find_and_replace)
+- [if_then](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/if_then)
+- [impute](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/impute)
+- [lag](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/lag)
+- [levenshtein](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/levenshtein)
+- [math](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/math)
+- [moving_avg](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/moving_avg)
+- [one_hot_encode](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/one_hot_encode)
+- [rename](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/rename)
+- [standard_scaler](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/standard_scaler)
+- [substring](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/substring)
+- [to_date](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/to_date)
+- [train_test_split](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/train_test_split)
 
 ## Table Transforms
-- [rasgo_pivot](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-pivot)
-- [rasgo_unpivot](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-unpivot)
-- [rasgo_group_by](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-group-by)
-- [rasgo_union](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/rasgo-union)
+- [aggregate](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/aggregate)
+- [datespine](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/datespine)
+- [dedupe](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/dedupe)
+- [join](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/join)
+- [pivot](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/pivot)
+- [union](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/union)
+- [unpivot](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/table-transforms/unpivot)
 
 ## Row Transforms
-- [rasgo_filter](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/row-transforms/rasgo-filter)
+- [filter](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/row-transforms/filter)
+- [order](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/row-transforms/order)
 
 # About Us
 Rasgo UDTs are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.

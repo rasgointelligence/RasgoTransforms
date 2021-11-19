@@ -1,0 +1,19 @@
+name: levenshtein
+description: Calculate the edit distance between pairwise combinations of string columns
+arguments:
+  columns1:
+    type: column_list
+    description: first list of string columns
+  column2:
+    type: column_list
+    description: second list of string columns
+example_code: |
+  source = rasgo.read.source_data(source.id)
+  
+  t1 = source.transform(
+    transform_name='levenshtein',
+    columns1 = ['FIRSTNAME'],
+    columns2 = ['LASTNAME']
+  )
+  
+  t1.preview()
