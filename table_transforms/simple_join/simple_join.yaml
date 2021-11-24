@@ -17,4 +17,4 @@ example_code: |
     join_table=MySource.ID,
     join_type='LEFT',
     join_columns=['MONTH', 'FIPS']
-  ).preview()
+    ).preview()
