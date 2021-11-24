@@ -1,0 +1,20 @@
+name: simple_join
+description: |
+  Simple join between two datasets that uses a 'USING' clause. Returns all columns from both tables in the result set.
+arguments:
+  join_table:
+    type: source
+    description: source id of the table to join with the source one.
+  join_type:
+    type: string
+    description: 'LEFT', 'RIGHT', or 'INNER'.
+  join_columns:
+    type: column_list
+    description: Columns to join on. Can be one or more columns but must be named the same thing between the two objects.
+example_code: |
+  source.transform(
+    transform_name='simple_join',
+    join_table=MySource.ID,
+    join_type='LEFT',
+    join_columns=['MONTH', 'FIPS']
+  ).preview()
