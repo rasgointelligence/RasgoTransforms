@@ -1,6 +1,6 @@
 
 
-# rasgo_train_test_split
+# train_test_split
 
 Label rows as part of the train or test set based off of percentage split you want to apply to the data.
 
@@ -21,13 +21,13 @@ If you want a row-wise random sample applied, do not pass an order_by column. If
 source = rasgo.read.source_data(source.id)
 
 t1 = source.transform(
-  transform_name='rasgo_train_test_split',
+  transform_name='train_test_split',
   order_by = ['DATE'],
   train_percent = 0.8
 )
 
 t1 = source.transform(
-  transform_name='rasgo_train_test_split',
+  transform_name='train_test_split',
   train_percent = 0.8
 )
 
