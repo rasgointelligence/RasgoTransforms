@@ -10,7 +10,7 @@ arguments:
     type: list
     description: A nested list. In each inner list the first element would be the condition to check, and the second the value with which to fill.
   default:
-    type: string | int | column
+    type: mixed_value
     description: The default value with which to fill the new column. Please enclose fixed strings in quotes inside of the argument (e.g., below)
   alias:
     type: string
