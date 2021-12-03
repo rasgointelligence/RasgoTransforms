@@ -7,7 +7,7 @@ description: |
   A default value for the new column should be set, as should the output column name.
 arguments:
   conditions:
-    type: list
+    type: conditional_list
     description: A nested list. In each inner list the first element would be the condition to check, and the second the value with which to fill.
   default:
     type: mixed_value
