@@ -28,6 +28,6 @@ the columns in a table by source_Id or fqtn
 {%- set union_cols = union_cols | unique | list -%}
 
 {# Generate Union Query #}
-SELECT {{ union_cols | join('", "') }} FROM {{ rasgo_source_ref(source_id) }}
+SELECT {{ union_cols | join(', ') }} FROM {{ rasgo_source_ref(source_id) }}
 UNION {{ 'ALL' if union_all else '' }}
-SELECT {{ union_cols | join('", "') }} FROM {{ source_table }}
+SELECT {{ union_cols | join(', ') }} FROM {{ source_table }}
