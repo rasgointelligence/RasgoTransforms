@@ -1,0 +1,20 @@
+name: rename
+description: |
+  Rename columns by passing a renames dict.
+
+arguments:
+  renames:
+    type: column_value_dict
+    description: A dict representing each existing column to be renamed and its corresponding new name.
+example_code: |
+  source = rasgo.read.source_data(source_id)
+
+  t1 = source.transform(
+      transform_name='rename',
+      renames={
+        'DS_WEATHER_ICON': 'Weather',
+        'DS_DAILY_HIGH_TEMP': 'High_Temp',
+        'DS_DAILY_LOW_TEMP': 'Low_Temp'
+  })
+
+  t1.preview()
