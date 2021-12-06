@@ -18,11 +18,10 @@ with date_spine as (
 from table (generator(rowcount => {{ row_count }}))
     )
 select  {{ source_table }}.*,
-  date_spine.interval_id as {{ date_col }}_interval_id,
-  date_spine.ts_ntz_interval_start as {{ date_col }}_ts_ntz_interval_start,
-  date_spine.ts_ntz_interval_end as {{ date_col }}_ts_ntz_interval_end
-from {{ source_table }}
-right outer join date_spine on
+  date_spine.ts_ntz_interval_start as {{ date_col }}_spine_start,
+  date_spine.ts_ntz_interval_end as {{ date_col }}_spine_end
+from date_spine
+left join {{ source_table }} on
     {{ source_table }}.{{ date_col }} >= date_spine.ts_ntz_interval_start
     and
     {{ source_table }}.{{ date_col }} < date_spine.ts_ntz_interval_end
