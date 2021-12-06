@@ -1,24 +1,22 @@
 name: join
-description:  "Join a source table with another join table based on certain join keys between table. **NOTE**: If columns in the Join table are the same from the source table, the outputted column name from the join table will prefixxed with its table name. "
+description:  "Join a source table with another join table based on certain join keys between table. **NOTE**: For columns in the Join table with the same name in the source table, only the columns from the join table will be included in the output. "
 arguments:
-  join_table_id:
+  join_table:
     type: source
     description: Source id of the table to join with the source one.
   join_type:
     type: string
     description: "'LEFT','RIGHT', 'INNER', or None"
-  source_columns:
-    type: column_list
-    description: Column/s to join from the source table. Col index in list must match with `joined_colums` param.
-  joined_colums:
-    type: column_list
-    description:  Column/s to join from the join table. Col index in list must match with `source_columns` param.
+  join_columns:
+    type: join_dict
+    description: Columns to use for the join. Keys are columns in the source_table and values are on columns in the join_table.
 example_code: |
-  # Perform a RIGHT join, joining on keys 'MONTH'/'MONTH_NUM', 'FIPS/ZIP_CODE', and 'COVID_DEATHS'
   source.transform(
     transform_name='join',
-    join_table_id=363,
-    join_type='RIGHT',
-    source_columns=['MONTH', 'FIPS', 'COVID_DEATHS'],
-    joined_colums=['MONTH_NUM', 'ZIP_CODE', 'COVID_DEATHS']
+    join_table=source.id,
+    join_type='LEFT',
+    join_columns={
+      'MONTH':'MONTH',
+      'TICKER':'TICKER'
+    }
   ).preview()
