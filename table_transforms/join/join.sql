@@ -12,7 +12,7 @@ the columns in a table by source_Id or fqtn
         SELECT COLUMN_NAME FROM {{ database }}.information_schema.columns
         WHERE TABLE_CATALOG = '{{ database }}'
         AND   TABLE_SCHEMA = '{{ schema }}'
-        AND   TABLE_NAME = '{{ table }}'
+        AND   TABLE_NAME = '{{ table|upper }}'
 {%- endmacro -%}
 
 {# Jinja Macro to get the table name from source_id #}
