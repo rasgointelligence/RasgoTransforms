@@ -6,9 +6,9 @@ the columns in a table by fqtn
     {%- set database, schema, table = '', '', '' -%}
     {%- set database, schema, table = source_table_fqtn.split('.') -%}
     SELECT COLUMN_NAME FROM {{ database }}.information_schema.columns
-    WHERE TABLE_CATALOG = '{{ database }}'
-    AND   TABLE_SCHEMA = '{{ schema }}'
-    AND   TABLE_NAME = '{{ table }}'
+    WHERE TABLE_CATALOG = '{{ database|upper }}'
+    AND   TABLE_SCHEMA = '{{ schema|upper }}'
+    AND   TABLE_NAME = '{{ table|upper }}'
 {%- endmacro -%}
 
 {# 
