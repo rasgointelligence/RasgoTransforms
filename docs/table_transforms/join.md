@@ -8,7 +8,7 @@ Join a source table with another join table based on certain join keys between t
 
 |   Argument   |   Type    |                                                  Description                                                   |
 | ------------ | --------- | -------------------------------------------------------------------------------------------------------------- |
-| join_table   | source    | Source id of the table to join with the source one.                                                            |
+| join_table   | dataset   | Dataset object to join with the source one.                                                                    |
 | join_type    | string    | 'LEFT','RIGHT', 'INNER', or None                                                                               |
 | join_columns | join_dict | Columns to use for the join. Keys are columns in the source_table and values are on columns in the join_table. |
 
@@ -16,9 +16,12 @@ Join a source table with another join table based on certain join keys between t
 ## Example
 
 ```python
-source.transform(
+source_ds = rasgo.get.dataset(101)
+join_ds = rasgo.get.dataset(201)
+
+source_ds.transform(
   transform_name='join',
-  join_table=source.id,
+  join_table=join_ds,
   join_type='LEFT',
   join_columns={
     'MONTH':'MONTH',
