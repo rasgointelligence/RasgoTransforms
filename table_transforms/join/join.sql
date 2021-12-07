@@ -10,8 +10,8 @@ the columns in a table by source_Id or fqtn
         {%- set database, schema, table = rasgo_source_ref(source_id).split('.') -%}
     {%- endif -%}
         SELECT COLUMN_NAME FROM {{ database }}.information_schema.columns
-        WHERE TABLE_CATALOG = '{{ database }}'
-        AND   TABLE_SCHEMA = '{{ schema }}'
+        WHERE TABLE_CATALOG = '{{ database|upper }}'
+        AND   TABLE_SCHEMA = '{{ schema|upper }}'
         AND   TABLE_NAME = '{{ table|upper }}'
 {%- endmacro -%}
 
