@@ -8,13 +8,12 @@ arguments:
     type: date_part
     description: the desired grain of the date; an exhaustive list of valid date parts can be [found here](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts).
 example_code: |
-    source = rasgo.read.source_data(source.id)
+    source = rasgo.get.dataset(dataset.id)
     
     t1 = source.transform(
       transform_name='datepart',
-      # TODO: at odds w code
-      date_parts = ['month'],
-      date_column = 'DATE'
+      date_part = 'month',
+      date_columns = ['DATE', "OTHER_DATE_COL"]
     )
     
     t1.preview()
