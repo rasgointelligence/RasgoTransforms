@@ -18,7 +18,7 @@ Passing both include_cols and exclude_cols will result in an error.
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+source = rasgo.get.dataset(dataset_id)
 
   t1 = source.transform(
       transform_name='drop_columns',

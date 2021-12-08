@@ -8,18 +8,19 @@ Performs a SQL UNION or UNION ALL for the parent source, and another source by e
 
 | Argument  |  Type   |                                Description                                |
 | --------- | ------- | ------------------------------------------------------------------------- |
-| source_id | source  | Source id of the source to Union/Union All with main source               |
+| source    | dataset | Dataset object to Union/Union All with main source                        |
 | union_all | boolean | Set to True to performn a UNION ALL instead UNION between the two sources |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source.id)
+source = rasgo.get.dataset(dataset.id)
+union_source = rasgo.get.dataset(dataset_2.id)
   
 t1 = source.transform(
   transform_name='union',
-  source_id = 22,
+  source = union_source,
   union_all = True
 )
 
