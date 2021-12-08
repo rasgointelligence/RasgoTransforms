@@ -7,7 +7,7 @@ arguments:
     type: column_value_dict
     description: A dict representing each existing column to be renamed and its corresponding new name.
 example_code: |
-  source = rasgo.read.source_data(source_id)
+  source = rasgo.get.dataset(dataset_id)
 
   t1 = source.transform(
       transform_name='rename',

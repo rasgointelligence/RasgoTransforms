@@ -1,13 +1,11 @@
 {#
 Jinja Macro to generate a query that would get all 
-the columns in a table by source_Id or fqtn
+the columns in a table by fqtn
 #}
-{%- macro get_source_col_names(source_id=None, source_table_fqtn=None) -%}
+{%- macro get_source_col_names(source_table_fqtn=None) -%}
     {%- set database, schema, table = '', '', '' -%}
     {%- if source_table_fqtn -%}
         {%- set database, schema, table = source_table_fqtn.split('.') -%}
-    {%- else -%}
-        {%- set database, schema, table = rasgo_source_ref(source_id).split('.') -%}
     {%- endif -%}
         SELECT COLUMN_NAME FROM {{ database }}.information_schema.columns
         WHERE TABLE_CATALOG = '{{ database|upper }}'

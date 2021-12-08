@@ -3,7 +3,7 @@ description:  "Join a source table with another join table based on certain join
 arguments:
   join_table:
     type: dataset
-    description: Dataset object to join with the source one.
+    description: Dataset object to join with the source dataset.
   join_type:
     type: string
     description: "'LEFT','RIGHT', 'INNER', or None"

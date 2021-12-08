@@ -1,13 +1,11 @@
 {#
 Jinja Macro to generate a query that would get all 
-the columns in a table by source_Id or fqtn
+the columns in a table by fqtn
 #}
-{%- macro get_source_col_names(source_id=None, source_table_fqtn=None) -%}
+{%- macro get_source_col_names(source_table_fqtn=None) -%}
     {%- set database, schema, table = '', '', '' -%}
     {%- if source_table_fqtn -%}
         {%- set database, schema, table = source_table_fqtn.split('.') -%}
-    {%- else -%}
-        {%- set database, schema, table = join_table.split('.') -%}
     {%- endif -%}
         SELECT COLUMN_NAME FROM {{ database }}.information_schema.columns
         WHERE TABLE_CATALOG = '{{ database|upper }}'
@@ -26,7 +24,7 @@ the columns in a table by source_Id or fqtn
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
 
 {# Get all Columns and Table Name in Join Table #}
-{%- set col_names_join_df = run_query(get_source_col_names(source_id=join_table)) -%}
+{%- set col_names_join_df = run_query(get_source_col_names(source_table_fqtn=join_table)) -%}
 {%- set join_col_names = col_names_join_df['COLUMN_NAME'].to_list() -%}
 {%- set join_table_name = get_table_name(join_table) -%}
 
