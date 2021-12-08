@@ -2,6 +2,7 @@ SELECT
     {%- for s_col in source_join_columns %}
         fct.{{ s_col }},
     {%- endfor -%}
+    fct.{{ source_temporal_column }},
     {%- for lag in lag_interval_list %}
         {%- set outer_loop = loop -%}
         {%- for col, aggs in aggregations.items() %}
@@ -24,6 +25,7 @@ JOIN {{ rasgo_source_ref(base_source_id) }} base
    -- for some strange reason you must leave a blank line here otherwise sql gets squished when rendered
 
 GROUP BY
+fct.{{ source_temporal_column }},
 {%- for s_col in source_join_columns %}
     fct.{{ s_col }}{{ '' if loop.last else ',' }}
 {%- endfor -%}
