@@ -15,13 +15,12 @@ Extracts a specific part of a date column. For example, if the input is '2021-01
 ## Example
 
 ```python
-source = rasgo.read.source_data(source.id)
+source = rasgo.get.dataset(dataset.id)
 
 t1 = source.transform(
   transform_name='datepart',
-  # TODO: at odds w code
-  date_parts = ['month'],
-  date_column = 'DATE'
+  date_part = 'month',
+  date_columns = ['DATE', "OTHER_DATE_COL"]
 )
 
 t1.preview()
