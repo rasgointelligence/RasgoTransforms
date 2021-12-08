@@ -19,6 +19,7 @@ source = rasgo.read.source_data(source.id)
 
 t1 = source.transform(
   transform_name='datepart',
+  # TODO: at odds w code
   date_parts = ['month'],
   date_column = 'DATE'
 )
