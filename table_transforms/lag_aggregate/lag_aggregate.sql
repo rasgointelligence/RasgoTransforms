@@ -21,9 +21,7 @@ FROM {{ source_table }} fct
 JOIN {{ rasgo_source_ref(base_source_id) }} base
 {%- for s_col in source_join_columns %}
     {{ ' AND' if not loop.first else 'ON'}} fct.{{ s_col }} = base.{{ base_join_columns[loop.index0] }}    
-{%- endfor -%}
-   -- for some strange reason you must leave a blank line here otherwise sql gets squished when rendered
-
+{%- endfor %}
 GROUP BY
 fct.{{ source_temporal_column }},
 {%- for s_col in source_join_columns %}
