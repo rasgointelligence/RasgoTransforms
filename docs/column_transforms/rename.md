@@ -18,7 +18,7 @@ The ordinal position of columns in `col_list` must match the desired new names i
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+source = rasgo.get.dataset(dataset_id)
 
 t1 = source.transform(
     transform_name='rename',

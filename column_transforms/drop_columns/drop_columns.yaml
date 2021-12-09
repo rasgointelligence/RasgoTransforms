@@ -12,7 +12,7 @@ arguments:
     type: column_list
     description: A list of the columns from the dataset you want to drop. Any columns not in the exclude_cols list will be kept.
 example_code: |
-  source = rasgo.read.source_data(source_id)
+  source = rasgo.get.dataset(dataset_id)
 
     t1 = source.transform(
         transform_name='drop_columns',

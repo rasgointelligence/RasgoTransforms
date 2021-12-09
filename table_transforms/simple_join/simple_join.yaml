@@ -4,8 +4,8 @@ description: |
 
 arguments:
   join_table:
-    type: source
-    description: source ID of the table to join with the source_table
+    type: table
+    description: Dataset object to join with the source_table
   join_type:
     type: string
     description: LEFT, RIGHT, or INNER
@@ -13,11 +13,12 @@ arguments:
     type: column_list
     description: Columns to join on. Can be one or more columns but must be named the same thing between the two objects.
 example_code: |
-    source = rasgo.read.source_data(source_id)
+    d1 = rasgo.get.dataset(dataset_id)
+    d2 = rasgo.get.dataset(dataset_id_2)
     
-    t1 = source.transform(
+    t1 = d1.transform(
         transform_name='simple_join',
-        join_table=mysource.id,
+        join_table=d2,
         join_type='LEFT',
         join_columns=['DATE', 'FIPS']
     )
