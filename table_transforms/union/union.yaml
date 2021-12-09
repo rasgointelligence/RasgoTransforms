@@ -2,18 +2,18 @@ name: union
 description:  Performs a SQL UNION or UNION ALL for the parent source, and another source by entering the source_id. Operation will only merge columns with matching columns names in both datasets and drop all other columns. Column data type validation does not happen.
 arguments:
   source:
-    type: dataset
-    description: Dataset object to Union/Union All with main source
+    type: table
+    description: Dataset to Union/Union All with main source
   union_all:
     type: boolean
     description: Set to True to performn a UNION ALL instead UNION between the two sources
 example_code: |
-  source = rasgo.get.dataset(dataset.id)
-  union_source = rasgo.get.dataset(dataset_2.id)
+  ds = rasgo.get.dataset(dataset.id)
+  ds_2 = rasgo.get.dataset(dataset_2.id)
     
   t1 = source.transform(
     transform_name='union',
-    source = union_source,
+    source = ds_2,
     union_all = True
   )
   

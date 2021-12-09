@@ -4,7 +4,7 @@ description: |
 
 arguments:
   join_table:
-    type: dataset
+    type: table
     description: Dataset object to join with the source_table
   join_type:
     type: string
