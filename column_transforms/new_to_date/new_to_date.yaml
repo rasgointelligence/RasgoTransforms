@@ -5,7 +5,7 @@ description: |
   See [this Snowflake doc](https://docs.snowflake.com/en/user-guide/date-time-input-output.html#about-the-format-specifiers-in-this-section) for information about valid formats.
 arguments:
   dates:
-    type: date_dict
+    type: to_date_dict
     description: dict where the values are the date columns and the keys are the date formats to use for the conversion
 example_code: |
   ds = rasgo.get.dataset(id)
