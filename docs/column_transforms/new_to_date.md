@@ -9,9 +9,9 @@ See [this Snowflake doc](https://docs.snowflake.com/en/user-guide/date-time-inpu
 
 ## Parameters
 
-| Argument |   Type    |                                              Description                                               |
-| -------- | --------- | ------------------------------------------------------------------------------------------------------ |
-| dates    | date_dict | dict where the values are the date columns and the keys are the date formats to use for the conversion |
+| Argument |     Type     |                                              Description                                               |
+| -------- | ------------ | ------------------------------------------------------------------------------------------------------ |
+| dates    | to_date_dict | dict where the values are the date columns and the keys are the date formats to use for the conversion |
 
 
 ## Example
