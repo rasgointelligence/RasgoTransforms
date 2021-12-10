@@ -1,4 +1,4 @@
-name: cast
+name: new_cast
 description: |
   Cast selected columns to a new type
 arguments:
