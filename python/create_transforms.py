@@ -49,7 +49,8 @@ def create_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                     name=transform_name,
                     type=transform_type,
                     source_code=transform_source_code,
-                    arguments=transform_args
+                    arguments=transform_args,
+                    description=transform_yaml.get('description')
                 )
 
 
