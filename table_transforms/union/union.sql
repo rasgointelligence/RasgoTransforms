@@ -1,18 +1,16 @@
 {#
 Jinja Macro to generate a query that would get all 
-the columns in a table by source_Id or fqtn
+the columns in a table by fqtn
 #}
-{%- macro get_source_col_names(source_id=None, source_table_fqtn=None) -%}
+{%- macro get_source_col_names(source_table_fqtn=None) -%}
     {%- set database, schema, table = '', '', '' -%}
     {%- if source_table_fqtn -%}
         {%- set database, schema, table = source_table_fqtn.split('.') -%}
-    {%- else -%}
-        {%- set database, schema, table = rasgo_source_ref(source_id).split('.') -%}
     {%- endif -%}
         SELECT COLUMN_NAME FROM {{ database }}.information_schema.columns
-        WHERE TABLE_CATALOG = '{{ database }}'
-        AND   TABLE_SCHEMA = '{{ schema }}'
-        AND   TABLE_NAME = '{{ table }}'
+        WHERE TABLE_CATALOG = '{{ database|upper }}'
+        AND   TABLE_SCHEMA = '{{ schema|upper }}'
+        AND   TABLE_NAME = '{{ table|upper }}'
 {%- endmacro -%}
 
 {# Get all Columns in Source Table #}
@@ -20,7 +18,7 @@ the columns in a table by source_Id or fqtn
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
 
 {# Get all columns in Inputted Source #}
-{%- set col_names_other_source_df = run_query(get_source_col_names(source_id=source_id)) -%}
+{%- set col_names_other_source_df = run_query(get_source_col_names(source_table_fqtn=source)) -%}
 {%- set other_source_col_names = col_names_other_source_df['COLUMN_NAME'].to_list() -%}
 
 {# Get Unique Columns Across Both Datasets #}
@@ -28,6 +26,6 @@ the columns in a table by source_Id or fqtn
 {%- set union_cols = union_cols | unique | list -%}
 
 {# Generate Union Query #}
-SELECT {{ union_cols | join('", "') }} FROM {{ rasgo_source_ref(source_id) }}
+SELECT {{ union_cols | join(', ') }} FROM {{ source }}
 UNION {{ 'ALL' if union_all else '' }}
-SELECT {{ union_cols | join('", "') }} FROM {{ source_table }}
+SELECT {{ union_cols | join(', ') }} FROM {{ source_table }}

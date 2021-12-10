@@ -6,11 +6,11 @@ Calculates the difference between two date, time, or timestamp expressions based
 
 ## Parameters
 
-|  Argument  |  Type  |                                                                                Description                                                                                 |
-| ---------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date_part  | string | Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)  |
-| date_val_1 | string | Date column to subtract from `date_val_2`. Can be a date column, date, time, or timestamp.                                                                                 |
-| date_val_2 | string | Date column to be subtracted by `date_val_1`. Can be a date column, date, time, or timestamp.                                                                              |
+|  Argument  |    Type     |                                                                                Description                                                                                 |
+| ---------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date_part  | date_part   | Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)  |
+| date_val_1 | mixed_value | Date column to subtract from `date_val_2`. Can be a date column, date, time, or timestamp.                                                                                 |
+| date_val_2 | mixed_value | Date column to be subtracted by `date_val_1`. Can be a date column, date, time, or timestamp.                                                                              |
 
 
 ## Example
