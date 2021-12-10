@@ -1,4 +1,4 @@
-name: to_date
+name: new_to_date
 description: |
   Creates a column of a date/timestamp type from a string or other non-date column.
 
@@ -8,14 +8,14 @@ arguments:
     type: date_dict
     description: dict where the values are the date columns and the keys are the date formats to use for the conversion
   example_code: |
-    ds = rasgo.get.dataset(id)
+  ds = rasgo.get.dataset(id)
 
-    ds2 = ds.transform(
-      transform_name='to_date',
-      dates={
-        'DATE_STRING':'YYYY-MM-DD',
-        'DATE2_STR':'YYYY-DD-MM'
-      }
-    )
-    
-    ds2.preview()
+  ds2 = ds.transform(
+    transform_name='to_date',
+    dates={
+      'DATE_STRING':'YYYY-MM-DD',
+      'DATE2_STR':'YYYY-DD-MM'
+    }
+  )
+  
+  ds2.preview()
