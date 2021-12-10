@@ -7,7 +7,7 @@ arguments:
   dates:
     type: date_dict
     description: dict where the values are the date columns and the keys are the date formats to use for the conversion
-  example_code: |
+example_code: |
   ds = rasgo.get.dataset(id)
 
   ds2 = ds.transform(
