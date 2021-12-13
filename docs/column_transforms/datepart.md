@@ -9,9 +9,9 @@ An exhaustive list of valid date parts can be [found here](https://docs.snowflak
 
 ## Parameters
 
-| Argument |     Type      |                                              Description                                              |
-| -------- | ------------- | ----------------------------------------------------------------------------------------------------- |
-| dates    | datepart_dict | dict where keys are names of columns you want to date part and values are the desired date part grain |
+| Argument |       Type        |                                              Description                                              |
+| -------- | ----------------- | ----------------------------------------------------------------------------------------------------- |
+| dates    | column_value_dict | dict where keys are names of columns you want to date part and values are the desired date part grain |
 
 
 ## Example

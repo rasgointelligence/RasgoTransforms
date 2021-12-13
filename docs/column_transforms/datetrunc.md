@@ -4,12 +4,12 @@
 
 Truncates a date to the datepart you specify. For example, if you truncate the date '10-31-2022' to the 'month', you would get '10-1-2022'.
 
+
 ## Parameters
 
-|   Argument   |    Type     |               Description                |
-| ------------ | ----------- | ---------------------------------------- |
-| date_columns | column_list | names of column(s) you want to datetrunc |
-| date_part    | date_part   | the desired grain of the date            |
+| Argument |       Type        |                                                Description                                                 |
+| -------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| dates    | column_value_dict | dict where the keys are names of column(s) you want to datetrunc and the values are the desired date grain |
 
 
 ## Example
