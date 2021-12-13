@@ -18,16 +18,11 @@ the columns in a table by fqtn
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
 
-{% if col_list|length != new_names|length %}
-Rasgo Rename Error: The Column list must be the same length as the New Names list.
-{% else %}
 SELECT
-{%- for target_col in col_list %}
-    {{target_col}} AS {{new_names[loop.index-1]}}{{ ", " if not loop.last else "" }}
-{% endfor %}
+{%- for target_col, new_name in renames.items() %}
+    {{target_col}} AS {{new_name}}{{ ", " if not loop.last else "" }}
+{%- endfor -%}
 {%- for col in source_col_names %}
-    {%- if col not in col_list %}, {{col}}{%- endif -%}
+    {%- if col not in renames %}, {{col}}{%- endif -%}
 {% endfor %}
 FROM {{ source_table }}
-
-{% endif %}
