@@ -2,33 +2,31 @@
 
 # cast
 
-This function creates new columns for all columns included in `col_list`. Each of the new columns is cast to a new data type, indicated in `type_list`.
-
-The ordinal position of columns in `col_list` must match the desired output data type in `type_list`.
-
-Caution! Executing this transformation on a large dataset can be computationally expensive!
+Cast selected columns to a new type
 
 
 ## Parameters
 
-| Argument  |    Type     |                             Description                              |
-| --------- | ----------- | -------------------------------------------------------------------- |
-| col_list  | column_list | A list representing each existing column to have a changed type.     |
-| type_list | value_list  | A list of strings containing the types to which to cast the columns. |
+| Argument |       Type        |                                    Description                                     |
+| -------- | ----------------- | ---------------------------------------------------------------------------------- |
+| casts    | column_value_dict | A dict where the keys are columns and the values are the new type to cast them to. |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-    transform_name='cast',
-    col_list=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP", "DS_DAILY_LOW_TEMP"],
-    type_list=["INT", "STRING", "STRING"]
+ds_casted = ds.transform(
+  transform_name='cast',
+  casts={
+    'DS_WEATHER_ICON':'INT',
+    'DS_DAILY_HIGH_TEMP':'STRING',
+    'DS_DAILY_LOW_TEMP':'INT'
+  }
 )
 
-t1.preview()
+ds_casted.preview()
 
 ```
 
