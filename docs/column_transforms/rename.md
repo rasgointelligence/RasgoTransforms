@@ -15,17 +15,15 @@ Rename columns by passing a renames dict.
 ## Example
 
 ```python
-source = rasgo.get.dataset(dataset_id)
+ds = rasgo.get.dataset(dataset_id)
 
-t1 = source.transform(
-    transform_name='rename',
-    renames={
+ds2 = ds.rename(renames={
       'DS_WEATHER_ICON': 'Weather',
       'DS_DAILY_HIGH_TEMP': 'High_Temp',
       'DS_DAILY_LOW_TEMP': 'Low_Temp'
 })
 
-t1.preview()
+ds2.preview()
 
 ```
 

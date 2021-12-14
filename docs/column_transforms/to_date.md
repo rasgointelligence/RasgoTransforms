@@ -19,14 +19,10 @@ See [this Snowflake doc](https://docs.snowflake.com/en/user-guide/date-time-inpu
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.transform(
-  transform_name='to_date',
-  dates={
+ds2 = ds.to_date(dates={
     'DATE_STRING':'YYYY-MM-DD',
     'DATE2_STR':'YYYY-DD-MM'
-  }
-)
-
+  })
 ds2.preview()
 ```
 

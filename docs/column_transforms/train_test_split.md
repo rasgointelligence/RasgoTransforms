@@ -18,20 +18,14 @@ If you want a row-wise random sample applied, do not pass an order_by column. If
 ## Example
 
 ```python
-source = rasgo.read.source_data(source.id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='train_test_split',
-  order_by = ['DATE'],
-  train_percent = 0.8
-)
+ds2 = ds.train_test_split(order_by = ['DATE'],
+    train_percent = 0.8)
+ds2.preview()
 
-t1 = source.transform(
-  transform_name='train_test_split',
-  train_percent = 0.8
-)
-
-t1.preview()
+ds2b = ds.train_test_split(train_percent = 0.8)
+ds2b.preview()
 ```
 
 ## Source Code
