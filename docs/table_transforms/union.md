@@ -2,29 +2,28 @@
 
 # union
 
-Performs a SQL UNION or UNION ALL for the parent source, and another source by entering the source_id. Operation will only merge columns with matching columns names in both datasets and drop all other columns. Column data type validation does not happen.
+Performs a SQL UNION or UNION ALL for the parent dataset, and another dataset. Operation will only merge columns with matching columns names in both datasets and drop all other columns. Column data type validation does not happen.
 
 ## Parameters
 
-| Argument  |  Type   |                                Description                                |
-| --------- | ------- | ------------------------------------------------------------------------- |
-| source    | table   | Dataset to Union/Union All with main source                               |
-| union_all | boolean | Set to True to performn a UNION ALL instead UNION between the two sources |
+| Argument  |  Type   |                                Description                                 |
+| --------- | ------- | -------------------------------------------------------------------------- |
+| dataset2  | table   | Dataset to Union/Union All with main dataset                               |
+| union_all | boolean | Set to True to performn a UNION ALL instead UNION between the two datasets |
 
 
 ## Example
 
 ```python
-ds = rasgo.get.dataset(dataset.id)
-ds_2 = rasgo.get.dataset(dataset_2.id)
-  
-t1 = source.transform(
-  transform_name='union',
-  source = ds_2,
-  union_all = True
+d1 = rasgo.get.dataset(dataset_id)
+d2 = rasgo.get.dataset(dataset_id_2)
+
+ds2 = d1.transform.union(
+    dataset2=d2,
+    union_all=True
 )
 
-t1.preview()
+ds2.preview()
 ```
 
 ## Source Code

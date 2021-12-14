@@ -16,16 +16,14 @@ Deduplicate a table based on a passed-in composite key. Once an order column and
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-    transform_name='dedupe',
-    natural_key=["FIPS", "DS_WEATHER_ICON", "DATE"],
-    order_col=["DATE", "FIPS"],
-    order_method="asc"
+ds2 = ds.dedupe(
+  natural_key=["FIPS", "DS_WEATHER_ICON", "DATE"],
+  order_col=["DATE", "FIPS"],
+  order_method="asc"
 )
-
-t1.preview()
+ds2.preview()
 
 ```
 
