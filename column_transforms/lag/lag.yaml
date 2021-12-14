@@ -14,14 +14,7 @@ arguments:
     type: column_list
     description: name of column(s) to order by in the final data set
 example_code: |
-    source = rasgo.read.source_data(source_id)
-    
-    t1 = source.transform(
-      transform_name='lag',
-      columns = ['OPEN','CLOSE'],
-      amounts = [1,2,3,7],
-      order_by = ['DATE', 'TICKER'],
-      partition = ['TICKER']
-    )
-    
-    t1.preview()
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.lag(columns=['OPEN', 'CLOSE'], amounts=[1,2,3,7], order_by=['DATE, 'TICKER'], partition=['TICKER'])
+  ds2.preview()
