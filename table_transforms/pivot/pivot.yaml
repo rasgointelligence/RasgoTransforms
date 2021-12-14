@@ -1,5 +1,5 @@
 name: pivot
-description: Transpose unique values in a single column to generate multiple columns, aggregating as needed. The pivot will dynamically generate a column per unique value, or you can pass a list_of_vals with the unique values you wish to create columsn for.
+description: Transpose unique values in a single column to generate multiple columns, aggregating as needed. The pivot will dynamically generate a column per unique value, or you can pass a list_of_vals with the unique values you wish to create columns for.
 arguments:
   dimensions:
     type: column_list
@@ -17,13 +17,13 @@ arguments:
     type: string_list
     description: optional argument to override the dynamic lookup of all values in the value_column and only pivot a provided list of values
 example_code: |
-    stock_source = rasgo.get.data_source(id=1151)
-    
-    stock_source.transform(
-      transform_name='pivot',
-      dimensions=['DATE'],
-      pivot_column='CLOSE',
-      value_column='SYMBOL',
-      agg_method='AVG',
-      list_of_vals=['JP','GOOG','DIS','APLE']
-    ).preview()
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.pivot(
+    dimensions=['DATE'],
+    pivot_column='CLOSE',
+    value_column='SYMBOL',
+    agg_method='AVG',
+    list_of_vals=['JP','GOOG','DIS','APLE']
+  )
+  ds2.preview()
