@@ -5,7 +5,7 @@ description: |
   An exhaustive list of valid date parts can be [found here](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts).
 arguments:
   dates:
-    type: column_value_dict
+    type: datepart_dict
     description: dict where keys are names of columns you want to date part and values are the desired date part grain
 example_code: |
 
