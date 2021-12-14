@@ -5,9 +5,7 @@ arguments:
     type: column
     description: Column name to one hot encode
 example_code: |
-    source = rasgo.read.source_data(source_id)
+  ds = rasgo.get.dataset(id)
 
-    source.transform(
-      transform_name='one_hot_encode',
-      column="MONTH"
-    ).preview()
+  ds2 = ds.one_hot_encode(column='WEATHER_DESCRIPTION')
+  ds2.preview()
