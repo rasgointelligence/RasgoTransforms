@@ -17,17 +17,10 @@ generates moving averages per column and per window size
 ## Example
 
 ```python
-stock_source = rasgo.get.data_source(id=1151)
+ds = rasgo.get.dataset(id)
 
-t1 = stock_source.transform(
-  transform_name='moving_avg',
-  date_dim='DATE',
-  partition=['TICKER'],
-  window_sizes=[3,7,14,21],
-  input_columns=['OPEN','CLOSE','HIGH','LOW'])
-
-t1.preview()
-
+ds2 = ds.moving_avg(input_columns=['OPEN','CLOSE','HIGH','LOW'], window_sizes=[1,2,3,7], order_by=['DATE, 'TICKER'], partition=['TICKER'])
+ds2.preview()
 ```
 
 ## Source Code
