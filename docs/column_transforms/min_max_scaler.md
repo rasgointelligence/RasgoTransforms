@@ -19,22 +19,15 @@ If you omit minimums and maximums, the function will compute the mins and maxes 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='min_max_scaler',
-  columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP']
-  )
-t1.preview() 
+ds2 = ds.min_max_scaler(columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP'])
+ds2.preview()
 
-t2 = source.transform(
-  transform_name='min_max_scaler',
-  columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP'],
-  minimums=[52, 4],
-  maximums=[101, 81]
-  )
-t2.preview()
-
+ds2b = ds.min_max_scaler(columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP'],
+    minimums=[52, 4],
+    maximums=[101, 81])
+ds2b.preview()
 ```
 
 ## Source Code
