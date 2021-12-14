@@ -12,16 +12,10 @@ arguments:
     type: column_list
     description: A list of the columns from the dataset you want to drop. Any columns not in the exclude_cols list will be kept.
 example_code: |
-  source = rasgo.get.dataset(dataset_id)
+  ds = rasgo.get.dataset(id)
 
-    t1 = source.transform(
-        transform_name='drop_columns',
-        include_cols=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP", "DS_DAILY_LOW_TEMP"]
-    )
+  ds2a = ds.drop_columns(include_cols=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP"])
+  ds2a.preview()
 
-    t2 = source.transform(
-        transform_name='drop_columns',
-        exclude_cols=["DS_CLOUD_COVER", "DS_TOTAL_RAINFALL"]
-    )
-
-    t1.preview()
+  ds2b = ds.drop_columns(exclude_cols=["DS_CLOUD_COVER", "DS_TOTAL_RAINFALL"])
+  ds2b.preview()
