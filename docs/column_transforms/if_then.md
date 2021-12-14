@@ -21,26 +21,12 @@ A default value for the new column should be set, as should the output column na
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-    transform_name='if_then',
-    conditions=[["DS_WEATHER_ICON like '%cloudy%'", 1]],
-    default=2,
-    alias="CLOUDY_WEATHER_FLAG"
-)
-
-# OR
-
-t2 = source.transform(
-  transform_name="if_then",
-  conditions=[["DS_DAILY_HIGH_TEMP >= 11.0", "HOT DAY"], ["DS_DAILY_HIGH_TEMP <= 0.0", "COLD DAY"]],
-  default="Not too hot, not too cold",
-  alias="TEMP_OUTCOME"
-)
-
-t1.preview()
-
+ds2 = ds.if_then(conditions=[["DS_WEATHER_ICON like '%cloudy%'", 1]],
+      default=2,
+      alias="CLOUDY_WEATHER_FLAG")
+ds2.preview()
 ```
 
 ## Source Code
