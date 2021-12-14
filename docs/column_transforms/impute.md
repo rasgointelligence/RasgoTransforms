@@ -15,8 +15,9 @@ Impute missing values in column/columns with the mean, median, mode, or a value
 ## Example
 
 ```python
-source.transform(
-  transform_name='impute',
+ds = rasgo.get.dataset(id)
+
+ds2 = ds.impute(
   imputations={
       'MONTH': 'mean',            # Impute with mean 
       'FIPS': 'median',           # Impute with median
@@ -25,9 +26,9 @@ source.transform(
       'COVID_DEATHS': 2.45,       # Impute with the float 2.45
       'IS_2021': False            # Impute with the bool False
   },
-  flag_missing_vals=True
-).preview()
+  flag_missing_vals=True)
 
+ds2.preview()
 ```
 
 ## Source Code
