@@ -8,13 +8,10 @@ arguments:
     type: datepart_dict
     description: dict where keys are names of columns you want to date part and values are the desired date part grain
 example_code: |
-
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.transform(
-    transform_name='datepart',
-    dates={
+  ds2 = ds.datepart(dates={
       'DATE_STRING':'year',
       'DATE2_STR':'month'
-    }
-  )
+    })
+  ds2.preview()

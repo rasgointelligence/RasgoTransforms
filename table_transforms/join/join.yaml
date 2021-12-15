@@ -5,7 +5,7 @@ arguments:
     type: table
     description: Dataset object to join with the source dataset.
   join_type:
-    type: string
+    type: join_type
     description: "'LEFT','RIGHT', 'INNER', or None"
   join_columns:
     type: join_dict

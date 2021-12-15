@@ -18,7 +18,7 @@ the columns in a table by fqtn
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
 
 {# Get all columns in Inputted Source #}
-{%- set col_names_other_source_df = run_query(get_source_col_names(source_table_fqtn=source)) -%}
+{%- set col_names_other_source_df = run_query(get_source_col_names(source_table_fqtn=dataset2)) -%}
 {%- set other_source_col_names = col_names_other_source_df['COLUMN_NAME'].to_list() -%}
 
 {# Get Unique Columns Across Both Datasets #}
@@ -26,6 +26,6 @@ the columns in a table by fqtn
 {%- set union_cols = union_cols | unique | list -%}
 
 {# Generate Union Query #}
-SELECT {{ union_cols | join(', ') }} FROM {{ source }}
+SELECT {{ union_cols | join(', ') }} FROM {{ dataset2 }}
 UNION {{ 'ALL' if union_all else '' }}
 SELECT {{ union_cols | join(', ') }} FROM {{ source_table }}

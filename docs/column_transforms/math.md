@@ -14,15 +14,10 @@ Create one or more new columns
 ## Example
 
 ```python
-source = rasgo.get.data_source(source_id)
+ds = rasgo.get.dataset(id)
 
-source.transform(
-  transform_name='math',
-  math_ops=[
-    'MONTH * 12',
-    'YEAR - 2000'
-  ]
-).preview()
+ds2 = ds.math(math_ops=['MONTH * 12', 'YEAR - 2000'])
+ds2.preview()
 ```
 
 ## Source Code

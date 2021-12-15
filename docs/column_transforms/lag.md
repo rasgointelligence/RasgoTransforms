@@ -17,17 +17,10 @@ Lag shifts your features on a partition index, creating a lookback feature offse
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='lag',
-  columns = ['OPEN','CLOSE'],
-  amounts = [1,2,3,7],
-  order_by = ['DATE', 'TICKER'],
-  partition = ['TICKER']
-)
-
-t1.preview()
+ds2 = ds.lag(columns=['OPEN', 'CLOSE'], amounts=[1,2,3,7], order_by=['DATE, 'TICKER'], partition=['TICKER'])
+ds2.preview()
 ```
 
 ## Source Code

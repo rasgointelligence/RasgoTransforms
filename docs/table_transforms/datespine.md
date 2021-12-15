@@ -18,7 +18,7 @@ FROM intervals
 
 |    Argument     |   Type    |                                                                           Description                                                                            |
 | --------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date_col        | column    | The name of the column from the source data set that we'll be binning into some interval. This must be some sort of date or time column.                         |
+| date_col        | column    | The name of the column from the dataset that we'll be binning into some interval. This must be some sort of date or time column.                                 |
 | start_timestamp | timestamp | The timestamp to start calculating from; this will be included in the output set; this timestamp will have no timezone                                           |
 | end_timestamp   | timestamp | The timestamp to calculate to; this will be included in the output set; this timestamp will have no timezone                                                     |
 | interval_type   | date_part | the datepart to slice by. For interval types, see [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants) |
@@ -27,17 +27,15 @@ FROM intervals
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='datespine',
-  date_col='event_dt',
-  start_timestamp='2017-01-01',
-  end_timestamp='2020-01-01',
-  interval_type='month'
+ds2 = ds.datespine(
+    date_col='event_dt',
+    start_timestamp='2017-01-01',
+    end_timestamp='2020-01-01',
+    interval_type='month'
 )
-
-t1.preview()
+ds2.preview()
 ```
 
 ## Source Code

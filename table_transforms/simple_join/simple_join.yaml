@@ -7,7 +7,7 @@ arguments:
     type: table
     description: Dataset object to join with the source_table
   join_type:
-    type: string
+    type: join_type
     description: LEFT, RIGHT, or INNER
   join_columns:
     type: column_list
@@ -16,11 +16,10 @@ example_code: |
     d1 = rasgo.get.dataset(dataset_id)
     d2 = rasgo.get.dataset(dataset_id_2)
     
-    t1 = d1.transform(
-        transform_name='simple_join',
+    ds2 = d1.transform.simple_join(
         join_table=d2,
         join_type='LEFT',
         join_columns=['DATE', 'FIPS']
     )
 
-    t1.preview()
+    ds2.preview()

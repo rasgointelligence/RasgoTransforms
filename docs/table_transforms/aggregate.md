@@ -8,23 +8,20 @@ Groups rows by the group_by items applying aggregations functions for the result
 
 |   Argument   |    Type     |                                                             Description                                                             |
 | ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| group_items  | column_list | Columns to group by                                                                                                                 |
+| group_by     | column_list | Columns to group by                                                                                                                 |
 | aggregations | agg_dict    | Aggregations to apply for other columns. Dict keys are column names, and values are a list of aggegations to apply for that column. |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-source.transform(
-  transform_name=aggregate,
-  group_items=['FIPS'],
-  aggregations={
-      'COL_1': ['SUM', 'AVG'],
-      'COL_2': ['SUM', 'AVG']
-  }
-).preview_sql()
+ds2 = ds.aggregate(group_by=['FIPS'], aggregations={
+          'COL_1': ['SUM', 'AVG'],
+          'COL_2': ['SUM', 'AVG']
+      })
+ds2.preview()
 ```
 
 ## Source Code

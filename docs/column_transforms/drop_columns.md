@@ -18,19 +18,13 @@ Passing both include_cols and exclude_cols will result in an error.
 ## Example
 
 ```python
-source = rasgo.get.dataset(dataset_id)
+ds = rasgo.get.dataset(id)
 
-  t1 = source.transform(
-      transform_name='drop_columns',
-      include_cols=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP", "DS_DAILY_LOW_TEMP"]
-  )
+ds2a = ds.drop_columns(include_cols=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP"])
+ds2a.preview()
 
-  t2 = source.transform(
-      transform_name='drop_columns',
-      exclude_cols=["DS_CLOUD_COVER", "DS_TOTAL_RAINFALL"]
-  )
-
-  t1.preview()
+ds2b = ds.drop_columns(exclude_cols=["DS_CLOUD_COVER", "DS_TOTAL_RAINFALL"])
+ds2b.preview()
 
 ```
 

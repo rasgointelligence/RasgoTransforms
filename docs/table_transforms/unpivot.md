@@ -16,12 +16,14 @@ Performs a UNPIVOT operation, rotating a table by transforming columns into rows
 ## Example
 
 ```python
-source.transform(
-  transform_name='unpivot',
+ds = rasgo.get.dataset(id)
+
+ds2 = ds.unpivot(
   value_column="COVID_NEW_CASES",
   name_column="YEAR",
   column_list=["2020", "2021"]
-).preview()
+)
+ds2.preview()
 ```
 
 ## Source Code

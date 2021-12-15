@@ -11,9 +11,11 @@ arguments:
     type: column_list
     description: List of columns in the source table that will be narrowed into a single pivot column. The column names will populate name_column, and the column values will populate value_column.
 example_code: |
-    source.transform(
-      transform_name='unpivot',
-      value_column="COVID_NEW_CASES",
-      name_column="YEAR",
-      column_list=["2020", "2021"]
-    ).preview()
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.unpivot(
+    value_column="COVID_NEW_CASES",
+    name_column="YEAR",
+    column_list=["2020", "2021"]
+  )
+  ds2.preview()

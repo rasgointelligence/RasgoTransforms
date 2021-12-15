@@ -8,11 +8,7 @@ arguments:
     type: mixed_list
     description: A list representing each new column to be created.
 example_code: |
-    source = rasgo.read.source_data(source_id)
+  ds = rasgo.get.dataset(id)
 
-    t1 = source.transform(
-      transform_name='concat',
-      concat_list=["DS_WEATHER_ICON", "'some_str'", "'_5'"]
-    )
-
-    t1.preview()
+  ds2 = ds.concat(concat_list=["DS_WEATHER_ICON", "'some_str'", "'_5'"])
+  ds2.preview()

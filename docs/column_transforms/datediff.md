@@ -6,32 +6,20 @@ Calculates the difference between two date, time, or timestamp expressions based
 
 ## Parameters
 
-|  Argument  |    Type     |                                                                                Description                                                                                 |
-| ---------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date_part  | date_part   | Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)  |
-| date_val_1 | mixed_value | Date column to subtract from `date_val_2`. Can be a date column, date, time, or timestamp.                                                                                 |
-| date_val_2 | mixed_value | Date column to be subtracted by `date_val_1`. Can be a date column, date, time, or timestamp.                                                                              |
+| Argument  |    Type     |                                                                                Description                                                                                 |
+| --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| date_part | date_part   | Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)  |
+| date_1    | mixed_value | Date column to subtract from `date_val_2`. Can be a date column, date, time, or timestamp.                                                                                 |
+| date_2    | mixed_value | Date column to be subtracted by `date_val_1`. Can be a date column, date, time, or timestamp.                                                                              |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source.id)
+ds = rasgo.get.dataset(id)
 
-# Create DateDiff col for year diff 'START_DATE' - 'END_DATE'
-source.transform(
-  transform_name='datediff',
-  date_part='year',
-  date_val_1='END_DATE',
-  date_col_2='START_DATE'
-).preview()
-
-# Subtract 'END_DATE' from start of 2022 new year
-source.transform(
-  transform_name='datediff',
-  date_val_1='END_DATE',
-  date_val_2="'2022-01-01'"
-).preview()
+ds2 = ds.datediff(date_part='year', date_1='END_DATE', date_2="'2022-01-01'")
+ds2.preview()
 ```
 
 ## Source Code
