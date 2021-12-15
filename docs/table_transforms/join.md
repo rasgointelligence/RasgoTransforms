@@ -9,7 +9,7 @@ Join a source table with another join table based on certain join keys between t
 |   Argument   |   Type    |                                                  Description                                                   |
 | ------------ | --------- | -------------------------------------------------------------------------------------------------------------- |
 | join_table   | table     | Dataset object to join with the source dataset.                                                                |
-| join_type    | string    | 'LEFT','RIGHT', 'INNER', or None                                                                               |
+| join_type    | join_type | 'LEFT','RIGHT', 'INNER', or None                                                                               |
 | join_columns | join_dict | Columns to use for the join. Keys are columns in the source_table and values are on columns in the join_table. |
 
 
