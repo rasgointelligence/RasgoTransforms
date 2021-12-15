@@ -7,13 +7,13 @@
 [![Chat on Slack](https://img.shields.io/badge/chat-on%20Slack-brightgreen.svg)](https://join.slack.com/t/rasgousergroup/shared_invite/zt-nytkq6np-ANEJvbUSbT2Gkvc8JICp3g)
 [![Chat on Discourse](https://img.shields.io/discourse/status?server=https%3A%2F%2Fforum.rasgoml.com)](https://forum.rasgoml.com/)
 
-# Rasgo User Defined Transforms (UDTs)
+# Rasgo Transforms
 
-UDTs enable templatized SQL transformation via Rasgo, through a pandas-like interface in PyRasgo.
-- user-defined transforms are equivalent to SQL functions that accept a Rasgo Source and return a Rasgo Source
+Rasgo Transforms enable templatized SQL transformation via Rasgo, through a pandas-like interface in PyRasgo.
+- transforms are equivalent to SQL functions that accept a Rasgo Source and return a Rasgo Source
 - user-defined transforms are scoped to your organization so they can be shared with colleagues
 - Rasgo has built a starter library of transforms for you to use or fork
-- user-defined transforms are written in SQL but accept arguments passed through PyRasgo
+- transforms are written in SQL but accept arguments passed through PyRasgo
 
 # Follow Along with a Tutorial
 
@@ -30,24 +30,23 @@ transforms = rasgo.get.transforms()
 print(transforms)
 
 # Get a source that you want to apply the UDT to
-my_source = rasgo.get.data_source(id=100)
+ds = rasgo.get.dataset(id)
 
 #Preview the SQL created by applying a UDT to a source
-t1 = my_source.transform(
-  transform_name='train_test_split',
+ds2 = my_source.train_test_split(
   order_by = ['DATE'],
   train_percent = .8
-).preview_sql()
+).preview()
 
 #Ppreview the results of running the UDT in a pandas dataframe
-t1.preview()
+ds2.sql
 
 # Save the new source to Rasgo and your Snowflake Account
-t1.to_source(new_source_name='New Filtered Source')
+rasgo.publish.dataset(ds2)
 ```
 [Read the Docs →](https://docs.rasgoml.com/)
 
-# Available UDTs
+# Available Transforms
 ## Column Transforms
 - [binning](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/binning)
 - [cast](https://docs.rasgoml.com/rasgo-docs/pyrasgo/user-defined-transforms-udts/column-transforms/cast)
