@@ -7,7 +7,7 @@ arguments:
     type: table
     description: Dataset object to join with the source_table
   join_type:
-    type: string
+    type: join_type
     description: LEFT, RIGHT, or INNER
   join_columns:
     type: column_list
