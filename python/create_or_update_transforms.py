@@ -36,7 +36,7 @@ def create_or_update_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
             )
             transform_args = utils.parse_transform_args_from_yaml(transform_yaml)
 
-            # If a Transform in Rasgo with that name already update it
+            # If a Transform in Rasgo with that name already exists update it
             if transform_name in rasgo_transforms.keys():
                 print(f"Updating '{transform_name}' {transform_type} transform in "
                       f"Rasgo {rasgo_domain.upper()} environment, with args {transform_args}")
