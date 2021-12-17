@@ -8,11 +8,11 @@ arguments:
     type: value_list
     description: the integer values for window sizes you want to use in your moving average
   order_by:
-    type: column
-    description: the date or ordinal value to order by
+    type: column_list
+    description: columns to order by, typically the date index of the table
   partition:
     type: column_list
-    description: the dimension column to partition by
+    description: columns to partition the moving average by
 example_code: |
   ds = rasgo.get.dataset(id)
 
