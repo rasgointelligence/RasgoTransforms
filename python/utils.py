@@ -71,13 +71,12 @@ def set_rasgo_domain_env(rasgo_domain: str) -> None:
     os.environ["RASGO_DOMAIN"] = rasgo_domain_url
 
 
-def get_all_rasgo_transform_names(rasgo: Rasgo) -> Set[str]:
+def get_all_rasgo_transform_name_and_ids(rasgo: Rasgo) -> Dict[str, int]:
     """
-    Return a list of all transforms names available to
-    the logged in Rasgo User
+    Return a Dict of all transforms keyed by names with ids their value
     """
     transform_in_rasgo = rasgo.get.transforms()
-    return {t.name for t in transform_in_rasgo}
+    return {t.name: t.id for t in transform_in_rasgo}
 
 
 def get_transform_source_code(transform_type: str, transform_name: str) -> str:
