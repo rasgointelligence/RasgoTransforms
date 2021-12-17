@@ -10,8 +10,8 @@ generates moving averages per column and per window size
 | ------------- | ----------- | -------------------------------------------------------------------------- |
 | input_columns | column_list | names of column(s) you want to moving average                              |
 | window_sizes  | value_list  | the integer values for window sizes you want to use in your moving average |
-| order_by      | column      | the date or ordinal value to order by                                      |
-| partition     | column_list | the dimension column to partition by                                       |
+| order_by      | column_list | columns to order by, typically the date index of the table                 |
+| partition     | column_list | columns to partition the moving average by                                 |
 
 
 ## Example
