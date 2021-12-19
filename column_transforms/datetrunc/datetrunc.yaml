@@ -6,12 +6,13 @@ arguments:
     type: column_value_dict
     description: dict where the keys are names of column(s) you want to datetrunc and the values are the desired date grain
 example_code: |
-  source = rasgo.read.source_data(source.id)
+  ds = rasgo.get.dataset(id)
   
-  t1 = source.transform(
-    transform_name='datetrunc',
-    date_part = 'month',
-    date_columns = ['DATE']
+  ds2 = ds.datetrunc(
+    dates = {
+      'DATE':'month',
+      'Timestamp':'hour'
+    }
   )
   
-  t1.preview()
+  ds2.preview()
