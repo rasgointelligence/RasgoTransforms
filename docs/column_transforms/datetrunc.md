@@ -15,15 +15,16 @@ Truncates a date to the datepart you specify. For example, if you truncate the d
 ## Example
 
 ```python
-source = rasgo.read.source_data(source.id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='datetrunc',
-  date_part = 'month',
-  date_columns = ['DATE']
+ds2 = ds.datetrunc(
+  dates = {
+    'DATE':'month',
+    'Timestamp':'hour'
+  }
 )
 
-t1.preview()
+ds2.preview()
 ```
 
 ## Source Code
