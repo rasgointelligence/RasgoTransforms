@@ -31,9 +31,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r python/requirements.txt
 
-      - name: Echo api key test
-        run: echo "$STAGING_RASGO_API_KEY"
-
       - name: Publish Transforms on Staging
-        run: python python/publish_transforms "STAGING_RASGO_API_KEY" -d staging
+        run: python python/publish_transforms "$STAGING_RASGO_API_KEY" -d staging
 
