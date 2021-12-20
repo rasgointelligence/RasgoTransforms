@@ -56,7 +56,7 @@ def get_root_dir() -> Path:
 
 
 # ----------------------------------------------
-#          Utils for Transform Creation
+#         Utils for Transform Publishing
 # ----------------------------------------------
 
 
