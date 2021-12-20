@@ -1,9 +1,9 @@
 name: one_hot_encode
-description:  One hot encode a column and drop it from the dataset. Create a null value flag for the column too.
+description:  One hot encode a column and drop it from the dataset. Create a null value flag for the column if any of the values are NULL.
 arguments:
   column:
     type: column
-    description: Column name to one hot encode
+    description: Column name to one-hot encode
 example_code: |
   ds = rasgo.get.dataset(id)
 
