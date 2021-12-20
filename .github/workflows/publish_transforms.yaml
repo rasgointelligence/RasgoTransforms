@@ -26,6 +26,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Check Python Path
+        run: echo $PYTHONPATH
+
       - name: Install Python Requirments
         run: |
           python -m pip install --upgrade pip
