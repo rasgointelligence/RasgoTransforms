@@ -1,0 +1,39 @@
+# Publish all Transforms in this Repo to Rasgo Staging
+# and Production Environment on each ...
+name: Publish Transforms
+
+# Run this job each time something is committed to remote 'main' branch
+#on:
+#  push:
+#    branches:
+#      - main
+on: push
+
+jobs:
+  publish-transforms:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    container:
+      image: "python:3.7"
+
+    env:
+      PYTHONPATH: /__w/RasgoTransforms/RasgoTransforms
+      STAGING_RASGO_API_KEY: ${{ secrets.RASGO_API_TEST }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Python Requirments
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r python/requirements.txt
+
+      - name: Publish Transforms on Staging
+      - run: python python/publish_transforms "STAGING_RASGO_API_KEY" -d staging
+
+#      - name: Publish Transforms on Prod
+#      - run: python python/publish_transforms -d production
+
