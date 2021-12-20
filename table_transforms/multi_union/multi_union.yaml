@@ -1,0 +1,22 @@
+name: multi_join
+description: |
+  Union n number of datasets with the 'base' dataset, using a common list of columns between each dataset, and selecting them in order.
+
+arguments:
+  union_tables:
+    type: table_list
+    description: Datasets to union with the source_table
+  union_columns:
+    type: column_list
+    description: Columns to union on. Can be one or more columns but must be named the same thing between all union datasets.
+example_code: |
+  d1 = rasgo.get.dataset(dataset_id)
+  d2 = rasgo.get.dataset(dataset_id_2)
+  d3 = rasgo.get.dataset(dataset_id_3)
+  
+  ds2 = d1.multi_union(
+      union_tables=[d2, d3],
+      union_columns=['DATE', 'ZIPCODE', 'DAILY_HIGH_TEMP', 'DAILY_LOW_TEMP']
+  )
+
+  ds2.preview()
