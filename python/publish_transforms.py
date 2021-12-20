@@ -1,5 +1,5 @@
 """
-Python Script to Create or Update Transforms based off the YAML file definitions
+Python Script to Publish all Transforms based off the YAML file definitions
 within this Repo
 
 Execute this script with a Installed selected Version of PyRasgo in your
@@ -12,12 +12,14 @@ import pyrasgo
 import utils
 
 
-def create_or_update_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
+def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     """
-    Creates or updates all transforms in this repo
+    Published all transforms in this repo
 
     If the transform name exists already in the db will update.
     If not will create a new one.
+
+    Any other transforms in the DB, which aren't in this repo, will be deleted
     """
     # Set RASGO_DOMAIN Env
     utils.set_rasgo_domain_env(rasgo_domain)
@@ -25,6 +27,9 @@ def create_or_update_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     # Get all Rasgo Transform Names Available to User
     rasgo = pyrasgo.connect(rasgo_api_key)
     rasgo_transforms = utils.get_all_rasgo_transform_name_and_ids(rasgo)
+
+    # Keep track of which transforms in repo were published
+    published_transform_names = []
 
     # Loop through all transform and respective data in this repo
     transform_yamls = utils.load_all_yaml_files()
@@ -60,6 +65,16 @@ def create_or_update_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                     arguments=transform_args,
                     description=transform_yaml.get('description')
                 )
+            published_transform_names.append(transform_name)
+
+    # Delete any transforms which are in db, but not in this repo
+    transforms_to_delete = {
+        transform_name: _id for transform_name, _id in rasgo_transforms.items()
+        if transform_name not in published_transform_names
+    }
+    for transform_name, transform_id in transforms_to_delete.items():
+        print(f"Deleting '{transform_name}' transform in Rasgo {rasgo_domain.upper()} environment")
+        rasgo.delete.transform(transform_id)
 
 
 if __name__ == "__main__":
@@ -78,5 +93,5 @@ if __name__ == "__main__":
     rasgo_api_key = getattr(args, 'pyrasgo-api-key')
     rasgo_domain = args.rasgo_domain
 
-    # Create all Transforms in this Repo
-    create_or_update_transforms(rasgo_api_key, rasgo_domain)
+    # Publish all Transforms in this Repo
+    publish_transforms(rasgo_api_key, rasgo_domain)
