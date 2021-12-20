@@ -2,13 +2,13 @@
 
 # one_hot_encode
 
-One hot encode a column and drop it from the dataset. Create a null value flag for the column too.
+One hot encode a column and drop it from the dataset. Create a null value flag for the column if any of the values are NULL.
 
 ## Parameters
 
 | Argument |  Type  |          Description          |
 | -------- | ------ | ----------------------------- |
-| column   | column | Column name to one hot encode |
+| column   | column | Column name to one-hot encode |
 
 
 ## Example
