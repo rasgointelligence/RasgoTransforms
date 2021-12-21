@@ -1,7 +1,7 @@
 # Publish all Transforms in this Repo Production Environment
+# Run job each time something is pushed/committed to remote 'main' branch
 name: Publish Transforms
 
-# Run this job each time something is committed to remote 'main' branch
 on:
   push:
     branches:
