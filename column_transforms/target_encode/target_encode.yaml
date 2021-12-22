@@ -1,0 +1,18 @@
+name: target_encode
+description: |
+  Encode a categorical column with the average value of a target column for the corresponding value of the categorical column.
+  
+  See scikit-learn's [TargetEncoder](https://contrib.scikit-learn.org/category_encoders/targetencoder.html) for full documentation.
+
+arguments:
+  column:
+    type: column
+    description: Column name to target encode
+  target:
+    type: column
+    description: Numeric target column to use to create averages
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.target_encode(column='WEATHER_DESCRIPTION', target='DAILY_HIGH_TEMP')
+  ds2.preview()
