@@ -1,10 +1,10 @@
 with means as (
-    select distinct {{column}} as value, round(mean({{target}}, 3) as mean_encode
-    group by value
-)
+    select distinct {{column}} as value, ROUND(AVG({{target}}), 3) as mean_encode
+    from {{ source_table }}
+    group by value)
 
-select *, means.mean_encode
-from {{ source_table }}
+select t.*, m.mean_encode
+from {{ source_table }} t
 left join
 means m
-on {{source_table}}.{{column}} = means.value
+on t.{{column}} = m.value
