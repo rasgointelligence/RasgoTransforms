@@ -3,9 +3,16 @@ SELECT
     {{ group_item }},
 {%- endfor -%}
 
-{%- for col, aggs in aggregations.items() %}
+{%- for k, vals in aggregations.items() %}
         {%- set outer_loop = loop -%}
-    {%- for agg in aggs %}
+    {%- for v in vals %}
+        {% if agg_key=='metric' %}
+            {% set agg = k %}
+            {% set col = v %}
+        {% else %}
+            {% set agg = v %}
+            {% set col = k %}
+        {% endif %}
     {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
     {%- endfor -%}
 {%- endfor %}
