@@ -7,9 +7,9 @@ Truncates a date to the datepart you specify. For example, if you truncate the d
 
 ## Parameters
 
-| Argument |       Type        |                                                Description                                                 |
-| -------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
-| dates    | column_value_dict | dict where the keys are names of column(s) you want to datetrunc and the values are the desired date grain |
+| Argument |     Type      |                                                Description                                                 |
+| -------- | ------------- | ---------------------------------------------------------------------------------------------------------- |
+| dates    | datepart_dict | dict where the keys are names of column(s) you want to datetrunc and the values are the desired date grain |
 
 
 ## Example
