@@ -2,7 +2,10 @@
 
 # lag_aggregate
 
-Performs a temporal aggregate calculation from another dataset slicing aggregates by interval type and values.
+Temporally aggregates a continuous column (i.e. sales or quantity) over one or more time windows, producing a column per window.
+
+Best used in time series forecasting or analysis when you need to analyze performance over a variety of historical periods.
+
 
 ## Parameters
 
