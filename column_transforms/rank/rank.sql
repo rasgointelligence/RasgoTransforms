@@ -10,13 +10,13 @@ SELECT
   , RANK() OVER(
 {% endif %}
 {% if partition_by %}
-PARTITON BY partition_by
+ PARTITON BY partition_by
 {% endif %}
-ORDER BY rank_columns
+ ORDER BY rank_columns
 {% if order %}
  order
 {% endif %}
-) AS AS RANK_{{ cleanse_name(rank_columns) }}
+) AS RANK_{{ cleanse_name(rank_columns) }}
 
 FROM {{ source_table }}
 
