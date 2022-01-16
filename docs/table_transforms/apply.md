@@ -6,20 +6,20 @@ A transform that accepts a custom template to execute. Must use the sql template
 
 ## Parameters
 
-|   Argument   |    Type     |                                                             Description                                                             |
-| ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| sql          | custom      | The custom SQL transform template to apply                                                                                          |
+| Argument |  Type  |                Description                 |
+| -------- | ------ | ------------------------------------------ |
+| sql      | custom | The custom SQL transform template to apply |
 
 
 ## Example
 
 ```python
-  ds = rasgo.get.dataset(id)
+ds = rasgo.get.dataset(id)
 
-  ds2 = ds.apply(
-    sql='SELECT * FROM {{ source_table }} WHERE COLUMNVALUE = I17'
-  )
-  ds2.preview()
+ds2 = ds.apply(
+  sql='SELECT * FROM {{ source_table }} WHERE COLUMNVALUE = I17'
+)
+ds2.preview()
 ```
 
 ## Source Code
