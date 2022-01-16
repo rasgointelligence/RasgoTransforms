@@ -12,12 +12,7 @@ arguments:
     type: value
     description: The number of characters to select. If left empty, select through the end of the string.
 example_code: |
-    source = rasgo.read.source_data(source_id)
+  ds = rasgo.get.dataset(id)
 
-    t1 = source.transform(
-        transform_name='substring',
-        target_col="COLUMN_NAME",
-        start_pos=-5
-      )
-
-    t1.preview()
+  ds2 = ds.substring(target_col='WEATHER_DESCRIPTION', start_pos=3)
+  ds2.preview()

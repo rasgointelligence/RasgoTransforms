@@ -4,26 +4,26 @@
 
 Extracts a specific part of a date column. For example, if the input is '2021-01-01', you can ask for the year and get back 2021.
 
+An exhaustive list of valid date parts can be [found here](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts).
+
+
 ## Parameters
 
-|   Argument   |    Type     |                                                                                           Description                                                                                            |
-| ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| date_columns | column_list | names of column(s) you want to date-part                                                                                                                                                         |
-| date_part    | date_part   | the desired grain of the date; an exhaustive list of valid date parts can be [found here](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts). |
+| Argument |     Type      |                                              Description                                              |
+| -------- | ------------- | ----------------------------------------------------------------------------------------------------- |
+| dates    | datepart_dict | dict where keys are names of columns you want to date part and values are the desired date part grain |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source.id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='datepart',
-  date_parts = ['month'],
-  date_column = 'DATE'
-)
-
-t1.preview()
+ds2 = ds.datepart(dates={
+    'DATE_STRING':'year',
+    'DATE2_STR':'month'
+  })
+ds2.preview()
 ```
 
 ## Source Code

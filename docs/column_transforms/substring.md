@@ -17,15 +17,10 @@ This function creates a new column that contains a substring of either a fixed v
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-    transform_name='substring',
-    target_col="COLUMN_NAME",
-    start_pos=-5
-  )
-
-t1.preview()
+ds2 = ds.substring(target_col='WEATHER_DESCRIPTION', start_pos=3)
+ds2.preview()
 
 ```
 

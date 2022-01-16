@@ -19,21 +19,15 @@ If you omit averages and standarddevs, the function will compute the average and
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='standard_scaler',
-  columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP']
-  )
-t1.preview() 
+ds2 = ds.standard_scaler(columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP'])
+ds2.preview()
 
-t2 = source.transform(
-  transform_name='standard_scaler',
-  columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP'],
+ds2b = ds.standard_scaler(columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TEMP'],
   averages=[68, 52],
-  standarddevs=[12, 8]
-  )
-t2.preview()
+  standarddevs=[12, 8])
+ds2b.preview()
 
 ```
 

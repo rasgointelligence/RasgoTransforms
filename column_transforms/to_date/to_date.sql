@@ -1,3 +1,5 @@
 SELECT *,
-{% for col in date_columns %}DATE({{col}}, '{{format_expression if format_expression is defined else 'YYYY-MM-DD'}}') as {{col}}_todate {{ ", " if not loop.last else "" }}{% endfor %}
+{%- for target_col, date_format in dates.items() %}
+    DATE({{target_col}}, '{{date_format}}') as {{target_col}}_date {{ ", " if not loop.last else "" }}
+{%- endfor %}
 from {{ source_table }}

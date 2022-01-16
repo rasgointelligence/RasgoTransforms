@@ -15,15 +15,10 @@ Calculate the edit distance between pairwise combinations of string columns
 ## Example
 
 ```python
-source = rasgo.read.source_data(source.id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='levenshtein',
-  columns1 = ['FIRSTNAME'],
-  columns2 = ['LASTNAME']
-)
-
-t1.preview()
+ds2 = ds.levenshtein(columns1 = ['FIRSTNAME'], columns2 = ['LASTNAME'])
+ds2.preview()
 ```
 
 ## Source Code

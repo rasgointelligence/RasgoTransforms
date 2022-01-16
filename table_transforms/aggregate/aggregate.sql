@@ -1,5 +1,5 @@
 SELECT
-{%- for group_item in group_items %}
+{%- for group_item in group_by %}
     {{ group_item }},
 {%- endfor -%}
 
@@ -10,4 +10,4 @@ SELECT
     {%- endfor -%}
 {%- endfor %}
 FROM {{ source_table }}
-GROUP BY {{ group_items | join(', ') }}
+GROUP BY {{ group_by | join(', ') }}

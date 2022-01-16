@@ -11,13 +11,11 @@ arguments:
     type: value
     description: Can be "desc" or "asc". Sets the order behavior for the chosen `order_col`.
 example_code: |
-    source = rasgo.read.source_data(source_id)
-    
-    t1 = source.transform(
-        transform_name='dedupe',
-        natural_key=["FIPS", "DS_WEATHER_ICON", "DATE"],
-        order_col=["DATE", "FIPS"],
-        order_method="asc"
-    )
+  ds = rasgo.get.dataset(id)
 
-    t1.preview()
+  ds2 = ds.dedupe(
+    natural_key=["FIPS", "DS_WEATHER_ICON", "DATE"],
+    order_col=["DATE", "FIPS"],
+    order_method="asc"
+  )
+  ds2.preview()

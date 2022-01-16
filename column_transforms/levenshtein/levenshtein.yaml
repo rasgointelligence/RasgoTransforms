@@ -8,12 +8,7 @@ arguments:
     type: column_list
     description: second list of string columns
 example_code: |
-  source = rasgo.read.source_data(source.id)
-  
-  t1 = source.transform(
-    transform_name='levenshtein',
-    columns1 = ['FIRSTNAME'],
-    columns2 = ['LASTNAME']
-  )
-  
-  t1.preview()
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.levenshtein(columns1 = ['FIRSTNAME'], columns2 = ['LASTNAME'])
+  ds2.preview()

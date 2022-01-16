@@ -2,24 +2,23 @@
 
 # one_hot_encode
 
-One hot encode a column and drop it from the dataset. Create a null value flag for the column too.
+One hot encode a column and drop it from the dataset. Create a null value flag for the column if any of the values are NULL.
 
 ## Parameters
 
 | Argument |  Type  |          Description          |
 | -------- | ------ | ----------------------------- |
-| column   | column | Column name to one hot encode |
+| column   | column | Column name to one-hot encode |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-source.transform(
-  transform_name='one_hot_encode',
-  column="MONTH"
-).preview()
+ds2 = ds.one_hot_encode(column='WEATHER_DESCRIPTION')
+ds2.preview()
+
 ```
 
 ## Source Code

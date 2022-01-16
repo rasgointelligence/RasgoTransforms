@@ -2,28 +2,28 @@
 
 # to_date
 
-Creates a column of a date/timestamp type from some other column
+Creates a column of a date/timestamp type from a string or other non-date column.
+
+See [this Snowflake doc](https://docs.snowflake.com/en/user-guide/date-time-input-output.html#about-the-format-specifiers-in-this-section) for information about valid formats.
+
 
 ## Parameters
 
-|     Argument      |    Type     |                                                                                                                                Description                                                                                                                                |
-| ----------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date_columns      | column_list | names of column(s) you want to convert to dates/timestamps                                                                                                                                                                                                                |
-| format_expression | string      | the format to use to parse the dates. See [this Snowflake doc](https://docs.snowflake.com/en/user-guide/date-time-input-output.html#about-the-format-specifiers-in-this-section) for information valid formats. If this is not provided, it will default to `YYYY-MM-DD`. |
+| Argument |       Type        |                                              Description                                               |
+| -------- | ----------------- | ------------------------------------------------------------------------------------------------------ |
+| dates    | column_value_dict | dict where the values are the date columns and the keys are the date formats to use for the conversion |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='to_date',
-  format_expression='YYYY-MM-DD',
-  date_columns=['dt_str']
-)
-
-t1.preview()
+ds2 = ds.to_date(dates={
+    'DATE_STRING':'YYYY-MM-DD',
+    'DATE2_STR':'YYYY-DD-MM'
+  })
+ds2.preview()
 ```
 
 ## Source Code

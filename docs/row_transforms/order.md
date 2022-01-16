@@ -2,7 +2,7 @@
 
 # order
 
-Order a data set by a given list of columns
+Order a dataset by a given list of columns
 
 ## Parameters
 
@@ -15,13 +15,10 @@ Order a data set by a given list of columns
 ## Example
 
 ```python
-source = rasgo.get.data_source(id=2)
+ds = rasgo.get.dataset(id)
 
-source.transform(
-  transform_name='order',
-  col_list=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP"],
-  order_method="ASC"
-).preview()
+ds2 = ds.order(col_list=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP"], order_method="ASC")
+ds2.preview()
 
 ```
 

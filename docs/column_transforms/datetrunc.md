@@ -4,26 +4,29 @@
 
 Truncates a date to the datepart you specify. For example, if you truncate the date '10-31-2022' to the 'month', you would get '10-1-2022'.
 
+For a list of valid dateparts, refer to [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)
+
+
 ## Parameters
 
-|   Argument   |    Type     |               Description                |
-| ------------ | ----------- | ---------------------------------------- |
-| date_columns | column_list | names of column(s) you want to datetrunc |
-| date_part    | date_part   | the desired grain of the date            |
+| Argument |     Type      |                                                Description                                                 |
+| -------- | ------------- | ---------------------------------------------------------------------------------------------------------- |
+| dates    | datepart_dict | dict where the keys are names of column(s) you want to datetrunc and the values are the desired date grain |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source.id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='datetrunc',
-  date_part = 'month',
-  date_columns = ['DATE']
+ds2 = ds.datetrunc(
+  dates = {
+    'DATE':'month',
+    'Timestamp':'hour'
+  }
 )
 
-t1.preview()
+ds2.preview()
 ```
 
 ## Source Code

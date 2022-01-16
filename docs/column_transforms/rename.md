@@ -2,31 +2,28 @@
 
 # rename
 
-Rename columns in col_list with names specified in new_names.
-
-The ordinal position of columns in `col_list` must match the desired new names in `new_names`.
+Rename columns by passing a renames dict.
 
 
 ## Parameters
 
-| Argument  |    Type     |                              Description                              |
-| --------- | ----------- | --------------------------------------------------------------------- |
-| col_list  | column_list | A list representing each existing column that needs to be renamed.    |
-| new_names | value_list  | A list of strings containing the new names for the specified columns. |
+| Argument |       Type        |                                      Description                                       |
+| -------- | ----------------- | -------------------------------------------------------------------------------------- |
+| renames  | column_value_dict | A dict representing each existing column to be renamed and its corresponding new name. |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(dataset_id)
 
-t1 = source.transform(
-    transform_name='rename',
-    col_list=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP", "DS_DAILY_LOW_TEMP"],
-    new_names=["WEATHER", "HIGH_TEMP", "LOW_TEMP"]
-)
+ds2 = ds.rename(renames={
+      'DS_WEATHER_ICON': 'Weather',
+      'DS_DAILY_HIGH_TEMP': 'High_Temp',
+      'DS_DAILY_LOW_TEMP': 'Low_Temp'
+})
 
-t1.preview()
+ds2.preview()
 
 ```
 

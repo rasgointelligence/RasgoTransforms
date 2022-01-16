@@ -1,18 +1,16 @@
 {#
 Jinja Macro to generate a query that would get all 
-the columns in a table by source_Id or fqtn
+the columns in a table by fqtn
 #}
-{%- macro get_source_col_names(source_id=None, source_table_fqtn=None) -%}
+{%- macro get_source_col_names(source_table_fqtn=None) -%}
     {%- set database, schema, table = '', '', '' -%}
     {%- if source_table_fqtn -%}
         {%- set database, schema, table = source_table_fqtn.split('.') -%}
-    {%- else -%}
-        {%- set database, schema, table = rasgo_source_ref(source_id).split('.') -%}
     {%- endif -%}
         SELECT COLUMN_NAME FROM {{ database }}.information_schema.columns
-        WHERE TABLE_CATALOG = '{{ database }}'
-        AND   TABLE_SCHEMA = '{{ schema }}'
-        AND   TABLE_NAME = '{{ table }}'
+        WHERE TABLE_CATALOG = '{{ database|upper }}'
+        AND   TABLE_SCHEMA = '{{ schema|upper }}'
+        AND   TABLE_NAME = '{{ table|upper }}'
 {%- endmacro -%}
 
 
@@ -20,16 +18,11 @@ the columns in a table by source_Id or fqtn
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
 
-{% if col_list|length != new_names|length %}
-Rasgo Rename Error: The Column list must be the same length as the New Names list.
-{% else %}
 SELECT
-{%- for target_col in col_list %}
-    {{target_col}} AS {{new_names[loop.index-1]}}{{ ", " if not loop.last else "" }}
-{% endfor %}
+{%- for target_col, new_name in renames.items() %}
+    {{target_col}} AS {{new_name}}{{ ", " if not loop.last else "" }}
+{%- endfor -%}
 {%- for col in source_col_names %}
-    {%- if col not in col_list %}, {{col}}{%- endif -%}
+    {%- if col not in renames %}, {{col}}{%- endif -%}
 {% endfor %}
 FROM {{ source_table }}
-
-{% endif %}

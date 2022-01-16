@@ -17,14 +17,10 @@ Pass in a list named "concat_list", containing the names of the columns and the 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
+ds = rasgo.get.dataset(id)
 
-t1 = source.transform(
-  transform_name='concat',
-  concat_list=["DS_WEATHER_ICON", "'some_str'", "'_5'"]
-)
-
-t1.preview()
+ds2 = ds.concat(concat_list=["DS_WEATHER_ICON", "'some_str'", "'_5'"])
+ds2.preview()
 
 ```
 
