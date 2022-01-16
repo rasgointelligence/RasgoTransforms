@@ -6,36 +6,30 @@ Performs a temporal aggregate calculation from another dataset slicing aggregate
 
 ## Parameters
 
-|        Argument        |      Type       |                                                             Description                                                              |
-| ---------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| base_source_id         | source          | source ID of the table to join with the source_table                                                                                 |
-| source_temporal_column | column          | The name of the column from the source data that specifies the source event timestamp                                                |
-| base_temporal_column   | column          | The name of the column from the base event that specifies the base event timestamp.                                                  |
-| source_join_columns    | column_list     | Column/s to join from the source table. Col index in list must match with `base_join_colums` param.                                  |
-| base_join_columns      | column_list     | Column/s to join from the join table. Col index in list must match with `source_join_columns` param.                                 |
-| aggregations           | agg_dict        | Aggregations to apply for source columns. Dict keys are column names, and values are a list of aggegations to apply for that column. |
-| lag_period_type        | lag_period_type | Defines the period type fo creating interval slices based on interval_values as supported by DB engine (DAY,MONTH,YEAR etc)          |
-| lag_interval_list      | value_list      | A list of integers containing the lag slices in days.                                                                                |
+|  Argument   |    Type     |                                                                     Description                                                                      |
+| ----------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| group_by    | column_list | Column(s) to group by when aggregating the target number                                                                                             |
+| windows     | value_list  | List of numeric intervals to use when calculating the lag windows for the aggregation. One column will be created for each window value in the list. |
+| agg         | agg_method  | The aggregation to use when calculating the aggregate over the lag window (i.e. SUM, MIN, MAX, etc.)                                                 |
+| anchor_date | value       | Optional anchor date to use as a starting point for substracting the window values before aggregating. If omitted, CURRENT_DATE() is used.           |
+| column      | column      | Continuous value to aggregate, such as sales amount or quantity.                                                                                     |
+| event_date  | column      | Date column in transactional / fact table                                                                                                            |
 
 
 ## Example
 
 ```python
-source = rasgo.read.source_data(source_id)
-source.transform(
-  transform_name="lag_aggregate",
-  base_source_id=customer.id,
-  source_temporal_column='ORDER_DATE',
-  base_temporal_column='BASE_DATE',
-  source_join_columns=['CUSTOMER_ID'],
-  base_join_colums=['CUSTOMER_ID'],
-  aggregations={
-      'COL_1': ['SUM', 'AVG'],
-      'COL_2': ['SUM', 'AVG']
-  },
-  lag_interval_type: 'DAY'
-  lag_interval_list=[30,60,90]
-).preview_sql()
+internet_sales = rasgo.get.dataset(74)
+
+ds2 = internet_sales.lag_aggregate(
+      group_by=['PRODUCTKEY'],
+      windows=[1, 7, 30, 60, 90],
+      anchor_date='2012-01-01',
+      agg='SUM',
+      column='SALESAMOUNT',
+      event_date='ORDERDATE')
+
+ds2.preview()
 ```
 
 ## Source Code
