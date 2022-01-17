@@ -9,13 +9,13 @@ Uses a text separator to aggregate the string values together, and returns a sin
 
 ## Parameters
 
-|  Argument  |    Type     |                                                         Description                                                          |
-| ---------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| agg_column | column      | Column with string values to aggregate                                                                                       |
-| sep        | value       | Text separator to use when aggregating the strings, i.e. ', '.                                                               |
-| group_by   | column_list | Columns to group by when applying the aggregation.                                                                           |
-| distinct   | boolean     | If you want to collapse multiple rows of the same string value into a single distinct value, use TRUE. Otherwise, use FALSE. |
-| order      | value       | ASC or DESC, to set the alphabetical order of the agg_column when aggregating it                                             |
+|  Argument  |    Type     |                                                         Description                                                          | Is Optional |
+| ---------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| agg_column | column      | Column with string values to aggregate                                                                                       |             |
+| sep        | value       | Text separator to use when aggregating the strings, i.e. ', '.                                                               |             |
+| group_by   | column_list | Columns to group by when applying the aggregation.                                                                           |             |
+| distinct   | boolean     | If you want to collapse multiple rows of the same string value into a single distinct value, use TRUE. Otherwise, use FALSE. |             |
+| order      | value       | ASC or DESC, to set the alphabetical order of the agg_column when aggregating it                                             |             |
 
 
 ## Example

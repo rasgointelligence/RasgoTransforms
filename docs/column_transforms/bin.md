@@ -15,11 +15,11 @@ The `equalwidth` method will calculate the boundaries of the bins such that they
 
 ## Parameters
 
-|   Argument   |  Type  |                        Description                        |
-| ------------ | ------ | --------------------------------------------------------- |
-| type         | string | binning algorithm to use; must be `ntile` or `equalwidth` |
-| bucket_count | int    | the number of equal-width bins to use                     |
-| column       | column | which column to bucket                                    |
+|   Argument   |  Type  |                        Description                        | Is Optional |
+| ------------ | ------ | --------------------------------------------------------- | ----------- |
+| type         | string | binning algorithm to use; must be `ntile` or `equalwidth` |             |
+| bucket_count | int    | the number of equal-width bins to use                     |             |
+| column       | column | which column to bucket                                    |             |
 
 
 ## Example

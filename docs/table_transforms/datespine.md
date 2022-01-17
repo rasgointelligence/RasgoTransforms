@@ -16,12 +16,12 @@ FROM intervals
 
 ## Parameters
 
-|    Argument     |   Type    |                                                                           Description                                                                            |
-| --------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| date_col        | column    | The name of the column from the dataset that we'll be binning into some interval. This must be some sort of date or time column.                                 |
-| start_timestamp | timestamp | The timestamp to start calculating from; this will be included in the output set; this timestamp will have no timezone                                           |
-| end_timestamp   | timestamp | The timestamp to calculate to; this will be included in the output set; this timestamp will have no timezone                                                     |
-| interval_type   | date_part | the datepart to slice by. For interval types, see [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants) |
+|    Argument     |   Type    |                                                                           Description                                                                            | Is Optional |
+| --------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| date_col        | column    | The name of the column from the dataset that we'll be binning into some interval. This must be some sort of date or time column.                                 |             |
+| start_timestamp | timestamp | The timestamp to start calculating from; this will be included in the output set; this timestamp will have no timezone                                           |             |
+| end_timestamp   | timestamp | The timestamp to calculate to; this will be included in the output set; this timestamp will have no timezone                                                     |             |
+| interval_type   | date_part | the datepart to slice by. For interval types, see [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants) |             |
 
 
 ## Example
