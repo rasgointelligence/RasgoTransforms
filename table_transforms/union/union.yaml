@@ -7,6 +7,7 @@ arguments:
   union_all:
     type: boolean
     description: Set to True to performn a UNION ALL instead UNION between the two datasets
+    is_optional: true
 example_code: |
   d1 = rasgo.get.dataset(dataset_id)
   d2 = rasgo.get.dataset(dataset_id_2)

@@ -11,6 +11,7 @@ arguments:
   end_pos:
     type: value
     description: The number of characters to select. If left empty, select through the end of the string.
+    is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
 
