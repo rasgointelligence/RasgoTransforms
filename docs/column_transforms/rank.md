@@ -25,7 +25,7 @@ ds = rasgo.get.dataset(dataset_id)
 ds2 = ds.rank(rank_columns=['DS_DAILY_HIGH_TEMP'],
       partition_by=['DATE'],
       ORDER='DESC',
-      RANK_TYPE='UNIQUE',
+      RANK_TYPE='unique',
       QUALIFY_FILTER='>=5'
 })
 
