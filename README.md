@@ -73,6 +73,7 @@ rasgo.publish.dataset(dataset=ds2, name='My New Dataset')
 
 ## Table Transforms
 - [aggregate](https://docs.rasgoml.com/rasgo-docs/transforms/table-transforms/aggregate)
+- [apply](https://docs.rasgoml.com/rasgo-docs/transforms/table-transforms/apply)
 - [datespine](https://docs.rasgoml.com/rasgo-docs/transforms/table-transforms/datespine)
 - [dedupe](https://docs.rasgoml.com/rasgo-docs/transforms/table-transforms/dedupe)
 - [join](https://docs.rasgoml.com/rasgo-docs/transforms/table-transforms/join)
