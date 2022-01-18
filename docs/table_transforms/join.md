@@ -19,8 +19,7 @@ Join a source table with another join table based on certain join keys between t
 source_ds = rasgo.get.dataset(101)
 join_ds = rasgo.get.dataset(201)
 
-source_ds.transform(
-  transform_name='join',
+source_ds.join(
   join_table=join_ds,
   join_type='LEFT',
   join_columns={
