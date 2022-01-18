@@ -1,4 +1,4 @@
-name: linear_reg
+name: linear_regression
 description: |
   Fit a simple linear regression and return the formula. Optionally, use one or more group_by columns to create a regression per unique grouping.
   
@@ -6,7 +6,8 @@ description: |
 arguments:
   group_by:
     type: column_list
-    description: Optional, columns to group by before building the linear regression model. Use this field to create multiple models (one per unique grouping)
+    is_optional: true
+    description: Columns to group by before building the linear regression model. Use this field to create multiple models (one per unique grouping)
   y:
     type: column
     description: Dependent variable for the linear regression
@@ -21,7 +22,7 @@ example_code: |
       aggregations={'SALESAMOUNT':['AVG'],
                   'TOTALPRODUCTCOST':['AVG']})
   
-  ds2 = ds1.linear_reg(
+  ds2 = ds1.linear_regression(
     x = 'SALESAMOUNT_AVG',
     y = 'TOTALPRODUCTCOST_AVG')
   
