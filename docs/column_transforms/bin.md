@@ -15,11 +15,11 @@ The `equalwidth` method will calculate the boundaries of the bins such that they
 
 ## Parameters
 
-|   Argument   |  Type  |                        Description                        | Is Optional |
-| ------------ | ------ | --------------------------------------------------------- | ----------- |
-| type         | string | binning algorithm to use; must be `ntile` or `equalwidth` |             |
-| bucket_count | int    | the number of equal-width bins to use                     |             |
-| column       | column | which column to bucket                                    |             |
+| Argument  |  Type  |                        Description                        | Is Optional |
+| --------- | ------ | --------------------------------------------------------- | ----------- |
+| type      | string | binning algorithm to use; must be `ntile` or `equalwidth` |             |
+| bin_count | int    | the number of equal-width bins to use                     |             |
+| column    | column | which column to bucket                                    |             |
 
 
 ## Example
@@ -27,8 +27,9 @@ The `equalwidth` method will calculate the boundaries of the bins such that they
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.bin(binning_type='equalwidth', bucket_count=6, column='DAILY_HIGH_TEMP')
+ds2 = ds.bin(type='equalwidth', bin_count=6, column='DAILY_HIGH_TEMP')
 ds2.preview()
+
 ```
 
 ## Source Code
