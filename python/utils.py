@@ -121,7 +121,8 @@ def get_table_values(transform_args: Dict) -> List[List[str]]:
         row_data = [
             arg_name,
             arg_info['type'],
-            arg_info['description']
+            arg_info['description'],
+            arg_info.get('is_optional', '')
         ]
         all_data.append(row_data)
     return all_data

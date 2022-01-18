@@ -6,10 +6,10 @@ Performs a SQL UNION or UNION ALL for the parent dataset, and another dataset. O
 
 ## Parameters
 
-| Argument  |  Type   |                                Description                                 |
-| --------- | ------- | -------------------------------------------------------------------------- |
-| dataset2  | table   | Dataset to Union/Union All with main dataset                               |
-| union_all | boolean | Set to True to performn a UNION ALL instead UNION between the two datasets |
+| Argument  |  Type   |                                Description                                 | Is Optional |
+| --------- | ------- | -------------------------------------------------------------------------- | ----------- |
+| dataset2  | table   | Dataset to Union/Union All with main dataset                               |             |
+| union_all | boolean | Set to True to performn a UNION ALL instead UNION between the two datasets | True        |
 
 
 ## Example

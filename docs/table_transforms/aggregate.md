@@ -6,10 +6,10 @@ Groups rows by the group_by items applying aggregations functions for the result
 
 ## Parameters
 
-|   Argument   |    Type     |                                                             Description                                                             |
-| ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| group_by     | column_list | Columns to group by                                                                                                                 |
-| aggregations | agg_dict    | Aggregations to apply for other columns. Dict keys are column names, and values are a list of aggegations to apply for that column. |
+|   Argument   |    Type     |                                                             Description                                                             | Is Optional |
+| ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| group_by     | column_list | Columns to group by                                                                                                                 |             |
+| aggregations | agg_dict    | Aggregations to apply for other columns. Dict keys are column names, and values are a list of aggegations to apply for that column. |             |
 
 
 ## Example

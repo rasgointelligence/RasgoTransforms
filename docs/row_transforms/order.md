@@ -6,10 +6,10 @@ Order a dataset by a given list of columns
 
 ## Parameters
 
-|   Argument   |    Type     |                                                       Description                                                       |
-| ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
-| col_list     | column_list | List of columns by which to order the data source.                                                                      |
-| order_method | string      | ASC, for ascending, or DESC, for descending. This decides the order in which records will appear in the output dataset. |
+|   Argument   |    Type     |                                                       Description                                                       | Is Optional |
+| ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------- | ----------- |
+| col_list     | column_list | List of columns by which to order the data source.                                                                      |             |
+| order_method | string      | ASC, for ascending, or DESC, for descending. This decides the order in which records will appear in the output dataset. |             |
 
 
 ## Example
