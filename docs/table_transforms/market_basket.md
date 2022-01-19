@@ -9,11 +9,11 @@ This approach uses a transactional table to aggregate each product purchased in 
 
 ## Parameters
 
-|    Argument    |  Type  |                                        Description                                         |
-| -------------- | ------ | ------------------------------------------------------------------------------------------ |
-| transaction_id | column | Column identifying a unique event ID (i.e., transaction) for which to aggregate line items |
-| sep            | value  | Text separator to use when aggregating the strings, i.e. ', ' or '\|'.                      |
-| agg_column     | column | Product ID or description to use when aggregating into transactions                        |
+|    Argument    |  Type  |                                        Description                                         | Is Optional |
+| -------------- | ------ | ------------------------------------------------------------------------------------------ | ----------- |
+| transaction_id | column | Column identifying a unique event ID (i.e., transaction) for which to aggregate line items |             |
+| sep            | value  | Text separator to use when aggregating the strings, i.e. ', ' or '\|'.                      |             |
+| agg_column     | column | Product ID or description to use when aggregating into transactions                        |             |
 
 
 ## Example
