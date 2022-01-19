@@ -1,0 +1,40 @@
+name: lag_aggregate
+description: |
+  Temporally aggregates a continuous column (i.e. sales or quantity) over one or more time windows, producing a column per window.
+
+  Best used in time series forecasting or analysis when you need to analyze performance over a variety of historical periods.
+arguments:
+  group_by:
+    type: column_list
+    description: Column(s) to group by when aggregating the target number
+  windows:
+    type: value_list
+    description: |
+      List of numeric intervals to apply to the date column when calculating the lag windows for the aggregation.
+      
+      Positive values apply a look-back window; negative values apply a look-forward window. One column will be created for each window value in the list.
+  agg:
+    type: agg_method
+    description: The aggregation to use when calculating the aggregate over the lag window (i.e. SUM, MIN, MAX, etc.)
+  anchor_date:
+    type: value
+    is_optional: true
+    description: Optional anchor date to use as a starting point for substracting the window values before aggregating. If omitted, CURRENT_DATE() is used.
+  column:
+    type: column
+    description:  Continuous value to aggregate, such as sales amount or quantity.
+  event_date:
+    type: column
+    description: Date column in transactional / fact table
+example_code: |
+    internet_sales = rasgo.get.dataset(74)
+
+    ds2 = internet_sales.lag_aggregate(
+          group_by=['PRODUCTKEY'],
+          windows=[1, 7, 30, 60, 90],
+          anchor_date='2012-01-01',
+          agg='SUM',
+          column='SALESAMOUNT',
+          event_date='ORDERDATE')
+
+    ds2.preview()
