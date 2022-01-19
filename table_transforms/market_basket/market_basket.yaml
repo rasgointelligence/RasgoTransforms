@@ -6,7 +6,7 @@ description: |
 arguments:
   transaction_id:
     type: column
-    description: Column to group multiple line items into a single transaction
+    description: Column identifying a unique event ID (i.e., transaction) for which to aggregate line items
   sep:
     type: value
     description: Text separator to use when aggregating the strings, i.e. ', ' or '|'.
