@@ -9,7 +9,7 @@ Cast selected columns to a new type
 
 | Argument |       Type        |                                    Description                                     | Is Optional |
 | -------- | ----------------- | ---------------------------------------------------------------------------------- | ----------- |
-| casts    | column_value_dict | A dict where the keys are columns and the values are the new type to cast them to. |             |
+| casts    | cast_value_dict   | A dict where the keys are columns and the values are the new type to cast them to. |             |
 
 
 ## Example
