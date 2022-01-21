@@ -8,9 +8,9 @@ SELECT
 {{ group_by | join(', ') }},
 {%- for w in windows -%}
 {{ agg }}(
-    CASE WHEN {{ event_date }} BETWEEN {{ THE_DATE }} - {{ w }} and {{ THE_DATE }}
+    CASE WHEN {{ event_date }} BETWEEN DATEADD({{ date_part }}, -{{ w }}, {{ THE_DATE }}) and {{ THE_DATE }}
     THEN {{ column }}
-    END) as {{ column ~ '_' ~ agg + '_' ~ w }}
+    END) as {{ column ~ '_' ~ w + '_' ~ date_part }}
     {{ '' if loop.last else ',' }}
 {% endfor -%}
 FROM {{ source_table }}
