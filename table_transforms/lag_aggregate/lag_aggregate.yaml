@@ -37,7 +37,7 @@ example_code: |
     ds2 = internet_sales.lag_aggregate(
           group_by=['PRODUCTKEY'],
           windows=[1, 7, 30, 60, 90],
-          date_part='day'
+          date_part='day',
           anchor_date='2012-01-01',
           agg='SUM',
           column='SALESAMOUNT',

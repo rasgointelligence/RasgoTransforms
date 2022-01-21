@@ -10,7 +10,7 @@ SELECT
 {{ agg }}(
     CASE WHEN {{ event_date }} BETWEEN DATEADD({{ date_part }}, -{{ w }}, {{ THE_DATE }}) and {{ THE_DATE }}
     THEN {{ column }}
-    END) as {{ column ~ '_' ~ w + '_' ~ date_part }}
+    END) as {{ column ~ '_' ~ agg ~ '_' ~ w + '_' ~ date_part }}
     {{ '' if loop.last else ',' }}
 {% endfor -%}
 FROM {{ source_table }}
