@@ -19,7 +19,7 @@ arguments:
       Date part to use when calculating the lookback intervals (i.e. day, week, year, etc.)
       Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)
   agg:
-    type: agg_method
+    type: agg
     description: The aggregation to use when calculating the aggregate over the lag window (i.e. SUM, MIN, MAX, etc.)
   anchor_date:
     type: value
