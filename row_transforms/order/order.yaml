@@ -1,14 +1,11 @@
 name: order
-description: Order a dataset by a given list of columns
+description: Order a dataset by specified columns, in a specified order
 arguments:
-  col_list:
-    type: column_list
-    description: List of columns by which to order the data source.
-  order_method:
-    type: string
-    description: ASC, for ascending, or DESC, for descending. This decides the order in which records will appear in the output dataset.
+  order_by:
+    type: column_value_dict
+    description: dict where the keys are column names and the values are the order_method (ASC or DESC)
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.order(col_list=["DS_WEATHER_ICON", "DS_DAILY_HIGH_TEMP"], order_method="ASC")
+  ds2 = ds.order(order_by={'DS_WEATHER_ICON':'ASC', 'DS_DAILY_HIGH_TEMP':'DESC'})
   ds2.preview()
