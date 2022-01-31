@@ -2,31 +2,32 @@
 
 # join
 
-Join a source table with another join table based on certain join keys between table. **NOTE**: For columns in the Join table with the same name in the source table, only the columns from the join table will be included in the output. 
+Join a dataset with another dataset, by matching on one or more columns between the two tables.
+
+For columns that share the same name in both tables, the columns in the join_table will be aliased as "{join_table}_{columnname}".
+
 
 ## Parameters
 
 |   Argument   |   Type    |                                                  Description                                                   | Is Optional |
 | ------------ | --------- | -------------------------------------------------------------------------------------------------------------- | ----------- |
 | join_table   | table     | Dataset object to join with the source dataset.                                                                |             |
-| join_type    | join_type | 'LEFT','RIGHT', 'INNER', or None                                                                               |             |
+| join_type    | join_type | LEFT, RIGHT, or INNER                                                                                          |             |
 | join_columns | join_dict | Columns to use for the join. Keys are columns in the source_table and values are on columns in the join_table. |             |
 
 
 ## Example
 
 ```python
-source_ds = rasgo.get.dataset(101)
-join_ds = rasgo.get.dataset(201)
+internet_sales = rasgo.get.dataset(74)
+product = rasgo.get.dataset(75)
 
-source_ds.join(
-  join_table=join_ds,
-  join_type='LEFT',
-  join_columns={
-    'MONTH':'MONTH',
-    'TICKER':'TICKER'
-  }
-).preview()
+ds2 = internet_sales.join(
+  join_table=product,
+  join_columns={'PRODUCTKEY':'PRODUCTKEY'},
+  join_type='LEFT')
+
+ds2.preview()
 ```
 
 ## Source Code
