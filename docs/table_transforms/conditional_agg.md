@@ -13,7 +13,7 @@ If multiple rules are passed, they are combined and aggregated both together and
 | ---------- | ---------- | -------------------------------------------------------------------- | ----------- |
 | rules      | value_list | List of filter rules to use                                          |             |
 | agg_column | column     | Column to aggregate                                                  |             |
-| agg        | agg_method | Method to use when aggregating the agg_column                        |             |
+| agg        | agg        | Method to use when aggregating the agg_column                        |             |
 | distinct   | boolean    | When aggregating the agg_column, use TRUE to qualify with a DISTINCT |             |
 
 
