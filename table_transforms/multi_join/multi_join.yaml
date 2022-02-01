@@ -12,6 +12,9 @@ arguments:
   join_columns:
     type: column_list
     description: Columns to join on. Can be one or more columns but must be named the same thing between all datasets.
+  join_prefixes:
+    type: value_list
+    description: Pass a list of join_prefixes, one for each join_table in the join_tables list. These will be used to alias columns in the respective join_table after the join.
 example_code: |
   d1 = rasgo.get.dataset(dataset_id)
   d2 = rasgo.get.dataset(dataset_id_2)
@@ -20,7 +23,8 @@ example_code: |
   ds2 = d1.multi_join(
       join_tables=[d2, d3],
       join_type='LEFT',
-      join_columns=['DATE', 'FIPS']
+      join_columns=['DATE', 'FIPS'],
+      join_prefixes=['dsnum2', 'dsnum3']
   )
 
   ds2.preview()
