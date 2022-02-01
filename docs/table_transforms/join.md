@@ -4,7 +4,8 @@
 
 Join a dataset with another dataset, by matching on one or more columns between the two tables.
 
-For columns that share the same name in both tables, the columns in the join_table will be aliased as "{join_table}_{columnname}".
+If you pass a join_prefix, all column names in the join table will be named "{join_prefix}_{columnname}".
+If you don't pass a join_prefix, columns that share the same name in both tables will be only have the column from the base table included in the final output.
 
 
 ## Parameters
@@ -14,6 +15,7 @@ For columns that share the same name in both tables, the columns in the join_tab
 | join_table   | table     | Dataset object to join with the source dataset.                                                                |             |
 | join_type    | join_type | LEFT, RIGHT, or INNER                                                                                          |             |
 | join_columns | join_dict | Columns to use for the join. Keys are columns in the source_table and values are on columns in the join_table. |             |
+| join_prefix  | value     | Prefix all columns in the join_table with a string to differentiate them                                       | True        |
 
 
 ## Example
@@ -25,7 +27,8 @@ product = rasgo.get.dataset(75)
 ds2 = internet_sales.join(
   join_table=product,
   join_columns={'PRODUCTKEY':'PRODUCTKEY'},
-  join_type='LEFT')
+  join_type='LEFT',
+  join_prefix='i_sales')
 
 ds2.preview()
 ```
