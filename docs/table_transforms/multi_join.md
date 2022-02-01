@@ -18,16 +18,15 @@ Join n number of datasets with the 'base' dataset, using a consistent join_type 
 ## Example
 
 ```python
-d1 = rasgo.get.dataset(dataset_id)
-d2 = rasgo.get.dataset(dataset_id_2)
-d3 = rasgo.get.dataset(dataset_id_3)
+internet_sales = rasgo.get.dataset(74)
+product = rasgo.get.dataset(75)
+inventory = rasgo.get.dataset(65)
 
-ds2 = d1.multi_join(
-    join_tables=[d2, d3],
-    join_type='LEFT',
-    join_columns=['DATE', 'FIPS'],
-    join_prefixes=['dsnum2', 'dsnum3']
-)
+ds2 = internet_sales.multi_join(
+  join_tables=[product.fqtn, inventory.fqtn],
+  join_columns=['PRODUCTKEY'],
+  join_type='LEFT',
+  join_prefixes=['product', 'inventory'])
 
 ds2.preview()
 

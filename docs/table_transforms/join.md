@@ -28,7 +28,7 @@ ds2 = internet_sales.join(
   join_table=product,
   join_columns={'PRODUCTKEY':'PRODUCTKEY'},
   join_type='LEFT',
-  join_prefix='i_sales')
+  join_prefix='product')
 
 ds2.preview()
 ```
