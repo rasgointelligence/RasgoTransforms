@@ -4,9 +4,9 @@ description: |
 
   Uses a text separator to aggregate the string values together, and returns a single column where the rows are the aggregated strings.
 arguments:
-  agg_column:
-    type: column
-    description: Column with string values to aggregate
+  agg_columns:
+    type: column_list
+    description: Columns with string values to aggregate
   sep:
     type: value
     description: Text separator to use when aggregating the strings, i.e. ', '.
@@ -20,10 +20,10 @@ arguments:
     type: value
     description: ASC or DESC, to set the alphabetical order of the agg_column when aggregating it
 example_code: |
-  product = rasgo.get.dataset(id)
+  product = rasgo.get.dataset(75)
 
   ds2 = product.aggregate_string(group_by=['PRODUCTLINE'],
-                  agg_column='ENGLISHPRODUCTNAME',
+                  agg_columns=['PRODUCTKEY', 'ENGLISHPRODUCTNAME'],
                   sep=', ',
                   distinct='FALSE',
                   order='ASC')
