@@ -1,0 +1,44 @@
+name: datetime_aggregate
+description: |
+  Calculates a rolling aggregate based on a relative time window.
+
+  Pass in a date column, date_part and offsets to create look-back
+  or look-forward windows.
+
+  Example use case: Aggregate all sales for a product with order dates
+  within 2 months of this current order.
+arguments:
+  aggregations:
+    type: dict
+    description: |
+      Dictionary of columns and aggregate functions to apply.
+      A column can have a list of multiple aggregates applied.
+      One column will be created for each column:aggregate pair.
+  datetime_column:
+    type: column
+    description: Column used to calculate the time window for aggregation
+  date_offsets:
+    type: value_list
+    description: List of numeric values to offset the date column
+      Negative values apply a look-back window.
+      Positive values apply a look-forward window.
+      One column will be created for each offset value.
+  date_part:
+    type: value
+    description: Valid SQL date part to describe the grain of the date_offset
+  group_by:
+    type: column_list
+    description: Column(s) to group by when calculating the agg window
+    is_optional: True
+example_code: |
+  internet_sales = rasgo.get.dataset(74)
+
+  ds = internet_sales.datetime_aggregate(
+          aggregations={
+            "SALESAMOUNT": ['SUM', 'MIN', 'MAX']
+          },
+          group_by=['PRODUCTKEY'],
+          date='ORDERDATE'
+          date_offsets=[-7, -14, 7, 14],
+          date_part='MONTH'
+         )

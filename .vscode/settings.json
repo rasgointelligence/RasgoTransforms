@@ -1,0 +1,6 @@
+{
+    "editor.minimap.enabled": false,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.pythonPath": "/Users/griff/opt/anaconda3/bin/python"
+}
