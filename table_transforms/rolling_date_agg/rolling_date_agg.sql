@@ -1,5 +1,5 @@
 SELECT *
-{% for offset in date_offsets -%}
+{% for offset in offsets -%}
   {% for col, aggs in aggregations.items() -%}
     {% for agg in aggs %}
     ,(

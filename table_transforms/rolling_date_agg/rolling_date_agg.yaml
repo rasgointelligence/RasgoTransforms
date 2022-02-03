@@ -1,6 +1,6 @@
-name: datetime_aggregate
+name: rolling_date_agg
 description: |
-  Calculates a rolling aggregate based on a relative time window.
+  Date-based; Calculates a rolling aggregate based on a relative datetime window.
 
   Pass in a date column, date_part and offsets to create look-back
   or look-forward windows.
@@ -17,7 +17,7 @@ arguments:
   date:
     type: column
     description: Column used to calculate the time window for aggregation
-  date_offsets:
+  offsets:
     type: value_list
     description: List of numeric values to offset the date column
       Negative values apply a look-back window.
@@ -33,12 +33,12 @@ arguments:
 example_code: |
   internet_sales = rasgo.get.dataset(74)
 
-  ds = internet_sales.datetime_aggregate(
+  ds = internet_sales.rolling_date_agg(
           aggregations={
             "SALESAMOUNT": ['SUM', 'MIN', 'MAX']
           },
           group_by=['PRODUCTKEY'],
           date='ORDERDATE'
-          date_offsets=[-7, -14, 7, 14],
+          offsets=[-7, -14, 7, 14],
           date_part='MONTH'
          )
