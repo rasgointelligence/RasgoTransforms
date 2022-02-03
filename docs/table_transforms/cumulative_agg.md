@@ -1,0 +1,44 @@
+
+
+# cumulative_agg
+
+Row-based; Calculates a cumulative aggregate based on a relative row window.
+
+Pass in order_by columns to create a row-based look-back
+or look-forward window.
+
+Example use case: Aggregate all sales for a customer from the beginning
+of time until this row.
+
+
+## Parameters
+
+|   Argument   |    Type     |                                                                                 Description                                                                                  | Is Optional |
+| ------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| aggregations | agg_dict    | Dictionary of columns and aggregate functions to apply. A column can have a list of multiple aggregates applied. One column will be created for each column:aggregate pair.  |             |
+| order_by     | column_list | Column(s) to order rows by when calculating the agg window                                                                                                                   |             |
+| direction    | value       | List of numeric values to offset the date column 'backward' or None triggers a look-back window. 'forward' triggers a look-forward window.                                   | True        |
+| group_by     | column_list | Column(s) to group by when calculating the agg window                                                                                                                        | True        |
+
+
+## Example
+
+```python
+internet_sales = rasgo.get.dataset(74)
+
+ds = internet_sales.datetime_aggregate(
+        aggregations={
+          "SALESAMOUNT": ['SUM', 'MIN', 'MAX']
+        },
+        group_by=['PRODUCTKEY'],
+        date='ORDERDATE'
+        date_offsets=[-7, -14, 7, 14],
+        date_part='MONTH'
+       )
+
+```
+
+## Source Code
+
+{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/table_transforms/cumulative_agg/cumulative_agg.sql" %}
+
