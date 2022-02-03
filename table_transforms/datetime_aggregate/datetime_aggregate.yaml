@@ -9,12 +9,12 @@ description: |
   within 2 months of this current order.
 arguments:
   aggregations:
-    type: dict
+    type: agg_dict
     description: |
       Dictionary of columns and aggregate functions to apply.
       A column can have a list of multiple aggregates applied.
       One column will be created for each column:aggregate pair.
-  datetime_column:
+  date:
     type: column
     description: Column used to calculate the time window for aggregation
   date_offsets:
@@ -24,7 +24,7 @@ arguments:
       Positive values apply a look-forward window.
       One column will be created for each offset value.
   date_part:
-    type: value
+    type: date_part
     description: Valid SQL date part to describe the grain of the date_offset
   group_by:
     type: column_list
