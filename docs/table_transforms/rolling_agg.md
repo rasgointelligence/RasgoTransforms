@@ -26,15 +26,14 @@ regardless of when they occurred.
 ```python
 internet_sales = rasgo.get.dataset(74)
 
-ds = internet_sales.datetime_aggregate(
-        aggregations={
-          "SALESAMOUNT": ['SUM', 'MIN', 'MAX']
-        },
-        group_by=['PRODUCTKEY'],
-        date='ORDERDATE'
-        date_offsets=[-7, -14, 7, 14],
-        date_part='MONTH'
-       )
+ds = internet_sales.rolling_agg(
+      aggregations={
+        'SALESAMOUNT':['MAX', 'MIN', 'SUM']
+      },
+      order_by='ORDERDATE',
+      offsets=[-7, 7, 14],
+      group_by=['PRODUCTKEY'],
+  )
 
 ```
 

@@ -26,14 +26,13 @@ of time until this row.
 ```python
 internet_sales = rasgo.get.dataset(74)
 
-ds = internet_sales.datetime_aggregate(
+ds = internet_sales.cumulative_agg(
         aggregations={
           "SALESAMOUNT": ['SUM', 'MIN', 'MAX']
         },
         group_by=['PRODUCTKEY'],
-        date='ORDERDATE'
-        date_offsets=[-7, -14, 7, 14],
-        date_part='MONTH'
+        order_by='ORDERDATE'
+        direction='forward'
        )
 
 ```
