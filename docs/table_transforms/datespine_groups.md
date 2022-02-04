@@ -1,6 +1,6 @@
 
 
-# datespine_series
+# datespine_groups
 
 This transform generates a date spine for your date index, which can replace your date index column for modeling.
 
@@ -19,14 +19,14 @@ FROM intervals
 
 ## Parameters
 
-|    Argument     |    Type     |                                                                                    Description                                                                                     | Is Optional |
-| --------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| group_by        | column_list | The column(s) used to partition you data into groups. A datespine will be calculated for each group.                                                                               |             |
-| date_col        | column      | The column used to create intervals. This must be a datetime column.                                                                                                               |             |
-| group_bounds    | value       | values [global, local] ...                                                                                                                                                         |             |
-| interval_type   | date_part   | A valid SQL datepart to slice the date_col. For interval types, see [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants) |             |
-| start_timestamp | timestamp   | The timestamp to start calculating from;  this will be included in the output set; this timestamp will have no timezone                                                            |             |
-| end_timestamp   | timestamp   | The timestamp to calculate to;  this will be included in the output set; this timestamp will have no timezone                                                                      |             |
+|    Argument     |    Type     |                                                                                                               Description                                                                                                               | Is Optional |
+| --------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| group_by        | column_list | The column(s) used to partition you data into groups. A datespine will be calculated for each group.                                                                                                                                    |             |
+| date_col        | column      | The column used to create intervals. This must be a datetime column.                                                                                                                                                                    |             |
+| start_timestamp | timestamp   | The timestamp to start calculating from. If not provided, the min of the date_col will be used                                                                                                                                          | True        |
+| end_timestamp   | timestamp   | The timestamp to calculate to If not provided, the max of the date_col will be used                                                                                                                                                     | True        |
+| interval_type   | date_part   | A valid SQL datepart to slice the date_col. For interval types, see [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants)                                                      |             |
+| group_bounds    | value       | Pass 'global' to construct each datespine using the same start & end date (i.e. the min/max of the entire table)  Pass 'local' to constuct each datespine using the min/max of the group as the start & end dates  'global' is default  | True        |
 
 
 ## Example
