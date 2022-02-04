@@ -7,25 +7,26 @@ Join n number of datasets with the 'base' dataset, using a consistent join_type 
 
 ## Parameters
 
-|   Argument   |    Type     |                                              Description                                              |
-| ------------ | ----------- | ----------------------------------------------------------------------------------------------------- |
-| join_tables  | table_list  | Datasets to join with the source_table                                                                |
-| join_type    | join_type   | Type of join to run against the base dataset (either LEFT, RIGHT, or INNER)                           |
-| join_columns | column_list | Columns to join on. Can be one or more columns but must be named the same thing between all datasets. |
+|   Argument    |    Type     |                                                                           Description                                                                           | Is Optional |
+| ------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| join_tables   | table_list  | Datasets to join with the source_table                                                                                                                          |             |
+| join_type     | join_type   | Type of join to run against the base dataset (either LEFT, RIGHT, or INNER)                                                                                     |             |
+| join_columns  | column_list | Columns to join on. Can be one or more columns but must be named the same thing between all datasets.                                                           |             |
+| join_prefixes | value_list  | Pass a list of join_prefixes, one for each join_table in the join_tables list. These will be used to alias columns in the respective join_table after the join. |             |
 
 
 ## Example
 
 ```python
-d1 = rasgo.get.dataset(dataset_id)
-d2 = rasgo.get.dataset(dataset_id_2)
-d3 = rasgo.get.dataset(dataset_id_3)
+internet_sales = rasgo.get.dataset(74)
+product = rasgo.get.dataset(75)
+inventory = rasgo.get.dataset(65)
 
-ds2 = d1.multi_join(
-    join_tables=[d2, d3],
-    join_type='LEFT',
-    join_columns=['DATE', 'FIPS']
-)
+ds2 = internet_sales.multi_join(
+  join_tables=[product.fqtn, inventory.fqtn],
+  join_columns=['PRODUCTKEY'],
+  join_type='LEFT',
+  join_prefixes=['product', 'inventory'])
 
 ds2.preview()
 

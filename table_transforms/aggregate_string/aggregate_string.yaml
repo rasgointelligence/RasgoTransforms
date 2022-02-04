@@ -1,0 +1,30 @@
+name: aggregate_string
+description: |
+  Aggregate strings across rows by concatenating them together, and grouping by other columns.
+
+  Uses a text separator to aggregate the string values together, and returns a single column where the rows are the aggregated strings.
+arguments:
+  agg_columns:
+    type: column_list
+    description: Columns with string values to aggregate
+  sep:
+    type: value
+    description: Text separator to use when aggregating the strings, i.e. ', '.
+  group_by:
+    type: column_list
+    description: Columns to group by when applying the aggregation.
+  distinct:
+    type: boolean
+    description: If you want to collapse multiple rows of the same string value into a single distinct value, use TRUE. Otherwise, use FALSE.
+  order:
+    type: value
+    description: ASC or DESC, to set the alphabetical order of the agg_column when aggregating it
+example_code: |
+  product = rasgo.get.dataset(75)
+
+  ds2 = product.aggregate_string(group_by=['PRODUCTLINE'],
+                  agg_columns=['PRODUCTKEY', 'ENGLISHPRODUCTNAME'],
+                  sep=', ',
+                  distinct='FALSE',
+                  order='ASC')
+  ds2.preview()

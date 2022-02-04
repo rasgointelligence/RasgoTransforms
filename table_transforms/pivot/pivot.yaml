@@ -11,11 +11,12 @@ arguments:
     type: column
     description: column with row values that will become columns
   agg_method:
-    type: string
+    type: agg
     description: method of aggregation (i.e. sum, avg, min, max, etc.)
   list_of_vals:
     type: string_list
     description: optional argument to override the dynamic lookup of all values in the value_column and only pivot a provided list of values
+    is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
 

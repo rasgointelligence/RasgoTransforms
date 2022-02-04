@@ -13,7 +13,7 @@ arguments:
   type:
     type: string
     description: binning algorithm to use; must be `ntile` or `equalwidth`
-  bucket_count:
+  bin_count:
     type: int
     description: the number of equal-width bins to use
   column:
@@ -22,5 +22,5 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.bin(binning_type='equalwidth', bucket_count=6, column='DAILY_HIGH_TEMP')
+  ds2 = ds.bin(type='equalwidth', bin_count=6, column='DAILY_HIGH_TEMP')
   ds2.preview()

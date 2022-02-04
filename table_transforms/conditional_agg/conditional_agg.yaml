@@ -1,0 +1,33 @@
+name: conditional_agg
+description: |
+  Pass in a list of filter rules, and aggregate rows that match.
+
+  If multiple rules are passed, they are combined and aggregated both together and separately.
+arguments:
+  rules:
+    type: value_list
+    description: List of filter rules to use
+  agg_column:
+    type: column
+    description: Column to aggregate
+  agg:
+    type: agg
+    description: Method to use when aggregating the agg_column
+  distinct:
+    type: boolean
+    description: When aggregating the agg_column, use TRUE to qualify with a DISTINCT
+example_code: |
+  customer = rasgo.get.dataset(55)
+
+  rules = [
+    "FIRSTNAME LIKE 'J%'",
+    "BIRTHDATE < '1970-01-01'",
+    "ENGLISHEDUCATION = 'Bachelors'",
+    "MARITALSTATUS = 'M'",
+    "GENDER='F'"]
+
+  ds2 = customer.conditional_agg(rules=rules,
+                                agg_column='CUSTOMERKEY',
+                                agg='COUNT',
+                                distinct=True)
+  ds2.preview()

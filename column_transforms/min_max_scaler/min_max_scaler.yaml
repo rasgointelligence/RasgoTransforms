@@ -10,9 +10,11 @@ arguments:
   minimums:
     type: value_list
     description: An optional argument representing a list of the static minimums to use for each column in columns_to_scale. If omitted, the minimums are calculated directly off each column.
+    is_optional: true
   maximums:
     type: value_list
     description: An optional argument representing a list of the static maximums to use for each column in columns_to_scale. If omitted, the values are calculated directly off each column.
+    is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
 

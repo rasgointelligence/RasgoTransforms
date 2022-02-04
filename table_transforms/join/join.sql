@@ -33,8 +33,10 @@ SELECT
 {%- for source_col in source_col_names %}
   t1.{{ source_col }}{{ ', ' if not loop.last else '' }}
 {%- endfor -%}
-{%- for join_col in join_col_names -%}
-    {%- if join_col not in source_col_names -%}
+{%- for join_col in join_col_names %}
+    {%- if join_prefix -%}
+        , t2.{{ join_col }} as {{ cleanse_name(join_prefix)~'_'~join_col }}
+    {%- elif join_col not in source_col_names -%}
         , t2.{{ join_col }}
     {% endif %}
 {%- endfor %}

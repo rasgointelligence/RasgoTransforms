@@ -3,7 +3,7 @@ description: |
   Cast selected columns to a new type
 arguments:
   casts:
-    type: column_value_dict
+    type: cast_value_dict
     description: A dict where the keys are columns and the values are the new type to cast them to.
 example_code: |
   ds = rasgo.get.dataset(id)

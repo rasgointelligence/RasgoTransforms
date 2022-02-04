@@ -1,0 +1,42 @@
+name: rank
+description: |
+  Create a ranking of values in a column.
+
+arguments:
+  rank_columns:
+    type: column_list
+    description: The column or expression to order (rank) by
+  partition_by:
+    type: column_list
+    description: The column or expression to partition the window by. Accepts <None>.
+    is_optional: True
+  order:
+    type: value
+    description: Instruction on how to order the rank_column. Accepts <None>, but defaults to ASC.
+      ASC = Ascending
+      DESC = Descending
+    is_optional: True
+  rank_type:
+    type: value_list
+    description: Type of ranking [<None> | dense | percent | unique ]. Accepts <None>.
+      <None> = ANSI SQL rank function
+      dense = ANSI SQL dense_rank function
+      percent = ANSI SQL percent_rank function
+      unique = ANSI SQL row_number function
+    is_optional: True
+  qualify_filter:
+    type: value
+    description: A filter to apply to the ranked column. Accepts <None>.
+    is_optional: True
+example_code: |
+  #Return the 5 highest temperatures per date:
+  ds = rasgo.get.dataset(dataset_id)
+
+  ds2 = ds.rank(rank_columns=['DS_DAILY_HIGH_TEMP'],
+        partition_by=['DATE'],
+        ORDER='DESC',
+        RANK_TYPE='unique',
+        QUALIFY_FILTER='>=5'
+  })
+
+  ds2.preview()

@@ -39,7 +39,7 @@ def table(transform_args: Dict) -> str:
     transform args descriptions
     """
     writer = MarkdownTableWriter(
-        headers=["Argument", "Type", "Description"],
+        headers=["Argument", "Type", "Description", "Is Optional"],
         value_matrix=utils.get_table_values(transform_args),
         margin=1  # add a whitespace for both sides of each cell
     )

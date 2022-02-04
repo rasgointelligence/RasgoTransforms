@@ -8,9 +8,11 @@ arguments:
   include_cols:
     type: column_list
     description: A list of the columns from the dataset you want to keep.
+    is_optional: true
   exclude_cols:
     type: column_list
     description: A list of the columns from the dataset you want to drop. Any columns not in the exclude_cols list will be kept.
+    is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
 

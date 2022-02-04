@@ -6,12 +6,12 @@ Lag shifts your features on a partition index, creating a lookback feature offse
 
 ## Parameters
 
-| Argument  |    Type     |                                                                     Description                                                                     |
-| --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| columns   | column_list | names of column(s) you want to lag                                                                                                                  |
-| amounts   | value_list  | Magnitude of amounts you want to use for the lag. Positive values result in a historical offset; negative amounts result in forward-looking offset. |
-| partition | column_list | name of column(s) to partition by for the lag                                                                                                       |
-| order_by  | column_list | name of column(s) to order by in the final data set                                                                                                 |
+| Argument  |    Type     |                                                                     Description                                                                     | Is Optional |
+| --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| columns   | column_list | names of column(s) you want to lag                                                                                                                  |             |
+| amounts   | value_list  | Magnitude of amounts you want to use for the lag. Positive values result in a historical offset; negative amounts result in forward-looking offset. |             |
+| partition | column_list | name of column(s) to partition by for the lag                                                                                                       |             |
+| order_by  | column_list | name of column(s) to order by in the final data set                                                                                                 |             |
 
 
 ## Example

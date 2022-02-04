@@ -1,0 +1,13 @@
+name: apply
+description: A transform that accepts a custom template to execute. Must use the sql template argument `source_table` to reference the Rasgo dataset which will serve as the base of any SELECT
+arguments:
+  sql:
+    type: custom
+    description: The custom SQL transform template to apply
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.apply(
+    sql='SELECT * FROM {{ source_table }} WHERE COLUMNVALUE = I17'
+  )
+  ds2.preview()

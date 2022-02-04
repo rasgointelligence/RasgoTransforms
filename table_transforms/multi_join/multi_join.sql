@@ -1,9 +1,3 @@
-{# Jinja Macro to get the table name from fqtn #}
-{%- macro get_table_name(fqtn) -%}
-    {%- set database, schema, table = fqtn.split('.') -%}
-    {{ table }}
-{%- endmacro -%}
-
 {# Jinja Macro to get columns for a table #}
 {%- macro get_column_names(fqtn) -%}
     {%- set database, schema, table = fqtn.split('.') -%}
@@ -13,15 +7,20 @@
     AND   TABLE_NAME = '{{ table|upper }}'
 {%- endmacro -%}
 
+
+{%- if join_prefixes|length != join_tables|length -%}
+Error: Provide a join_prefix for each join_table in the join_tables list
+{%- elif join_prefixes|length == join_tables|length -%}
+
 SELECT
 t0.*
 {% for fqtn in join_tables -%}
+{%- set table_alias = cleanse_name(join_prefixes[loop.index-1]) -%}
 {%- set o_loop = loop -%}
-{%- set table_only = get_table_name(fqtn=fqtn) -%}
 {%- set col_names_df = run_query(get_column_names(fqtn=fqtn)) -%}
 {%- set col_names = col_names_df['COLUMN_NAME'].to_list() -%}
     {% for column in col_names %}
-, t{{o_loop.index}}.{{column}} as {{table_only}}_{{column}}
+, t{{o_loop.index}}.{{column}} as {{ table_alias~'_'~column }}
     {%- endfor %}
 {%- endfor %}
 FROM {{ source_table }} t0
@@ -33,3 +32,4 @@ FROM {{ source_table }} t0
     {{' AND ' if not loop.first else ' ON '}} t0.{{ join_col }} = t{{ outer_loop.index }}.{{ join_col }}
     {% endfor -%}
 {%- endfor -%}
+{%- endif -%}
