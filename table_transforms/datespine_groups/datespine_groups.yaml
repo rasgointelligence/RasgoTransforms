@@ -1,18 +1,12 @@
 name: datespine_groups
 description: |
-  This transform generates a date spine for your date index, which can replace your date index column for modeling.
-  
+  Generates a date spine across custom groupings. Each grouping will be returned with a 
+  continuous set of dates.
+  Spines can be calculated globally using the table min/max or locally using each group min/max.
+
   All intervals are considered to be start-inclusive and end-exclusive, or `[start, end]`. 
   The join with the date spine will be an outer join such that all intervals are present 
   and all data that does not fall into one of those intervals is excluded. 
-  
-  It's essentially:
-  ```
-  SELECT user_table.*, intervals.*
-  FROM intervals
-    LEFT JOIN user_table
-    ON ...
-  ```
 arguments:
   group_by:
     type: column_list
