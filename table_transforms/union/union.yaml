@@ -4,9 +4,11 @@ arguments:
   dataset2:
     type: table
     description: Dataset to Union/Union All with main dataset
-  union_all:
+  keep_dupes:
     type: boolean
-    description: Set to True to performn a UNION ALL instead UNION between the two datasets
+    description: |
+      Set to True to performn a UNION ALL between the two tables, which keeps rows that are duplicated.
+      Set to False to eliminate duplicate rows.
     is_optional: true
 example_code: |
   d1 = rasgo.get.dataset(dataset_id)
@@ -14,7 +16,7 @@ example_code: |
   
   ds2 = d1.transform.union(
       dataset2=d2,
-      union_all=True
+      keep_dupes=True
   )
 
   ds2.preview()

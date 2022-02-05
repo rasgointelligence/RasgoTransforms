@@ -27,5 +27,5 @@ the columns in a table by fqtn
 
 {# Generate Union Query #}
 SELECT {{ union_cols | join(', ') }} FROM {{ dataset2 }}
-UNION {{ 'ALL' if union_all else '' }}
+UNION {{ 'ALL' if keep_dupes else '' }}
 SELECT {{ union_cols | join(', ') }} FROM {{ source_table }}
