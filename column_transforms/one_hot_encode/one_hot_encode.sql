@@ -2,9 +2,8 @@
 
 SELECT *,
 {% for val in distinct_col_vals %}
-    {%- set val_e = val | replace("'", "''") -%}
     {%- if val is not none %}
-    CASE WHEN {{ column }} = {{ "'" ~ val_e ~ "'" if val is string else val}} THEN 1 ELSE 0 END as {{ cleanse_name(column ~ '_' ~ val) }}{{ ', ' if not loop.last else '' }}
+    CASE WHEN {{ column }} = {{ "'" ~ val ~ "'"}} THEN 1 ELSE 0 END as {{ cleanse_name(column ~ '_' ~ val) }}{{ ', ' if not loop.last else '' }}
     {%- else %}
     CASE WHEN {{ column }} IS NULL THEN 1 ELSE 0 END as {{ column }}_IS_NULL{{ ', ' if not loop.last else '' }}
     {%- endif -%}
