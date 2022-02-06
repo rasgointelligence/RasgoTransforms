@@ -2,11 +2,9 @@ name: cumulative_agg
 description: |
   Row-based; Calculates a cumulative aggregate based on a relative row window.
 
-  Pass in order_by columns to create a row-based look-back
-  or look-forward window.
+  Pass in order_by columns to create a row-based look-back or look-forward window.
 
-  Example use case: Aggregate all sales for a customer from the beginning
-  of time until this row.
+  Example use case: Aggregate all sales for a customer from the beginning of time until this row.
 arguments:
   aggregations:
     type: agg_dict
@@ -19,9 +17,9 @@ arguments:
     description: Column(s) to order rows by when calculating the agg window
   direction:
     type: value
-    description: List of numeric values to offset the date column
-      'backward' or None triggers a look-back window.
-      'forward' triggers a look-forward window.
+    description: |
+      By default, the cumulative agg will calculate by looking 'backward' across all rows, according to the order_by.
+      To override this behavior, use 'forward', and the cumulative will look at each row and all future rows.
     is_optional: True
   group_by:
     type: column_list
