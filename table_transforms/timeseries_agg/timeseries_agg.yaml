@@ -1,4 +1,4 @@
-name: rolling_date_agg
+name: timeseries_agg
 description: |
   Date-based; Calculates a rolling aggregate based on a relative datetime window.
 
@@ -33,7 +33,7 @@ arguments:
 example_code: |
   internet_sales = rasgo.get.dataset(74)
 
-  ds = internet_sales.rolling_date_agg(
+  ds = internet_sales.timeseries_agg(
           aggregations={
             "SALESAMOUNT": ['SUM', 'MIN', 'MAX']
           },
