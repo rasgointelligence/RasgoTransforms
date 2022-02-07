@@ -14,7 +14,7 @@ the columns in a table by fqtn
 {%- endmacro -%}
 
 {% if include_cols and exclude_cols is defined %}
-Rasgo Error: You cannot pass both an include_cols list and an exclude_cols list
+{{ raise_exception('You cannot pass both an include_cols list and an exclude_cols list') }}
 {% else %}
 
 {%- if include_cols is defined -%}
