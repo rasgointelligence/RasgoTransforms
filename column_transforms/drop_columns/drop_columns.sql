@@ -29,14 +29,14 @@ FROM {{source_table}}
 {# Get all Columns in Source Table #}
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
 {%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
+{%- set new_columns = source_col_names | reject('in', exclude_cols) -%}
+
 
 SELECT
-{% for col in source_col_names -%}
-{%- if col not in exclude_cols %}{{ ", " if not loop.first else "" }}{{col}}{%- endif -%}
+{% for col in new_columns -%}
+{{ col }}{{ ", " if not loop.last else " " }}
 {%- endfor %}
-FROM {{source_table}}
-
+FROM {{ source_table }}
 
 {%- endif -%}
-
 {% endif %}
