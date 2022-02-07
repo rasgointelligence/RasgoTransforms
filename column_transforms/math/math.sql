@@ -1,7 +1,7 @@
 {%- if names -%}
     {%- if names|length != math_ops|length -%}
 
-Error: Provide a new column alias for each math operation
+{{ raise_exception('Provide a new column alias for each math operation') }}
 
     {%- elif names|length == math_ops|length -%}
 

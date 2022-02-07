@@ -10,5 +10,5 @@ SELECT *,
       {{bin_count}}) AS {{column}}_{{bin_count}}_EWB
 FROM {{ source_table }}
 {% else %}
-Rasgo binning error: You must select either "ntile" or "equalwidth" as your binning type
+{{ raise_exception('You must select either "ntile" or "equalwidth" as your binning type') }}
 {% endif %}

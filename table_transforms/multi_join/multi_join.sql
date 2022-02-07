@@ -9,7 +9,7 @@
 
 
 {%- if join_prefixes|length != join_tables|length -%}
-Error: Provide a join_prefix for each join_table in the join_tables list
+{{ raise_exception('Provide a join_prefix for each join_table in the join_tables list') }}
 {%- elif join_prefixes|length == join_tables|length -%}
 
 SELECT
