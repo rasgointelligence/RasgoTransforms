@@ -8,7 +8,7 @@ the columns in a table by fqtn
 
 {# Jinja Macro to get the table name from source_id #}
 {%- macro get_table_name(join_table) -%}
-    {%- set database, schema, table = join_table.split('.') -%}
+    {%- set table = join_table.split('.')[-1] -%}
     {{ table }}
 {%- endmacro -%}
 

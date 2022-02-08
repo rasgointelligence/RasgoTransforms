@@ -1,6 +1,6 @@
 {# Jinja Macro to get the table name from fqtn #}
 {%- macro get_table_name(fqtn) -%}
-    {%- set database, schema, table = fqtn.split('.') -%}
+    {%- set table = fqtn.split('.')[-1] -%}
     {{ table }}
 {%- endmacro -%}
 
