@@ -1,10 +1,6 @@
 {# Jinja Macro to get columns for a table #}
 {%- macro get_column_names(fqtn) -%}
-    {%- set database, schema, table = fqtn.split('.') -%}
-    SELECT COLUMN_NAME FROM {{ database }}.information_schema.columns
-    WHERE TABLE_CATALOG = '{{ database|upper }}'
-    AND   TABLE_SCHEMA = '{{ schema|upper }}'
-    AND   TABLE_NAME = '{{ table|upper }}'
+    select top 0 * from {{ source_table_fqtn }}
 {%- endmacro -%}
 
 
@@ -18,7 +14,7 @@ t0.*
 {%- set table_alias = cleanse_name(join_prefixes[loop.index-1]) -%}
 {%- set o_loop = loop -%}
 {%- set col_names_df = run_query(get_column_names(fqtn=fqtn)) -%}
-{%- set col_names = col_names_df['COLUMN_NAME'].to_list() -%}
+{%- set col_names = col_names_df.columns -%}
     {% for column in col_names %}
 , t{{o_loop.index}}.{{column}} as {{ table_alias~'_'~column }}
     {%- endfor %}
