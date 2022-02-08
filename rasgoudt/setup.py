@@ -19,7 +19,7 @@ setup(
     author='Rasgo Intelligence',
     author_email='patrick@rasgoml.com',
     project_urls={
-    'Documentation': 'https://docs.rasgoml.com',
+    'Documentation': 'https://docs.rasgoml.com/rasgo-docs/transforms/overview',
     'Source': 'https://github.com/rasgointelligence/RasgoTransforms',
     'Rasgo': 'https://www.rasgoml.com/',
     }, 
