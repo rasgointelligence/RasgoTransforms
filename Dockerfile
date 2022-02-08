@@ -1,6 +1,6 @@
 FROM python:3.7-slim AS pythonapp
 
-ARG PRIMARY_USER=`
+ARG PRIMARY_USER=rasgo
 ARG HOME_DIR=/var/lib/rasgo
 ARG UID=1001
 RUN adduser --system --uid ${UID} --home ${HOME_DIR} --shell /bin/false ${PRIMARY_USER}
