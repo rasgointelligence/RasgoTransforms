@@ -1,12 +1,12 @@
 """
 Functions to serve Rasgo Transform Templates
 """
-from collections import defaultdict
 import logging
 import os
+from collections import defaultdict
 from pathlib import Path
-import subprocess
 from typing import Dict, List
+
 import yaml
 
 logger = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ class TransformTemplate:
         return pretty_string
 
 
-def serve_rasgo_transform_templates() -> List[dict]:
+def serve_rasgo_transform_templates() -> List[TransformTemplate]:
     """
     Return a list of Rasgo Transform Templates
     """
