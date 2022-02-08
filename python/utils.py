@@ -5,10 +5,11 @@ import os
 import subprocess
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import Dict, List
 
 import yaml
 from pyrasgo.rasgo import Rasgo
+from pyrasgo.schemas import Transform
 
 import constants
 
@@ -71,12 +72,37 @@ def set_rasgo_domain_env(rasgo_domain: str) -> None:
     os.environ["RASGO_DOMAIN"] = rasgo_domain_url
 
 
-def get_all_rasgo_transform_name_and_ids(rasgo: Rasgo) -> Dict[str, int]:
+def get_all_rasgo_transform_keyed_by_name(rasgo: Rasgo) -> Dict[str, Transform]:
     """
-    Return a Dict of all transforms keyed by names with ids their value
+    Return a Dict of all transforms keyed by names the respective
+    transform as their value
     """
     transform_in_rasgo = rasgo.get.transforms()
-    return {t.name: t.id for t in transform_in_rasgo}
+    return {t.name: t for t in transform_in_rasgo}
+
+
+def transform_needs_versioning(
+        transform: Transform,
+        _type: str,
+        source_code: str,
+        arguments: List[Dict[str, str]],
+        description: str
+) -> bool:
+    """
+    Return true if any of the attributes for the transform has
+    changed and it needs to be versioned
+
+    This includes
+      - description
+      - transform type
+      - source_code
+      - all of the transform arguments and their attrs
+    """
+    transform_needs_versioning = description != transform.description or \
+                                 source_code != transform.sourceCode or \
+                                 _type != transform.type or \
+                                 _transform_args_have_changed(transform, arguments)
+    return transform_needs_versioning
 
 
 def get_transform_source_code(transform_type: str, transform_name: str) -> str:
@@ -131,6 +157,37 @@ def get_table_values(transform_args: Dict) -> List[List[str]]:
 # ----------------------------------------------
 #      Private Helper Funcs for this File
 # ----------------------------------------------
+
+
+def _transform_args_have_changed(
+        transform: Transform,
+        arguments: List[Dict[str, str]]
+) -> bool:
+    """
+    Return true if any of the transform arguments have changed
+    false otherwise
+    """
+    # If number of args changed transform, transform needs versioning
+    if len(transform.arguments) != len(arguments):
+        return True
+    # For each arg in yaml, see if anything changed compared to db
+    for yaml_arg in arguments:
+        db_args_w_name = [a for a in transform.arguments if a.name == yaml_arg['name']]
+
+        # If a arg with this name isn't in db, transform needs versioning
+        if not db_args_w_name:
+            return True
+
+        # Lastly check if any of the transform arg attrs have change
+        # if so, transform needs versioning
+        db_arg = db_args_w_name[0]
+        if db_arg.description != yaml_arg['description'] or \
+                db_arg.is_optional != yaml_arg.get('is_optional', False) or \
+                db_arg.type != yaml_arg['type']:
+            return True
+
+    # If nothing changed in transform arguments return False
+    return False
 
 
 def _read_yaml(yaml_path: Path) -> Dict:
