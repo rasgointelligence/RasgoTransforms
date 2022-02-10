@@ -4,7 +4,7 @@ import os
 _here = os.path.abspath(os.path.dirname(__file__))
 
 version = {}
-with open(os.path.join(_here, 'rasgoudt', 'version.py')) as f:
+with open(os.path.join(_here, 'rasgotransforms', 'version.py')) as f:
     exec(f.read(), version)
 
 with open(os.path.join(_here, 'DESCRIPTION.md'), encoding='utf-8') as f:
@@ -15,7 +15,7 @@ with open(os.path.join(_here, 'requirements.txt'), encoding='utf-8') as f:
     requirements = req_lines.splitlines()
 
 setup(
-    name='rasgoudt',
+    name='rasgotransforms',
     version=version['__version__'], 
     description=('Open-source SQL transform templates provided by RasgoML.'),
     long_description=long_description,
@@ -28,7 +28,7 @@ setup(
     'Rasgo': 'https://www.rasgoml.com/',
     }, 
     license='GNU Affero General Public License v3 or later (AGPLv3+)',
-    packages=['rasgoudt'],
+    packages=['rasgotransforms'],
     install_requires=requirements,
     include_package_data=True,
     classifiers=[

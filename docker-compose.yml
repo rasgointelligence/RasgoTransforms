@@ -4,24 +4,24 @@ services:
   upload-pypi:
     build:
       context: ./
-      target: rasgoudt
-    working_dir: /var/lib/rasgo/mount/rasgoudt
+      target: rasgotransforms
+    working_dir: /var/lib/rasgotransforms/mount/rasgotransforms
     command: ./bin/publish-pypi.sh pypi
     environment:
       PYPI_USER: ${PYPI_USER}
       PYPI_PASSWORD: ${PYPI_PASSWORD}
     volumes:
-      - ./:/var/lib/rasgo/mount/
+      - ./:/var/lib/rasgotransforms/mount/
 
 
   test-pypi:
     build:
       context: ./
-      target: rasgoudt
-    working_dir: /var/lib/rasgo/mount/rasgoudt
+      target: rasgotransforms
+    working_dir: /var/lib/rasgotransforms/mount/rasgotransforms
     command: ./bin/publish-pypi.sh pypitest
     environment:
-      PYPI_USER: ${PYPITEST_USER}
-      PYPI_PASSWORD: ${PYPITEST_PASSWORD}
+      PYPITEST_USER: ${PYPITEST_USER}
+      PYPITEST_PASSWORD: ${PYPITEST_PASSWORD}
     volumes:
-      - ./:/var/lib/rasgo/mount/
+      - ./:/var/lib/rasgotransforms/mount/

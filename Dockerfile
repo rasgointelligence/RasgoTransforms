@@ -1,7 +1,7 @@
-FROM python:3.7-slim AS pythonapp
+FROM python:3.9-slim AS pythonapp
 
 ARG PRIMARY_USER=rasgo
-ARG HOME_DIR=/var/lib/rasgo
+ARG HOME_DIR=/var/lib/rasgotransforms
 ARG UID=1001
 RUN adduser --system --uid ${UID} --home ${HOME_DIR} --shell /bin/false ${PRIMARY_USER}
 
@@ -24,9 +24,9 @@ USER ${PRIMARY_USER}
 WORKDIR ${HOME_DIR}
 
 
-FROM pythonapp AS rasgoudt
-ARG HOME_DIR=/var/lib/rasgo
-COPY rasgoudt/requirements.txt ${HOME_DIR}
+FROM pythonapp AS rasgotransforms
+ARG HOME_DIR=/var/lib/rasgotransforms
+COPY rasgotransforms/requirements.txt ${HOME_DIR}
 
 RUN cd ${HOME_DIR} && \
     pip install -r requirements.txt
@@ -39,6 +39,6 @@ RUN pip install --upgrade twine
 COPY pypirc.template ${HOME_DIR}/.pypirc.template
 
 ARG PRIMARY_USER=rasgo
-ARG HOME_DIR=/var/lib/rasgo
+ARG HOME_DIR=/var/lib/rasgotransforms
 USER ${PRIMARY_USER}
 WORKDIR ${HOME_DIR}

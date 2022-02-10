@@ -150,4 +150,4 @@ def _get_udt_repo_dir() -> Path:
     Get and return the absolute path of the directory
     containing all transform Jinja and Yaml files
     """
-    return get_root_dir() / "rasgoudt" / "rasgoudt"
+    return get_root_dir() / "rasgotransforms" / "rasgotransforms"

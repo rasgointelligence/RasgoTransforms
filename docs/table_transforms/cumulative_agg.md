@@ -37,5 +37,5 @@ ds = internet_sales.cumulative_agg(
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/table_transforms/cumulative_agg/cumulative_agg.sql" %}
+{% embed url="https://github.com/rasgointelligence/rasgotransformss/blob/main/table_transforms/cumulative_agg/cumulative_agg.sql" %}
 
