@@ -10,6 +10,10 @@ with open(os.path.join(_here, 'rasgoudt', 'version.py')) as f:
 with open(os.path.join(_here, 'DESCRIPTION.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+with open(os.path.join(_here, 'requirements.txt'), encoding='utf-8') as f:
+    req_lines = f.read()
+    requirements = req_lines.splitlines()
+
 setup(
     name='rasgoudt',
     version=version['__version__'], 
@@ -25,9 +29,7 @@ setup(
     }, 
     license='GNU Affero General Public License v3 or later (AGPLv3+)',
     packages=['rasgoudt'],
-    install_requires=[
-        'pyyaml',
-    ],
+    install_requires=requirements,
     include_package_data=True,
     classifiers=[
         'Development Status :: 3 - Alpha',
