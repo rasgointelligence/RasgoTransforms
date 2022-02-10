@@ -7,21 +7,21 @@
 [![Chat on Slack](https://img.shields.io/badge/chat-on%20Slack-brightgreen.svg)](https://join.slack.com/t/rasgousergroup/shared_invite/zt-nytkq6np-ANEJvbUSbT2Gkvc8JICp3g)
 [![Chat on Discourse](https://img.shields.io/discourse/status?server=https%3A%2F%2Fforum.rasgoml.com)](https://forum.rasgoml.com/)
 
-# Rasgo User-Defined Transforms (UDTs)
+# Rasgo Transforms
 
-Rasgo UDTs provide jinja SQL templates that can be applied to your data using rasgoQL, a pandas-like python package.
-- UDTs are equivalent to SQL functions that accept a table or view from your eixsting DataWarehouse and return a SQL string to transform it
+Rasgo Transforms provide jinja SQL templates that can be applied to your data using rasgoQL, a pandas-like python package.
+- Transforms are equivalent to SQL functions that accept a table or view from your eixsting DataWarehouse and return a SQL string to transform it
 - Rasgo has built a starter library of transforms for you to use or fork
-- *Coming Soon:* Users will be able to create their own UDTs and add them to a private namespace or contribute to the open-source library
+- *Coming Soon:* Users will be able to create their own Transforms and add them to a private namespace or contribute to the open-source library
 
-# Running UDTs
+# Running Transforms
 
-Rasgo UDTs can be applied via:
+Rasgo Transforms can be applied via:
 - your Rasgo Feature Store account ([pyrasgo](https://pypi.org/project/pyrasgo/) - Account required) 
 - using the Rasgo open-source package ([rasgoql](https://pypi.org/project/rasgoql/) - totally free).
 
 # About Us
-Rasgo UDTs are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.
+Rasgo Transforms are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.
 
 
 <i>Built for Data Scientists, by Data Scientists</i>
