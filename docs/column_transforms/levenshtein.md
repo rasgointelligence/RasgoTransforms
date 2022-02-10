@@ -23,5 +23,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/rasgotransformss/blob/main/column_transforms/levenshtein/levenshtein.sql" %}
+{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/column_transforms/levenshtein/levenshtein.sql" %}
 

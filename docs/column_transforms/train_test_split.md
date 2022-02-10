@@ -30,5 +30,5 @@ ds2b.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/rasgotransformss/blob/main/column_transforms/train_test_split/train_test_split.sql" %}
+{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/column_transforms/train_test_split/train_test_split.sql" %}
 

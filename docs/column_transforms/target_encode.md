@@ -27,5 +27,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/rasgotransformss/blob/main/column_transforms/target_encode/target_encode.sql" %}
+{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/column_transforms/target_encode/target_encode.sql" %}
 
