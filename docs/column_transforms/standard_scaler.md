@@ -33,5 +33,5 @@ ds2b.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/column_transforms/standard_scaler/standard_scaler.sql" %}
+{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/column_transforms/standard_scaler/standard_scaler.sql" %}
 

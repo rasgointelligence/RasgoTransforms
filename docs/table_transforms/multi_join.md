@@ -34,5 +34,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/table_transforms/multi_join/multi_join.sql" %}
+{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/table_transforms/multi_join/multi_join.sql" %}
 

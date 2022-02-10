@@ -35,5 +35,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/column_transforms/rank/rank.sql" %}
+{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/column_transforms/rank/rank.sql" %}
 

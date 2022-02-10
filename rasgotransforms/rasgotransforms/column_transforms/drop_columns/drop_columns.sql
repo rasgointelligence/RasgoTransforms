@@ -3,14 +3,7 @@ Jinja Macro to generate a query that would get all
 the columns in a table by fqtn
 #}
 {%- macro get_source_col_names(source_table_fqtn=None) -%}
-    {%- set database, schema, table = '', '', '' -%}
-    {%- if source_table_fqtn -%}
-        {%- set database, schema, table = source_table_fqtn.split('.') -%}
-    {%- endif -%}
-        SELECT COLUMN_NAME FROM {{ database }}.information_schema.columns
-        WHERE TABLE_CATALOG = '{{ database|upper }}'
-        AND   TABLE_SCHEMA = '{{ schema|upper }}'
-        AND   TABLE_NAME = '{{ table|upper }}'
+    select top 0 * from {{ source_table_fqtn }}
 {%- endmacro -%}
 
 {% if include_cols and exclude_cols is defined %}
@@ -28,7 +21,7 @@ FROM {{source_table}}
 {%- if exclude_cols is defined -%}
 {# Get all Columns in Source Table #}
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
-{%- set source_col_names = col_names_source_df['COLUMN_NAME'].to_list() -%}
+{%- set source_col_names = col_names_source_df.columns.to_list() -%}
 {%- set new_columns = source_col_names | reject('in', exclude_cols) -%}
 
 

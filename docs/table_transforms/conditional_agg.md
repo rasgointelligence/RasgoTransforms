@@ -38,5 +38,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/table_transforms/conditional_agg/conditional_agg.sql" %}
+{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/table_transforms/conditional_agg/conditional_agg.sql" %}
 

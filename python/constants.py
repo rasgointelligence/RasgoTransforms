@@ -23,4 +23,4 @@ TRANSFORM_TYPES = [
 ]
 
 # Base Github Repo for UDT Jinja SQL Links
-GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoUDTs/blob/main"
+GITHUB_REPO_URL = "https://github.com/rasgointelligence/rasgotransforms/blob/main"

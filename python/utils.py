@@ -25,7 +25,7 @@ def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     transform_yamls = defaultdict(dict)
 
     for transform_type in constants.TRANSFORM_TYPES:
-        transform_type_dir_path = get_root_dir() / f"{transform_type}_transforms"
+        transform_type_dir_path = _get_udt_repo_dir() / f"{transform_type}_transforms"
 
         # Get list of all transform of certain type
         transform_names = [x.name for x in transform_type_dir_path.rglob("*/**")]
@@ -83,8 +83,8 @@ def get_transform_source_code(transform_type: str, transform_name: str) -> str:
     """
     From a transform name and type load and return it's source code as a string
     """
-    root_dir = get_root_dir()
-    source_code_path = root_dir / f"{transform_type}_transforms" / transform_name / f"{transform_name}.sql"
+    transform_type_dir = _get_udt_repo_dir() / f"{transform_type}_transforms"
+    source_code_path = transform_type_dir / transform_name / f"{transform_name}.sql"
     fp = open(source_code_path)
     source_code = fp.read()
     fp.close()
@@ -143,3 +143,11 @@ def _read_yaml(yaml_path: Path) -> Dict:
         except yaml.YAMLError as e:
             print(f"Error Parsing YAML file at {yaml_path}"
                   f"\n\nError Msg: {e}")
+
+
+def _get_udt_repo_dir() -> Path:
+    """
+    Get and return the absolute path of the directory
+    containing all transform Jinja and Yaml files
+    """
+    return get_root_dir() / "rasgotransforms" / "rasgotransforms"
