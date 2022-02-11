@@ -34,5 +34,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/column_transforms/bin/bin.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/column_transforms/bin/bin.sql" %}
 

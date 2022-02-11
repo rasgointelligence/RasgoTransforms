@@ -28,5 +28,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/table_transforms/union/union.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/table_transforms/union/union.sql" %}
 

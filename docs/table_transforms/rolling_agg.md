@@ -37,5 +37,5 @@ ds = internet_sales.rolling_agg(
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/table_transforms/rolling_agg/rolling_agg.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/table_transforms/rolling_agg/rolling_agg.sql" %}
 
