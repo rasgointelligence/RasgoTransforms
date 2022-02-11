@@ -28,7 +28,21 @@ setup(
     'Rasgo': 'https://www.rasgoml.com/',
     }, 
     license='GNU Affero General Public License v3 or later (AGPLv3+)',
-    packages=['rasgotransforms'],
+    packages=[
+        'rasgotransforms',
+        'rasgotransforms/column_transforms',
+        'rasgotransforms/row_transforms',
+        'rasgotransforms/table_transforms'
+    ],
+    package_data={'rasgotransforms': [
+        'column_transforms/*/*.yaml',
+        'column_transforms/*/*.sql',
+        'row_transforms/*/*.yaml',
+        'row_transforms/*/*.sql',
+        'table_transforms/*/*.yaml',
+        'table_transforms/*/*.sql'
+        ]
+    },
     install_requires=requirements,
     include_package_data=True,
     classifiers=[
@@ -41,5 +55,6 @@ setup(
         'Topic :: Database',
         'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Software Development :: Code Generators'
-        ]
+    ],
+    zip_safe=False
 )
