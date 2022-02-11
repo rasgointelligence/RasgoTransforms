@@ -38,6 +38,8 @@ GROUP_SPINE AS (
     FROM GLOBAL_SPINE S
     {% if group_bounds == 'local' %}
     WHERE S.SPINE_START BETWEEN G.LOCAL_START AND G.LOCAL_END
+    {% elif group_bounds == 'mixed' %}
+    WHERE S.SPINE_START >= G.LOCAL_START
     {% endif %}
   )
 )
