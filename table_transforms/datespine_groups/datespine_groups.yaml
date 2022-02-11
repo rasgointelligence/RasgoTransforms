@@ -33,7 +33,8 @@ arguments:
     type: value
     description: | 
       Pass 'global' to construct each datespine using the same start & end date (i.e. the min/max of the entire table) 
-      Pass 'local' to constuct each datespine using the min/max of the group as the start & end dates 
+      Pass 'local' to constuct each datespine using the min/max of the group as the start & end dates
+      Pass 'mixed' to use a local start, while retaining a global end date
       'global' is default
     is_optional: True
 example_code: |
