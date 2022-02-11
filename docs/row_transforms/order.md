@@ -22,5 +22,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/row_transforms/order/order.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/row_transforms/order/order.sql" %}
 
