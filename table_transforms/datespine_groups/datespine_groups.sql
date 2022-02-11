@@ -51,7 +51,7 @@ SELECT
   T.*
 FROM GROUP_SPINE G
 LEFT JOIN {{ source_table }} T
-  ON T.ORDERDATE BETWEEN G.GROUP_START AND G.GROUP_END
+  ON {{ date_col }} BETWEEN G.GROUP_START AND G.GROUP_END
   {% for col in group_by -%}
      AND G.{{ col }} = T.{{ col }}
   {%- endfor %}
