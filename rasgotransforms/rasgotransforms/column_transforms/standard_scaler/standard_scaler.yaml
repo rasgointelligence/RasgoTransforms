@@ -12,7 +12,7 @@ arguments:
     description: An optional argument representing a list of the static averages to use for each column in columns_to_scale. If omitted, the averages are calculated directly off each column.
     is_optional: true
   standarddevs:
-    type: value_list
+    type: int_list
     description: An optional argument representing a list of the static standard deviations to use for each column in columns_to_scale. If omitted, the values are calculated directly off each column.
     is_optional: true
 example_code: |

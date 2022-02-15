@@ -5,7 +5,7 @@ arguments:
     type: column_list
     description: names of column(s) you want to lag
   amounts:
-    type: value_list
+    type: int_list
     description: Magnitude of amounts you want to use for the lag. Positive values result in a historical offset; negative amounts result in forward-looking offset.
   partition:
     type: column_list

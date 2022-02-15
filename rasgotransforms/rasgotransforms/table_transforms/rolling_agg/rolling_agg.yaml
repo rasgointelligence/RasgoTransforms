@@ -16,7 +16,7 @@ arguments:
     type: column_list
     description: Column(s) to order rows by when calculating the agg window
   offsets:
-    type: value_list
+    type: int_list
     description: |
       List of numeric values to offset the date column.
       Negative values apply a look-back window; Positive values apply a look-forward window.
