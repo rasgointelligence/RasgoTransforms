@@ -17,7 +17,7 @@ within 2 months of this current order.
 | ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | aggregations | agg_dict    | Dictionary of columns and aggregate functions to apply. A column can have a list of multiple aggregates applied. One column will be created for each column:aggregate pair.               |             |
 | date         | column      | Column used to calculate the time window for aggregation                                                                                                                                  |             |
-| offsets      | value_list  | List of numeric values to offset the date column Negative values apply a look-back window. Positive values apply a look-forward window. One column will be created for each offset value. |             |
+| offsets      | int_list    | List of numeric values to offset the date column Negative values apply a look-back window. Positive values apply a look-forward window. One column will be created for each offset value. |             |
 | date_part    | date_part   | Valid SQL date part to describe the grain of the date_offset                                                                                                                              |             |
 | group_by     | column_list | Column(s) to group by when calculating the agg window                                                                                                                                     | True        |
 
