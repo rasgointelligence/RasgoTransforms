@@ -5,7 +5,7 @@ arguments:
     type: column_list
     description: names of column(s) you want to moving average
   window_sizes:
-    type: value_list
+    type: int_list
     description: the integer values for window sizes you want to use in your moving average
   order_by:
     type: column_list

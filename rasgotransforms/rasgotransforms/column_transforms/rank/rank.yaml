@@ -17,7 +17,7 @@ arguments:
       DESC = Descending
     is_optional: True
   rank_type:
-    type: value_list
+    type: value
     description: Type of ranking [<None> | dense | percent | unique ]. Accepts <None>.
       <None> = ANSI SQL rank function
       dense = ANSI SQL dense_rank function

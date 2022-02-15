@@ -18,7 +18,7 @@ arguments:
     type: column
     description: Column used to calculate the time window for aggregation
   offsets:
-    type: value_list
+    type: int_list
     description: List of numeric values to offset the date column
       Negative values apply a look-back window.
       Positive values apply a look-forward window.

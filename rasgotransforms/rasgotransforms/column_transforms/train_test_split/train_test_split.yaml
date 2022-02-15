@@ -9,7 +9,7 @@ arguments:
     description: Optional argument that affects the train/test split method applied. if needed, pass the names of column(s) you want to order by when applying the split.
     is_optional: true
   train_percent:
-    type: value
+    type: int
     description: Percent of the data you want in the train set, expressed as a decimal (i.e. .8). The rest of the rows will be included in the test set.
 example_code: |
   ds = rasgo.get.dataset(id)

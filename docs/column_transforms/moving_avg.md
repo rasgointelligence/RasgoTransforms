@@ -9,7 +9,7 @@ generates moving averages per column and per window size
 |   Argument    |    Type     |                                Description                                 | Is Optional |
 | ------------- | ----------- | -------------------------------------------------------------------------- | ----------- |
 | input_columns | column_list | names of column(s) you want to moving average                              |             |
-| window_sizes  | value_list  | the integer values for window sizes you want to use in your moving average |             |
+| window_sizes  | int_list    | the integer values for window sizes you want to use in your moving average |             |
 | order_by      | column_list | columns to order by, typically the date index of the table                 |             |
 | partition     | column_list | columns to partition the moving average by                                 |             |
 

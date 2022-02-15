@@ -6,10 +6,10 @@ arguments:
     type: column
     description: A string column from which to subselect
   start_pos:
-    type: value
+    type: int
     description: The position of the string from which to begin selection. Index begins at 1, not 0. May be a negative number, in which case the value represents the positions from the end of the string from which to begin selection
   end_pos:
-    type: value
+    type: int
     description: The number of characters to select. If left empty, select through the end of the string.
     is_optional: true
 example_code: |
