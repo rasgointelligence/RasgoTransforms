@@ -1,0 +1,38 @@
+name: cumulative_agg
+description: |
+  Row-based; Calculates a cumulative aggregate based on a relative row window.
+
+  Pass in order_by columns to create a row-based look-back or look-forward window.
+
+  Example use case: Aggregate all sales for a customer from the beginning of time until this row.
+arguments:
+  aggregations:
+    type: agg_dict
+    description: |
+      Dictionary of columns and aggregate functions to apply.
+      A column can have a list of multiple aggregates applied.
+      One column will be created for each column:aggregate pair.
+  order_by:
+    type: column_list
+    description: Column(s) to order rows by when calculating the agg window
+  direction:
+    type: value
+    description: |
+      By default, the cumulative agg will calculate by looking 'backward' across all rows, according to the order_by.
+      To override this behavior, use 'forward', and the cumulative will look at each row and all future rows.
+    is_optional: True
+  group_by:
+    type: column_list
+    description: Column(s) to group by when calculating the agg window
+    is_optional: True
+example_code: |
+  internet_sales = rasgo.get.dataset(74)
+
+  ds = internet_sales.cumulative_agg(
+          aggregations={
+            "SALESAMOUNT": ['SUM', 'MIN', 'MAX']
+          },
+          group_by=['PRODUCTKEY'],
+          order_by='ORDERDATE'
+          direction='forward'
+         )

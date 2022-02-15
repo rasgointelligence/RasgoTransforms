@@ -32,5 +32,5 @@ ds_casted.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/column_transforms/new_cast/new_cast.sql" %}
+{% embed url="https://github.com/rasgointelligence/rasgotransforms/blob/main/column_transforms/new_cast/new_cast.sql" %}
 

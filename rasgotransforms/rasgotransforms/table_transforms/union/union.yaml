@@ -1,0 +1,22 @@
+name: union
+description:  Performs a SQL UNION or UNION ALL for the parent dataset, and another dataset. Operation will only merge columns with matching columns names in both datasets and drop all other columns. Column data type validation does not happen.
+arguments:
+  dataset2:
+    type: table
+    description: Dataset to Union/Union All with main dataset
+  keep_dupes:
+    type: boolean
+    description: |
+      Set to True to performn a UNION ALL between the two tables, which keeps rows that are duplicated.
+      Set to False to eliminate duplicate rows.
+    is_optional: true
+example_code: |
+  d1 = rasgo.get.dataset(dataset_id)
+  d2 = rasgo.get.dataset(dataset_id_2)
+  
+  ds2 = d1.transform.union(
+      dataset2=d2,
+      keep_dupes=True
+  )
+
+  ds2.preview()

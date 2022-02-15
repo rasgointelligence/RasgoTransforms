@@ -32,5 +32,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/table_transforms/pivot/pivot.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/table_transforms/pivot/pivot.sql" %}
 

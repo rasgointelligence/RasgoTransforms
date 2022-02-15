@@ -1,0 +1,11 @@
+name: one_hot_encode
+description:  One hot encode a column. Create a null value flag for the column if any of the values are NULL.
+arguments:
+  column:
+    type: column
+    description: Column name to one-hot encode
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.one_hot_encode(column='WEATHER_DESCRIPTION')
+  ds2.preview()

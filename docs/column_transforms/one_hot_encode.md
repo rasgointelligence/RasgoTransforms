@@ -2,7 +2,7 @@
 
 # one_hot_encode
 
-One hot encode a column and drop it from the dataset. Create a null value flag for the column if any of the values are NULL.
+One hot encode a column. Create a null value flag for the column if any of the values are NULL.
 
 ## Parameters
 
@@ -23,5 +23,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/column_transforms/one_hot_encode/one_hot_encode.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/column_transforms/one_hot_encode/one_hot_encode.sql" %}
 

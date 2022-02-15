@@ -24,5 +24,5 @@ ds.describe().to_df()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/table_transforms/describe/describe.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/table_transforms/describe/describe.sql" %}
 

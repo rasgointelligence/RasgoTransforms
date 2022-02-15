@@ -30,5 +30,5 @@ ds2b.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/column_transforms/drop_columns/drop_columns.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/column_transforms/drop_columns/drop_columns.sql" %}
 

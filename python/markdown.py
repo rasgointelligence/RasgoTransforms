@@ -9,7 +9,7 @@ from pytablewriter import MarkdownTableWriter
 from . import constants
 
 
-GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoUDTs/blob/main"
+GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoTransforms/blob/main"
 
 
 def h1(string: str) -> str:

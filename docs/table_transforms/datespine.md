@@ -44,5 +44,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoUDTs/blob/main/table_transforms/datespine/datespine.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/table_transforms/datespine/datespine.sql" %}
 
