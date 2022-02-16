@@ -68,8 +68,7 @@ def serve_rasgo_transform_templates(
     Optionally pass in a datawarehouse name to include templates
     specific to its SQL dialect
     """
-    if datawarehouse:
-        datawarehouse = _check_datawarehouse(datawarehouse)
+    datawarehouse = _check_datawarehouse(datawarehouse)
 
     template_list = []
     transform_yamls = _load_all_yaml_files(datawarehouse)
@@ -98,7 +97,7 @@ def _check_datawarehouse(
     supported_dws = "'"+"', '".join([e.value for e in Datawarehouse])+"'"
     try:
         Datawarehouse[input_value.upper()]
-    except:
+    except Exception:
         raise ValueError(f'datawarehouse parameter accepts values: {supported_dws}')
     return input_value.lower()
 
@@ -116,8 +115,7 @@ def _get_transform_source_code(
     """
     Return a transform's source code as a string
     """
-    if datawarehouse:
-        datawarehouse = _check_datawarehouse(datawarehouse)
+    datawarehouse = _check_datawarehouse(datawarehouse)
     root_dir = _get_root_dir()
     source_code_path = root_dir / f"{transform_type}_transforms" / transform_name / f"{transform_name}.sql"
     source_code_override_path = root_dir / f"{transform_type}_transforms" / transform_name/ datawarehouse / f"{transform_name}.sql"
@@ -133,8 +131,7 @@ def _load_all_yaml_files(
     """
     Load and return all the yaml files in the dir <root>/<transform_type>_transforms
     """
-    if datawarehouse:
-        datawarehouse = _check_datawarehouse(datawarehouse)
+    datawarehouse = _check_datawarehouse(datawarehouse)
     transform_yamls = defaultdict(dict)
 
     for transform_type in TRANSFORM_TYPES:
@@ -143,10 +140,10 @@ def _load_all_yaml_files(
         transform_names = [x.name for x in transform_type_dir_path.rglob("*/**")]
         for transform_name in transform_names:
             transform_yaml_path = transform_type_dir_path / transform_name / f"{transform_name}.yaml"
-            transform_override_path = transform_type_dir_path / transform_name / datawarehouse / f"{transform_name}.yaml"
+            transform_yaml_override_path = transform_type_dir_path / transform_name / datawarehouse / f"{transform_name}.yaml"
 
-            if Path(transform_override_path).exists():
-                transform_yaml_path = transform_override_path
+            if Path(transform_yaml_override_path).exists():
+                transform_yaml_path = transform_yaml_override_path
 
             try:
                 transform_data = _read_yaml(transform_yaml_path)

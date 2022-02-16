@@ -31,9 +31,11 @@ def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
         # Get list of all transform of certain type
         transform_names = [x.name for x in transform_type_dir_path.rglob("*/**")]
         for transform_name in transform_names:
-            transform_dir = transform_type_dir_path / transform_name
-            transform_yaml_path = transform_dir / f"{transform_name}.yaml"
+            transform_yaml_path = transform_type_dir_path / transform_name / f"{transform_name}.yaml"
+            transform_yaml_override_path = transform_type_dir_path / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.yaml"
 
+            if Path(transform_yaml_override_path).exists():
+                transform_yaml_path = transform_yaml_override_path
             # Try to load yaml file for transform
             # If loaded successfully save in return dict
             try:
@@ -111,9 +113,11 @@ def get_transform_source_code(transform_type: str, transform_name: str) -> str:
     """
     transform_type_dir = _get_udt_repo_dir() / f"{transform_type}_transforms"
     source_code_path = transform_type_dir / transform_name / f"{transform_name}.sql"
-    fp = open(source_code_path)
-    source_code = fp.read()
-    fp.close()
+    source_code_override_path = transform_type_dir / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.sql"
+    if Path(source_code_override_path).exists():
+        source_code_path = source_code_override_path
+    with open(source_code_path) as fp:
+        source_code = fp.read()
     return source_code
 
 

@@ -24,3 +24,8 @@ TRANSFORM_TYPES = [
 
 # Base Github Repo for UDT Jinja SQL Links
 GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoTransforms/blob/main"
+
+# Default data warehouse
+# TODO: When we support multiple DWs in the API
+# we'll need to refactor the functions that consume this
+RASGO_DATAWAREHOUSE = 'snowflake'
