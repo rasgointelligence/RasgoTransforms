@@ -1,6 +1,6 @@
 {# Jinja Macro to get columns for a table #}
 {%- macro get_column_names(fqtn) -%}
-    select top 0 * from {{ source_table_fqtn }}
+    select * from {{ source_table_fqtn }} limit 0
 {%- endmacro -%}
 
 
