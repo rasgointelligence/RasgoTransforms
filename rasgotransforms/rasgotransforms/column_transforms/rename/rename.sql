@@ -3,7 +3,7 @@ Jinja Macro to generate a query that would get all
 the columns in a table by fqtn
 #}
 {%- macro get_source_col_names(source_table_fqtn=None) -%}
-    select top 0 * from {{ source_table_fqtn }}
+    select * from {{ source_table_fqtn }} limit 0
 {%- endmacro -%}
 
 
