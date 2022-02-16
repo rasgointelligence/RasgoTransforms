@@ -3,6 +3,7 @@ Functions to serve Rasgo Transform Templates
 """
 import logging
 import os
+from enum import Enum
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
@@ -18,6 +19,12 @@ TRANSFORM_TYPES = [
     'table'
 ]
 
+class Datawarehouse(Enum):
+    """
+    Supported Data Warehouses
+    """
+    BIGQUERY = 'bigquery'
+    SNOWFLAKE = 'snowflake'
 
 class TransformTemplate:
     """
@@ -53,7 +60,7 @@ class TransformTemplate:
 
 
 def serve_rasgo_transform_templates(
-        datawarehouse: str = None
+        datawarehouse: str
     ) -> List[TransformTemplate]:
     """
     Return a list of Rasgo Transform Templates
@@ -61,16 +68,19 @@ def serve_rasgo_transform_templates(
     Optionally pass in a datawarehouse name to include templates
     specific to its SQL dialect
     """
+    if datawarehouse:
+        datawarehouse = _check_datawarehouse(datawarehouse)
+
     template_list = []
-    transform_yamls = load_all_yaml_files(datawarehouse)
+    transform_yamls = _load_all_yaml_files(datawarehouse)
     for transform_type, transform_type_yamls in transform_yamls.items():
         for transform_name, transform_yaml in transform_type_yamls.items():
-            transform_source_code = get_transform_source_code(
+            transform_source_code = _get_transform_source_code(
                 transform_type=transform_type,
                 transform_name=transform_name,
                 datawarehouse=datawarehouse
             )
-            transform_args = parse_transform_args_from_yaml(transform_yaml)
+            transform_args = _parse_transform_args_from_yaml(transform_yaml)
             template_list.append(
                 TransformTemplate(
                     name=transform_name,
@@ -82,16 +92,53 @@ def serve_rasgo_transform_templates(
             )
     return template_list
 
-def load_all_yaml_files(
-        datawarehouse: str = None
+def _check_datawarehouse(
+        input_value: str
+    ):
+    supported_dws = "'"+"', '".join([e.value for e in Datawarehouse])+"'"
+    try:
+        Datawarehouse[input_value.upper()]
+    except:
+        raise ValueError(f'datawarehouse parameter accepts values: {supported_dws}')
+    return input_value.lower()
+
+def _get_root_dir() -> Path:
+    """
+    Get and return the root directory absolute path of this git repo
+    """
+    return Path(os.path.dirname(__file__))
+
+def _get_transform_source_code(
+        transform_type: str,
+        transform_name: str,
+        datawarehouse: str
+    ) -> str:
+    """
+    Return a transform's source code as a string
+    """
+    if datawarehouse:
+        datawarehouse = _check_datawarehouse(datawarehouse)
+    root_dir = _get_root_dir()
+    source_code_path = root_dir / f"{transform_type}_transforms" / transform_name / f"{transform_name}.sql"
+    source_code_override_path = root_dir / f"{transform_type}_transforms" / transform_name/ datawarehouse / f"{transform_name}.sql"
+    if Path(source_code_override_path).exists():
+        source_code_path = source_code_override_path
+    with open(source_code_path) as fp:
+        source_code = fp.read()
+    return source_code
+
+def _load_all_yaml_files(
+        datawarehouse: str
     ) -> Dict[str, Dict[str, Dict]]:
     """
     Load and return all the yaml files in the dir <root>/<transform_type>_transforms
     """
+    if datawarehouse:
+        datawarehouse = _check_datawarehouse(datawarehouse)
     transform_yamls = defaultdict(dict)
 
     for transform_type in TRANSFORM_TYPES:
-        transform_type_dir_path = get_root_dir() / f"{transform_type}_transforms"
+        transform_type_dir_path = _get_root_dir() / f"{transform_type}_transforms"
 
         transform_names = [x.name for x in transform_type_dir_path.rglob("*/**")]
         for transform_name in transform_names:
@@ -109,30 +156,7 @@ def load_all_yaml_files(
 
     return transform_yamls
 
-def get_root_dir() -> Path:
-    """
-    Get and return the root directory absolute path of this git repo
-    """
-    return Path(os.path.dirname(__file__))
-
-def get_transform_source_code(
-        transform_type: str,
-        transform_name: str,
-        datawarehouse: str = None
-    ) -> str:
-    """
-    Return a transform's source code as a string
-    """
-    root_dir = get_root_dir()
-    source_code_path = root_dir / f"{transform_type}_transforms" / transform_name / f"{transform_name}.sql"
-    source_code_override_path = root_dir / f"{transform_type}_transforms" / transform_name/ datawarehouse / f"{transform_name}.sql"
-    if Path(source_code_override_path).exists():
-        source_code_path = source_code_override_path
-    with open(source_code_path) as fp:
-        source_code = fp.read()
-    return source_code
-
-def parse_transform_args_from_yaml(
+def _parse_transform_args_from_yaml(
         transform_yaml: Dict
     ) -> List[Dict[str, str]]:
     """
