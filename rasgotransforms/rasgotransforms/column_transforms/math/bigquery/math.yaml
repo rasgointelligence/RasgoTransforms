@@ -1,6 +1,9 @@
 name: math
 description: |
   Calculate one or more new columns using math functions.
+
+  Examples of Valid Functions:
+    - [Basic Arithmetic](https://cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions)
 arguments:
   math_ops:
     type: math_list

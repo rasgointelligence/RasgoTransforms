@@ -1,3 +1,3 @@
 SELECT *,
-DATEDIFF({{ date_part }}, {{ date_1 }}, {{ date_2 }}) as {{ cleanse_name(date_2 + '_' + date_1 + '_datediff') }}
+  EXTRACT({{ date_part }} FROM DATE {{ date_1 }} - DATE {{ date_2 }}) AS {{ cleanse_name(date_2 + '_' + date_1 + '_datediff') }}
 FROM {{ source_table }}
