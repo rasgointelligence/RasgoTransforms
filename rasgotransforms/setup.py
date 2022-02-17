@@ -1,5 +1,5 @@
-from setuptools import setup
 import os
+from setuptools import setup
 
 _here = os.path.abspath(os.path.dirname(__file__))
 
@@ -16,17 +16,17 @@ with open(os.path.join(_here, 'requirements.txt'), encoding='utf-8') as f:
 
 setup(
     name='rasgotransforms',
-    version=version['__version__'], 
+    version=version['__version__'],
     description=('Open-source SQL transform templates provided by RasgoML.'),
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Rasgo Intelligence',
     author_email='patrick@rasgoml.com',
     project_urls={
-    'Documentation': 'https://docs.rasgoml.com/rasgo-docs/transforms/overview',
-    'Source': 'https://github.com/rasgointelligence/RasgoTransforms',
-    'Rasgo': 'https://www.rasgoml.com/',
-    }, 
+        'Documentation': 'https://docs.rasgoml.com/rasgo-docs/transforms/overview',
+        'Source': 'https://github.com/rasgointelligence/RasgoTransforms',
+        'Rasgo': 'https://www.rasgoml.com/',
+    },
     license='GNU Affero General Public License v3 or later (AGPLv3+)',
     packages=[
         'rasgotransforms',
@@ -35,12 +35,12 @@ setup(
         'rasgotransforms/table_transforms'
     ],
     package_data={'rasgotransforms': [
-        'column_transforms/*/*.yaml',
-        'column_transforms/*/*.sql',
-        'row_transforms/*/*.yaml',
-        'row_transforms/*/*.sql',
-        'table_transforms/*/*.yaml',
-        'table_transforms/*/*.sql'
+        'column_transforms/**/**/*.yaml',
+        'column_transforms/**/**/*.sql',
+        'row_transforms/**/**/*.yaml',
+        'row_transforms/**/**/*.sql',
+        'table_transforms/**/**/*.yaml',
+        'table_transforms/**/**/*.sql'
         ]
     },
     install_requires=requirements,
@@ -52,6 +52,8 @@ setup(
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: Database',
         'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Software Development :: Code Generators'

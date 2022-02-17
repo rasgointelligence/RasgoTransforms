@@ -93,7 +93,7 @@ def serve_rasgo_transform_templates(
 
 def _check_datawarehouse(
         input_value: str
-    ):
+    ) -> str:
     supported_dws = "'"+"', '".join([e.value for e in Datawarehouse])+"'"
     try:
         Datawarehouse[input_value.upper()]
@@ -119,7 +119,7 @@ def _get_transform_source_code(
     root_dir = _get_root_dir()
     source_code_path = root_dir / f"{transform_type}_transforms" / transform_name / f"{transform_name}.sql"
     source_code_override_path = root_dir / f"{transform_type}_transforms" / transform_name/ datawarehouse / f"{transform_name}.sql"
-    if Path(source_code_override_path).exists():
+    if source_code_override_path.exists():
         source_code_path = source_code_override_path
     with open(source_code_path) as fp:
         source_code = fp.read()
@@ -142,7 +142,7 @@ def _load_all_yaml_files(
             transform_yaml_path = transform_type_dir_path / transform_name / f"{transform_name}.yaml"
             transform_yaml_override_path = transform_type_dir_path / transform_name / datawarehouse / f"{transform_name}.yaml"
 
-            if Path(transform_yaml_override_path).exists():
+            if transform_yaml_override_path.exists():
                 transform_yaml_path = transform_yaml_override_path
 
             try:
