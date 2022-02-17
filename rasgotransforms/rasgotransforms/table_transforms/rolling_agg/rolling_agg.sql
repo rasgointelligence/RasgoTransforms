@@ -8,8 +8,8 @@ SELECT *
         PARTITION BY {{ group_by | join(", ") }} 
         {% endif -%}
         ORDER BY {{ order_by | join(", ") }} 
-        {% if offset < 0 -%}
-        ROWS BETWEEN CURRENT ROW AND {{ normalized_offset|abs }} FOLLOWING
+        {% if normalized_offset > 0 -%}
+        ROWS BETWEEN CURRENT ROW AND {{ normalized_offset }} FOLLOWING
         {% else -%}
         ROWS BETWEEN {{ normalized_offset|abs }} PRECEDING AND CURRENT ROW
         {% endif -%}
