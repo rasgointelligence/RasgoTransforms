@@ -2,7 +2,6 @@
 
 # bin
 
-(Snowflake-specific transform)
 This function will categorize or bin an input column such that for N bins, an output column is created with values `[1-N]` where each value represents some bin.
 
 This transformation supports two binning methods (called "binning_type" in the arguments): `ntile` and `equalwidth`.
