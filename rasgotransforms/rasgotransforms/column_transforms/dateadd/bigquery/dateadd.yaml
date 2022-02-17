@@ -1,13 +1,14 @@
 name: dateadd
-description: Adds the specified value for the specified date or time part to a date, time, or timestamp.
+description: Increments a date by the specified interval value.
 arguments:
   date_part:
     type: date_part
     description: |
-       Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)
+       A valid SQL date part.
+       Must be one of the values listed in [Supported Date and Time Parts](https://cloud.google.com/bigquery/docs/reference/standard-sql/date_functions#date_add)
   date:
     type: mixed_value
-    description: Date column to increment. Can be a date column, date, time, or timestamp.
+    description: Date value to increment. Can be a column or literal of these types (date, datetime, time, or timestamp).
   offset:
     type: int
     description: Numeric value to increment the date by.
