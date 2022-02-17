@@ -28,7 +28,7 @@ ds = internet_sales.rolling_agg(
       aggregations={
         'SALESAMOUNT':['MAX', 'MIN', 'SUM']
       },
-      order_by='ORDERDATE',
+      order_by=['ORDERDATE'],
       offsets=[-7, 7, 14],
       group_by=['PRODUCTKEY'],
   )
