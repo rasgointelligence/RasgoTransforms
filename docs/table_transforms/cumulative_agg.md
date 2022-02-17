@@ -29,7 +29,7 @@ ds = internet_sales.cumulative_agg(
           "SALESAMOUNT": ['SUM', 'MIN', 'MAX']
         },
         group_by=['PRODUCTKEY'],
-        order_by='ORDERDATE'
+        order_by=['ORDERDATE']
         direction='forward'
        )
 
