@@ -32,7 +32,7 @@ example_code: |
         aggregations={
           'SALESAMOUNT':['MAX', 'MIN', 'SUM']
         },
-        order_by='ORDERDATE',
+        order_by=['ORDERDATE'],
         offsets=[-7, 7, 14],
         group_by=['PRODUCTKEY'],
     )

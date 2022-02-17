@@ -6,7 +6,7 @@ SELECT *
         {%- if group_by %}
         PARTITION BY {{ group_by | join(", ") }} 
         {% endif -%}
-        ORDER BY {{order_by}} 
+        ORDER BY {{ order_by | join(", ") }} 
         {% if offset > 0 -%}
         ROWS BETWEEN CURRENT ROW AND {{ offset|replace('-','') }} FOLLOWING
         {% else -%}
