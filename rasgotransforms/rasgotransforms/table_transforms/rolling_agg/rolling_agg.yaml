@@ -19,7 +19,8 @@ arguments:
     type: int_list
     description: |
       List of numeric values to offset the date column.
-      Negative values apply a look-back window; Positive values apply a look-forward window.
+      Positive values apply a look-back window.
+      Negative values apply a look-forward window.
       One column will be created for each offset value.
   group_by:
     type: column_list
@@ -32,7 +33,7 @@ example_code: |
         aggregations={
           'SALESAMOUNT':['MAX', 'MIN', 'SUM']
         },
-        order_by='ORDERDATE',
+        order_by=['ORDERDATE'],
         offsets=[-7, 7, 14],
         group_by=['PRODUCTKEY'],
     )
