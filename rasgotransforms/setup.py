@@ -35,10 +35,16 @@ setup(
         'rasgotransforms/table_transforms'
     ],
     package_data={'rasgotransforms': [
+        'column_transforms/**/*.yaml',
+        'column_transforms/**/*.sql',
         'column_transforms/**/**/*.yaml',
         'column_transforms/**/**/*.sql',
+        'row_transforms/**/*.yaml',
+        'row_transforms/**/*.sql',
         'row_transforms/**/**/*.yaml',
         'row_transforms/**/**/*.sql',
+        'table_transforms/**/*.yaml',
+        'table_transforms/**/*.sql',
         'table_transforms/**/**/*.yaml',
         'table_transforms/**/**/*.sql'
         ]
