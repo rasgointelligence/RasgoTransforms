@@ -17,7 +17,7 @@ else it will perform that impuattion stagety on column
 {%- macro get_impute_query(col, imputation) -%}
     {%- set impute_expression = '' -%}
     {%- set imputation_strategy = '' -%}
-    {%- if imputation | lower in  ['mean', 'median', 'mode'] -%}
+    {%- if imputation | lower in  ['mean', 'median', 'mode', 'max', 'min', 'sum'] -%}
         {%- set imputation = 'AVG' if imputation == 'mean' else imputation -%}
         {%- set imputation_strategy = imputation | upper -%}
         {%- set impute_expression = imputation_strategy + '(' + col + ') over ()' -%}
