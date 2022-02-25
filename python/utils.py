@@ -28,15 +28,15 @@ def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     for transform_type in constants.TRANSFORM_TYPES:
         transform_type_dir_path = _get_udt_repo_dir() / f"{transform_type}_transforms"
 
-        # Get list of all transform of this type,
-        # by getting names of sub-directory one level down
+        # Get list of all transform names of this type,
+        # by looking at sub-directory names one level down
         transform_names = [
             x.name for x in transform_type_dir_path.iterdir() if x.is_dir()
         ]
         for transform_name in transform_names:
             transform_yaml_path = transform_type_dir_path / transform_name / f"{transform_name}.yaml"
 
-            # If this Transform as Dw specific types, load the default
+            # If this Transform is a DW specific type, load the default
             transform_yaml_override_path = transform_type_dir_path / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.yaml"
             if transform_yaml_override_path.exists():
                 transform_yaml_path = transform_yaml_override_path
