@@ -5,7 +5,7 @@ import os
 import subprocess
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional, Union
 
 import yaml
 from pyrasgo.rasgo import Rasgo
@@ -28,14 +28,19 @@ def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
     for transform_type in constants.TRANSFORM_TYPES:
         transform_type_dir_path = _get_udt_repo_dir() / f"{transform_type}_transforms"
 
-        # Get list of all transform of certain type
-        transform_names = [x.name for x in transform_type_dir_path.rglob("*/**")]
+        # Get list of all transform of this type,
+        # by getting names of sub-directory one level down
+        transform_names = [
+            x.name for x in transform_type_dir_path.iterdir() if x.is_dir()
+        ]
         for transform_name in transform_names:
             transform_yaml_path = transform_type_dir_path / transform_name / f"{transform_name}.yaml"
-            transform_yaml_override_path = transform_type_dir_path / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.yaml"
 
+            # If this Transform as Dw specific types, load the default
+            transform_yaml_override_path = transform_type_dir_path / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.yaml"
             if transform_yaml_override_path.exists():
                 transform_yaml_path = transform_yaml_override_path
+
             # Try to load yaml file for transform
             # If loaded successfully save in return dict
             try:
@@ -88,7 +93,8 @@ def transform_needs_versioning(
         _type: str,
         source_code: str,
         arguments: List[Dict[str, str]],
-        description: str
+        description: str,
+        tags: List[str]
 ) -> bool:
     """
     Return true if any of the attributes for the transform has
@@ -99,10 +105,12 @@ def transform_needs_versioning(
       - transform type
       - source_code
       - all of the transform arguments and their attrs
+      - set tags on the transform
     """
     transform_needs_versioning = description != transform.description or \
                                  source_code != transform.sourceCode or \
                                  _type != transform.type or \
+                                 set(tags) != set(transform.tags) or \
                                  _transform_args_have_changed(transform, arguments)
     return transform_needs_versioning
 
@@ -133,6 +141,20 @@ def parse_transform_args_from_yaml(transform_yaml: Dict) -> List[Dict[str, str]]
             {**{'name': arg_name}, **arg_meta_data}
         )
     return transform_args
+
+
+def listify_tags(tags: Optional[Union[str, List[str]]]) -> List[str]:
+    """
+    Convert a dn return the the the possible values of a tag
+    when parsed from a Yaml to a List of strings, so we can compare
+    if the transform needs updating or not
+    """
+    if tags is None:
+        return []
+    elif isinstance(tags, str):
+        return [tags]
+    else:
+        return tags
 
 
 # ----------------------------------------------
