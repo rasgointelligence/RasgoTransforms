@@ -5,6 +5,13 @@ from python import utils, markdown as md
 
 DOCS_DIR = utils.get_root_dir() / 'docs'
 
+DATASET_PREVIEW_TEXT = """Pull a source Dataset and preview it:"""
+
+DATASET_PREVIEW_CODE = """ds = rasgo.get.dataset(id)\nprint(ds.preview())"""
+
+TRANSFORMED_DATA_PREVIEW_TEXT = """Transform the Dataset and preview the result:"""
+
+
 
 def save_transform_docs() -> None:
     """
@@ -47,7 +54,12 @@ def _get_transform_markdown(transform_yaml: Dict,
         md.h2('Parameters'),
         md.table(transform_yaml['arguments']),
         md.h2('Example'),
+        md.text(DATASET_PREVIEW_TEXT),
+        md.python_code(DATASET_PREVIEW_CODE),
+        md.text(transform_yaml['preview-data']),
+        md.text(TRANSFORMED_DATA_PREVIEW_TEXT),
         md.python_code(transform_yaml['example_code']),
+        md.text(transform_yaml['post-transform-data']),
         md.h2('Source Code'),
         md.github_url(transform_type_dir_name, transform_name),
         '',
