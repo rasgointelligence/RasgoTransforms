@@ -1,4 +1,6 @@
 name: conditional_agg
+tags:
+  - table
 description: |
   Pass in a list of filter rules, and aggregate rows that match.
 

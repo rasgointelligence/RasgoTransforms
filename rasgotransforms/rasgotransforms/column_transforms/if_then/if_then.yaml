@@ -1,4 +1,6 @@
 name: if_then
+tags:
+  - column
 description: |
   This function creates a new column based on the conditions provided in the `conditions` argument.
 

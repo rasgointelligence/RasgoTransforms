@@ -1,4 +1,6 @@
 name: datepart
+tags:
+  - column
 description: |
   Extracts a specific part of a date column. For example, if the input is '2021-01-01', you can ask for the year and get back 2021.
   

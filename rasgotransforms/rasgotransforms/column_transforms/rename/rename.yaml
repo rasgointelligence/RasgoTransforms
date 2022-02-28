@@ -1,4 +1,6 @@
 name: rename
+tags:
+  - column
 description: |
   Rename columns by passing a renames dict.
 

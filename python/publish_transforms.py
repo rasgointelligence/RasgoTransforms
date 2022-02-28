@@ -41,10 +41,15 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     yaml_transforms = utils.load_all_yaml_files()
     for transform_type, transform_type_yamls in yaml_transforms.items():
         for transform_name, transform_yaml in transform_type_yamls.items():
+
+            # Load/parse needed transform data from YAML
             transform_description = transform_yaml.get('description')
             transform_source_code = utils.get_transform_source_code(
                 transform_type=transform_type,
                 transform_name=transform_name
+            )
+            transform_tags = utils.listify_tags(
+                tags=transform_yaml.get('tags')
             )
             transform_args = utils.parse_transform_args_from_yaml(transform_yaml)
 
@@ -58,7 +63,8 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                     type=transform_type,
                     source_code=transform_source_code,
                     arguments=transform_args,
-                    description=transform_description
+                    description=transform_description,
+                    tags=transform_tags
                 )
 
             # If it does exist in Rasgo, check if anything in the
@@ -71,7 +77,8 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                         _type=transform_type,
                         source_code=transform_source_code,
                         arguments=transform_args,
-                        description=transform_description
+                        description=transform_description,
+                        tags=transform_tags
                 ):
                     print(f"Versioning transform '{transform_name}'. Updates found "
                           f"in Rasgo {rasgo_domain.upper()} environment.")
@@ -81,7 +88,8 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                         type=transform_type,
                         source_code=transform_source_code,
                         arguments=transform_args,
-                        description=transform_description
+                        description=transform_description,
+                        tags=transform_tags
                     )
                 else:
                     print(f"No updates found for '{transform_name}' {transform_type} transform "

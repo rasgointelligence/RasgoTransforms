@@ -1,4 +1,6 @@
 name: order
+tags:
+  - row
 description: Order a dataset by specified columns, in a specified order
 arguments:
   order_by:

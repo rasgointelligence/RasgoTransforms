@@ -1,4 +1,6 @@
 name: target_encode
+tags:
+  - column
 description: |
   Encode a categorical column with the average value of a target column for the corresponding value of the categorical column.
   

@@ -1,4 +1,6 @@
 name: concat
+tags:
+  - column
 description: |
   This function creates a new column that concatenates fixed values and columns in your dataset.
 
