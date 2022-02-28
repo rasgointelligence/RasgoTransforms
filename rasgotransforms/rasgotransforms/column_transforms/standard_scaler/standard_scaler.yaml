@@ -1,4 +1,6 @@
 name: standard_scaler
+tags:
+  - column
 description: |
   This function scales a column by removing the mean and scaling by standard deviation.
 

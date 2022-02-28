@@ -1,4 +1,6 @@
 name: levenshtein
+tags:
+  - column
 description: Calculate the edit distance between pairwise combinations of string columns
 arguments:
   columns1:

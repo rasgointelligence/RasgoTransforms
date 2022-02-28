@@ -1,4 +1,6 @@
 name: dateadd
+tags:
+  - column
 description: Adds the specified value for the specified date or time part to a date, time, or timestamp.
 arguments:
   date_part:

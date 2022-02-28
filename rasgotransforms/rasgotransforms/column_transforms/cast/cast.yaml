@@ -1,4 +1,6 @@
 name: cast
+tags:
+  - column
 description: |
   Cast selected columns to a new type
 arguments:

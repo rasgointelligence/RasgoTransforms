@@ -1,4 +1,6 @@
 name: rank
+tags:
+  - column
 description: |
   Create a ranking of values in a column.
 
