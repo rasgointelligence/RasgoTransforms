@@ -1,4 +1,6 @@
 name: market_basket
+tags:
+  - table
 description: |
   Analyze historical transaction contents to understand products that are frequently purchased together.
 

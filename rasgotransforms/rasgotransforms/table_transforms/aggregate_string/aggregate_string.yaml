@@ -1,4 +1,6 @@
 name: aggregate_string
+tags:
+  - table
 description: |
   Aggregate strings across rows by concatenating them together, and grouping by other columns.
 
