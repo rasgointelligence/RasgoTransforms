@@ -1,4 +1,6 @@
 name: dateadd
+tags:
+  - column
 description: Increments a date by the specified interval value.
 arguments:
   date_part:

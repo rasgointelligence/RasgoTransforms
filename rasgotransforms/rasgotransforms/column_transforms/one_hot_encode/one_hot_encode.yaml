@@ -1,4 +1,6 @@
 name: one_hot_encode
+tags:
+  - column
 description:  One hot encode a column. Create a null value flag for the column if any of the values are NULL.
 arguments:
   column:

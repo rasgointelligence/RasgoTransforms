@@ -1,4 +1,6 @@
 name: lag
+tags:
+  - column
 description: Lag shifts your features on a partition index, creating a lookback feature offset by an amount. Lag supports generating multiple lags in one transform by generating each unique combination of columns and amounts from your inputs.
 arguments:
   columns:

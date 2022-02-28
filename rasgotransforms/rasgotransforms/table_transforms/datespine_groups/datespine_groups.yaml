@@ -1,4 +1,6 @@
 name: datespine_groups
+tags:
+  - table
 description: |
   Generates a date spine across custom groupings. Each grouping will be returned with a 
   continuous set of dates.

@@ -1,4 +1,6 @@
 name: moving_avg
+tags:
+  - column
 description: generates moving averages per column and per window size
 arguments:
   input_columns:

@@ -1,4 +1,6 @@
 name: linear_regression
+tags:
+  - table
 description: |
   Fit a simple linear regression and return the formula. Optionally, use one or more group_by columns to create a regression per unique grouping.
   

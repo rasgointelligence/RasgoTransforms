@@ -1,4 +1,6 @@
 name: multi_join
+tags:
+  - table
 description: |
   Union n number of datasets with the 'base' dataset, using a common list of columns between each dataset, and selecting them in order.
 

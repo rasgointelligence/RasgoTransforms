@@ -1,4 +1,6 @@
 name: filter
+tags:
+  - row
 description: Apply one or more column filters to the dataset
 arguments:
   filter_statements:
