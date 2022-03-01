@@ -64,7 +64,7 @@ def _get_transform_markdown(transform_yaml: Dict,
         md.github_url(transform_type_dir_name, transform_name),
         '',
     ]
-    return '\n\n'.join(filter(None, markdown_elements))
+    return '\n\n'.join(filter(lambda x: x!=None, markdown_elements))
 
 
 if __name__ == '__main__':
