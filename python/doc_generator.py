@@ -59,6 +59,7 @@ def _get_transform_markdown(
     Generate and return the markdown string to write as a MD
     file for this transform based off the YAML file
     """
+    print(f"transform_yaml:\n{transform_yaml}")
     # Get markdown representations for pre and post-transform datasets
     t1, t2 = _generate_dataset_markdowns(
         rasgo=rasgo_connection,
