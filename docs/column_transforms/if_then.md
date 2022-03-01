@@ -20,6 +20,14 @@ A default value for the new column should be set, as should the output column na
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -28,6 +36,8 @@ ds2 = ds.if_then(conditions=[["DS_WEATHER_ICON like '%cloudy%'", 1]],
       alias="CLOUDY_WEATHER_FLAG")
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

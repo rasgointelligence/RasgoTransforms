@@ -16,12 +16,22 @@ generates moving averages per column and per window size
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
 ds2 = ds.moving_avg(input_columns=['OPEN','CLOSE','HIGH','LOW'], window_sizes=[1,2,3,7], order_by=['DATE, 'TICKER'], partition=['TICKER'])
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

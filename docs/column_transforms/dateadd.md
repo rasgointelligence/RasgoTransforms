@@ -15,12 +15,22 @@ Adds the specified value for the specified date or time part to a date, time, or
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
 ds2 = ds.dateadd(date_part='year', date='END_DATE', offset=3)
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

@@ -16,6 +16,14 @@ See [this Snowflake doc](https://docs.snowflake.com/en/user-guide/date-time-inpu
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -25,6 +33,8 @@ ds2 = ds.to_date(dates={
   })
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

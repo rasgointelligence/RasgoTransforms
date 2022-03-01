@@ -13,6 +13,14 @@ A transform that accepts a custom template to execute. Must use the sql template
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -21,6 +29,8 @@ ds2 = ds.apply(
 )
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

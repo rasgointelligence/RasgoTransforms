@@ -13,12 +13,22 @@ Apply one or more column filters to the dataset
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
 ds2 = ds.filter(filter_statements=['MONTH = 4', 'YEAR < 2021', 'COVID_DEATHS IS NOT NULL']
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

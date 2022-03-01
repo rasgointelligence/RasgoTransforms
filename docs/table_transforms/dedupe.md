@@ -15,6 +15,14 @@ Deduplicate a table based on a passed-in composite key. Once an order column and
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -26,6 +34,8 @@ ds2 = ds.dedupe(
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

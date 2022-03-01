@@ -18,6 +18,14 @@ Currently, only supports a single independent variable.
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 internet_sales = rasgo.get.dataset(74)
 
@@ -32,6 +40,8 @@ ds2 = ds1.linear_regression(
 
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

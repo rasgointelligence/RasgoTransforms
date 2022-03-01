@@ -16,6 +16,14 @@ For a list of valid dateparts, refer to [Supported Date and Time Parts](https://
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -28,6 +36,8 @@ ds2 = ds.datetrunc(
 
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

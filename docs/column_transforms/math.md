@@ -19,6 +19,14 @@ Examples of Valid Functions:
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 internet_sales = rasgo.get.dataset(74)
 
@@ -28,6 +36,8 @@ ds2 = internet_sales.math(
 
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

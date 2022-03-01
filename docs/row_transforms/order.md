@@ -13,12 +13,22 @@ Order a dataset by specified columns, in a specified order
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
 ds2 = ds.order(order_by={'DS_WEATHER_ICON':'ASC', 'DS_DAILY_HIGH_TEMP':'DESC'})
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

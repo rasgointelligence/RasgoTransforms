@@ -18,6 +18,14 @@ Create a ranking of values in a column.
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 #Return the 5 highest temperatures per date:
 ds = rasgo.get.dataset(dataset_id)
@@ -32,6 +40,8 @@ ds2 = ds.rank(rank_columns=['DS_DAILY_HIGH_TEMP'],
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

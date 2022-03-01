@@ -29,6 +29,14 @@ FROM intervals
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(74)
 
@@ -41,6 +49,8 @@ ds2 = ds.datespine(
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

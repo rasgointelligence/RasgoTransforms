@@ -16,6 +16,14 @@ An exhaustive list of valid date parts can be [found here](https://docs.snowflak
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -25,6 +33,8 @@ ds2 = ds.datepart(dates={
   })
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

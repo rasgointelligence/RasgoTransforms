@@ -17,6 +17,14 @@ See scikit-learn's [TargetEncoder](https://contrib.scikit-learn.org/category_enc
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -24,6 +32,8 @@ ds2 = ds.target_encode(column='WEATHER_DESCRIPTION', target='DAILY_HIGH_TEMP')
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

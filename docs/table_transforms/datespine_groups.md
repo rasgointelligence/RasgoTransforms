@@ -25,6 +25,14 @@ and all data that does not fall into one of those intervals is excluded.
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(74)
 
@@ -53,6 +61,8 @@ ds2 = ds.datespine_groups(
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

@@ -13,6 +13,14 @@ One hot encode a column. Create a null value flag for the column if any of the v
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -20,6 +28,8 @@ ds2 = ds.one_hot_encode(column='WEATHER_DESCRIPTION')
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

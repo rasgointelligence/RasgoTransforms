@@ -20,6 +20,14 @@ Uses a text separator to aggregate the string values together, and returns a sin
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 product = rasgo.get.dataset(75)
 
@@ -30,6 +38,8 @@ ds2 = product.aggregate_string(group_by=['PRODUCTLINE'],
                 order='ASC')
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

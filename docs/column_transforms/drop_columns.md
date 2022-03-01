@@ -17,6 +17,14 @@ Passing both include_cols and exclude_cols will result in an error.
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -27,6 +35,8 @@ ds2b = ds.drop_columns(exclude_cols=["DS_CLOUD_COVER", "DS_TOTAL_RAINFALL"])
 ds2b.preview()
 
 ```
+
+
 
 ## Source Code
 

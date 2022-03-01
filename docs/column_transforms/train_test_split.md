@@ -17,6 +17,14 @@ If you want a row-wise random sample applied, do not pass an order_by column. If
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -27,6 +35,8 @@ ds2.preview()
 ds2b = ds.train_test_split(train_percent = 0.8)
 ds2b.preview()
 ```
+
+
 
 ## Source Code
 

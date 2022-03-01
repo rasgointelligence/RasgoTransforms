@@ -14,6 +14,14 @@ Impute missing values in column/columns with the mean, median, mode, or a value
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -30,6 +38,8 @@ ds2 = ds.impute(
 
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

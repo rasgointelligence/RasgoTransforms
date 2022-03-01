@@ -21,6 +21,14 @@ Example use case: Aggregate the last 10 sales for a customer regardless of when 
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 internet_sales = rasgo.get.dataset(74)
 
@@ -34,6 +42,8 @@ ds = internet_sales.rolling_agg(
   )
 
 ```
+
+
 
 ## Source Code
 

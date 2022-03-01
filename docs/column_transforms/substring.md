@@ -16,6 +16,14 @@ This function creates a new column that contains a substring of either a fixed v
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -23,6 +31,8 @@ ds2 = ds.substring(target_col='WEATHER_DESCRIPTION', start_pos=3)
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

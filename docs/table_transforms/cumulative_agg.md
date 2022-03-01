@@ -21,6 +21,14 @@ Example use case: Aggregate all sales for a customer from the beginning of time 
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 internet_sales = rasgo.get.dataset(74)
 
@@ -34,6 +42,8 @@ ds = internet_sales.cumulative_agg(
        )
 
 ```
+
+
 
 ## Source Code
 

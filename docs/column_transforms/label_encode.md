@@ -14,6 +14,14 @@ Encode target labels with value between 0 and n_classes-1. See scikit-learn's [L
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -21,6 +29,8 @@ ds2 = ds.label_encode(column='WEATHER_DESCRIPTION')
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

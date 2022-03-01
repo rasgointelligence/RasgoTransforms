@@ -15,6 +15,14 @@ Performs a UNPIVOT operation, rotating a table by transforming columns into rows
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -25,6 +33,8 @@ ds2 = ds.unpivot(
 )
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

@@ -18,6 +18,14 @@ This approach uses a transactional table to aggregate each product purchased in 
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 sales = rasgo.get.dataset(id)
 
@@ -26,6 +34,8 @@ ds2 = sales.market_basket(transaction_id='SALESORDERNUMBER',
                 sep='|')
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

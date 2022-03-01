@@ -14,6 +14,14 @@ Cast selected columns to a new type
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -29,6 +37,8 @@ ds_casted = ds.transform(
 ds_casted.preview()
 
 ```
+
+
 
 ## Source Code
 

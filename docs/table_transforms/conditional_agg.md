@@ -19,6 +19,14 @@ If multiple rules are passed, they are combined and aggregated both together and
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 customer = rasgo.get.dataset(55)
 
@@ -35,6 +43,8 @@ ds2 = customer.conditional_agg(rules=rules,
                               distinct=True)
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

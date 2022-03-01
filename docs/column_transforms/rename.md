@@ -14,6 +14,14 @@ Rename columns by passing a renames dict.
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(dataset_id)
 
@@ -26,6 +34,8 @@ ds2 = ds.rename(renames={
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

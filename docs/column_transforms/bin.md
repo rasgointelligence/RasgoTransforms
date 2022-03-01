@@ -24,6 +24,14 @@ The `equalwidth` method will calculate the boundaries of the bins such that they
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -31,6 +39,8 @@ ds2 = ds.bin(type='equalwidth', bin_count=6, column='DAILY_HIGH_TEMP')
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

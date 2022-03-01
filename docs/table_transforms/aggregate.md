@@ -14,6 +14,14 @@ Groups rows by the group_by items applying aggregations functions for the result
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -23,6 +31,8 @@ ds2 = ds.aggregate(group_by=['FIPS'], aggregations={
       })
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

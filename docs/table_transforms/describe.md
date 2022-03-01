@@ -16,11 +16,21 @@ Other: DTYPE, COUNT, NULL_COUNT, UNIQUE_COUNT, MOST_FREQUENT, MIN, MAX
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
 ds.describe().to_df()
 ```
+
+
 
 ## Source Code
 

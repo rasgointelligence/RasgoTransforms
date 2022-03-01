@@ -20,6 +20,14 @@ If you don't pass a join_prefix, columns that share the same name in both tables
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 internet_sales = rasgo.get.dataset(74)
 product = rasgo.get.dataset(75)
@@ -32,6 +40,8 @@ ds2 = internet_sales.join(
 
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

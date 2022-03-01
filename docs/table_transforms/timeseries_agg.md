@@ -24,6 +24,14 @@ within 2 months of this current order.
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 internet_sales = rasgo.get.dataset(74)
 
@@ -38,6 +46,8 @@ ds = internet_sales.timeseries_agg(
        )
 
 ```
+
+
 
 ## Source Code
 

@@ -14,6 +14,14 @@ Performs a SQL UNION or UNION ALL for the parent dataset, and another dataset. O
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 d1 = rasgo.get.dataset(dataset_id)
 d2 = rasgo.get.dataset(dataset_id_2)
@@ -25,6 +33,8 @@ ds2 = d1.transform.union(
 
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

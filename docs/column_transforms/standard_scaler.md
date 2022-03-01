@@ -18,6 +18,14 @@ If you omit averages and standarddevs, the function will compute the average and
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -30,6 +38,8 @@ ds2b = ds.standard_scaler(columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_T
 ds2b.preview()
 
 ```
+
+
 
 ## Source Code
 

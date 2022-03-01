@@ -17,6 +17,14 @@ Pass in a list named "concat_list", containing the names of the columns and the 
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 product = rasgo.get.dataset(75)
 ds2 = product.concat(
@@ -25,6 +33,8 @@ ds2 = product.concat(
 
 ds2.preview()
 ```
+
+
 
 ## Source Code
 

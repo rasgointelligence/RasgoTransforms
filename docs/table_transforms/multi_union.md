@@ -15,6 +15,14 @@ Union n number of datasets with the 'base' dataset, using a common list of colum
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 d1 = rasgo.get.dataset(dataset_id)
 d2 = rasgo.get.dataset(dataset_id_2)
@@ -28,6 +36,8 @@ ds2 = d1.multi_union(
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 

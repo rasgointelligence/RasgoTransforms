@@ -18,6 +18,14 @@ If you omit minimums and maximums, the function will compute the mins and maxes 
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -29,6 +37,8 @@ ds2b = ds.min_max_scaler(columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TE
     maximums=[101, 81])
 ds2b.preview()
 ```
+
+
 
 ## Source Code
 

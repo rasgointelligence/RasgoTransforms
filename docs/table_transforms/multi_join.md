@@ -17,6 +17,14 @@ Join n number of datasets with the 'base' dataset, using a consistent join_type 
 
 ## Example
 
+
+
+
+
+
+
+
+
 ```python
 internet_sales = rasgo.get.dataset(74)
 product = rasgo.get.dataset(75)
@@ -31,6 +39,8 @@ ds2 = internet_sales.multi_join(
 ds2.preview()
 
 ```
+
+
 
 ## Source Code
 
