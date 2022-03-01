@@ -14,9 +14,16 @@ example_code: |
   
   ds2 = ds.datetrunc(
     dates = {
-      'DATE':'month',
-      'Timestamp':'hour'
+      'DATE':'month'
     }
   )
   
   ds2.preview()
+dataset_id: 80
+output_cols:
+  - COVID_DEATHS
+  - DATE
+  - FIPS
+transform_args:
+  dates:
+    DATE: month

@@ -12,8 +12,17 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.datepart(dates={
-      'DATE_STRING':'year',
-      'DATE2_STR':'month'
-    })
+  ds2 = ds.datepart(
+    dates={
+      'DATE':'year'
+    }
+  )
   ds2.preview()
+dataset_id: 80
+output_cols:
+  - COVID_DEATHS
+  - DATE
+  - FIPS
+transform_args:
+  dates:
+    DATE: year

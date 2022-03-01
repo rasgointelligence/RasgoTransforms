@@ -24,5 +24,14 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.bin(type='equalwidth', bin_count=6, column='DAILY_HIGH_TEMP')
+  ds2 = ds.bin(type='equalwidth', bin_count=6, column='DS_DAILY_HIGH_TEMP')
   ds2.preview()
+dataset_id: 92
+output_cols:
+  - DS_DAILY_HIGH_TEMP
+  - DATE
+  - FIPS
+transform_args:
+  type: equalwidth
+  bin_count: 6
+  column: DAILY_HIGH_TEMP

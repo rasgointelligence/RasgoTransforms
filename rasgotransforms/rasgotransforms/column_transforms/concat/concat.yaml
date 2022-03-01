@@ -8,7 +8,7 @@ description: |
 arguments:
   concat_list:
     type: mixed_list
-    description: A list representing each new column to be created.
+    description: A list representing either strings or column values to be concatenated.
   name:
     type: value
     is_optional: true
@@ -20,3 +20,13 @@ example_code: |
     name='Hybrid Key')
 
   ds2.preview()
+dataset_id: 75
+output_cols:
+  - PRODUCTKEY
+  - PRODUCTALTERNATEKEY
+transform_args:
+  concat_list:
+    - PRODUCTKEY
+    - PRODUCTALTERNATEKEY
+    - ' hybridkey'
+  name: Hybrid Key
