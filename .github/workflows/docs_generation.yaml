@@ -15,6 +15,7 @@ jobs:
     
     env:
       PYTHONPATH: /__w/RasgoTransforms/RasgoTransforms
+      RASGO_COMMUNITY_API_KEY: ${{ secrets.RASGO_COMMUNITY_API_KEY }}
 
     steps:
       - uses: actions/checkout@v2
@@ -25,7 +26,7 @@ jobs:
           pip install -r python/requirements.txt
 
       - name: Generate Transform Docs
-        run: python python/doc_generator.py
+        run: python python/doc_generator.py "$RASGO_COMMUNITY_API_KEY"
 
       - name: Git Commit Generated Transform Docs
         run: |
