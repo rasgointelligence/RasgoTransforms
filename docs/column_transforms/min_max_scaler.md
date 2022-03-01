@@ -1,5 +1,3 @@
-
-
 # min_max_scaler
 
 This function scales a column by subtracting the min value in the column and dividing by the range between the max and min values.
@@ -18,14 +16,6 @@ If you omit minimums and maximums, the function will compute the mins and maxes 
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -38,9 +28,6 @@ ds2b = ds.min_max_scaler(columns_to_scale=['DS_DAILY_HIGH_TEMP','DS_DAILY_LOW_TE
 ds2b.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/min_max_scaler/min_max_scaler.sql" %}
-

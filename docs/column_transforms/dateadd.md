@@ -1,5 +1,3 @@
-
-
 # dateadd
 
 Adds the specified value for the specified date or time part to a date, time, or timestamp.
@@ -15,14 +13,6 @@ Adds the specified value for the specified date or time part to a date, time, or
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -30,9 +20,6 @@ ds2 = ds.dateadd(date_part='year', date='END_DATE', offset=3)
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/dateadd/dateadd.sql" %}
-

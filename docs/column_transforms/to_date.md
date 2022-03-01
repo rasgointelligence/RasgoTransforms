@@ -1,5 +1,3 @@
-
-
 # to_date
 
 Creates a column of a date/timestamp type from a string or other non-date column.
@@ -16,14 +14,6 @@ See [this Snowflake doc](https://docs.snowflake.com/en/user-guide/date-time-inpu
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -34,9 +24,6 @@ ds2 = ds.to_date(dates={
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/to_date/to_date.sql" %}
-

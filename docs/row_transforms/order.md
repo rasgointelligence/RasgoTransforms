@@ -1,5 +1,3 @@
-
-
 # order
 
 Order a dataset by specified columns, in a specified order
@@ -13,14 +11,6 @@ Order a dataset by specified columns, in a specified order
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -28,9 +18,6 @@ ds2 = ds.order(order_by={'DS_WEATHER_ICON':'ASC', 'DS_DAILY_HIGH_TEMP':'DESC'})
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/row_transforms/order/order.sql" %}
-

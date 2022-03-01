@@ -1,5 +1,3 @@
-
-
 # math
 
 Calculate one or more new columns using math functions.
@@ -19,14 +17,6 @@ Examples of Valid Functions:
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 internet_sales = rasgo.get.dataset(74)
 
@@ -37,9 +27,6 @@ ds2 = internet_sales.math(
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/math/math.sql" %}
-

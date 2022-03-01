@@ -1,5 +1,3 @@
-
-
 # linear_regression
 
 Fit a simple linear regression and return the formula. Optionally, use one or more group_by columns to create a regression per unique grouping.
@@ -18,14 +16,6 @@ Currently, only supports a single independent variable.
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 internet_sales = rasgo.get.dataset(74)
 
@@ -41,9 +31,6 @@ ds2 = ds1.linear_regression(
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/linear_regression/linear_regression.sql" %}
-

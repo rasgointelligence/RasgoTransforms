@@ -1,5 +1,3 @@
-
-
 # if_then
 
 This function creates a new column based on the conditions provided in the `conditions` argument.
@@ -20,14 +18,6 @@ A default value for the new column should be set, as should the output column na
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -37,9 +27,6 @@ ds2 = ds.if_then(conditions=[["DS_WEATHER_ICON like '%cloudy%'", 1]],
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/if_then/if_then.sql" %}
-

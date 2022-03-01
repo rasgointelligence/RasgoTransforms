@@ -1,5 +1,3 @@
-
-
 # timeseries_agg
 
 Date-based; Calculates a rolling aggregate based on a relative datetime window.
@@ -24,14 +22,6 @@ within 2 months of this current order.
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 internet_sales = rasgo.get.dataset(74)
 
@@ -47,9 +37,6 @@ ds = internet_sales.timeseries_agg(
 
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/timeseries_agg/timeseries_agg.sql" %}
-

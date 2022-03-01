@@ -1,5 +1,3 @@
-
-
 # rename
 
 Rename columns by passing a renames dict.
@@ -14,14 +12,6 @@ Rename columns by passing a renames dict.
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(dataset_id)
 
@@ -35,9 +25,6 @@ ds2.preview()
 
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/rename/rename.sql" %}
-

@@ -1,5 +1,3 @@
-
-
 # levenshtein
 
 Calculate the edit distance between pairwise combinations of string columns
@@ -14,14 +12,6 @@ Calculate the edit distance between pairwise combinations of string columns
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -29,9 +19,6 @@ ds2 = ds.levenshtein(columns1 = ['FIRSTNAME'], columns2 = ['LASTNAME'])
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/levenshtein/levenshtein.sql" %}
-

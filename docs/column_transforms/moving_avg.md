@@ -1,5 +1,3 @@
-
-
 # moving_avg
 
 generates moving averages per column and per window size
@@ -16,14 +14,6 @@ generates moving averages per column and per window size
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -31,9 +21,6 @@ ds2 = ds.moving_avg(input_columns=['OPEN','CLOSE','HIGH','LOW'], window_sizes=[1
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/moving_avg/moving_avg.sql" %}
-

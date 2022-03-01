@@ -1,5 +1,3 @@
-
-
 # join
 
 Join a dataset with another dataset, by matching on one or more columns between the two tables.
@@ -20,14 +18,6 @@ If you don't pass a join_prefix, columns that share the same name in both tables
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 internet_sales = rasgo.get.dataset(74)
 product = rasgo.get.dataset(75)
@@ -41,9 +31,6 @@ ds2 = internet_sales.join(
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/join/join.sql" %}
-

@@ -1,5 +1,3 @@
-
-
 # concat
 
 This function creates a new column that concatenates fixed values and columns in your dataset.
@@ -17,14 +15,6 @@ Pass in a list named "concat_list", containing the names of the columns and the 
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 product = rasgo.get.dataset(75)
 ds2 = product.concat(
@@ -34,9 +24,6 @@ ds2 = product.concat(
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/concat/concat.sql" %}
-

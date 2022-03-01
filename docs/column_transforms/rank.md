@@ -1,5 +1,3 @@
-
-
 # rank
 
 Create a ranking of values in a column.
@@ -18,14 +16,6 @@ Create a ranking of values in a column.
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 #Return the 5 highest temperatures per date:
 ds = rasgo.get.dataset(dataset_id)
@@ -41,9 +31,6 @@ ds2.preview()
 
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/rank/rank.sql" %}
-

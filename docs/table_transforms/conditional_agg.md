@@ -1,5 +1,3 @@
-
-
 # conditional_agg
 
 Pass in a list of filter rules, and aggregate rows that match.
@@ -19,14 +17,6 @@ If multiple rules are passed, they are combined and aggregated both together and
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 customer = rasgo.get.dataset(55)
 
@@ -44,9 +34,6 @@ ds2 = customer.conditional_agg(rules=rules,
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/conditional_agg/conditional_agg.sql" %}
-

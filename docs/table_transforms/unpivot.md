@@ -1,5 +1,3 @@
-
-
 # unpivot
 
 Performs a UNPIVOT operation, rotating a table by transforming columns into rows
@@ -15,14 +13,6 @@ Performs a UNPIVOT operation, rotating a table by transforming columns into rows
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -34,9 +24,6 @@ ds2 = ds.unpivot(
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/unpivot/unpivot.sql" %}
-

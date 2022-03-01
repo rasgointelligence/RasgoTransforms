@@ -1,5 +1,3 @@
-
-
 # apply
 
 A transform that accepts a custom template to execute. Must use the sql template argument `source_table` to reference the Rasgo dataset which will serve as the base of any SELECT
@@ -13,14 +11,6 @@ A transform that accepts a custom template to execute. Must use the sql template
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -30,9 +20,6 @@ ds2 = ds.apply(
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/apply/apply.sql" %}
-

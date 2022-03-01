@@ -1,5 +1,3 @@
-
-
 # datepart
 
 Extracts a specific part of a date column. For example, if the input is '2021-01-01', you can ask for the year and get back 2021.
@@ -16,14 +14,6 @@ An exhaustive list of valid date parts can be [found here](https://docs.snowflak
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -34,9 +24,6 @@ ds2 = ds.datepart(dates={
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/datepart/datepart.sql" %}
-

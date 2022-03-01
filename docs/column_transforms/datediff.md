@@ -1,5 +1,3 @@
-
-
 # datediff
 
 Calculates the difference between two date, time, or timestamp expressions based on the date or time part requested. The function returns the result of subtracting the second argument from the third argument.
@@ -15,14 +13,6 @@ Calculates the difference between two date, time, or timestamp expressions based
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -30,9 +20,6 @@ ds2 = ds.datediff(date_part='year', date_1='END_DATE', date_2="'2022-01-01'")
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/datediff/datediff.sql" %}
-

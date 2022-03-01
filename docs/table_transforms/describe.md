@@ -1,5 +1,3 @@
-
-
 # describe
 
 Describes the dataset using a consistent set of metrics, based on data type.
@@ -16,23 +14,12 @@ Other: DTYPE, COUNT, NULL_COUNT, UNIQUE_COUNT, MOST_FREQUENT, MIN, MAX
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
 ds.describe().to_df()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/describe/describe.sql" %}
-

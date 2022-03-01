@@ -1,5 +1,3 @@
-
-
 # aggregate_string
 
 Aggregate strings across rows by concatenating them together, and grouping by other columns.
@@ -20,14 +18,6 @@ Uses a text separator to aggregate the string values together, and returns a sin
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 product = rasgo.get.dataset(75)
 
@@ -39,9 +29,6 @@ ds2 = product.aggregate_string(group_by=['PRODUCTLINE'],
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/aggregate_string/aggregate_string.sql" %}
-

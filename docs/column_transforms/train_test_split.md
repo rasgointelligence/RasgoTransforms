@@ -1,5 +1,3 @@
-
-
 # train_test_split
 
 Label rows as part of the train or test set based off of percentage split you want to apply to the data.
@@ -17,14 +15,6 @@ If you want a row-wise random sample applied, do not pass an order_by column. If
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -36,9 +26,6 @@ ds2b = ds.train_test_split(train_percent = 0.8)
 ds2b.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/train_test_split/train_test_split.sql" %}
-

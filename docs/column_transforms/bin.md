@@ -1,5 +1,3 @@
-
-
 # bin
 
 This function will categorize or bin an input column such that for N bins, an output column is created with values `[1-N]` where each value represents some bin.
@@ -24,14 +22,6 @@ The `equalwidth` method will calculate the boundaries of the bins such that they
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 ds = rasgo.get.dataset(id)
 
@@ -40,9 +30,6 @@ ds2.preview()
 
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/bin/bin.sql" %}
-

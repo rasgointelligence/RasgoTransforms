@@ -1,5 +1,3 @@
-
-
 # datespine_groups
 
 Generates a date spine across custom groupings. Each grouping will be returned with a 
@@ -24,14 +22,6 @@ and all data that does not fall into one of those intervals is excluded.
 
 
 ## Example
-
-
-
-
-
-
-
-
 
 ```python
 ds = rasgo.get.dataset(74)
@@ -62,9 +52,6 @@ ds2.preview()
 
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/datespine_groups/datespine_groups.sql" %}
-

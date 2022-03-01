@@ -1,5 +1,3 @@
-
-
 # simple_join
 
 Simple join between two datasets that uses a 'USING' clause. Returns all columns from both tables in the result set.
@@ -16,14 +14,6 @@ Simple join between two datasets that uses a 'USING' clause. Returns all columns
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 d1 = rasgo.get.dataset(dataset_id)
 d2 = rasgo.get.dataset(dataset_id_2)
@@ -38,9 +28,6 @@ ds2.preview()
 
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/simple_join/simple_join.sql" %}
-

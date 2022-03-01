@@ -1,5 +1,3 @@
-
-
 # market_basket
 
 Analyze historical transaction contents to understand products that are frequently purchased together.
@@ -18,14 +16,6 @@ This approach uses a transactional table to aggregate each product purchased in 
 
 ## Example
 
-
-
-
-
-
-
-
-
 ```python
 sales = rasgo.get.dataset(id)
 
@@ -35,9 +25,6 @@ ds2 = sales.market_basket(transaction_id='SALESORDERNUMBER',
 ds2.preview()
 ```
 
-
-
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/market_basket/market_basket.sql" %}
-
