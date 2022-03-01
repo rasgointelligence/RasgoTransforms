@@ -54,17 +54,17 @@ def _get_transform_markdown(transform_yaml: Dict,
         md.h2('Parameters'),
         md.table(transform_yaml['arguments']),
         md.h2('Example'),
-        md.text(DATASET_PREVIEW_TEXT) if 'preview-data' in transform_yaml else "",
-        md.python_code(DATASET_PREVIEW_CODE) if 'preview-data' in transform_yaml else "",
-        md.text(transform_yaml['preview-data']) if 'preview-data' in transform_yaml else "",
-        md.text(TRANSFORMED_DATA_PREVIEW_TEXT) if 'preview-data' in transform_yaml else "",
+        md.text(DATASET_PREVIEW_TEXT) if 'preview-data' in transform_yaml else None,
+        md.python_code(DATASET_PREVIEW_CODE) if 'preview-data' in transform_yaml else None,
+        md.text(transform_yaml['preview-data']) if 'preview-data' in transform_yaml else None,
+        md.text(TRANSFORMED_DATA_PREVIEW_TEXT) if 'preview-data' in transform_yaml else None,
         md.python_code(transform_yaml['example_code']),
-        md.text(transform_yaml['post-transform-data']) if 'preview-data' in transform_yaml else "",
+        md.text(transform_yaml['post-transform-data']) if 'preview-data' in transform_yaml else None,
         md.h2('Source Code'),
         md.github_url(transform_type_dir_name, transform_name),
         '',
     ]
-    return '\n\n'.join(markdown_elements)
+    return '\n\n'.join(filter(None, markdown_elements))
 
 
 if __name__ == '__main__':
