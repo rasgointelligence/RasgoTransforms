@@ -1,3 +1,5 @@
+
+
 # target_encode
 
 Encode a categorical column with the average value of a target column for the corresponding value of the categorical column.
@@ -26,3 +28,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/target_encode/target_encode.sql" %}
+

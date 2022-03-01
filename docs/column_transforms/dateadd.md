@@ -1,3 +1,5 @@
+
+
 # dateadd
 
 Adds the specified value for the specified date or time part to a date, time, or timestamp.
@@ -23,3 +25,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/dateadd/dateadd.sql" %}
+

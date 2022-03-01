@@ -1,3 +1,5 @@
+
+
 # describe
 
 Describes the dataset using a consistent set of metrics, based on data type.
@@ -23,3 +25,4 @@ ds.describe().to_df()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/describe/describe.sql" %}
+

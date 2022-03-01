@@ -1,3 +1,5 @@
+
+
 # if_then
 
 This function creates a new column based on the conditions provided in the `conditions` argument.
@@ -30,3 +32,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/if_then/if_then.sql" %}
+

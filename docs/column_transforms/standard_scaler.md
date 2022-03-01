@@ -1,3 +1,5 @@
+
+
 # standard_scaler
 
 This function scales a column by removing the mean and scaling by standard deviation.
@@ -32,3 +34,4 @@ ds2b.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/standard_scaler/standard_scaler.sql" %}
+

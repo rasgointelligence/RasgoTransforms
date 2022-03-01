@@ -1,3 +1,5 @@
+
+
 # multi_join
 
 Union n number of datasets with the 'base' dataset, using a common list of columns between each dataset, and selecting them in order.
@@ -30,3 +32,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/multi_union/multi_union.sql" %}
+

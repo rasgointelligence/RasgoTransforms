@@ -1,3 +1,5 @@
+
+
 # conditional_agg
 
 Pass in a list of filter rules, and aggregate rows that match.
@@ -37,3 +39,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/conditional_agg/conditional_agg.sql" %}
+

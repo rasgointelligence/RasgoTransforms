@@ -1,3 +1,5 @@
+
+
 # union
 
 Performs a SQL UNION or UNION ALL for the parent dataset, and another dataset. Operation will only merge columns with matching columns names in both datasets and drop all other columns. Column data type validation does not happen.
@@ -27,3 +29,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/union/union.sql" %}
+

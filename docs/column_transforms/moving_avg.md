@@ -1,3 +1,5 @@
+
+
 # moving_avg
 
 generates moving averages per column and per window size
@@ -24,3 +26,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/moving_avg/moving_avg.sql" %}
+

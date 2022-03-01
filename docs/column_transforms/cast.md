@@ -1,3 +1,5 @@
+
+
 # cast
 
 Cast selected columns to a new type
@@ -31,3 +33,4 @@ ds_casted.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/cast/cast.sql" %}
+

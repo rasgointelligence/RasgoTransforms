@@ -1,3 +1,5 @@
+
+
 # join
 
 Join a dataset with another dataset, by matching on one or more columns between the two tables.
@@ -34,3 +36,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/join/join.sql" %}
+

@@ -1,3 +1,5 @@
+
+
 # min_max_scaler
 
 This function scales a column by subtracting the min value in the column and dividing by the range between the max and min values.
@@ -31,3 +33,4 @@ ds2b.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/min_max_scaler/min_max_scaler.sql" %}
+

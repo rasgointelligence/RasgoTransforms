@@ -1,3 +1,5 @@
+
+
 # linear_regression
 
 Fit a simple linear regression and return the formula. Optionally, use one or more group_by columns to create a regression per unique grouping.
@@ -34,3 +36,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/linear_regression/linear_regression.sql" %}
+

@@ -1,3 +1,5 @@
+
+
 # aggregate
 
 Groups rows by the group_by items applying aggregations functions for the resulting group and selected columns
@@ -25,3 +27,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/aggregate/aggregate.sql" %}
+

@@ -1,3 +1,5 @@
+
+
 # datetrunc
 
 Truncates a date to the datepart you specify. For example, if you truncate the date '10-31-2022' to the 'month', you would get '10-1-2022'.
@@ -30,3 +32,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/datetrunc/datetrunc.sql" %}
+

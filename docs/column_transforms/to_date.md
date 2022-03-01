@@ -1,3 +1,5 @@
+
+
 # to_date
 
 Creates a column of a date/timestamp type from a string or other non-date column.
@@ -27,3 +29,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/to_date/to_date.sql" %}
+

@@ -1,3 +1,5 @@
+
+
 # substring
 
 This function creates a new column that contains a substring of either a fixed value or another column in your dataset.
@@ -25,3 +27,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/substring/substring.sql" %}
+

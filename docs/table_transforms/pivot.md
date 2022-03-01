@@ -1,3 +1,5 @@
+
+
 # pivot
 
 Transpose unique values in a single column to generate multiple columns, aggregating as needed. 
@@ -69,3 +71,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/pivot/pivot.sql" %}
+

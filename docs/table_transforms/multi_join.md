@@ -1,3 +1,5 @@
+
+
 # multi_join
 
 Join n number of datasets with the 'base' dataset, using a consistent join_type and consistent list of join_columns across all joins.
@@ -33,3 +35,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/multi_join/multi_join.sql" %}
+

@@ -1,3 +1,5 @@
+
+
 # datediff
 
 Calculates the difference between two date, time, or timestamp expressions based on the date or time part requested. The function returns the result of subtracting the second argument from the third argument.
@@ -23,3 +25,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/datediff/datediff.sql" %}
+

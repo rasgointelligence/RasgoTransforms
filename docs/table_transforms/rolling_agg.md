@@ -1,3 +1,5 @@
+
+
 # rolling_agg
 
 Row-based; Calculates a rolling aggregate based on a relative row window.
@@ -36,3 +38,4 @@ ds = internet_sales.rolling_agg(
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/rolling_agg/rolling_agg.sql" %}
+

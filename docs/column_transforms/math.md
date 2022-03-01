@@ -1,3 +1,5 @@
+
+
 # math
 
 Calculate one or more new columns using math functions.
@@ -30,3 +32,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/math/math.sql" %}
+

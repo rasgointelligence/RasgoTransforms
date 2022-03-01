@@ -1,3 +1,5 @@
+
+
 # lag
 
 Lag shifts your features on a partition index, creating a lookback feature offset by an amount. Lag supports generating multiple lags in one transform by generating each unique combination of columns and amounts from your inputs.
@@ -24,3 +26,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/lag/lag.sql" %}
+

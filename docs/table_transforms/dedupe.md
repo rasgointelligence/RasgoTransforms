@@ -1,3 +1,5 @@
+
+
 # dedupe
 
 Deduplicate a table based on a passed-in composite key. Once an order column and an order method are selected, only the top record from the resulting grouped and ordered dataset will be kept.
@@ -28,3 +30,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/dedupe/dedupe.sql" %}
+

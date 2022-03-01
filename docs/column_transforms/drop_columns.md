@@ -1,3 +1,5 @@
+
+
 # drop_columns
 
 Drop columns by passing either an include_cols list of columns to include or an exclude_cols list of columns to exclude.
@@ -29,3 +31,4 @@ ds2b.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/drop_columns/drop_columns.sql" %}
+

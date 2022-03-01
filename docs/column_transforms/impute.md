@@ -1,3 +1,5 @@
+
+
 # impute
 
 Impute missing values in column/columns with the mean, median, mode, or a value
@@ -32,3 +34,4 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/impute/impute.sql" %}
+
