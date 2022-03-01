@@ -59,13 +59,12 @@ def _get_transform_markdown(
     Generate and return the markdown string to write as a MD
     file for this transform based off the YAML file
     """
-    print(f"transform_yaml:\n{transform_yaml}")
     # Get markdown representations for pre and post-transform datasets
     t1, t2 = _generate_dataset_markdowns(
         rasgo=rasgo_connection,
-        dataset_id=transform_yaml['dataset-id'],
-        output_cols=transform_yaml['output-cols'],
-        transform_details=transform_yaml['transform-details']
+        dataset_id=transform_yaml['dataset_id'],
+        output_cols=transform_yaml['output_cols'],
+        transform_details=transform_yaml['transform_details']
     )
 
     # Generate Markdown Elements in Transform Doc
@@ -108,8 +107,8 @@ def _generate_dataset_markdowns(
     ds_md = ds.preview()[output_cols].to_markdown()
 
     ds1 = ds.transform(
-        transform_name=transform_details["transform-name"],
-        arguments=transform_details["transform-args"]
+        transform_name=transform_details["transform_name"],
+        arguments=transform_details["transform_args"]
     )
     ds1_md = ds1.preview().to_markdown()
 

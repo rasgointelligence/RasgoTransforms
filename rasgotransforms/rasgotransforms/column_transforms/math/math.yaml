@@ -19,14 +19,14 @@ example_code: |
       names=['Sales10', 'SalesNet'])
 
   ds2.preview()
-dataset-id: 74
-output-cols:
+dataset_id: 74
+output_cols:
   - SALESAMOUNT
   - TAXAMT
   - DUEDATE
-transform-details:
-  transform-name: math
-  transform-args:
+transform_details:
+  transform_name: math
+  transform_args:
     math_ops: 
       - SALESAMOUNT * 10
       - SALESAMOUNT - TAXAMT
