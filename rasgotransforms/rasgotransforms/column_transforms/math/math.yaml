@@ -24,12 +24,10 @@ output_cols:
   - SALESAMOUNT
   - TAXAMT
   - DUEDATE
-transform_details:
-  transform_name: math
-  transform_args:
-    math_ops: 
-      - SALESAMOUNT * 10
-      - SALESAMOUNT - TAXAMT
-    names:
-      - Sales10
-      - SalesNet
+transform_args:
+  math_ops: 
+    - SALESAMOUNT * 10
+    - SALESAMOUNT - TAXAMT
+  names:
+    - Sales10
+    - SalesNet

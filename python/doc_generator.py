@@ -1,8 +1,10 @@
 import argparse
 import os
-from typing import Dict, List, Any
+from typing import Dict, List, Tuple
 
 import pyrasgo
+
+from pyrasgo.rasgo import Rasgo
 
 from python import utils, markdown as md
 
@@ -53,7 +55,7 @@ def _get_transform_markdown(
     transform_yaml: Dict,
     transform_type_dir_name: str,
     transform_name: str,
-    rasgo_connection: Any
+    rasgo_connection: Rasgo
 ) -> str:
     """
     Generate and return the markdown string to write as a MD
@@ -64,7 +66,8 @@ def _get_transform_markdown(
         rasgo=rasgo_connection,
         dataset_id=transform_yaml['dataset_id'],
         output_cols=transform_yaml['output_cols'],
-        transform_details=transform_yaml['transform_details']
+        transform_name=transform_yaml['name'],
+        transform_args=transform_yaml['transform_args']
     )
 
     # Generate Markdown Elements in Transform Doc
@@ -88,31 +91,34 @@ def _get_transform_markdown(
     return '\n\n'.join(filter(lambda x: x!=None, markdown_elements))
 
 def _generate_dataset_markdowns(
-    rasgo: Any,
+    rasgo: Rasgo,
     dataset_id: int,
     output_cols: List[str],
-    transform_details: Dict
-) -> List[str]:
+    transform_name: str,
+    transform_args: Dict
+) -> Tuple[str, str]:
     """Creates markdown representation of both a pre-transform Rasgo Dataset
     and a transformed Rasgo Dataset
 
     Arguments:
-        :dataset_id: int: A Rasgo Community Dataset ID matching the columns named 
+        dataset_id: int: A Rasgo Community Dataset ID matching the columns named 
         in the `example_code` section of the YAML doc
-        :output_cols: List[str]: A list of column names to include in the output
-        YAML representation
-        :transform_args: dict: TODO what do we want here? How to build the transform from args
+
+        output_cols: List[str]: A list of column names to include in the output
+        YAML representation of the pre-transformation dataset
+
+        transform_args: dict: TODO what do we want here? How to build the transform from args
     """
     ds = rasgo.get.dataset(dataset_id)
     ds_md = ds.preview()[output_cols].to_markdown()
 
     ds1 = ds.transform(
-        transform_name=transform_details["transform_name"],
-        arguments=transform_details["transform_args"]
+        transform_name=transform_name,
+        arguments=transform_args
     )
     ds1_md = ds1.preview().to_markdown()
 
-    return[ds_md, ds1_md]
+    return ds_md, ds1_md
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
