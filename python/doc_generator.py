@@ -64,7 +64,7 @@ def _get_transform_markdown(
         rasgo=rasgo_connection,
         dataset_id=transform_yaml['dataset-id'],
         output_cols=transform_yaml['output-cols'],
-        transform_args=transform_yaml['transform-args']
+        transform_details=transform_yaml['transform-details']
     )
 
     # Generate Markdown Elements in Transform Doc
