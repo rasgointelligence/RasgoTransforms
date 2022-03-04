@@ -1,6 +1,8 @@
 name: datespine
 tags:
   - table
+  - date_time
+  - data_quality
 description: |
   This transform generates a date spine for your date index, which can replace your date index column for modeling.
   

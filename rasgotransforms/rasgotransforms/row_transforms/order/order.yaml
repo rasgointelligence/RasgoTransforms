@@ -1,6 +1,8 @@
 name: order
 tags:
   - row
+  - conditional
+  - data_cleaning
 description: Order a dataset by specified columns, in a specified order
 arguments:
   order_by:

@@ -1,6 +1,9 @@
 name: timeseries_agg
 tags:
   - table
+  - aggregate
+  - date_time
+  - reshape
 description: |
   Date-based; Calculates a rolling aggregate based on a relative datetime window.
 

@@ -1,6 +1,8 @@
 name: union
 tags:
   - table
+  - reshape
+  - join
 description:  Performs a SQL UNION or UNION ALL for the parent dataset, and another dataset. Operation will only merge columns with matching columns names in both datasets and drop all other columns. Column data type validation does not happen.
 arguments:
   dataset2:

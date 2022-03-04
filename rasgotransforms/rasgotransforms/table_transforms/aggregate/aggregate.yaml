@@ -1,6 +1,8 @@
 name: aggregate
 tags:
   - table
+  - reshape
+  - aggregate
 description:  Groups rows by the group_by items applying aggregations functions for the resulting group and selected columns
 arguments:
   group_by:

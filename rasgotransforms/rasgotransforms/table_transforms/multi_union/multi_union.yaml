@@ -1,6 +1,8 @@
 name: multi_join
 tags:
   - table
+  - reshape
+  - join
 description: |
   Union n number of datasets with the 'base' dataset, using a common list of columns between each dataset, and selecting them in order.
 

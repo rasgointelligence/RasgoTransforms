@@ -1,6 +1,9 @@
 name: aggregate_string
 tags:
   - table
+  - reshape
+  - aggregate
+  - natural_language_processing
 description: |
   Aggregate strings across rows by concatenating them together, and grouping by other columns.
 

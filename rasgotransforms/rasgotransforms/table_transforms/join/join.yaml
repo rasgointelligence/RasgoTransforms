@@ -1,6 +1,8 @@
 name: join
 tags:
   - table
+  - join
+  - reshape
 description: |
   Join a dataset with another dataset, by matching on one or more columns between the two tables.
 

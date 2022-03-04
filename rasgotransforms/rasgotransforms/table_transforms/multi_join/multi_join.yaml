@@ -1,6 +1,8 @@
 name: multi_join
 tags:
   - table
+  - join
+  - reshape
 description: |
   Join n number of datasets with the 'base' dataset, using a consistent join_type and consistent list of join_columns across all joins.
 

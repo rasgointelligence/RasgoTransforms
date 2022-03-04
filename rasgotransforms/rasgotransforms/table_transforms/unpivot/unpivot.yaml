@@ -1,6 +1,7 @@
 name: unpivot
 tags:
   - table
+  - reshape
 description:  Performs a UNPIVOT operation, rotating a table by transforming columns into rows
 arguments:
   value_column:

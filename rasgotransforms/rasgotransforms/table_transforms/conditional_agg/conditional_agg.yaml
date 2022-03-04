@@ -1,6 +1,9 @@
 name: conditional_agg
 tags:
   - table
+  - conditional
+  - reshape
+  - aggregate
 description: |
   Pass in a list of filter rules, and aggregate rows that match.
 

@@ -1,6 +1,8 @@
 name: cumulative_agg
 tags:
   - table
+  - aggregate
+  - reshape
 description: |
   Row-based; Calculates a cumulative aggregate based on a relative row window.
 

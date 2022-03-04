@@ -1,6 +1,8 @@
 name: rolling_agg
 tags:
   - table
+  - aggregate
+  - date_time
 description: |
   Row-based; Calculates a rolling aggregate based on a relative row window.
 
