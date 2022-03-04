@@ -1,6 +1,8 @@
 name: impute
 tags:
   - column
+  - data_cleaning
+  - data_quality
 description:  Impute missing values in column/columns with the mean, median, mode, or a value
 arguments:
   imputations:

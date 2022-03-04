@@ -1,6 +1,8 @@
 name: cast
 tags:
   - column
+  - data_cleaning
+  - data_quality
 description: |
   Cast selected columns to a new type
 arguments:

@@ -1,6 +1,8 @@
 name: moving_avg
 tags:
   - column
+  - date_time
+  - feature_engineering
 description: generates moving averages per column and per window size
 arguments:
   input_columns:

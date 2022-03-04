@@ -1,6 +1,7 @@
 name: drop_columns
 tags:
   - column
+  - data_cleaning
 description: |
   Drop columns by passing either an include_cols list of columns to include or an exclude_cols list of columns to exclude.
   

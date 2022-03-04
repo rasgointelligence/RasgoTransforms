@@ -1,6 +1,7 @@
 name: min_max_scaler
 tags:
   - column
+  - feature_engineering
 description: |
   This function scales a column by subtracting the min value in the column and dividing by the range between the max and min values.
 

@@ -1,6 +1,8 @@
 name: math
 tags:
   - column
+  - math
+  - feature_engineering
 description: |
   Calculate one or more new columns using math functions.
 arguments:

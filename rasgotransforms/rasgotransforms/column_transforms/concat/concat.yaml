@@ -1,6 +1,9 @@
 name: concat
 tags:
   - column
+  - data_cleaning
+  - natural_language_processing
+
 description: |
   This function creates a new column that concatenates fixed values and columns in your dataset.
 

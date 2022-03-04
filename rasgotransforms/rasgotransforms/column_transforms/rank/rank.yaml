@@ -1,6 +1,8 @@
 name: rank
 tags:
   - column
+  - math
+  - feature_engineering
 description: |
   Create a ranking of values in a column.
 

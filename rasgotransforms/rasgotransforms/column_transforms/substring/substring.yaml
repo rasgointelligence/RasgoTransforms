@@ -1,6 +1,7 @@
 name: substring
 tags:
   - column
+  - natural_language_processing
 description: |
   This function creates a new column that contains a substring of either a fixed value or another column in your dataset.
 arguments:

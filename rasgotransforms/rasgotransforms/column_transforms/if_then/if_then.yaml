@@ -1,6 +1,9 @@
 name: if_then
 tags:
   - column
+  - conditional
+  - data_cleaning
+  - natural_language_processing
 description: |
   This function creates a new column based on the conditions provided in the `conditions` argument.
 

@@ -1,6 +1,8 @@
 name: to_date
 tags:
   - column
+  - data_cleaning
+  - date_time
 description: |
   Creates a column of a date/timestamp type from a string or other non-date column.
 
