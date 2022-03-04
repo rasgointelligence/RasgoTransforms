@@ -23,5 +23,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/one_hot_encode/one_hot_encode.sql" %}
+/one_hot_encode/one_hot_encode.sql" %}
 
