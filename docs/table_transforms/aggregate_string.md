@@ -33,5 +33,5 @@ ds2.preview()
 
 ## Source Code
 
-/aggregate_string/aggregate_string.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/aggregate_string/aggregate_string.sql" %}
 

@@ -35,5 +35,5 @@ ds2.preview()
 
 ## Source Code
 
-/join/join.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/join/join.sql" %}
 

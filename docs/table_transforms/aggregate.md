@@ -26,5 +26,5 @@ ds2.preview()
 
 ## Source Code
 
-/aggregate/aggregate.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/aggregate/aggregate.sql" %}
 

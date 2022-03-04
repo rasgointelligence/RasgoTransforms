@@ -24,5 +24,5 @@ ds2.preview()
 
 ## Source Code
 
-/apply/apply.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/apply/apply.sql" %}
 

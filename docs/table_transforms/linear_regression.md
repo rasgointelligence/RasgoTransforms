@@ -35,5 +35,5 @@ ds2.preview()
 
 ## Source Code
 
-/linear_regression/linear_regression.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/linear_regression/linear_regression.sql" %}
 

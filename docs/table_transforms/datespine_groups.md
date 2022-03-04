@@ -56,5 +56,5 @@ ds2.preview()
 
 ## Source Code
 
-/datespine_groups/datespine_groups.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/datespine_groups/datespine_groups.sql" %}
 
