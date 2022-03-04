@@ -11,7 +11,7 @@ import yaml
 from pyrasgo.rasgo import Rasgo
 from pyrasgo.schemas import Transform
 
-import constants
+from python import constants
 
 # ----------------------------------------------
 #      Utils for Doc and Transform Creation
@@ -52,6 +52,15 @@ def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
 
     return transform_yamls
 
+def override_path_exists(transform_type: str, transform_name: str, dw_type: str) -> bool:
+    """
+    Returns true is an override file exists for this dw for this transform
+    """
+    transform_type_dir_path = _get_udt_repo_dir() / f"{transform_type}_transforms"
+    transform_override_path = transform_type_dir_path / transform_name / dw_type / f"{transform_name}.sql"
+    if transform_override_path.exists():
+        return True
+    return False
 
 def get_root_dir() -> Path:
     """
