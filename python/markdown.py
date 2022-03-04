@@ -58,6 +58,7 @@ def github_url(transform_type_dir_name: str, transform_name: str, dw_type_dir_na
     """
     Make and return the embedded url for transform source code
     """
+    dw_type_dir = f"/{dw_type_dir_name}" if dw_type_dir_name else ""
     return '{% embed url="' + f"{constants.GITHUB_REPO_URL}/{transform_type_dir_name}" \
-                            + f"/{dw_type_dir_name}" if dw_type_dir_name else "" \
-                            + f"/{transform_name}/{transform_name}.sql" + '" %}'
+                            f"{dw_type_dir}" \
+                            f"/{transform_name}/{transform_name}.sql" + '" %}'
