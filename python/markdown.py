@@ -54,9 +54,10 @@ def python_code(code: str) -> str:
     return f"```python\n{code}\n```"""
 
 
-def github_url(transform_type_dir_name: str, transform_name: str) -> str:
+def github_url(transform_type_dir_name: str, transform_name: str, dw_type_dir_name: str = None) -> str:
     """
     Make and return the embedded url for transform source code
     """
+    dw_type_dir = f"/{dw_type_dir_name}" if dw_type_dir_name else ""
     return '{% embed url="' + f"{constants.GITHUB_REPO_URL}/{transform_type_dir_name}" \
-                              f"/{transform_name}/{transform_name}.sql" + '" %}'
+                              f"/{transform_name}{dw_type_dir}/{transform_name}.sql" + '" %}'

@@ -1,7 +1,7 @@
 import os
 from typing import Dict
 
-from python import utils, markdown as md
+from python import constants, utils, markdown as md
 
 DOCS_DIR = utils.get_root_dir() / 'docs'
 
@@ -25,10 +25,19 @@ def save_transform_docs() -> None:
         for transform_name, transform_yaml in transform_type_yamls.items():
             print(f"Generating Markdown for Transform "
                   f"'{transform_type_dir_name}/{transform_name}.yaml'")
+            if utils.override_path_exists(
+                    transform_type,
+                    transform_name,
+                    constants.RASGO_DATAWAREHOUSE
+                ):
+                dw_type = constants.RASGO_DATAWAREHOUSE
+            else:
+                dw_type = None
             markdown = _get_transform_markdown(
                 transform_yaml=transform_yaml,
                 transform_type_dir_name=transform_type_dir_name,
-                transform_name=transform_name
+                transform_name=transform_name,
+                dw_type=dw_type
             )
             # Write Transform Markdown to Docs directory
             md_file_path = DOCS_DIR / transform_type_dir_name / f"{transform_name}.md"
@@ -40,7 +49,9 @@ def save_transform_docs() -> None:
 
 def _get_transform_markdown(transform_yaml: Dict,
                             transform_type_dir_name: str,
-                            transform_name: str) -> str:
+                            transform_name: str,
+                            dw_type: str = None
+                            ) -> str:
     """
     Generate and return the markdown string to write as a MD
     file for this transform based off the YAML file
@@ -60,7 +71,7 @@ def _get_transform_markdown(transform_yaml: Dict,
         md.python_code(transform_yaml['example_code']),
         md.text(transform_yaml['post-transform-data']) if 'preview-data' in transform_yaml else None,
         md.h2('Source Code'),
-        md.github_url(transform_type_dir_name, transform_name),
+        md.github_url(transform_type_dir_name, transform_name, dw_type),
         '',
     ]
     return '\n\n'.join(filter(lambda x: x!=None, markdown_elements))
