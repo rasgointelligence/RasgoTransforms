@@ -25,6 +25,7 @@ class Datawarehouse(Enum):
     """
     BIGQUERY = 'bigquery'
     SNOWFLAKE = 'snowflake'
+    POSTGRESQL = 'postgresql'
 
 class TransformTemplate:
     """
