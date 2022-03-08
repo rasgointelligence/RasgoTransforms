@@ -40,7 +40,7 @@ def save_transform_docs() -> None:
                 dw_type=dw_type
             )
             # Write Transform Markdown to Docs directory
-            md_file_path = DOCS_DIR / transform_type_dir_name / f"{transform_name}.md"
+            md_file_path = DOCS_DIR / f"{transform_name}.md"
             os.makedirs(md_file_path.parent, exist_ok=True)
             with md_file_path.open('w') as fp:
                 print(f"Writing Markdown docs at {md_file_path}\n")
