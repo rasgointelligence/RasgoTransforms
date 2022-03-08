@@ -27,7 +27,10 @@ jobs:
       - name: Generate Transform Docs
         run: python python/doc_generator.py
 
-      - name: Git Commit Generated Transform Docs
+      - name: Generate Transform Gitbook SUMMARY.md
+        run: python python/gen_gitbook_summary_md.py
+
+      - name: Git Commit Generated Content
         run: |
           if [[ `git status --porcelain` ]]; then
             git add -A

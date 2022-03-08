@@ -5,7 +5,7 @@ import os
 import subprocess
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, OrderedDict
 
 import yaml
 from pyrasgo.rasgo import Rasgo
@@ -187,6 +187,40 @@ def get_table_values(transform_args: Dict) -> List[List[str]]:
         ]
         all_data.append(row_data)
     return all_data
+
+
+# ----------------------------------------------
+#    Utils for Gitbook SUMMARY.md Generation
+# ----------------------------------------------
+
+def get_transforms_grouped_by_tags() -> Dict[str, List[str]]:
+    """
+    Return a mapping of `transform_tag` to a list of
+    transform names with that tag based off of the YAMLs
+    in this repo
+    """
+    transforms_by_tags = defaultdict(list)
+    for _, transform_type_yamls in load_all_yaml_files().items():
+        for transform_name, transform_yaml in transform_type_yamls.items():
+            transform_tags = listify_tags(
+                tags=transform_yaml.get('tags')
+            )
+            # For each transform mark it as apart of that tag
+            # also mark it with a 'all' tag
+            for tag in transform_tags:
+                transforms_by_tags[tag].append(transform_name)
+            transforms_by_tags['all'].append(transform_name)
+    return transforms_by_tags
+
+
+def snack_case_to_title(string: str) -> str:
+    """
+    Title case a string from snake case
+
+    Example: 'min_max_scaler' -> 'Min Max Scaler'
+    """
+    string = string.replace('_', ' ').title()
+    return string.title()
 
 
 # ----------------------------------------------
