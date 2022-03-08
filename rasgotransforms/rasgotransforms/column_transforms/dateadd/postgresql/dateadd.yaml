@@ -1,0 +1,22 @@
+name: dateadd
+description: Increments a date by the specified interval value.
+tags:
+  - column
+  - date_time
+arguments:
+  date_part:
+    type: date_part
+    description: |
+       A valid SQL date part.
+       Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)
+  date:
+    type: mixed_value
+    description: Date value to increment. Can be a column or literal of these types (date, datetime, time, or timestamp).
+  offset:
+    type: int
+    description: Numeric value to increment the date by.
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.dateadd(date_part='year', date='END_DATE', offset=3)
+  ds2.preview()
