@@ -5,7 +5,7 @@ import os
 import subprocess
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Optional, Union, OrderedDict
+from typing import Dict, List, Optional, Union
 
 import yaml
 from pyrasgo.rasgo import Rasgo
