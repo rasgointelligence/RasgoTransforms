@@ -1,5 +1,5 @@
-{%- if name is defined -%}
-    {%- set alias = cleanse_name(name) -%}
+{%- if new_col_name is defined -%}
+    {%- set alias = cleanse_name(new_col_name) -%}
 {%- else -%}
     {%- set alias = 'CONCAT_'~ cleanse_name(concat_list | join('_')) -%}
 {%- endif -%}
