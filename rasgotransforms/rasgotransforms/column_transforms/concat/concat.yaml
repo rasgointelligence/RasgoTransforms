@@ -12,7 +12,7 @@ arguments:
   concat_list:
     type: mixed_list
     description: A list representing each new column to be created.
-  name:
+  new_col_name:
     type: value
     is_optional: true
     description: A name for the new column created by the concatenation.
@@ -20,6 +20,7 @@ example_code: |
   product = rasgo.get.dataset(75)
   ds2 = product.concat(
     concat_list=['PRODUCTKEY', 'PRODUCTALTERNATEKEY', "' hybridkey'"],
-    name='Hybrid Key')
+    new_col_name='Hybrid Key'
+  )
 
   ds2.preview()
