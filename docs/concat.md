@@ -9,10 +9,10 @@ Pass in a list named "concat_list", containing the names of the columns and the 
 
 ## Parameters
 
-|   Argument   |    Type    |                       Description                       | Is Optional |
-| ------------ | ---------- | ------------------------------------------------------- | ----------- |
-| concat_list  | mixed_list | A list representing each new column to be created.      |             |
-| new_col_name | value      | A name for the new column created by the concatenation. | True        |
+|  Argument   |    Type    |                      Description                      | Is Optional |
+| ----------- | ---------- | ----------------------------------------------------- | ----------- |
+| concat_list | mixed_list | A list representing each new column to be created.    |             |
+| alias       | value      | Name for the new column created by the concatenation. | True        |
 
 
 ## Example

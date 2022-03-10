@@ -12,10 +12,10 @@ arguments:
   concat_list:
     type: mixed_list
     description: A list representing each new column to be created.
-  new_col_name:
+  alias:
     type: value
     is_optional: true
-    description: A name for the new column created by the concatenation.
+    description: Name for the new column created by the concatenation.
 example_code: |
   product = rasgo.get.dataset(75)
   ds2 = product.concat(
