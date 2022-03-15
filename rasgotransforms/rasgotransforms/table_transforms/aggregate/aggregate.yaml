@@ -8,6 +8,7 @@ arguments:
   group_by:
     type: column_list
     description: Columns to group by
+    is_optional: true
   aggregations:
     type: agg_dict
     description: Aggregations to apply for other columns. Dict keys are column names, and values are a list of aggegations to apply for that column.
@@ -19,3 +20,7 @@ example_code: |
             'COL_2': ['SUM', 'AVG']
         })
   ds2.preview()
+
+  ds3 = ds.aggregate(aggregations={'COL_1': ['SUM']})
+
+  ds4 = ds.aggregate(aggregations={'DISTINCT COL_1': ['SUM']})
