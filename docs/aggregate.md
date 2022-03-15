@@ -8,7 +8,7 @@ Groups rows by the group_by items applying aggregations functions for the result
 
 |   Argument   |    Type     |                                                             Description                                                             | Is Optional |
 | ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| group_by     | column_list | Columns to group by                                                                                                                 |             |
+| group_by     | column_list | Columns to group by                                                                                                                 | True        |
 | aggregations | agg_dict    | Aggregations to apply for other columns. Dict keys are column names, and values are a list of aggegations to apply for that column. |             |
 
 
@@ -22,6 +22,10 @@ ds2 = ds.aggregate(group_by=['FIPS'], aggregations={
           'COL_2': ['SUM', 'AVG']
       })
 ds2.preview()
+
+ds3 = ds.aggregate(aggregations={'COL_1': ['SUM']})
+
+ds4 = ds.aggregate(aggregations={'DISTINCT COL_1': ['SUM']})
 ```
 
 ## Source Code
