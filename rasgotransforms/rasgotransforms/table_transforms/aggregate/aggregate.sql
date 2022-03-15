@@ -35,6 +35,6 @@ SELECT
     {%- endfor -%}
 {%- endfor %}
 FROM {{ from_tables | join(', ') }}
-{%- if group_by -%}
+{% if group_by -%}
     GROUP BY {{ group_by | join(', ') }}
 {%- endif -%}
