@@ -6,7 +6,7 @@ SELECT *
       PARTITION BY {{ group_by | join(", ") }} 
       {% endif -%}
       ORDER BY {{ order_by | join(", ") }}
-      {% if direction.lower() == 'forward' -%} 
+      {% if direction and direction.lower() == 'forward' -%}
       ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING
       {% else -%}
       ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
