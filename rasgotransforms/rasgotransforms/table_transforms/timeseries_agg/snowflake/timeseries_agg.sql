@@ -28,10 +28,10 @@ WITH
 {% endfor %}
   WHERE {% if normalized_offset > 0 -%}
   B.{{ date }} <= DATEADD({{ date_part }}, {{ normalized_offset }}, A.{{ date }})
-  AND B.{{ date }} > A.{{ date }}
+  AND B.{{ date }} >= A.{{ date }}
       {% else -%}
   B.{{ date }} >= DATEADD({{ date_part }}, {{ normalized_offset }}, A.{{ date }})
-  AND B.{{ date }} < A.{{ date }}
+  AND B.{{ date }} <= A.{{ date }}
 {% endif %}
   GROUP BY {% for g in group_by %}
   A.{{ g }}, {% endfor -%}
