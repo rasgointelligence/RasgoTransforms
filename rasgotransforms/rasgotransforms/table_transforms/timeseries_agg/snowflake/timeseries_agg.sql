@@ -1,20 +1,21 @@
 {%- set final_col_list = [] -%}
 WITH
-{%- for offset in offsets -%}
+{% for offset in offsets %}
   {% set normalized_offset = -offset %}
-OFFSET{{ cleanse_name(offset|string + date_part) }} AS (
+  {% set cte_name = cleanse_name('OFFSET_' ~ offset ~ date_part) %}
+{{ cte_name }} AS (
   SELECT
   {% for g in group_by -%}
-    A.{{ g }} AS OFFSET{{ cleanse_name(offset|string + date_part) }}_{{ g }},
+    A.{{ g }} AS {{ cte_name }}_{{ g }},
       {%- endfor %}   
-  A.{{ date }} AS OFFSET{{ cleanse_name(offset|string + date_part) }}_{{ date }},
+  A.{{ date }} AS {{ cte_name }}_{{ date }},
 {% for col, aggs in aggregations.items() -%}
   {%- set inner_loop = loop -%}
   {%- for agg in aggs %}
     {% if normalized_offset > 0 -%}
       {%- set alias = cleanse_name(agg ~ '_' ~ col ~ '_NEXT' + offset|string + date_part) %}
     {%- else -%}
-      {%- set alias = cleanse_name(agg ~ '_' ~ col ~ '_NEXT' + offset|string + date_part) %}
+      {%- set alias = cleanse_name(agg ~ '_' ~ col ~ '_PAST' + offset|string + date_part) %}
     {%- endif -%}
     {{ agg }}(B.{{ col }}) AS {{ alias }}{{ '' if loop.last and inner_loop.last else ',' }}
     {%- do final_col_list.append(alias) -%}
@@ -39,11 +40,11 @@ OFFSET{{ cleanse_name(offset|string + date_part) }} AS (
 SELECT src.*, 
 {{ final_col_list|join(', ') }} FROM {{ source_table }} src
 {% for offset in offsets -%}
+  {% set cte_name = cleanse_name('OFFSET_' ~ offset ~ date_part) %}
   {% set normalized_offset = -offset %}
-LEFT OUTER JOIN OFFSET{{ cleanse_name(offset|string + date_part) }} 
-ON OFFSET{{ cleanse_name(offset|string + date_part) }}.OFFSET{{ cleanse_name(offset|string + date_part) }}_{{ date }} = src.{{ date }}
+LEFT OUTER JOIN {{ cte_name }} 
+ON {{ cte_name }}.{{ cte_name }}_{{ date }} = src.{{ date }}
       {%- for g in group_by %}
-  AND src.{{ g }} = OFFSET{{ cleanse_name(offset|string + date_part) }}.OFFSET{{ cleanse_name(offset|string + date_part) }}_{{ g }}
+  AND {{ cte_name }}.{{ cte_name }}_{{ g }} = src.{{ g }}
   {% endfor -%}
-  AND src.{{ date }} = OFFSET{{ cleanse_name(offset|string + date_part) }}.OFFSET{{ cleanse_name(offset|string + date_part) }}_{{ date }} 
 {%- endfor -%}
