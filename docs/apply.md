@@ -17,11 +17,16 @@ A transform that accepts a custom template to execute. Must use the sql template
 ds = rasgo.get.dataset(id)
 
 ds2 = ds.apply(
-  sql='SELECT * FROM {{ source_table }} WHERE COLUMNVALUE = I17',
-  source_table='db.schema.table'
+  sql='SELECT * FROM {{ source_table }} WHERE {{ where_column }} = {{ where_value }}',
+  where_column='NEW_LEADS_COL',
+  where_value=100
+)
+
+ds2 = ds.apply(
+  sql='SELECT * FROM {{ source_table }} WHERE COLUMNVALUE = I17'
 )
 ds2.preview()
-#TODO Add args 
+
 ```
 
 ## Source Code
