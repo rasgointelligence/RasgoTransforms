@@ -67,8 +67,8 @@ GROUP BY {{ group_by | join(', ') }}
 SELECT {{ final_col_list|join(', ') }}
 FROM BASIC_AGGS
 {%- for col, aggs in entropy_aggs.items() %}
-LEFT OUTER JOIN CTE_{{ col }}_ENTROPY 
+LEFT OUTER JOIN CTE_{{ col }}_ENTROPY ON
 {%- for group_item in group_by %}
-    ON BASIC_AGGS.{{ group_item }} = CTE_{{ col }}_ENTROPY.{{ group_item }}{{ '' if loop.last else ' AND ' }}
+    BASIC_AGGS.{{ group_item }} = CTE_{{ col }}_ENTROPY.{{ group_item }}{{ '' if loop.last else ' AND ' }}
 {%- endfor -%}
 {%- endfor %}
