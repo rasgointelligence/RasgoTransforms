@@ -22,6 +22,10 @@ arguments:
     type: value
     is_optional: true
     description: Prefix all columns in the join_table with a string to differentiate them
+  filters:
+    type: string_list
+    is_optional: true
+    description: List of SQL statements to use in the WHERE clause, to filter the final joined table
 example_code: |
   internet_sales = rasgo.get.dataset(74)
   product = rasgo.get.dataset(75)
@@ -30,6 +34,7 @@ example_code: |
     join_table=product,
     join_columns={'PRODUCTKEY':'PRODUCTKEY'},
     join_type='LEFT',
-    join_prefix='product')
+    join_prefix='product',
+    filters=['CUSTOMER_ID IS NOT NULL', 'DATE_COLUMN < TODAY()'])
 
   ds2.preview()
