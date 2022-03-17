@@ -20,7 +20,7 @@ SELECT
     {%- set entropy_flag = True -%}
    {%- endif -%}
     {%- if not entropy_flag %}
-     {%- if 'DISTINCT' in agg %}
+     {%- if ' DISTINCT' in agg %}
       {{ agg|replace(" DISTINCT", "") }}(DISTINCT {{ col }}) as {{ col ~ '_' ~ agg|replace(" DISTINCT", "") ~ 'DISTINCT'}},
       {%- do final_col_list.append('BASIC_AGGS.' ~ col ~ '_' ~ agg|replace(" DISTINCT", "") ~ 'DISTINCT') -%}
      {%- else %}
@@ -56,8 +56,8 @@ FROM CTE_{{ col }}
 ),
 CTE_{{ col }}_ENTROPY AS (
 SELECT {%- for group_item in group_by %}
-    {{ group_item }}
-{%- endfor -%}, -SUM(P*LOG(2,P)) AS {{ col }}_ENTROPY
+    {{ group_item }},
+{%- endfor -%} -SUM(P*LOG(2,P)) AS {{ col }}_ENTROPY
 FROM CTE_{{ col }}_RATIO
 GROUP BY {{ group_by | join(', ') }}
 
