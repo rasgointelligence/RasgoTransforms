@@ -62,7 +62,7 @@ FROM CTE_{{ col }}_RATIO
 GROUP BY {{ group_by | join(', ') }}
 
 {%- do final_col_list.append('CTE_' ~ col ~ '_ENTROPY.' ~ col ~ '_ENTROPY') -%}
-{%- endfor %} )
+){%- endfor %} 
 
 SELECT {{ final_col_list|join(', ') }}
 FROM BASIC_AGGS
