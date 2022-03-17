@@ -1,0 +1,21 @@
+name: aggregate
+tags:
+  - table
+  - reshape
+  - aggregate
+description:  Groups rows by the group_by items applying aggregations functions for the resulting group and selected columns
+arguments:
+  group_by:
+    type: column_list
+    description: Columns to group by
+  aggregations:
+    type: agg_dict
+    description: Aggregations to apply for other columns. Dict keys are column names, and values are a list of aggegations to apply for that column.
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.aggregate(group_by=['FIPS'], aggregations={
+            'COL_1': ['SUM', 'AVG'],
+            'COL_2': ['SUM', 'AVG']
+        })
+  ds2.preview()
