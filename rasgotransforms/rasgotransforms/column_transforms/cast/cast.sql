@@ -2,15 +2,7 @@
     select * from {{ source_table_fqtn }} limit 0
 {%- endmacro -%}
 
-{%- if overwrite_columns == false -%}
-
-SELECT *
-{%- for target_col, type in casts.items() %}
-    , CAST({{target_col}} AS {{type}}) AS {{cleanse_name(target_col)+'_'+cleanse_name(type)}}
-{%- endfor %}
-FROM {{ source_table }}
-
-{%- elif overwrite_columns == true -%}
+{%- if overwrite_columns == true -%}
 
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
 {%- set source_col_names = col_names_source_df.columns.to_list() -%}
@@ -28,6 +20,14 @@ SELECT
 {%- endfor %}
 {%- for target_col, type in casts.items() %}
     , CAST({{target_col}} AS {{type}}) AS {{target_col}}
+{%- endfor %}
+FROM {{ source_table }}
+
+{%- else -%}
+
+SELECT *
+{%- for target_col, type in casts.items() %}
+    , CAST({{target_col}} AS {{type}}) AS {{cleanse_name(target_col)+'_'+cleanse_name(type)}}
 {%- endfor %}
 FROM {{ source_table }}
 
