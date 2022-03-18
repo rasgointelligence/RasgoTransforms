@@ -30,7 +30,7 @@ ds2 = internet_sales.join(
   join_columns={'PRODUCTKEY':'PRODUCTKEY'},
   join_type='LEFT',
   join_prefix='product',
-  filters=['CUSTOMER_ID IS NOT NULL', 'DATE_COLUMN < TODAY()'])
+  filters=['CUSTOMERKEY IS NOT NULL', 'ORDERDATE < CURRENT_DATE()'])
 
 ds2.preview()
 ```
