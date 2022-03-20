@@ -1,7 +1,7 @@
-{%- if quantity|float < 1 -%}
-    {%- set sample_amount = quantity*100 |float -%}
+{%- if num_rows|float < 1 -%}
+    {%- set sample_amount = num_rows*100 |float -%}
 {% else %}
-    {%- set sample_amount = quantity~' ROWS' -%}
+    {%- set sample_amount = num_rows~' ROWS' -%}
 {% endif %}
 
 SELECT * FROM {{source_table}}

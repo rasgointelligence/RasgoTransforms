@@ -5,9 +5,9 @@ tags:
   - conditional
 description: Take a sample of a dataset using a specific number of rows or a probability that each row will be selected
 arguments:
-  sample_amount:
+  num_rows:
     type: value
-    description: To sample using a probability of selecting each row, your sample amount should be a decimal less than 1. Otherwise, pass an integer value for number of rows to keep.
+    description: To sample using a probability of selecting each row, your num_rows should be a decimal less than 1. Otherwise, pass an integer value for number of rows to keep.
 example_code: |
   ds = rasgo.get.dataset(id)
 
