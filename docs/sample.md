@@ -6,9 +6,9 @@ Take a sample of a dataset using a specific number of rows or a probability that
 
 ## Parameters
 
-|   Argument    | Type  |                                                                              Description                                                                              | Is Optional |
-| ------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| sample_amount | value | To sample using a probability of selecting each row, your sample amount should be a decimal less than 1. Otherwise, pass an integer value for number of rows to keep. |             |
+| Argument | Type  |                                                                           Description                                                                            | Is Optional |
+| -------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| num_rows | value | To sample using a probability of selecting each row, your num_rows should be a decimal less than 1. Otherwise, pass an integer value for number of rows to keep. |             |
 
 
 ## Example
