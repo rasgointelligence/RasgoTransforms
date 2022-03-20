@@ -5,4 +5,4 @@
 {% endif %}
 
 SELECT * FROM {{source_table}}
-sample row ( {{ sample_amount }} )
+TABLESAMPLE BERNOULLI ( {{ sample_amount }} )
