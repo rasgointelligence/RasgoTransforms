@@ -11,5 +11,5 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.sample(sample_amount=1000)
+  ds2 = ds.sample(num_rows=1000)
   ds2.preview()
