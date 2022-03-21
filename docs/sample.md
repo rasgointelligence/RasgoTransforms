@@ -16,7 +16,7 @@ Take a sample of a dataset using a specific number of rows or a probability that
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.sample(sample_amount=1000)
+ds2 = ds.sample(num_rows=1000)
 ds2.preview()
 ```
 
