@@ -2,15 +2,18 @@
 
 # datediff
 
-Calculates the difference between two date, time, or timestamp expressions based on the date or time part requested. The function returns the result of subtracting the second argument from the third argument.
+Calculates the difference between two date, time, or timestamp expressions based on the date or time part requested.
+Difference is calculated as date_1 - date_2.
+
 
 ## Parameters
 
 | Argument  |    Type     |                                                                                Description                                                                                 | Is Optional |
 | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | date_part | date_part   | Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)  |             |
-| date_1    | mixed_value | Date column to subtract from `date_val_2`. Can be a date column, date, time, or timestamp.                                                                                 |             |
-| date_2    | mixed_value | Date column to be subtracted by `date_val_1`. Can be a date column, date, time, or timestamp.                                                                              |             |
+| date_1    | mixed_value | Starting date. Can be a date column, date, time, or timestamp.                                                                                                             |             |
+| date_2    | mixed_value | Date to subtract from date_1. Can be a date column, date, time, or timestamp.                                                                                              |             |
+| alias     | value       | Name for the new column created by the datediff.                                                                                                                           | True        |
 
 
 ## Example
