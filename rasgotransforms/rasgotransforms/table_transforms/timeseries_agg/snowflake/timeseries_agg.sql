@@ -13,7 +13,6 @@ A.{{ date }},
         {%- if agg == 'ENTROPY' -%}
             {%- set entropy_flag = True -%}
         {%- endif -%}
-
         {% if normalized_offset > 0 -%}
             {%- set alias = cleanse_name(agg ~ '_' ~ col ~ '_NEXT' + offset|string + date_part) %}
         {%- else -%}
@@ -51,8 +50,6 @@ GROUP BY
 {% endfor -%}
   A.{{ date }})
 {%- endmacro -%}
-
-
 {%- macro create_cte_entropy(group_by, offset, date, date_part, entropy_aggs) -%}
 {% set normalized_offset = -offset %}
 {%- for col, aggs in entropy_aggs.items() -%}
@@ -117,24 +114,20 @@ GROUP BY
     ,{{ date }})
 {%- endfor -%}
 {%- endmacro -%}
-
 {%- set cte_list = [] -%}
 {%- set final_col_list = [] -%}
 {%- set entropy_aggs = {} -%}
-
 {%- for col, aggs in aggregations.items() -%}
     {%- if 'ENTROPY' in aggs -%}
         {%- set _ = entropy_aggs.update({col: aggs}) -%}
     {%- endif -%}
 {%- endfor -%}
-
 WITH DUMMY1 AS (SELECT NULL FROM {{ source_table }} WHERE 1=0)
 {%- for offset in offsets -%}
     {{ create_cte_basic(group_by=group_by, offset=offset, date=date, date_part=date_part, aggregations=aggregations) }}
     {{ create_cte_entropy(group_by=group_by, offset=offset, date=date, date_part=date_part, entropy_aggs=entropy_aggs) }}
 {%- endfor -%}
 ,DUMMY2 AS (SELECT NULL FROM {{ source_table }} WHERE 1=0)
-
 SELECT src.*, 
 {{ final_col_list|join(', ') }} FROM {{ source_table }} src
 {% for cte in cte_list -%}
