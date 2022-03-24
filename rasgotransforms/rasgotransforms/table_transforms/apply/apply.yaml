@@ -17,7 +17,7 @@ example_code: |
   )
   ds2.preview()
 
-# passing in custom arguments
+  # passing in custom arguments
   ds = rasgo.get.dataset(id)
 
   ds2 = ds.apply(
