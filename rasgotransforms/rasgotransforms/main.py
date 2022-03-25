@@ -65,7 +65,9 @@ class TransformTemplate:
         return pretty_string
 
 
-def serve_rasgo_transform_templates(datawarehouse: str) -> List[TransformTemplate]:
+def serve_rasgo_transform_templates(
+    datawarehouse: str
+) -> List[TransformTemplate]:
     """
     Return a list of Rasgo Transform Templates
 
@@ -81,7 +83,7 @@ def serve_rasgo_transform_templates(datawarehouse: str) -> List[TransformTemplat
             transform_source_code = _get_transform_source_code(
                 transform_type=transform_type,
                 transform_name=transform_name,
-                datawarehouse=datawarehouse,
+                datawarehouse=datawarehouse
             )
             transform_args = _parse_transform_args_from_yaml(transform_yaml)
             template_list.append(
@@ -90,7 +92,7 @@ def serve_rasgo_transform_templates(datawarehouse: str) -> List[TransformTemplat
                     transform_type=transform_type,
                     source_code=transform_source_code,
                     arguments=transform_args,
-                    description=transform_yaml.get("description"),
+                    description=transform_yaml.get('description')
                 )
             )
     return template_list
@@ -101,7 +103,7 @@ def _check_datawarehouse(input_value: str) -> str:
     try:
         Datawarehouse[input_value.upper()]
     except Exception:
-        raise ValueError(f"datawarehouse parameter accepts values: {supported_dws}")
+        raise ValueError(f'datawarehouse parameter accepts values: {supported_dws}')
     return input_value.lower()
 
 
@@ -113,26 +115,17 @@ def _get_root_dir() -> Path:
 
 
 def _get_transform_source_code(
-    transform_type: str, transform_name: str, datawarehouse: str
+    transform_type: str,
+    transform_name: str,
+    datawarehouse: str
 ) -> str:
     """
     Return a transform's source code as a string
     """
     datawarehouse = _check_datawarehouse(datawarehouse)
     root_dir = _get_root_dir()
-    source_code_path = (
-        root_dir
-        / f"{transform_type}_transforms"
-        / transform_name
-        / f"{transform_name}.sql"
-    )
-    source_code_override_path = (
-        root_dir
-        / f"{transform_type}_transforms"
-        / transform_name
-        / datawarehouse
-        / f"{transform_name}.sql"
-    )
+    source_code_path = root_dir / f"{transform_type}_transforms" / transform_name / f"{transform_name}.sql"
+    source_code_override_path = root_dir / f"{transform_type}_transforms" / transform_name/ datawarehouse / f"{transform_name}.sql"
     if source_code_override_path.exists():
         source_code_path = source_code_override_path
     with open(source_code_path) as fp:
@@ -152,15 +145,8 @@ def _load_all_yaml_files(datawarehouse: str) -> Dict[str, Dict[str, Dict]]:
 
         transform_names = [x.name for x in transform_type_dir_path.rglob("*/**")]
         for transform_name in transform_names:
-            transform_yaml_path = (
-                transform_type_dir_path / transform_name / f"{transform_name}.yaml"
-            )
-            transform_yaml_override_path = (
-                transform_type_dir_path
-                / transform_name
-                / datawarehouse
-                / f"{transform_name}.yaml"
-            )
+            transform_yaml_path = transform_type_dir_path / transform_name / f"{transform_name}.yaml"
+            transform_yaml_override_path = transform_type_dir_path / transform_name / datawarehouse / f"{transform_name}.yaml"
 
             if transform_yaml_override_path.exists():
                 transform_yaml_path = transform_yaml_override_path
@@ -174,7 +160,9 @@ def _load_all_yaml_files(datawarehouse: str) -> Dict[str, Dict[str, Dict]]:
     return transform_yamls
 
 
-def _parse_transform_args_from_yaml(transform_yaml: Dict) -> List[Dict[str, str]]:
+def _parse_transform_args_from_yaml(
+    transform_yaml: Dict
+) -> List[Dict[str, str]]:
     """
     From a loaded Transform Yaml File parse the
     Transform args in proper format, return the args
@@ -195,5 +183,6 @@ def _read_yaml(yaml_path: Path) -> Dict:
             return yaml.safe_load(stream)
         except yaml.YAMLError as e:
             logger.error(
-                f"Error Parsing YAML file at {yaml_path}" f"\n\nError Msg: {e}"
+                f"Error Parsing YAML file at {yaml_path}"
+                f"\n\nError Msg: {e}"
             )
