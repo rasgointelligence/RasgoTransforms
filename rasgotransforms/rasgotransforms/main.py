@@ -13,32 +13,33 @@ import yaml
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-TRANSFORM_TYPES = [
-    'column',
-    'row',
-    'table'
-]
+TRANSFORM_TYPES = ["column", "row", "table"]
+
 
 class Datawarehouse(Enum):
     """
     Supported Data Warehouses
     """
-    BIGQUERY = 'bigquery'
-    SNOWFLAKE = 'snowflake'
-    POSTGRESQL = 'postgresql'
+
+    BIGQUERY = "bigquery"
+    SNOWFLAKE = "snowflake"
+    POSTGRESQL = "postgresql"
+    MYSQL = "mysql"
+
 
 class TransformTemplate:
     """
     Reference to a Rasgo transform template
     """
+
     def __init__(
-            self,
-            name: str,
-            arguments: List[dict],
-            source_code: str,
-            transform_type: str,
-            description: str = None
-        ):
+        self,
+        name: str,
+        arguments: List[dict],
+        source_code: str,
+        transform_type: str,
+        description: str = None,
+    ):
         self.name = name
         self.arguments = arguments
         self.source_code = source_code
@@ -46,23 +47,27 @@ class TransformTemplate:
         self.description = description
 
     def __repr__(self) -> str:
-        arg_str = ', '.join(f'{arg.get("name")}: {arg.get("type")}' for arg in self.arguments)
+        arg_str = ", ".join(
+            f'{arg.get("name")}: {arg.get("type")}' for arg in self.arguments
+        )
         return f"RasgoTemplate: {self.name}({arg_str})"
 
     def define(self) -> str:
         """
         Return a pretty string definition of this Transform
         """
-        pretty_string = f'{self.transform_type.title()} Transform: {self.name}' \
-            f'\nDescription: {self.description}' \
-            f'\nArguments: {self.arguments}' \
-            f'\nSourceCode: {self.source_code}'
+        pretty_string = (
+            f"{self.transform_type.title()} Transform: {self.name}"
+            f"\nDescription: {self.description}"
+            f"\nArguments: {self.arguments}"
+            f"\nSourceCode: {self.source_code}"
+        )
         return pretty_string
 
 
 def serve_rasgo_transform_templates(
-        datawarehouse: str
-    ) -> List[TransformTemplate]:
+    datawarehouse: str
+) -> List[TransformTemplate]:
     """
     Return a list of Rasgo Transform Templates
 
@@ -92,15 +97,15 @@ def serve_rasgo_transform_templates(
             )
     return template_list
 
-def _check_datawarehouse(
-        input_value: str
-    ) -> str:
-    supported_dws = "'"+"', '".join([e.value for e in Datawarehouse])+"'"
+
+def _check_datawarehouse(input_value: str) -> str:
+    supported_dws = "'" + "', '".join([e.value for e in Datawarehouse]) + "'"
     try:
         Datawarehouse[input_value.upper()]
     except Exception:
         raise ValueError(f'datawarehouse parameter accepts values: {supported_dws}')
     return input_value.lower()
+
 
 def _get_root_dir() -> Path:
     """
@@ -108,11 +113,12 @@ def _get_root_dir() -> Path:
     """
     return Path(os.path.dirname(__file__))
 
+
 def _get_transform_source_code(
-        transform_type: str,
-        transform_name: str,
-        datawarehouse: str
-    ) -> str:
+    transform_type: str,
+    transform_name: str,
+    datawarehouse: str
+) -> str:
     """
     Return a transform's source code as a string
     """
@@ -126,9 +132,8 @@ def _get_transform_source_code(
         source_code = fp.read()
     return source_code
 
-def _load_all_yaml_files(
-        datawarehouse: str
-    ) -> Dict[str, Dict[str, Dict]]:
+
+def _load_all_yaml_files(datawarehouse: str) -> Dict[str, Dict[str, Dict]]:
     """
     Load and return all the yaml files in the dir <root>/<transform_type>_transforms
     """
@@ -154,24 +159,22 @@ def _load_all_yaml_files(
 
     return transform_yamls
 
+
 def _parse_transform_args_from_yaml(
-        transform_yaml: Dict
-    ) -> List[Dict[str, str]]:
+    transform_yaml: Dict
+) -> List[Dict[str, str]]:
     """
     From a loaded Transform Yaml File parse the
     Transform args in proper format, return the args
     in proper format for transform creation in PyRasgo
     """
     transform_args = []
-    for arg_name, arg_meta_data in transform_yaml['arguments'].items():
-        transform_args.append(
-            {**{'name': arg_name}, **arg_meta_data}
-        )
+    for arg_name, arg_meta_data in transform_yaml["arguments"].items():
+        transform_args.append({**{"name": arg_name}, **arg_meta_data})
     return transform_args
 
-def _read_yaml(
-        yaml_path: Path
-    ) -> Dict:
+
+def _read_yaml(yaml_path: Path) -> Dict:
     """
     Read and load a YAML file into a dictionary
     """
@@ -179,5 +182,7 @@ def _read_yaml(
         try:
             return yaml.safe_load(stream)
         except yaml.YAMLError as e:
-            logger.error(f"Error Parsing YAML file at {yaml_path}"
-                  f"\n\nError Msg: {e}")
+            logger.error(
+                f"Error Parsing YAML file at {yaml_path}"
+                f"\n\nError Msg: {e}"
+            )
