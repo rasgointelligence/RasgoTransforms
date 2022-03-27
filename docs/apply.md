@@ -20,6 +20,15 @@ ds2 = ds.apply(
   sql='SELECT * FROM {{ source_table }} WHERE COLUMNVALUE = I17'
 )
 ds2.preview()
+
+# passing in custom arguments
+ds = rasgo.get.dataset(id)
+
+ds2 = ds.apply(
+  sql="SELECT * FROM {{ source_table }} WHERE COLUMNVALUE = '{{ my_value }}'",
+  my_value="I17"
+)
+ds2.preview()
 ```
 
 ## Source Code

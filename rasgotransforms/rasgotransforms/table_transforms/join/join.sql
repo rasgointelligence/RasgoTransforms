@@ -38,3 +38,6 @@ FROM {{ source_table }} as t1
 {%- for t1_join_col, t2_join_col in join_columns.items() %}
 {{ ' AND' if not loop.first else 'ON'}} t1.{{ t1_join_col }} = t2.{{ t2_join_col }}
 {%- endfor -%}
+{%- for filter_statement in filters %}
+{{ 'WHERE ' if loop.first else ' AND ' }} {{ filter_statement }}
+{%- endfor -%}

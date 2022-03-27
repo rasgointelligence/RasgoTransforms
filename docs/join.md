@@ -10,12 +10,13 @@ If you don't pass a join_prefix, columns that share the same name in both tables
 
 ## Parameters
 
-|   Argument   |   Type    |                                                  Description                                                   | Is Optional |
-| ------------ | --------- | -------------------------------------------------------------------------------------------------------------- | ----------- |
-| join_table   | table     | Dataset object to join with the source dataset.                                                                |             |
-| join_type    | join_type | LEFT, RIGHT, or INNER                                                                                          |             |
-| join_columns | join_dict | Columns to use for the join. Keys are columns in the source_table and values are on columns in the join_table. |             |
-| join_prefix  | value     | Prefix all columns in the join_table with a string to differentiate them                                       | True        |
+|   Argument   |    Type     |                                                  Description                                                   | Is Optional |
+| ------------ | ----------- | -------------------------------------------------------------------------------------------------------------- | ----------- |
+| join_table   | table       | Dataset object to join with the source dataset.                                                                |             |
+| join_type    | join_type   | LEFT, RIGHT, or INNER                                                                                          |             |
+| join_columns | join_dict   | Columns to use for the join. Keys are columns in the source_table and values are on columns in the join_table. |             |
+| join_prefix  | value       | Prefix all columns in the join_table with a string to differentiate them                                       | True        |
+| filters      | string_list | List of SQL statements to use in the WHERE clause, to filter the final joined table                            | True        |
 
 
 ## Example
@@ -28,7 +29,8 @@ ds2 = internet_sales.join(
   join_table=product,
   join_columns={'PRODUCTKEY':'PRODUCTKEY'},
   join_type='LEFT',
-  join_prefix='product')
+  join_prefix='product',
+  filters=['CUSTOMERKEY IS NOT NULL', 'ORDERDATE < CURRENT_DATE()'])
 
 ds2.preview()
 ```
