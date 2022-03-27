@@ -2,7 +2,9 @@ name: datediff
 tags:
   - column
   - date_time
-description: Calculates the difference between two date, time, or timestamp expressions based on the date or time part requested. The function returns the result of subtracting the second argument from the third argument.
+description: |
+  Calculates the difference between two date, time, or timestamp expressions based on the date or time part requested.
+  Difference is calculated as date_1 - date_2.
 arguments:
   date_part:
     type: date_part
@@ -10,10 +12,14 @@ arguments:
        Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)
   date_1:
     type: mixed_value
-    description: Date column to subtract from `date_val_2`. Can be a date column, date, time, or timestamp.
+    description: Starting date. Can be a date column, date, time, or timestamp.
   date_2:
     type: mixed_value
-    description: Date column to be subtracted by `date_val_1`. Can be a date column, date, time, or timestamp.
+    description: Date to subtract from date_1. Can be a date column, date, time, or timestamp.
+  alias:
+    type: value
+    is_optional: true
+    description: Name for the new column created by the datediff.
 example_code: |
   ds = rasgo.get.dataset(id)
 
