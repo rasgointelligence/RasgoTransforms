@@ -1,6 +1,7 @@
-name: series_discrete
+name: line_chart
+chart_type: series_discrete
 tags:
-description: Used for Value Distribution for string/bool columns, “top n values”, any x/y plot with discrete X
+description: Used for value distribution for string/bool columns, top n values, any x/y plot with discrete x
 arguments:
   dimension:
     type: column
