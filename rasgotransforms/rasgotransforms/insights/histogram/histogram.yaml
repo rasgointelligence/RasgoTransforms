@@ -1,0 +1,13 @@
+name: histogram
+chart_type: series_continuous
+tags:
+description: Analyze the value distribution of a single continuous variable by binning it and calculating frequencies in each bin
+arguments:
+  column:
+    type: column
+    description: numeric column to use to generate the histogram
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.histogram(column='SALESAMOUNT')
+  ds2.preview()
