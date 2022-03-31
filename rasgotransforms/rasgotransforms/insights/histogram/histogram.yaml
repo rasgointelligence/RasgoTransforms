@@ -6,6 +6,10 @@ arguments:
   column:
     type: column
     description: numeric column to use to generate the histogram
+  num_buckets:
+    type: value
+    is_optional: true
+    description: max number of buckets to create; defaults to 200
 example_code: |
   ds = rasgo.get.dataset(id)
 
