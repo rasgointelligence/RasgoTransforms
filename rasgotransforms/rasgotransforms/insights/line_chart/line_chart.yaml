@@ -1,5 +1,6 @@
 name: line_chart
-chart_type: series_discrete
+context:
+  chart_type: series_discrete
 tags:
 description: Used for value distribution for string/bool columns, top n values, any x/y plot with discrete x
 arguments:
