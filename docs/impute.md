@@ -33,5 +33,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/impute/impute.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/impute/impute.sql" %}
 

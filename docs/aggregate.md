@@ -19,14 +19,12 @@ ds = rasgo.get.dataset(id)
 
 ds2 = ds.aggregate(group_by=['FIPS'], aggregations={
           'COL_1': ['SUM', 'AVG'],
-          'COL_2': ['SUM', 'AVG'],
-          'COL_3': ['COUNT','COUNT DISTINCT'],
-          'COL_4': ['MODE','ENTROPY','COUNT DISTINCT']
+          'COL_2': ['SUM', 'AVG']
       })
 ds2.preview()
 ```
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/aggregate/snowflake/aggregate.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/aggregate/snowflake/aggregate.sql" %}
 

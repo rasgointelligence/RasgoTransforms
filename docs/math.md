@@ -4,10 +4,6 @@
 
 Calculate one or more new columns using math functions.
 
-Examples of Valid Functions:
-  - [Basic Arithmetic](https://docs.snowflake.com/en/sql-reference/operators-arithmetic.html#list-of-arithmetic-operators)
-  - [Numeric Functions](https://docs.snowflake.com/en/sql-reference/functions-numeric.html)
-
 
 ## Parameters
 
@@ -67,5 +63,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/math/snowflake/math.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/math/snowflake/math.sql" %}
 

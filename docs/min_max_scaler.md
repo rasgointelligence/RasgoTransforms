@@ -32,5 +32,5 @@ ds2b.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/column_transforms/min_max_scaler/min_max_scaler.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/min_max_scaler/min_max_scaler.sql" %}
 

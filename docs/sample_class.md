@@ -23,5 +23,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/row_transforms/sample_class/sample_class.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/sample_class/sample_class.sql" %}
 
