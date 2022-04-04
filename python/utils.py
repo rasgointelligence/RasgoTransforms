@@ -18,46 +18,40 @@ from python import constants
 # ----------------------------------------------
 
 
-def load_all_yaml_files() -> Dict[str, Dict[str, Dict]]:
+def load_all_yaml_files() -> Dict[str, Dict]:
     """
     Load and return all the yaml files in the dirs <root>/<transform_type>_transforms
     If new transform type/dir added be sure to add above in List TRANSFORM_TYPES
     """
     transform_yamls = defaultdict(dict)
 
-    for transform_type in constants.TRANSFORM_TYPES:
-        transform_type_dir_path = _get_udt_repo_dir() / f"{transform_type}_transforms"
+    transform_dir_path = _get_udt_repo_dir() / "transforms"
 
-        # Get list of all transform names of this type,
-        # by looking at sub-directory names one level down
-        transform_names = [
-            x.name for x in transform_type_dir_path.iterdir() if x.is_dir()
-        ]
-        for transform_name in transform_names:
-            transform_yaml_path = transform_type_dir_path / transform_name / f"{transform_name}.yaml"
+    # Get list of all transform names of this type,
+    # by looking at sub-directory names one level down
+    transform_names = [
+        x.name for x in transform_dir_path.iterdir() if x.is_dir()
+    ]
+    for transform_name in transform_names:
+        transform_yaml_path = transform_dir_path / transform_name / f"{transform_name}.yaml"
 
-            # If this Transform is a DW specific type, load the default
-            transform_yaml_override_path = transform_type_dir_path / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.yaml"
-            if transform_yaml_override_path.exists():
-                transform_yaml_path = transform_yaml_override_path
-
-            # Try to load yaml file for transform
-            # If loaded successfully save in return dict
-            try:
-                transform_data = _read_yaml(transform_yaml_path)
-                transform_yamls[transform_type][transform_name] = transform_data
-            except Exception as e:
-                print(f"Can't read YAML file for transform {transform_name}\n"
-                      f"Error Msg: {e}\n")
+        # Try to load yaml file for transform
+        # If loaded successfully save in return dict
+        try:
+            transform_data = _read_yaml(transform_yaml_path)
+            transform_yamls[transform_name] = transform_data
+        except Exception as e:
+            print(f"Can't read YAML file for transform {transform_name}\n"
+                    f"Error Msg: {e}\n")
 
     return transform_yamls
 
-def override_path_exists(transform_type: str, transform_name: str, dw_type: str) -> bool:
+def override_path_exists(transform_name: str, dw_type: str) -> bool:
     """
     Returns true is an override file exists for this dw for this transform
     """
-    transform_type_dir_path = _get_udt_repo_dir() / f"{transform_type}_transforms"
-    transform_override_path = transform_type_dir_path / transform_name / dw_type / f"{transform_name}.sql"
+    transform_dir_path = _get_udt_repo_dir() / "transforms"
+    transform_override_path = transform_dir_path / transform_name / dw_type / f"{transform_name}.sql"
     if transform_override_path.exists():
         return True
     return False
@@ -99,7 +93,6 @@ def get_all_rasgo_transform_keyed_by_name(rasgo: Rasgo) -> Dict[str, Transform]:
 
 def transform_needs_versioning(
         transform: Transform,
-        _type: str,
         source_code: str,
         arguments: List[Dict[str, str]],
         description: str,
@@ -118,19 +111,18 @@ def transform_needs_versioning(
     """
     transform_needs_versioning = description != transform.description or \
                                  source_code != transform.sourceCode or \
-                                 _type != transform.type or \
                                  set(tags) != set(transform.tags) or \
                                  _transform_args_have_changed(transform, arguments)
     return transform_needs_versioning
 
 
-def get_transform_source_code(transform_type: str, transform_name: str) -> str:
+def get_transform_source_code(transform_name: str) -> str:
     """
     From a transform name and type load and return it's source code as a string
     """
-    transform_type_dir = _get_udt_repo_dir() / f"{transform_type}_transforms"
-    source_code_path = transform_type_dir / transform_name / f"{transform_name}.sql"
-    source_code_override_path = transform_type_dir / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.sql"
+    transform_dir = _get_udt_repo_dir() / "transforms"
+    source_code_path = transform_dir / transform_name / f"{transform_name}.sql"
+    source_code_override_path = transform_dir / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.sql"
     if source_code_override_path.exists():
         source_code_path = source_code_override_path
     with open(source_code_path) as fp:

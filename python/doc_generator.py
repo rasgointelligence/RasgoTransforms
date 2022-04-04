@@ -20,35 +20,32 @@ def save_transform_docs() -> None:
     If YAML file can't be loaded it will not write it
     """
     transform_yamls = utils.load_all_yaml_files()
-    for transform_type, transform_type_yamls in transform_yamls.items():
-        transform_type_dir_name = f"{transform_type}_transforms"
-        for transform_name, transform_yaml in transform_type_yamls.items():
-            print(f"Generating Markdown for Transform "
-                  f"'{transform_type_dir_name}/{transform_name}.yaml'")
-            if utils.override_path_exists(
-                    transform_type,
-                    transform_name,
-                    constants.RASGO_DATAWAREHOUSE
-                ):
-                dw_type = constants.RASGO_DATAWAREHOUSE
-            else:
-                dw_type = None
-            markdown = _get_transform_markdown(
-                transform_yaml=transform_yaml,
-                transform_type_dir_name=transform_type_dir_name,
-                transform_name=transform_name,
-                dw_type=dw_type
-            )
-            # Write Transform Markdown to Docs directory
-            md_file_path = DOCS_DIR / f"{transform_name}.md"
-            os.makedirs(md_file_path.parent, exist_ok=True)
-            with md_file_path.open('w') as fp:
-                print(f"Writing Markdown docs at {md_file_path}\n")
-                fp.write(markdown)
+    for transform_name, transform_yaml in transform_yamls.items():
+        print(f"Generating Markdown for Transform "
+                f"'transforms/{transform_name}.yaml'")
+        if utils.override_path_exists(
+                transform_name,
+                constants.RASGO_DATAWAREHOUSE
+            ):
+            dw_type = constants.RASGO_DATAWAREHOUSE
+        else:
+            dw_type = None
+        markdown = _get_transform_markdown(
+            transform_yaml=transform_yaml,
+            transform_dir_name="transforms",
+            transform_name=transform_name,
+            dw_type=dw_type
+        )
+        # Write Transform Markdown to Docs directory
+        md_file_path = DOCS_DIR / f"{transform_name}.md"
+        os.makedirs(md_file_path.parent, exist_ok=True)
+        with md_file_path.open('w') as fp:
+            print(f"Writing Markdown docs at {md_file_path}\n")
+            fp.write(markdown)
 
 
 def _get_transform_markdown(transform_yaml: Dict,
-                            transform_type_dir_name: str,
+                            transform_dir_name: str,
                             transform_name: str,
                             dw_type: str = None
                             ) -> str:
@@ -71,7 +68,7 @@ def _get_transform_markdown(transform_yaml: Dict,
         md.python_code(transform_yaml['example_code']),
         md.text(transform_yaml['post-transform-data']) if 'preview-data' in transform_yaml else None,
         md.h2('Source Code'),
-        md.github_url(transform_type_dir_name, transform_name, dw_type),
+        md.github_url(transform_dir_name, transform_name, dw_type),
         '',
     ]
     return '\n\n'.join(filter(lambda x: x!=None, markdown_elements))

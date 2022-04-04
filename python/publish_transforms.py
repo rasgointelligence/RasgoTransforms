@@ -39,64 +39,59 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
 
     # Loop through all transform and respective data in this repo
     yaml_transforms = utils.load_all_yaml_files()
-    for transform_type, transform_type_yamls in yaml_transforms.items():
-        for transform_name, transform_yaml in transform_type_yamls.items():
+    for transform_name, transform_yaml in yaml_transforms.items():
 
-            # Load/parse needed transform data from YAML
-            transform_description = transform_yaml.get('description')
-            transform_source_code = utils.get_transform_source_code(
-                transform_type=transform_type,
-                transform_name=transform_name
-            )
-            transform_tags = utils.listify_tags(
-                tags=transform_yaml.get('tags')
-            )
-            transform_args = utils.parse_transform_args_from_yaml(transform_yaml)
+        # Load/parse needed transform data from YAML
+        transform_description = transform_yaml.get('description')
+        transform_source_code = utils.get_transform_source_code(
+            transform_name=transform_name
+        )
+        transform_tags = utils.listify_tags(
+            tags=transform_yaml.get('tags')
+        )
+        transform_args = utils.parse_transform_args_from_yaml(transform_yaml)
 
-            # If a transform with that name isn't in Rasgo, create it
-            if transform_name not in rasgo_transforms:
-                print(f"No transform with name '{transform_name}' found in Rasgo. "
-                      f"Creating new '{transform_name}' {transform_type} transform "
-                      f"in Rasgo {rasgo_domain.upper()} environment.")
+        # If a transform with that name isn't in Rasgo, create it
+        if transform_name not in rasgo_transforms:
+            print(f"No transform with name '{transform_name}' found in Rasgo. "
+                    f"Creating new '{transform_name}' transform "
+                    f"in Rasgo {rasgo_domain.upper()} environment.")
+            rasgo.create.transform(
+                name=transform_name,
+                source_code=transform_source_code,
+                arguments=transform_args,
+                description=transform_description,
+                tags=transform_tags
+            )
+
+        # If it does exist in Rasgo, check if anything in the
+        # transform has changed. If so soft delete that transform
+        # in the db, the re-create it with updated information
+        else:
+            curr_transform_in_db = rasgo_transforms[transform_name]
+            if utils.transform_needs_versioning(
+                    transform=curr_transform_in_db,
+                    source_code=transform_source_code,
+                    arguments=transform_args,
+                    description=transform_description,
+                    tags=transform_tags
+            ):
+                print(f"Versioning transform '{transform_name}'. Updates found "
+                        f"in Rasgo {rasgo_domain.upper()} environment.")
+                rasgo.delete.transform(curr_transform_in_db.id)
                 rasgo.create.transform(
                     name=transform_name,
-                    type=transform_type,
                     source_code=transform_source_code,
                     arguments=transform_args,
                     description=transform_description,
                     tags=transform_tags
                 )
-
-            # If it does exist in Rasgo, check if anything in the
-            # transform has changed. If so soft delete that transform
-            # in the db, the re-create it with updated information
             else:
-                curr_transform_in_db = rasgo_transforms[transform_name]
-                if utils.transform_needs_versioning(
-                        transform=curr_transform_in_db,
-                        _type=transform_type,
-                        source_code=transform_source_code,
-                        arguments=transform_args,
-                        description=transform_description,
-                        tags=transform_tags
-                ):
-                    print(f"Versioning transform '{transform_name}'. Updates found "
-                          f"in Rasgo {rasgo_domain.upper()} environment.")
-                    rasgo.delete.transform(curr_transform_in_db.id)
-                    rasgo.create.transform(
-                        name=transform_name,
-                        type=transform_type,
-                        source_code=transform_source_code,
-                        arguments=transform_args,
-                        description=transform_description,
-                        tags=transform_tags
-                    )
-                else:
-                    print(f"No updates found for '{transform_name}' {transform_type} transform "
-                          f"found in Rasgo {rasgo_domain.upper()} environment.")
+                print(f"No updates found for '{transform_name}' transform "
+                        f"found in Rasgo {rasgo_domain.upper()} environment.")
 
-            # Keep track of which transforms were versioned/published
-            published_transform_names.append(transform_name)
+        # Keep track of which transforms were versioned/published
+        published_transform_names.append(transform_name)
 
     # Delete any transforms which are in db, but not in this repo
     transforms_to_delete = {

@@ -30,23 +30,13 @@ setup(
     license='GNU Affero General Public License v3 or later (AGPLv3+)',
     packages=[
         'rasgotransforms',
-        'rasgotransforms/column_transforms',
-        'rasgotransforms/row_transforms',
-        'rasgotransforms/table_transforms'
+        'rasgotransforms/transforms',
     ],
     package_data={'rasgotransforms': [
-        'column_transforms/**/*.yaml',
-        'column_transforms/**/*.sql',
-        'column_transforms/**/**/*.yaml',
-        'column_transforms/**/**/*.sql',
-        'row_transforms/**/*.yaml',
-        'row_transforms/**/*.sql',
-        'row_transforms/**/**/*.yaml',
-        'row_transforms/**/**/*.sql',
-        'table_transforms/**/*.yaml',
-        'table_transforms/**/*.sql',
-        'table_transforms/**/**/*.yaml',
-        'table_transforms/**/**/*.sql'
+        'transforms/**/*.yaml',
+        'transforms/**/*.sql',
+        'transforms/**/**/*.yaml',
+        'transforms/**/**/*.sql',
         ]
     },
     install_requires=requirements,
