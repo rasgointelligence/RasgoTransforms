@@ -18,7 +18,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
 
     The logic for handling syncing transforms from this repo to the DB is described below
      - If a transform with that name doesn't exist in the DB create it
-     - If a transform with that name exists in the DB, and one or more of its description, type, source_code, or
+     - If a transform with that name exists in the DB, and one or more of its description, source_code, or
        arguments have changed, soft delete the transform in the DB, then create a new DB entry with the updated info
      - If there are no changes for that transform do nothing
      - Soft delete any transform with names that are still in the DB but don't exist in the UDT repo
