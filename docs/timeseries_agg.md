@@ -41,5 +41,5 @@ ds = internet_sales.timeseries_agg(
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/table_transforms/timeseries_agg/snowflake/timeseries_agg.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/timeseries_agg/snowflake/timeseries_agg.sql" %}
 
