@@ -35,7 +35,6 @@ setup(
     package_data={'rasgotransforms': [
         'transforms/**/*.yaml',
         'transforms/**/*.sql',
-        'transforms/**/**/*.yaml',
         'transforms/**/**/*.sql',
         ]
     },
