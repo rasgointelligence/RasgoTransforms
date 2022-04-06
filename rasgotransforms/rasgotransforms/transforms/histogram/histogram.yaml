@@ -1,4 +1,5 @@
 name: histogram
+type: insight
 context:
   chart_type: series_continuous
 tags:

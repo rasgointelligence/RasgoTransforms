@@ -1,4 +1,5 @@
 name: line_chart
+type: insight
 context:
   chart_type: series_discrete
 tags:
