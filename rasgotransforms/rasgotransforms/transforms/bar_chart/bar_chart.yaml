@@ -1,19 +1,21 @@
-name: histogram
+name: bar_chart
 type: insight
 context:
-  chart_type: series_continuous
+  chart_type: series_discrete
 tags:
-description: Analyze the value distribution of a single continuous variable by binning it and calculating frequencies in each bin
+description: Used for value distribution for string/bool columns, top n values, any x/y plot with discrete x
 arguments:
-  column:
+  dimension:
     type: column
-    description: numeric column to use to generate the histogram
-  num_buckets:
-    type: value
-    is_optional: true
-    description: max number of buckets to create; defaults to 200
+    description: qualitative values such as names or dates to segment your metric(s) by
+  metrics:
+    type: agg_dict
+    description: numeric, quantitative values that you can measure
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.histogram(column='SALESAMOUNT')
+  ds2 = ds.aggregate(dimension='FIPS', metrics={
+            'COL_1': ['SUM', 'AVG'],
+            'COL_2': ['SUM', 'AVG']
+        })
   ds2.preview()

@@ -1,11 +1,39 @@
-SELECT
-{{ dimension }},
+{%- if num_buckets is not defined -%}
+    {%- set bucket_count = 200 -%}
+{%- else -%}
+    {%- set bucket_count = num_buckets -%}
+{%- endif -%}
 
-{%- for col, aggs in metrics.items() %}
-        {%- set outer_loop = loop -%}
-    {%- for agg in aggs %}
-    {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
-    {%- endfor -%}
-{%- endfor %}
-FROM {{ source_table }}
-GROUP BY {{ dimension }}
+WITH COUNTS AS (
+SELECT
+  REPLACE('{{ COLUMN }}','"') AS FEATURE
+  ,COL AS VAL
+  ,COUNT(1) AS REC_CT
+FROM
+  (SELECT {{ COLUMN }}::float AS COL FROM {{ source_table }})
+WHERE
+  COL IS NOT NULL
+GROUP BY 2),
+CALCS AS (SELECT MIN(VAL)-1 MIN_VAL, MAX(VAL)+1 MAX_VAL FROM COUNTS),
+EDGES AS (SELECT MIN_VAL, MAX_VAL, (MIN_VAL-MAX_VAL) VAL_RANGE, ((MAX_VAL-MIN_VAL)/{{ bucket_count }}) BUCKET_SIZE FROM CALCS),
+FREQS AS (
+SELECT
+  FEATURE
+  ,VAL
+  ,REC_CT
+  ,WIDTH_BUCKET(VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS HIST_BUCKET
+  ,MIN_VAL
+  ,MAX_VAL
+  ,BUCKET_SIZE
+FROM
+  COUNTS
+CROSS JOIN EDGES)
+SELECT
+  FEATURE
+  ,MIN_VAL+((HIST_BUCKET-1)*BUCKET_SIZE) AS {{ COLUMN }}_MIN
+  ,MIN_VAL+(HIST_BUCKET*BUCKET_SIZE) AS {{ COLUMN }}_MAX
+  ,SUM(REC_CT) AS RECORD_COUNT
+FROM
+  FREQS
+GROUP BY 1,2,3
+order by 2
