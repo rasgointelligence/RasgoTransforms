@@ -1,0 +1,27 @@
+name: latest
+tags:
+  - column
+  - data_cleaning
+  - data_quality
+  - time_series
+description:  Impute missing values in ALL columns with the latest value seen in rows prior
+arguments:
+  group_by:
+    type: column_list
+    description: List of columns to perform the imputation "within"
+  order_by:
+    type: column_list
+    description: List of columns to sort ascending, in order to find the last known value for imputation
+  nulls:
+    type: string
+    description: Pass either 'ignore' or 'respect' to determine whether nulls should be ignored or not during imputation.
+
+example_code: |
+  ds = rasgo.get.dataset(id)
+  
+  ds2 = ds.latest(
+    group_by=['FIPS'],
+    order_by=['DATE'],
+    nulls='ignore')
+  
+  ds2.preview()
