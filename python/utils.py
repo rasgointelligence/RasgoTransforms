@@ -5,7 +5,7 @@ import os
 import subprocess
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import yaml
 from pyrasgo.rasgo import Rasgo
@@ -96,7 +96,9 @@ def transform_needs_versioning(
         source_code: str,
         arguments: List[Dict[str, str]],
         description: str,
-        tags: List[str]
+        tags: List[str],
+        transform_type: str,
+        context: Optional[Dict[str, Any]]
 ) -> bool:
     """
     Return true if any of the attributes for the transform has
@@ -108,11 +110,15 @@ def transform_needs_versioning(
       - source_code
       - all of the transform arguments and their attrs
       - set tags on the transform
+      - transform type
+      - context
     """
     transform_needs_versioning = description != transform.description or \
                                  source_code != transform.sourceCode or \
                                  set(tags) != set(transform.tags) or \
-                                 _transform_args_have_changed(transform, arguments)
+                                 _transform_args_have_changed(transform, arguments) or \
+                                 transform_type != transform.type or \
+                                 context != transform.context
     return transform_needs_versioning
 
 

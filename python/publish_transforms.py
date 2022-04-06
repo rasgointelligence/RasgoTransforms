@@ -50,6 +50,9 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
             tags=transform_yaml.get('tags')
         )
         transform_args = utils.parse_transform_args_from_yaml(transform_yaml)
+        transform_type = transform_yaml.get('type')
+        transform_context = transform_yaml.get('context')
+
 
         # If a transform with that name isn't in Rasgo, create it
         if transform_name not in rasgo_transforms:
@@ -61,7 +64,9 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                 source_code=transform_source_code,
                 arguments=transform_args,
                 description=transform_description,
-                tags=transform_tags
+                tags=transform_tags,
+                type=transform_type,
+                context=transform_context
             )
 
         # If it does exist in Rasgo, check if anything in the
@@ -74,7 +79,9 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                     source_code=transform_source_code,
                     arguments=transform_args,
                     description=transform_description,
-                    tags=transform_tags
+                    tags=transform_tags,
+                    transform_type=transform_type,
+                    context=transform_context
             ):
                 print(f"Versioning transform '{transform_name}'. Updates found "
                         f"in Rasgo {rasgo_domain.upper()} environment.")
@@ -84,7 +91,9 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                     source_code=transform_source_code,
                     arguments=transform_args,
                     description=transform_description,
-                    tags=transform_tags
+                    tags=transform_tags,
+                    type=transform_type,
+                    context=transform_context
                 )
             else:
                 print(f"No updates found for '{transform_name}' transform "
