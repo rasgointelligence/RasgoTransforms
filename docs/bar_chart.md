@@ -1,15 +1,15 @@
 
 
-# histogram
+# bar_chart
 
-Analyze the value distribution of a single continuous variable by binning it and calculating frequencies in each bin
+Used for value distribution for string/bool columns, top n values, any x/y plot with discrete x
 
 ## Parameters
 
-|  Argument   |  Type  |                   Description                    | Is Optional |
-| ----------- | ------ | ------------------------------------------------ | ----------- |
-| column      | column | numeric column to use to generate the histogram  |             |
-| num_buckets | value  | max number of buckets to create; defaults to 200 | True        |
+| Argument  |   Type   |                              Description                               | Is Optional |
+| --------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| dimension | column   | qualitative values such as names or dates to segment your metric(s) by |             |
+| metrics   | agg_dict | numeric, quantitative values that you can measure                      |             |
 
 
 ## Example
@@ -17,7 +17,10 @@ Analyze the value distribution of a single continuous variable by binning it and
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.histogram(column='SALESAMOUNT')
+ds2 = ds.aggregate(dimension='FIPS', metrics={
+          'COL_1': ['SUM', 'AVG'],
+          'COL_2': ['SUM', 'AVG']
+      })
 ds2.preview()
 ```
 
