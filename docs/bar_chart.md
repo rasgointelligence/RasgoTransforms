@@ -2,7 +2,7 @@
 
 # bar_chart
 
-Used for value distribution for string/bool columns, top n values, any x/y plot with discrete x
+Compare categorical values across one or more metrics
 
 ## Parameters
 
@@ -17,7 +17,7 @@ Used for value distribution for string/bool columns, top n values, any x/y plot 
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.aggregate(dimension='FIPS', metrics={
+ds2 = ds.bar_chart(dimension='FIPS', metrics={
           'COL_1': ['SUM', 'AVG'],
           'COL_2': ['SUM', 'AVG']
       })
