@@ -3,7 +3,7 @@ type: insight
 context:
   chart_type: series_continuous
 tags:
-description: Analyze the value distribution of a single continuous variable by binning it and calculating frequencies in each bin
+description: Generate a binned approximation of a continuous column
 arguments:
   column:
     type: column
