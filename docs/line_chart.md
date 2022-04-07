@@ -2,7 +2,7 @@
 
 # line_chart
 
-Analyze the value distribution of a single continuous variable by binning it and calculating frequencies in each bin
+Generate a binned approximation of a continuous column
 
 ## Parameters
 
