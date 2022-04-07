@@ -23,7 +23,7 @@ class Datawarehouse(Enum):
     SNOWFLAKE = "snowflake"
     POSTGRESQL = "postgresql"
     MYSQL = "mysql"
-
+    REDSHIFT = "redshift"
 
 class TransformTemplate:
     """
@@ -148,7 +148,7 @@ def _load_all_yaml_files(datawarehouse: str) -> Dict[str, Dict]:
         try:
             transform_data = _read_yaml(transform_yaml_path)
             transform_yamls[transform_name] = transform_data
-        except Exception:
+        except FileNotFoundError:
             continue
 
     return transform_yamls
