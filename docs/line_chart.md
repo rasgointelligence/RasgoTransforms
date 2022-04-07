@@ -2,14 +2,14 @@
 
 # line_chart
 
-Used for value distribution for string/bool columns, top n values, any x/y plot with discrete x
+Generate a binned approximation of a continuous column
 
 ## Parameters
 
-| Argument  |   Type   |                              Description                               | Is Optional |
-| --------- | -------- | ---------------------------------------------------------------------- | ----------- |
-| dimension | column   | qualitative values such as names or dates to segment your metric(s) by |             |
-| metrics   | agg_dict | numeric, quantitative values that you can measure                      |             |
+|  Argument   |  Type  |                   Description                    | Is Optional |
+| ----------- | ------ | ------------------------------------------------ | ----------- |
+| column      | column | numeric column to use to generate the histogram  |             |
+| num_buckets | value  | max number of buckets to create; defaults to 200 | True        |
 
 
 ## Example
@@ -17,10 +17,7 @@ Used for value distribution for string/bool columns, top n values, any x/y plot 
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.aggregate(dimension='FIPS', metrics={
-          'COL_1': ['SUM', 'AVG'],
-          'COL_2': ['SUM', 'AVG']
-      })
+ds2 = ds.line_chart(column='SALESAMOUNT')
 ds2.preview()
 ```
 
