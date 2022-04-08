@@ -5,9 +5,12 @@ context:
 tags:
 description: Generate a binned approximation of a continuous column
 arguments:
-  column:
+  dimension:
     type: column
-    description: numeric column to use to generate the histogram
+    description: qualitative values such as names or dates to segment your metric(s) by
+  metrics:
+    type: agg_dict
+    description: numeric, quantitative values that you can measure
   num_buckets:
     type: value
     is_optional: true
