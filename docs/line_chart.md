@@ -6,10 +6,11 @@ Generate a binned approximation of a continuous column
 
 ## Parameters
 
-|  Argument   |  Type  |                   Description                    | Is Optional |
-| ----------- | ------ | ------------------------------------------------ | ----------- |
-| column      | column | numeric column to use to generate the histogram  |             |
-| num_buckets | value  | max number of buckets to create; defaults to 200 | True        |
+|  Argument   |   Type   |                              Description                               | Is Optional |
+| ----------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| dimension   | column   | qualitative values such as names or dates to segment your metric(s) by |             |
+| metrics     | agg_dict | numeric, quantitative values that you can measure                      |             |
+| num_buckets | value    | max number of buckets to create; defaults to 200                       | True        |
 
 
 ## Example
