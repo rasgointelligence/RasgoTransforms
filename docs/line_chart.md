@@ -6,11 +6,11 @@ Generate a binned approximation of a continuous column
 
 ## Parameters
 
-|  Argument   |   Type   |                              Description                               | Is Optional |
-| ----------- | -------- | ---------------------------------------------------------------------- | ----------- |
-| dimension   | column   | qualitative values such as names or dates to segment your metric(s) by |             |
-| metrics     | agg_dict | numeric, quantitative values that you can measure                      |             |
-| num_buckets | value    | max number of buckets to create; defaults to 200                       | True        |
+|  Argument   |   Type   |                    Description                    | Is Optional |
+| ----------- | -------- | ------------------------------------------------- | ----------- |
+| axis        | column   | axis column                                       |             |
+| metrics     | agg_dict | numeric, quantitative values that you can measure |             |
+| num_buckets | value    | max number of buckets to create; defaults to 200  | True        |
 
 
 ## Example
@@ -18,7 +18,10 @@ Generate a binned approximation of a continuous column
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.line_chart(column='SALESAMOUNT')
+ds2 = ds.line_chart(axis='TEMPERATURE', metrics={
+          'RAINFALL': ['SUM', 'AVG'],
+          'SNOWFALL': ['SUM', 'AVG']
+      })
 ds2.preview()
 ```
 
