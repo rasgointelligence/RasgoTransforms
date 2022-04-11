@@ -77,10 +77,15 @@ def serve_rasgo_transform_templates(
     template_list = []
     transform_yamls = _load_all_yaml_files(datawarehouse)
     for transform_name, transform_yaml in transform_yamls.items():
-        transform_source_code = _get_transform_source_code(
-            transform_name=transform_name,
-            datawarehouse=datawarehouse
-        )
+        try:
+            transform_source_code = _get_transform_source_code(
+                transform_name=transform_name,
+                datawarehouse=datawarehouse
+            )
+        except FileNotFoundError:
+            # This allows for transforms for only specific data warehouses
+            # otherwise raises without a base `sql` file in transform directory
+            continue
         transform_args = _parse_transform_args_from_yaml(transform_yaml)
         template_list.append(
             TransformTemplate(
