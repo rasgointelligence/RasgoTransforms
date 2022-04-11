@@ -6,10 +6,11 @@ Generate a binned approximation of a continuous column
 
 ## Parameters
 
-|  Argument   |  Type  |                   Description                    | Is Optional |
-| ----------- | ------ | ------------------------------------------------ | ----------- |
-| column      | column | numeric column to use to generate the histogram  |             |
-| num_buckets | value  | max number of buckets to create; defaults to 200 | True        |
+|  Argument   |   Type   |                    Description                    | Is Optional |
+| ----------- | -------- | ------------------------------------------------- | ----------- |
+| axis        | column   | axis column                                       |             |
+| metrics     | agg_dict | numeric, quantitative values that you can measure |             |
+| num_buckets | value    | max number of buckets to create; defaults to 200  | True        |
 
 
 ## Example
@@ -17,7 +18,10 @@ Generate a binned approximation of a continuous column
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.line_chart(column='SALESAMOUNT')
+ds2 = ds.line_chart(axis='TEMPERATURE', metrics={
+          'RAINFALL': ['SUM', 'AVG'],
+          'SNOWFALL': ['SUM', 'AVG']
+      })
 ds2.preview()
 ```
 

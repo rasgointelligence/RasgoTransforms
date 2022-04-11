@@ -5,9 +5,12 @@ context:
 tags:
 description: Generate a binned approximation of a continuous column
 arguments:
-  column:
+  axis:
     type: column
-    description: numeric column to use to generate the histogram
+    description: axis column
+  metrics:
+    type: agg_dict
+    description: numeric, quantitative values that you can measure
   num_buckets:
     type: value
     is_optional: true
@@ -15,5 +18,8 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.line_chart(column='SALESAMOUNT')
+  ds2 = ds.line_chart(axis='TEMPERATURE', metrics={
+            'RAINFALL': ['SUM', 'AVG'],
+            'SNOWFALL': ['SUM', 'AVG']
+        })
   ds2.preview()
