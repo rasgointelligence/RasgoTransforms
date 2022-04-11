@@ -43,7 +43,8 @@ SELECT
     {%- endfor -%}
 {%- endfor %}
 
-FROM BUCKETS 
+FROM BUCKETS
+WHERE {{ axis }}_MIN is not NULL
 GROUP BY 1, 2
 ORDER BY 1
 ;
