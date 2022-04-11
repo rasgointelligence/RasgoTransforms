@@ -25,7 +25,7 @@ BUCKETS AS (
    ,{{ axis }}::float AS COL_A_VAL
    ,WIDTH_BUCKET(COL_A_VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS COL_A_BUCKET
 {%- for col, aggs in metrics.items() %}
-   ,{{ col }}::float as {{col}}
+   ,{{ col }}
 {%- endfor %}
 
   FROM
