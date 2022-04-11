@@ -36,7 +36,6 @@ BUCKETS AS (
 SELECT
   MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE) AS {{ axis }}_MIN
   ,MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE) AS {{ axis }}_MAX
-  ,COL_A_BUCKET
 
 {%- for col, aggs in metrics.items() %}
     {%- for agg in aggs %}
@@ -45,6 +44,6 @@ SELECT
 {%- endfor %}
 
 FROM BUCKETS 
-GROUP BY 1, 2, 3
+GROUP BY 1, 2
 ORDER BY 1
 ;
