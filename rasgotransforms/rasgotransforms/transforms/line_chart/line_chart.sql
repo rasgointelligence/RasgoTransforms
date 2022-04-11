@@ -3,36 +3,48 @@
 {%- else -%}
     {%- set bucket_count = num_buckets -%}
 {%- endif -%}
+WITH AXIS_RANGE AS (
+  -- Use a user-defined axis column to calculate the min & max of the axis (and buckets on the axis)
+  SELECT
+    MIN({{ axis }})-1 AS MIN_VAL
+   ,MAX({{ axis }})+1 AS MAX_VAL
+  FROM
+    {{ source_table }}
+  WHERE
+    {{ axis }} IS NOT NULL
+), EDGES AS (
+SELECT MIN_VAL, MAX_VAL, (MIN_VAL-MAX_VAL) VAL_RANGE, ((MAX_VAL-MIN_VAL)/{{ bucket_count }}) BUCKET_SIZE FROM AXIS_RANGE
+),
+BUCKETS AS (
+  SELECT
+    -- Assigns a bucket to each value of each column in user's column list
+    -- Row count of result set should match the row count of the raw table
+    MIN_VAL
+   ,MAX_VAL
+   ,BUCKET_SIZE
+   ,{{ axis }}::float AS COL_A_VAL
+   ,WIDTH_BUCKET(COL_A_VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS COL_A_BUCKET
+{%- for col, aggs in metrics.items() %}
+   ,{{ col }}::float as {{col}}
+{%- endfor %}
 
-WITH COUNTS AS (
+  FROM
+    {{ source_table }}
+    CROSS JOIN EDGES
+)
+-- Run final aggregates on the buckets
 SELECT
-  REPLACE('{{ column }}','"') AS FEATURE
-  ,COL AS VAL
-  ,COUNT(1) AS REC_CT
-FROM
-  (SELECT {{ column }}::float AS COL FROM {{ source_table }})
-WHERE
-  COL IS NOT NULL
-GROUP BY 2),
-CALCS AS (SELECT MIN(VAL)-1 MIN_VAL, MAX(VAL)+1 MAX_VAL FROM COUNTS),
-EDGES AS (SELECT MIN_VAL, MAX_VAL, (MIN_VAL-MAX_VAL) VAL_RANGE, ((MAX_VAL-MIN_VAL)/{{ bucket_count }}) BUCKET_SIZE FROM CALCS),
-FREQS AS (
-SELECT
-  FEATURE
-  ,VAL
-  ,REC_CT
-  ,WIDTH_BUCKET(VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS HIST_BUCKET
-  ,MIN_VAL
-  ,MAX_VAL
-  ,BUCKET_SIZE
-FROM
-  COUNTS
-CROSS JOIN EDGES)
-SELECT
-  MIN_VAL+((HIST_BUCKET-1)*BUCKET_SIZE) AS {{ column }}_MIN
-  ,MIN_VAL+(HIST_BUCKET*BUCKET_SIZE) AS {{ column }}_MAX
-  ,SUM(REC_CT) AS RECORD_COUNT
-FROM
-  FREQS
-GROUP BY 1,2
-order by 1
+  MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE) AS {{ axis }}_MIN
+  ,MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE) AS {{ axis }}_MAX
+  ,COL_A_BUCKET
+
+{%- for col, aggs in metrics.items() %}
+    {%- for agg in aggs %}
+    ,{{ agg }}({{ col }})
+    {%- endfor -%}
+{%- endfor %}
+
+FROM BUCKETS 
+GROUP BY 1, 2, 3
+ORDER BY 1
+;

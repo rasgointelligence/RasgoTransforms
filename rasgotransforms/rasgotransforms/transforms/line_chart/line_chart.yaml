@@ -5,9 +5,9 @@ context:
 tags:
 description: Generate a binned approximation of a continuous column
 arguments:
-  dimension:
+  axis:
     type: column
-    description: qualitative values such as names or dates to segment your metric(s) by
+    description: axis column
   metrics:
     type: agg_dict
     description: numeric, quantitative values that you can measure
@@ -18,5 +18,8 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.line_chart(column='SALESAMOUNT')
+  ds2 = ds.line_chart(axis='TEMPERATURE', metrics={
+            'RAINFALL': ['SUM', 'AVG'],
+            'SNOWFALL': ['SUM', 'AVG']
+        })
   ds2.preview()
