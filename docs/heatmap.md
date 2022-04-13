@@ -10,7 +10,7 @@ Generate an x / y heatmap, which uses the number of rows in each x/y bin as a de
 | ----------- | ------ | ------------------------------------------------ | ----------- |
 | x_axis      | column | numeric column to use as the x axis              |             |
 | y_axis      | column | numeric column to use as the y axis              |             |
-| num_buckets | value  | max number of buckets to create; defaults to 200 | True        |
+| num_buckets | value  | max number of buckets to create; defaults to 100 | True        |
 
 
 ## Example
