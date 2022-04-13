@@ -1,5 +1,5 @@
 {%- if num_buckets is not defined -%}
-    {%- set bucket_count = 200 -%}
+    {%- set bucket_count = 100 -%}
 {%- else -%}
     {%- set bucket_count = num_buckets -%}
 {%- endif -%}
