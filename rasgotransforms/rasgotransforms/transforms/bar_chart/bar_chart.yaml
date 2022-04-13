@@ -11,6 +11,10 @@ arguments:
   metrics:
     type: agg_dict
     description: numeric, quantitative values that you can measure
+  filter_statements:
+    type: string_list
+    is_optional: true
+    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL'
 example_code: |
   ds = rasgo.get.dataset(id)
 

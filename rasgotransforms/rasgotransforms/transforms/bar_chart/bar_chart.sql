@@ -8,4 +8,9 @@ SELECT
     {%- endfor -%}
 {%- endfor %}
 FROM {{ source_table }}
+{%- if filter_statements is iterable -%}
+{%- for filter_statement in filter_statements %}
+{{ 'WHERE' if loop.first else 'AND' }} {{ filter_statement }}
+{%- endfor -%}
+{%- endif -%}
 GROUP BY {{ dimension }}
