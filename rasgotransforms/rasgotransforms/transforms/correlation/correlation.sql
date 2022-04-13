@@ -19,8 +19,8 @@
 {%- endfor -%}
 
 {%- for combo in itertools.combinations(column_list, 2) -%}
-    SELECT '{{ combo[0] }}' as x_label,
-    '{{ combo[1] }}' as y_label,
+    SELECT '{{ combo[0] }}' as COLUMN_A,
+    '{{ combo[1] }}' as COLUMN_B,
     CORR({{ combo[0] }}, {{ combo[1] }}) as Correlation
     FROM {{ source_table }}
     {% if not loop.last %} UNION {% endif -%}
