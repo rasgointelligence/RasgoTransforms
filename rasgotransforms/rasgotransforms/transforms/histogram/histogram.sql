@@ -10,7 +10,13 @@ SELECT
   ,COL AS VAL
   ,COUNT(1) AS REC_CT
 FROM
-  (SELECT {{ column }}::float AS COL FROM {{ source_table }})
+  (SELECT {{ column }}::float AS COL FROM {{ source_table }}
+  {%- if filter_statements is iterable -%}
+  {%- for filter_statement in filter_statements %}
+  {{ 'WHERE' if loop.first else 'AND' }} {{ filter_statement }}
+  {%- endfor -%}
+  {%- endif -%}
+  )
 WHERE
   COL IS NOT NULL
 GROUP BY 2),
