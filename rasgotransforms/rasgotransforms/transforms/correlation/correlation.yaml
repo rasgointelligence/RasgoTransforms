@@ -1,0 +1,15 @@
+name: correlation
+type: insight
+context:
+  chart_type: heatmap_discrete
+tags:
+description: Run pairwise correlation on all numeric columns in the source_table
+arguments:
+  none:
+    type: none
+    description: this transform does not take any arguments
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.correlation()
+  ds2.preview()
