@@ -1,0 +1,23 @@
+name: heatmap
+type: insight
+context:
+  chart_type: heatmap_continuous
+tags:
+description: Generate an x / y heatmap, which uses the number of rows in each x/y bin as a density overlay to a 2-d histogram
+arguments:
+  x_axis:
+    type: column
+    description: numeric column to use as the x axis
+  y_axis:
+    type: column
+    description: numeric column to use as the y axis 
+  num_buckets:
+    type: value
+    is_optional: true
+    description: max number of buckets to create; defaults to 100
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.heatmap(x_axis='TEMPERATURE',
+    y_axis='PRECIPITATION')
+  ds2.preview()
