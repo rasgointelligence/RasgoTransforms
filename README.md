@@ -17,7 +17,7 @@ Rasgo Transforms provide jinja SQL templates that can be applied to your data us
 # Running Transforms
 
 Rasgo Transforms can be applied via:
-- your Rasgo Feature Store account ([pyrasgo](https://pypi.org/project/pyrasgo/) - Account required) 
+- your Rasgo Feature Store account ([pyrasgo](https://pypi.org/project/pyrasgo/) - Account required)
 - using the Rasgo open-source package ([rasgoql](https://pypi.org/project/rasgoql/) - totally free).
 
 # About Us

@@ -2,13 +2,13 @@
 
 # datespine_groups
 
-Generates a date spine across custom groupings. Each grouping will be returned with a 
+Generates a date spine across custom groupings. Each grouping will be returned with a
 continuous set of dates.
 Spines can be calculated globally using the table min/max or locally using each group min/max.
 
-All intervals are considered to be start-inclusive and end-exclusive, or `[start, end]`. 
-The join with the date spine will be an outer join such that all intervals are present 
-and all data that does not fall into one of those intervals is excluded. 
+All intervals are considered to be start-inclusive and end-exclusive, or `[start, end]`.
+The join with the date spine will be an outer join such that all intervals are present
+and all data that does not fall into one of those intervals is excluded.
 
 
 ## Parameters
@@ -28,7 +28,7 @@ and all data that does not fall into one of those intervals is excluded.
 ```python
 ds = rasgo.get.dataset(74)
 
-# Usage 1: Local datespines - will return a datespine per group with 
+# Usage 1: Local datespines - will return a datespine per group with
 # min/max values within the group
 ds2 = ds.datespine_groups(
     group_by=['PRODUCTKEY'],
@@ -36,11 +36,11 @@ ds2 = ds.datespine_groups(
     group_bounds='local',
     interval_type='day',
     start_timestamp='2010-12-29',
-    end_timestamp='2014-01-28' 
+    end_timestamp='2014-01-28'
 )
 ds2.preview()
 
-# Usage 2: Global datespines - will return a datespine per group with 
+# Usage 2: Global datespines - will return a datespine per group with
 # min/max values set to the global min/max
 ds2 = ds.datespine_groups(
     group_by=['PRODUCTKEY'],
@@ -48,7 +48,7 @@ ds2 = ds.datespine_groups(
     group_bounds='global',
     interval_type='day',
     start_timestamp='2010-12-29',
-    end_timestamp='2014-01-28' 
+    end_timestamp='2014-01-28'
 )
 ds2.preview()
 
@@ -57,4 +57,3 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/datespine_groups/datespine_groups.sql" %}
-

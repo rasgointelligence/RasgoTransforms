@@ -19,7 +19,7 @@ ds = rasgo.get.dataset(id)
 
 ds2 = ds.impute(
   imputations={
-      'MONTH': 'mean',            # Impute with mean 
+      'MONTH': 'mean',            # Impute with mean
       'FIPS': 'median',           # Impute with median
       'COVID_NEW_CASES': 'mode',  # Impute with mode
       'YEAR': '2021',             # Impute with the string '2021'
@@ -34,4 +34,3 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/impute/impute.sql" %}
-

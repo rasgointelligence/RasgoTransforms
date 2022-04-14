@@ -9,10 +9,10 @@ jobs:
     defaults:
       run:
         shell: bash
-        
+
     container:
       image: "python:3.7"
-    
+
     env:
       PYTHONPATH: /__w/RasgoTransforms/RasgoTransforms
 

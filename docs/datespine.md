@@ -4,9 +4,9 @@
 
 This transform generates a date spine for your date index, which can replace your date index column for modeling.
 
-All intervals are considered to be start-inclusive and end-exclusive, or `[start, end]`. 
-The join with the date spine will be an outer join such that all intervals are present 
-and all data that does not fall into one of those intervals is excluded. 
+All intervals are considered to be start-inclusive and end-exclusive, or `[start, end]`.
+The join with the date spine will be an outer join such that all intervals are present
+and all data that does not fall into one of those intervals is excluded.
 
 It's essentially:
 ```
@@ -45,4 +45,3 @@ ds2.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/datespine/datespine.sql" %}
-

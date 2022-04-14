@@ -41,7 +41,7 @@ def table(transform_args: Dict) -> str:
     writer = MarkdownTableWriter(
         headers=["Argument", "Type", "Description", "Is Optional"],
         value_matrix=utils.get_table_values(transform_args),
-        margin=1  # add a whitespace for both sides of each cell
+        margin=1,  # add a whitespace for both sides of each cell
     )
     markdown_table = writer.dumps()
     return markdown_table
@@ -51,7 +51,7 @@ def python_code(code: str) -> str:
     """
     Make a return a markdown python code snippet
     """
-    return f"```python\n{code}\n```"""
+    return f"```python\n{code}\n```" ""
 
 
 def github_url(transform_type_dir_name: str, transform_name: str, dw_type_dir_name: str = None) -> str:
@@ -59,5 +59,7 @@ def github_url(transform_type_dir_name: str, transform_name: str, dw_type_dir_na
     Make and return the embedded url for transform source code
     """
     dw_type_dir = f"/{dw_type_dir_name}" if dw_type_dir_name else ""
-    return '{% embed url="' + f"{constants.GITHUB_REPO_URL}/{transform_type_dir_name}" \
-                              f"/{transform_name}{dw_type_dir}/{transform_name}.sql" + '" %}'
+    return (
+        f'{{% embed url="{constants.GITHUB_REPO_URL}/{transform_type_dir_name}'
+        f'/{transform_name}{dw_type_dir}/{transform_name}.sql" %}}'
+    )

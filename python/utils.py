@@ -29,9 +29,7 @@ def load_all_yaml_files() -> Dict[str, Dict]:
 
     # Get list of all transform names of this type,
     # by looking at sub-directory names one level down
-    transform_names = [
-        x.name for x in transform_dir_path.iterdir() if x.is_dir()
-    ]
+    transform_names = [x.name for x in transform_dir_path.iterdir() if x.is_dir()]
     for transform_name in transform_names:
         transform_yaml_path = transform_dir_path / transform_name / f"{transform_name}.yaml"
 
@@ -41,10 +39,10 @@ def load_all_yaml_files() -> Dict[str, Dict]:
             transform_data = _read_yaml(transform_yaml_path)
             transform_yamls[transform_name] = transform_data
         except Exception as e:
-            print(f"Can't read YAML file for transform {transform_name}\n"
-                    f"Error Msg: {e}\n")
+            print(f"Can't read YAML file for transform {transform_name}\n" f"Error Msg: {e}\n")
 
     return transform_yamls
+
 
 def override_path_exists(transform_name: str, dw_type: str) -> bool:
     """
@@ -55,6 +53,7 @@ def override_path_exists(transform_name: str, dw_type: str) -> bool:
     if transform_override_path.exists():
         return True
     return False
+
 
 def get_root_dir() -> Path:
     """
@@ -92,13 +91,13 @@ def get_all_rasgo_transform_keyed_by_name(rasgo: Rasgo) -> Dict[str, Transform]:
 
 
 def transform_needs_versioning(
-        transform: Transform,
-        source_code: str,
-        arguments: List[Dict[str, str]],
-        description: str,
-        tags: List[str],
-        transform_type: str,
-        context: Optional[Dict[str, Any]]
+    transform: Transform,
+    source_code: str,
+    arguments: List[Dict[str, str]],
+    description: str,
+    tags: List[str],
+    transform_type: str,
+    context: Optional[Dict[str, Any]],
 ) -> bool:
     """
     Return true if any of the attributes for the transform has
@@ -113,12 +112,14 @@ def transform_needs_versioning(
       - transform type
       - context
     """
-    transform_needs_versioning = description != transform.description or \
-                                 source_code != transform.sourceCode or \
-                                 set(tags) != set(transform.tags) or \
-                                 _transform_args_have_changed(transform, arguments) or \
-                                 transform_type != transform.type or \
-                                 context != transform.context
+    transform_needs_versioning = (
+        description != transform.description
+        or source_code != transform.sourceCode
+        or set(tags) != set(transform.tags)
+        or _transform_args_have_changed(transform, arguments)
+        or transform_type != transform.type
+        or context != transform.context
+    )
     return transform_needs_versioning
 
 
@@ -144,9 +145,7 @@ def parse_transform_args_from_yaml(transform_yaml: Dict) -> List[Dict[str, str]]
     """
     transform_args = []
     for arg_name, arg_meta_data in transform_yaml['arguments'].items():
-        transform_args.append(
-            {**{'name': arg_name}, **arg_meta_data}
-        )
+        transform_args.append({**{'name': arg_name}, **arg_meta_data})
     return transform_args
 
 
@@ -181,7 +180,7 @@ def get_table_values(transform_args: Dict) -> List[List[str]]:
             arg_name,
             arg_info['type'],
             arg_info['description'],
-            arg_info.get('is_optional', '')
+            arg_info.get('is_optional', ''),
         ]
         all_data.append(row_data)
     return all_data
@@ -193,8 +192,8 @@ def get_table_values(transform_args: Dict) -> List[List[str]]:
 
 
 def _transform_args_have_changed(
-        transform: Transform,
-        arguments: List[Dict[str, str]]
+    transform: Transform,
+    arguments: List[Dict[str, str]],
 ) -> bool:
     """
     Return true if any of the transform arguments have changed
@@ -214,9 +213,11 @@ def _transform_args_have_changed(
         # Lastly check if any of the transform arg attrs have change
         # if so, transform needs versioning
         db_arg = db_args_w_name[0]
-        if db_arg.description != yaml_arg['description'] or \
-                db_arg.is_optional != yaml_arg.get('is_optional', False) or \
-                db_arg.type != yaml_arg['type']:
+        if (
+            db_arg.description != yaml_arg['description']
+            or db_arg.is_optional != yaml_arg.get('is_optional', False)
+            or db_arg.type != yaml_arg['type']
+        ):
             return True
 
     # If nothing changed in transform arguments return False
@@ -231,8 +232,7 @@ def _read_yaml(yaml_path: Path) -> Dict:
         try:
             return yaml.safe_load(stream)
         except yaml.YAMLError as e:
-            print(f"Error Parsing YAML file at {yaml_path}"
-                  f"\n\nError Msg: {e}")
+            print(f"Error Parsing YAML file at {yaml_path}" f"\n\nError Msg: {e}")
 
 
 def _get_udt_repo_dir() -> Path:

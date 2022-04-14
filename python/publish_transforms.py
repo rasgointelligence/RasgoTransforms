@@ -43,22 +43,19 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
 
         # Load/parse needed transform data from YAML
         transform_description = transform_yaml.get('description')
-        transform_source_code = utils.get_transform_source_code(
-            transform_name=transform_name
-        )
-        transform_tags = utils.listify_tags(
-            tags=transform_yaml.get('tags')
-        )
+        transform_source_code = utils.get_transform_source_code(transform_name=transform_name)
+        transform_tags = utils.listify_tags(tags=transform_yaml.get('tags'))
         transform_args = utils.parse_transform_args_from_yaml(transform_yaml)
         transform_type = transform_yaml.get('type')
         transform_context = transform_yaml.get('context')
 
-
         # If a transform with that name isn't in Rasgo, create it
         if transform_name not in rasgo_transforms:
-            print(f"No transform with name '{transform_name}' found in Rasgo. "
-                    f"Creating new '{transform_name}' transform "
-                    f"in Rasgo {rasgo_domain.upper()} environment.")
+            print(
+                f"No transform with name '{transform_name}' found in Rasgo. "
+                f"Creating new '{transform_name}' transform "
+                f"in Rasgo {rasgo_domain.upper()} environment."
+            )
             rasgo.create.transform(
                 name=transform_name,
                 source_code=transform_source_code,
@@ -66,7 +63,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                 description=transform_description,
                 tags=transform_tags,
                 type=transform_type,
-                context=transform_context
+                context=transform_context,
             )
 
         # If it does exist in Rasgo, check if anything in the
@@ -75,16 +72,18 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
         else:
             curr_transform_in_db = rasgo_transforms[transform_name]
             if utils.transform_needs_versioning(
-                    transform=curr_transform_in_db,
-                    source_code=transform_source_code,
-                    arguments=transform_args,
-                    description=transform_description,
-                    tags=transform_tags,
-                    transform_type=transform_type,
-                    context=transform_context
+                transform=curr_transform_in_db,
+                source_code=transform_source_code,
+                arguments=transform_args,
+                description=transform_description,
+                tags=transform_tags,
+                transform_type=transform_type,
+                context=transform_context,
             ):
-                print(f"Versioning transform '{transform_name}'. Updates found "
-                        f"in Rasgo {rasgo_domain.upper()} environment.")
+                print(
+                    f"Versioning transform '{transform_name}'. Updates found "
+                    f"in Rasgo {rasgo_domain.upper()} environment."
+                )
                 rasgo.delete.transform(curr_transform_in_db.id)
                 rasgo.create.transform(
                     name=transform_name,
@@ -93,41 +92,46 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                     description=transform_description,
                     tags=transform_tags,
                     type=transform_type,
-                    context=transform_context
+                    context=transform_context,
                 )
             else:
-                print(f"No updates found for '{transform_name}' transform "
-                        f"found in Rasgo {rasgo_domain.upper()} environment.")
+                print(
+                    f"No updates found for '{transform_name}' transform "
+                    f"found in Rasgo {rasgo_domain.upper()} environment."
+                )
 
         # Keep track of which transforms were versioned/published
         published_transform_names.append(transform_name)
 
     # Delete any transforms which are in db, but not in this repo
     transforms_to_delete = {
-        transform_name: t.id for transform_name, t in rasgo_transforms.items()
+        transform_name: t.id
+        for transform_name, t in rasgo_transforms.items()
         if transform_name not in published_transform_names
     }
     for transform_name, transform_id in transforms_to_delete.items():
-        print(f"Soft Deleting '{transform_name}' transform with db id {transform_id} "
-              f"in Rasgo {rasgo_domain.upper()} environment")
+        print(
+            f"Soft Deleting '{transform_name}' transform with db id {transform_id} "
+            f"in Rasgo {rasgo_domain.upper()} environment"
+        )
         rasgo.delete.transform(transform_id)
 
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('pyrasgo-api-key', action='store')
-    arg_parser.add_argument('-d', '--rasgo-domain',
-                            action='store',
-                            default='production',
-                            choices=['local', 'staging', 'production'],
-                            help="Rasgo Environment to connect to. Sets env var "
-                                 "'RASGO_DOMAIN' for PyRasgo url dispatching "
-                                 "(local, staging, or production).")
+    arg_parser.add_argument(
+        '-d',
+        '--rasgo-domain',
+        action='store',
+        default='production',
+        choices=['local', 'staging', 'production'],
+        help="Rasgo Environment to connect to. Sets env var "
+        "'RASGO_DOMAIN' for PyRasgo url dispatching "
+        "(local, staging, or production).",
+    )
     args = arg_parser.parse_args()
 
     # Publish all Transforms in this Repo
     # With Selected Rasgo API Key and Domain
-    publish_transforms(
-        rasgo_api_key=getattr(args, 'pyrasgo-api-key'),
-        rasgo_domain=args.rasgo_domain
-    )
+    publish_transforms(rasgo_api_key=getattr(args, 'pyrasgo-api-key'), rasgo_domain=args.rasgo_domain)

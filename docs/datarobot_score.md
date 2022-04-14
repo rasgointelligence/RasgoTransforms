@@ -24,13 +24,13 @@ toscore = rasgo.get.dataset(resource_key='adventureworks_sales_by_day_toscore')
 # with explanations
 scored = toscore.datarobot_score(function_name = 'PUBLIC.DEMO_PREDICT_NEXT_WEEK_SALES_V2',
                      include_cols = ['ORDERDATE','SALESAMOUNT'],
-                     num_explains=2, 
-                     threshold_low=100, 
+                     num_explains=2,
+                     threshold_low=100,
                      threshold_high=100000)
 
 # without explanations
 scored = toscore.datarobot_score(function_name = 'PUBLIC.DEMO_PREDICT_NEXT_WEEK_SALES',
-                     include_cols = ['ORDERDATE','SALESAMOUNT'])    
+                     include_cols = ['ORDERDATE','SALESAMOUNT'])  
 
 scored.preview()
 ```
@@ -38,4 +38,3 @@ scored.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/datarobot_score/datarobot_score.sql" %}
-

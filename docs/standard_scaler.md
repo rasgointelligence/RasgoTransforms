@@ -34,4 +34,3 @@ ds2b.preview()
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/standard_scaler/standard_scaler.sql" %}
-
