@@ -18,6 +18,7 @@
     {%- endif -%}
 {%- endfor -%}
 
+SELECT * FROM (
 {%- for combo in itertools.product(column_list, repeat=2) -%}
     SELECT '{{ combo[0] }}' as COLUMN_A,
     '{{ combo[1] }}' as COLUMN_B,
@@ -25,3 +26,5 @@
     FROM {{ source_table }}
     {% if not loop.last %} UNION {% endif -%}
 {%- endfor -%}
+)
+ORDER BY COLUMN_A, COLUMN_B
