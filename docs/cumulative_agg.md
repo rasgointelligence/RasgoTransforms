@@ -38,3 +38,4 @@ ds = internet_sales.cumulative_agg(
 ## Source Code
 
 {% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/cumulative_agg/cumulative_agg.sql" %}
+
