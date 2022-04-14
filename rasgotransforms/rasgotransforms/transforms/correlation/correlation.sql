@@ -18,7 +18,7 @@
     {%- endif -%}
 {%- endfor -%}
 
-{%- for combo in itertools.combinations(column_list, 2) -%}
+{%- for combo in itertools.permutations(column_list, 2) -%}
     SELECT '{{ combo[0] }}' as COLUMN_A,
     '{{ combo[1] }}' as COLUMN_B,
     CORR({{ combo[0] }}, {{ combo[1] }}) as Correlation
