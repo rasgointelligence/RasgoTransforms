@@ -21,12 +21,8 @@ def save_transform_docs() -> None:
     """
     transform_yamls = utils.load_all_yaml_files()
     for transform_name, transform_yaml in transform_yamls.items():
-        print(f"Generating Markdown for Transform "
-                f"'transforms/{transform_name}.yaml'")
-        if utils.override_path_exists(
-                transform_name,
-                constants.RASGO_DATAWAREHOUSE
-            ):
+        print(f"Generating Markdown for Transform 'transforms/{transform_name}.yaml'")
+        if utils.override_path_exists(transform_name, constants.RASGO_DATAWAREHOUSE):
             dw_type = constants.RASGO_DATAWAREHOUSE
         else:
             dw_type = None
@@ -34,20 +30,21 @@ def save_transform_docs() -> None:
             transform_yaml=transform_yaml,
             transform_dir_name="transforms",
             transform_name=transform_name,
-            dw_type=dw_type
+            dw_type=dw_type,
         )
         # Write Transform Markdown to Docs directory
         md_file_path = DOCS_DIR / f"{transform_name}.md"
-        md_file_path.parent.mkdir(exist_ok=True) 
+        md_file_path.parent.mkdir(exist_ok=True)
         print(f"Writing Markdown docs at {md_file_path}\n")
         md_file_path.write_text(markdown)
 
 
-def _get_transform_markdown(transform_yaml: Dict,
-                            transform_dir_name: str,
-                            transform_name: str,
-                            dw_type: str = None
-                            ) -> str:
+def _get_transform_markdown(
+    transform_yaml: Dict,
+    transform_dir_name: str,
+    transform_name: str,
+    dw_type: str = None,
+) -> str:
     """
     Generate and return the markdown string to write as a MD
     file for this transform based off the YAML file
@@ -70,7 +67,7 @@ def _get_transform_markdown(transform_yaml: Dict,
         md.github_url(transform_dir_name, transform_name, dw_type),
         '',
     ]
-    return '\n\n'.join(filter(lambda x: x!=None, markdown_elements))
+    return '\n\n'.join(filter(lambda x: x != None, markdown_elements))
 
 
 if __name__ == '__main__':

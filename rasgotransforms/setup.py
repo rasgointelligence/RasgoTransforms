@@ -32,10 +32,11 @@ setup(
         'rasgotransforms',
         'rasgotransforms/transforms',
     ],
-    package_data={'rasgotransforms': [
-        'transforms/**/*.yaml',
-        'transforms/**/*.sql',
-        'transforms/**/**/*.sql',
+    package_data={
+        'rasgotransforms': [
+            'transforms/**/*.yaml',
+            'transforms/**/*.sql',
+            'transforms/**/**/*.sql',
         ]
     },
     install_requires=requirements,
@@ -51,7 +52,7 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Topic :: Database',
         'Topic :: Scientific/Engineering :: Information Analysis',
-        'Topic :: Software Development :: Code Generators'
+        'Topic :: Software Development :: Code Generators',
     ],
-    zip_safe=False
+    zip_safe=False,
 )

@@ -25,18 +25,14 @@ class Datawarehouse(Enum):
     MYSQL = "mysql"
     REDSHIFT = "redshift"
 
+
 class TransformTemplate:
     """
     Reference to a Rasgo transform template
     """
 
     def __init__(
-        self,
-        name: str,
-        arguments: List[dict],
-        source_code: str,
-        description: str = None,
-        tags: List[str] = None
+        self, name: str, arguments: List[dict], source_code: str, description: str = None, tags: List[str] = None
     ):
         self.name = name
         self.arguments = arguments
@@ -45,9 +41,7 @@ class TransformTemplate:
         self.tags = tags
 
     def __repr__(self) -> str:
-        arg_str = ", ".join(
-            f'{arg.get("name")}: {arg.get("type")}' for arg in self.arguments
-        )
+        arg_str = ", ".join(f'{arg.get("name")}: {arg.get("type")}' for arg in self.arguments)
         return f"RasgoTemplate: {self.name}({arg_str})"
 
     def define(self) -> str:
@@ -63,9 +57,7 @@ class TransformTemplate:
         return pretty_string
 
 
-def serve_rasgo_transform_templates(
-    datawarehouse: str
-) -> List[TransformTemplate]:
+def serve_rasgo_transform_templates(datawarehouse: str) -> List[TransformTemplate]:
     """
     Return a list of Rasgo Transform Templates
 
@@ -79,8 +71,7 @@ def serve_rasgo_transform_templates(
     for transform_name, transform_yaml in transform_yamls.items():
         try:
             transform_source_code = _get_transform_source_code(
-                transform_name=transform_name,
-                datawarehouse=datawarehouse
+                transform_name=transform_name, datawarehouse=datawarehouse
             )
         except FileNotFoundError:
             # This allows for transforms for only specific data warehouses
@@ -93,7 +84,7 @@ def serve_rasgo_transform_templates(
                 source_code=transform_source_code,
                 arguments=transform_args,
                 description=transform_yaml.get('description'),
-                tags=transform_yaml.get('tags')
+                tags=transform_yaml.get('tags'),
             )
         )
     return template_list
@@ -115,17 +106,14 @@ def _get_root_dir() -> Path:
     return Path(os.path.dirname(__file__))
 
 
-def _get_transform_source_code(
-    transform_name: str,
-    datawarehouse: str
-) -> str:
+def _get_transform_source_code(transform_name: str, datawarehouse: str) -> str:
     """
     Return a transform's source code as a string
     """
     datawarehouse = _check_datawarehouse(datawarehouse)
     root_dir = _get_root_dir()
     source_code_path = root_dir / "transforms" / transform_name / f"{transform_name}.sql"
-    source_code_override_path = root_dir / "transforms" / transform_name/ datawarehouse / f"{transform_name}.sql"
+    source_code_override_path = root_dir / "transforms" / transform_name / datawarehouse / f"{transform_name}.sql"
     if source_code_override_path.exists():
         source_code_path = source_code_override_path
     with open(source_code_path) as fp:
@@ -154,9 +142,7 @@ def _load_all_yaml_files(datawarehouse: str) -> Dict[str, Dict]:
     return transform_yamls
 
 
-def _parse_transform_args_from_yaml(
-    transform_yaml: Dict
-) -> List[Dict[str, str]]:
+def _parse_transform_args_from_yaml(transform_yaml: Dict) -> List[Dict[str, str]]:
     """
     From a loaded Transform Yaml File parse the
     Transform args in proper format, return the args
@@ -176,7 +162,4 @@ def _read_yaml(yaml_path: Path) -> Dict:
         try:
             return yaml.safe_load(stream)
         except yaml.YAMLError as e:
-            logger.error(
-                f"Error Parsing YAML file at {yaml_path}"
-                f"\n\nError Msg: {e}"
-            )
+            logger.error(f"Error Parsing YAML file at {yaml_path}" f"\n\nError Msg: {e}")
