@@ -1,7 +1,7 @@
-{%- for i in range((hierarchy|length) - 1) -%}
+{%- for i in range((stage|length) - 1) -%}
     SELECT
-    CAST({{ hierarchy[i] }} AS STRING) AS SOURCE_NODE,
-    CAST({{ hierarchy[i+1] }} AS STRING) AS DEST_NODE,
+    CAST({{ stage[i] }} AS STRING) AS SOURCE_NODE,
+    CAST({{ stage[i+1] }} AS STRING) AS DEST_NODE,
     COUNT(*) AS WIDTH
 FROM {{ source_table }}
 GROUP BY
