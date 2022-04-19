@@ -6,11 +6,12 @@ Generate a binned approximation of a continuous column
 
 ## Parameters
 
-|  Argument   |   Type   |                    Description                    | Is Optional |
-| ----------- | -------- | ------------------------------------------------- | ----------- |
-| axis        | column   | axis column                                       |             |
-| metrics     | agg_dict | numeric, quantitative values that you can measure |             |
-| num_buckets | value    | max number of buckets to create; defaults to 200  | True        |
+|   Argument   |   Type   |                                 Description                                  | Is Optional |
+| ------------ | -------- | ---------------------------------------------------------------------------- | ----------- |
+| axis         | column   | axis column                                                                  |             |
+| axis_is_date | boolean  | Toogle True/False depending on if the axis values should be treated as dates |             |
+| metrics      | agg_dict | numeric, quantitative values that you can measure                            |             |
+| num_buckets  | value    | max number of buckets to create; defaults to 200                             | True        |
 
 
 ## Example
@@ -23,6 +24,7 @@ ds2 = ds.line_chart(axis='TEMPERATURE', metrics={
           'SNOWFALL': ['SUM', 'AVG']
       })
 ds2.preview()
+
 ```
 
 ## Source Code
