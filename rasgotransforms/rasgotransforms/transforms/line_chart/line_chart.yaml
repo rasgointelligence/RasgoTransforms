@@ -8,9 +8,6 @@ arguments:
   axis:
     type: column
     description: axis column
-  axis_is_date:
-    type: boolean
-    description: Determines if the axis values should be treated as dates. Use TRUE if your axis column is a date or datetime, and FALSE otherwise.
   metrics:
     type: agg_dict
     description: numeric, quantitative values that you can measure

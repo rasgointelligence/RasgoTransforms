@@ -1,18 +1,44 @@
+{%- macro get_axis_data_type(source_table_fqtn=None) -%}
+    {%- if source_table_fqtn.count('.') == 2 -%}
+      {%- set database, schema, table = source_table_fqtn.split('.') -%}
+        SELECT COLUMN_NAME, DATA_TYPE
+        FROM {{ database }}.information_schema.columns
+        WHERE TABLE_CATALOG = '{{ database|upper }}'
+        AND   TABLE_SCHEMA = '{{ schema|upper }}'
+        AND   TABLE_NAME = '{{ table|upper }}'
+        AND COLUMN_NAME = '{{ axis|upper }}'
+    {%- else -%}
+        SELECT COLUMN_NAME, DATA_TYPE
+        FROM information_schema.columns
+        WHERE TABLE_NAME = '{{ source_table_fqtn|upper }}'
+        AND COLUMN_NAME = '{{ axis|upper }}'
+    {%- endif -%}
+{%- endmacro -%}
+{# Is the axis a DATE, TIMESTAMP, or something else? #}
+{%- set axis_type_df = run_query(get_axis_data_type(source_table_fqtn=source_table)) -%}
+{%- set axis_type_dict = axis_type_df.set_index('COLUMN_NAME')['DATA_TYPE'].to_dict() -%}
+{%- if 'DATE' in axis_type_dict[axis] or 'TIMESTAMP' in axis_type_dict[axis] -%}
+  {%- set axis_is_date = true -%}
+{%- else -%}
+  {%- set axis_is_date = false -%}
+{%- endif -%}
+
 {%- if num_buckets is not defined -%}
     {%- set bucket_count = 200 -%}
 {%- else -%}
     {%- set bucket_count = num_buckets -%}
 {%- endif -%}
+
 WITH AXIS_RANGE AS (
   -- Use a user-defined axis column to calculate the min & max of the axis (and buckets on the axis)
   SELECT
-    {% if axis_is_date %}
+    {% if axis_is_date -%}
     MIN(DATE_PART(EPOCH_SECOND, {{ axis }}))-1 AS MIN_VAL
     ,MAX(DATE_PART(EPOCH_SECOND, {{ axis }}))+1 AS MAX_VAL
-    {% else %}
+    {% else -%}
     MIN({{ axis }})-1 AS MIN_VAL
    ,MAX({{ axis }})+1 AS MAX_VAL
-    {% endif %}
+    {%- endif %}
   FROM
     {{ source_table }}
   WHERE
@@ -39,13 +65,13 @@ BUCKETS AS (
 )
 -- Run final aggregates on the buckets
 SELECT
-  {% if axis_is_date %}
+  {% if axis_is_date -%}
   (MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE))::DATETIME AS {{ axis }}_MIN
   ,(MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE))::DATETIME AS {{ axis }}_MAX
-  {% else %}
+  {% else -%}
   MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE) AS {{ axis }}_MIN
   ,MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE) AS {{ axis }}_MAX
-  {% endif %}
+  {%- endif %}
 
 {%- for col, aggs in metrics.items() %}
     {%- for agg in aggs %}
