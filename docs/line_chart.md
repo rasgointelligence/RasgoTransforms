@@ -6,12 +6,11 @@ Generate a binned approximation of a continuous column
 
 ## Parameters
 
-|   Argument   |   Type   |                                                            Description                                                             | Is Optional |
-| ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| axis         | column   | axis column                                                                                                                        |             |
-| axis_is_date | boolean  | Determines if the axis values should be treated as dates. Use TRUE if your axis column is a date or datetime, and FALSE otherwise. |             |
-| metrics      | agg_dict | numeric, quantitative values that you can measure                                                                                  |             |
-| num_buckets  | value    | max number of buckets to create; defaults to 200                                                                                   | True        |
+|  Argument   |   Type   |                    Description                    | Is Optional |
+| ----------- | -------- | ------------------------------------------------- | ----------- |
+| axis        | column   | axis column                                       |             |
+| metrics     | agg_dict | numeric, quantitative values that you can measure |             |
+| num_buckets | value    | max number of buckets to create; defaults to 200  | True        |
 
 
 ## Example
