@@ -75,7 +75,7 @@ SELECT
 
 {%- for col, aggs in metrics.items() %}
     {%- for agg in aggs %}
-    ,{{ agg }}({{ col }})
+    ,{{ agg }}({{ col }}) AS {{ agg }}_{{ col }}
     {%- endfor -%}
 {%- endfor %}
 
@@ -83,4 +83,3 @@ FROM BUCKETS
 WHERE {{ axis }}_MIN is not NULL
 GROUP BY 1, 2
 ORDER BY 1
-;
