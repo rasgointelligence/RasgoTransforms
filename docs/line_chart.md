@@ -23,7 +23,6 @@ ds2 = ds.line_chart(axis='TEMPERATURE', metrics={
           'SNOWFALL': ['SUM', 'AVG']
       })
 ds2.preview()
-
 ```
 
 ## Source Code
