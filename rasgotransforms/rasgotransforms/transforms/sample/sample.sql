@@ -6,3 +6,6 @@
 
 SELECT * FROM {{source_table}}
 TABLESAMPLE BERNOULLI ( {{ sample_amount }} )
+{%- for filter_statement in filter_statements %}
+{{ 'WHERE' if loop.first else 'AND' }} {{ filter_statement }}
+{%- endfor -%}
