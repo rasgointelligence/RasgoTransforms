@@ -31,3 +31,6 @@ jobs:
 
       - name: Publish Transforms on Prod
         run: python python/publish_transforms.py "$RASGO_COMMUNITY_API_KEY" -d production
+
+      - name: Publish Transforms on Staging
+          run: python python/publish_transforms.py "$RASGO_STAGING_COMMUNITY_API_KEY" -d staging
