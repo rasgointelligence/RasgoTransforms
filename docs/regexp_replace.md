@@ -2,14 +2,15 @@
 
 # regexp_replace
 
-This function replaces text in a column according to the given pattern.
+Returns the subject with the specified pattern (or all occurrences of the pattern) either removed or replaced by a replacement string. If no matches are found, returns the original subject.
+
 
 ## Parameters
 
-| Argument    | Type   | Description                                                                                                                                    | Is Optional |
-|-------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+|  Argument   |  Type  |                                                                  Description                                                                   | Is Optional |
+| ----------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | source_col  | column | A string column from which to replace a pattern.                                                                                               |             |
-| pattern     | string | This is the substring that you want to replace.                                                                                                |             |
+| pattern     | string | This is the regex pattern that you want to match.                                                                                              |             |
 | replacement | string | This is the value used as a replacement for the pattern.                                                                                       |             |
 | target_col  | column | A column name to assign the resulting column.                                                                                                  | True        |
 | position    | int    | Number of characters from the beginning of the string where the function starts searching for matches. Default: 1                              | True        |

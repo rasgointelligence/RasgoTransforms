@@ -4,10 +4,11 @@
 
 This function replaces text in a column according to the given pattern.
 
+
 ## Parameters
 
-| Argument    | Type   | Description                                              | Is Optional |
-|-------------|--------|----------------------------------------------------------|-------------|
+|  Argument   |  Type  |                       Description                        | Is Optional |
+| ----------- | ------ | -------------------------------------------------------- | ----------- |
 | source_col  | column | A string column from which to replace a pattern.         |             |
 | pattern     | string | This is the substring that you want to replace.          |             |
 | replacement | string | This is the value used as a replacement for the pattern. |             |
