@@ -20,6 +20,7 @@ jobs:
     env:
       PYTHONPATH: /__w/RasgoTransforms/RasgoTransforms
       RASGO_COMMUNITY_API_KEY: ${{ secrets.RASGO_COMMUNITY_API_KEY }}
+      RASGO_STAGING_COMMUNITY_API_KEY: ${{ secrets.RASGO_STAGING_COMMUNITY_API_KEY }}
 
     steps:
       - uses: actions/checkout@v2
