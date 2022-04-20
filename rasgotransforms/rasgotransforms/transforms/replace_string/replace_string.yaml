@@ -1,0 +1,25 @@
+name: replace_string
+tags:
+  - column
+  - natural_language_processing
+description: |
+  This function replaces text in a column according to the given pattern.
+arguments:
+  source_col:
+    type: column
+    description: A string column from which to replace a pattern.
+  pattern:
+    type: string
+    description: This is the substring that you want to replace.
+  replacement:
+    type: string
+    description: This is the value used as a replacement for the pattern.
+  target_col:
+    type: column
+    description: A column name to assign the resulting column.
+    is_optional: true
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.replace_string(source_col='WEATHER_DESCRIPTION', pattern='drizzle', replacement='rain')
+  ds2.preview()
