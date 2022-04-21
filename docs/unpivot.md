@@ -20,7 +20,7 @@ internet_sales = rasgo.get.dataset(74)
 
 ds2 = internet_sales.unpivot(
     value_column="SALES_FEES",
-    name_column="PRODUCTKEY",
+    name_column="PRODUCT",
     column_list=["TAXAMT", "FREIGHT"]
     )
 
