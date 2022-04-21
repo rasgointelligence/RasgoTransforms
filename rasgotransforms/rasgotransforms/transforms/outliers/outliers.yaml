@@ -12,6 +12,10 @@ arguments:
   target_column:
     type: column
     description: The target column containing values which will be used to calculate outliers.
+  drop:
+    type: boolean
+    description: Whether or not to drop the rows which are determined outliers. If false, a new
+    column will be created flagging outliers with a boolean.
   method:
     type: value
     description: The method used to calculate outliers. Supported methods are
