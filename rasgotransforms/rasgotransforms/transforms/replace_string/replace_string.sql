@@ -18,10 +18,10 @@
 
 {% if use_regex %}
 SELECT *,
-REGEXP_REPLACE({{ source_col }}, '{{ pattern }}', '{{ replacement }}', {{ position }}, {{ occurrence }}, '{{ parameters }}') AS {{alias if alias is defined else "REPLACE_" + source_col}}
+REGEXP_REPLACE({{ source_col }}, '{{ pattern }}', '{{ replacement }}', {{ position }}, {{ occurrence }}, '{{ parameters }}') AS {{cleanse_name(alias) if alias is defined else "REPLACE_" + source_col}}
 FROM {{ source_table }}
 {% else %}
 SELECT *,
-REPLACE({{ source_col }}, '{{ pattern }}', '{{ replacement }}') AS {{alias if alias is defined else "REPLACE_" + source_col}}
+REPLACE({{ source_col }}, '{{ pattern }}', '{{ replacement }}') AS {{cleanse_name(alias) if alias is defined else "REPLACE_" + source_col}}
 FROM {{ source_table }}
 {% endif %}
