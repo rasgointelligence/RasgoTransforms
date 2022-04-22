@@ -1,0 +1,42 @@
+name: replace_string
+tags:
+  - column
+  - natural_language_processing
+description: |
+  Returns the subject with the specified pattern (or all occurrences of the pattern) either removed or replaced by a replacement string. If no matches are found, returns the original subject.
+arguments:
+  source_col:
+    type: column
+    description: A string column from which to replace a pattern.
+  pattern:
+    type: string
+    description: This is the regex pattern that you want to match.
+  replacement:
+    type: string
+    description: This is the value used as a replacement for the pattern.
+  alias:
+    type: string
+    description: A column name to assign the resulting column.
+    is_optional: true
+  use_regex:
+    type: boolean
+    is_optional: true
+    description: Use regex to find string pattern to replace defaults to 'false'; however, regex will be used if any of 'position', 'occurrence', or 'parameters' are provided, regardless of this value.
+  position:
+    type: int
+    description: "Number of characters from the beginning of the string where the function starts searching for matches. Default: 1"
+    is_optional: true
+  occurrence:
+    type: int
+    description: "Specifies which occurrence of the pattern to replace. If 0 is specified, all occurrences are replaced. Default: 0"
+    is_optional: true
+  parameters:
+    type: string
+    description: "String of one or more characters that specifies the parameters used for searching for matches. Supported values: c , i , m , e , s. Default: c"
+    is_optional: true
+
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.replace_string(source_col='WEATHER_DESCRIPTION', pattern='[Dd]rizzle|[Ss]prinkle', replacement='rain')
+  ds2.preview()
