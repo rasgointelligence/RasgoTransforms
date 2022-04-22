@@ -9,13 +9,16 @@ description: |
   a new column named 'OUTLER_<target_column>' which is TRUE for records that are outliers, 
   and FALSE for records that aren't.
 arguments:
-  target_column:
-    type: column
-    description: The target column containing values which will be used to calculate outliers.
+  target_columns:
+    type: column_list
+    description: The target columns containing values which will be used to calculate outliers. 
+      The z-score or IQR (depending on the selected method) for each column will be calculated 
+      independently. If any of the values in the selected columns are an outlier, the row will 
+      be flagged as an outlier (or dropped if drop = True).
   drop:
     type: boolean
     description: Whether or not to drop the rows which are determined outliers. If false, a new
-    column will be created flagging outliers with a boolean.
+      column will be created flagging outliers with a boolean.
   method:
     type: value
     description: The method used to calculate outliers. Supported methods are

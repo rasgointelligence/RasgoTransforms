@@ -7,61 +7,67 @@ the columns in a table by fqtn
 {%- endmacro -%}
 {%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
 {%- set source_col_names = col_names_source_df.columns.to_list() -%}
-
 with outliers as (
-    {% if method == "iqr" %}
-
+    {%- if method == "iqr" %}
     with iqr_vals as (
-        select percentile_cont(0.25) within group (order by {{ target_column }}) as Q1_{{ target_column }},
-            percentile_cont(0.5) within group (order by {{ target_column }}) as MEDIAN_{{ target_column }},
-            percentile_cont(0.75) within group (order by {{ target_column }}) as Q3_{{ target_column }}
+        select
+            {%- for col in target_columns %}
+            percentile_cont(0.25) within group (order by {{ col }}) as Q1_{{ col }},
+            percentile_cont(0.5) within group (order by {{ col }}) as MEDIAN_{{ col }},
+            percentile_cont(0.75) within group (order by {{ col }}) as Q3_{{ col }}{{ ", " if not loop.last else " " }}
+            {%- endfor %}
         from {{ source_table }}
-    )
-    select *,
+    ) select *,
            case
-               when {{ target_column }} > MEDIAN_{{ target_column }} + ((Q3_{{ target_column }} - Q1_{{ target_column }}) * 1.5) then true
-               when {{ target_column }} < MEDIAN_{{ target_column }} - ((Q3_{{ target_column }} - Q1_{{ target_column }}) * 1.5) then true
+               {%- for col in target_columns %}
+               when {{ col }} > MEDIAN_{{ col }} + ((Q3_{{ col }} - Q1_{{ col }}) * 1.5) then true
+               when {{ col }} < MEDIAN_{{ col }} - ((Q3_{{ col }} - Q1_{{ col }}) * 1.5) then true
+               {%- endfor %}
                else false
-          end as OUTLIER_{{ target_column }}
+          end as OUTLIER
     from {{ source_table }}, iqr_vals
 
-    {% elif method == "threshold" %}
-
+    {%- elif method == "threshold" %}
     select *,
            case
-               when {{ target_column }} > {{ max_threshold }} then true
-               when {{ target_column }} < {{ min_threshold }} then true
+               {%- for col in target_columns %}
+               when {{ col }} > {{ max_threshold }} then true
+               when {{ col }} < {{ min_threshold }} then true
+               {%- endfor %}
                else false
-           end as OUTLIER_{{ target_column }}
+           end as OUTLIER
     from {{ source_table }}
-
-    {% else %}
-
+    {%- else %}
         {%- if max_zscore is not defined -%}
         {%- set max_zscore = 2 -%}
-        {%- endif -%}
-
+        {%- endif %}
     with tbl_mean_std as (
-        select avg ({{ target_column }}) MEAN_{{ target_column }}, stddev({{ target_column }}) STDDEV_{{ target_column }}
+        select
+               {%- for col in target_columns %}
+               avg({{ col }}) MEAN_{{ col }},
+               stddev({{ col }}) STDDEV_{{ col }}{{ ", " if not loop.last else " " }}
+               {%- endfor %}
         from {{ source_table }}
-    )
-    select *,
-           ({{target_column}} - MEAN_{{target_column}}) / STDDEV_{{ target_column }}  as ZSCORE_{{ target_column }},
+    ) select *,
+            {%- for col in target_columns %}
+            ({{col}} - MEAN_{{col}}) / STDDEV_{{ col }}  as ZSCORE_{{ col }},
+            {%- endfor %}
             case
-                when ZSCORE_{{ target_column }} > abs({{ max_zscore }}) then TRUE
+                {%- for col in target_columns %}
+                when abs(ZSCORE_{{ col }}) > {{ max_zscore }} then TRUE
+                {%- endfor %}
                 else FALSE
-            end as OUTLIER_{{ target_column }}
+            end as OUTLIER
     from {{ source_table }}, tbl_mean_std
-
-    {% endif %}
+    {%- endif %}
 ) select
-    {% if not drop %}
-    OUTLIER_{{ target_column }},
-    {% endif %}
+    {% if not drop -%}
+    OUTLIER,
+    {%- endif %}
     {% for col in source_col_names -%}
     {{ col }}{{ ", " if not loop.last else " " }}
     {%- endfor %}
   from outliers
-{% if drop %}
-    where not OUTLIER_{{ target_column }}
-{% endif %}
+{% if drop -%}
+    where not OUTLIER
+{%- endif -%}
