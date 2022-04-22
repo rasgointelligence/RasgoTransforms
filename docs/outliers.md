@@ -25,11 +25,28 @@ and FALSE for records that aren't.
 ```python
 ds = rasgo.get.dataset(id)
 
+# Drop outliers using a manual threshold
 ds2 = ds.outliers(
-      target_column="ORDERS",
-      method="threshold",
-      min_threshold=100,
-      max_threshold=500
+    target_column=["ORDERS", "CANCELLATIONS"],
+    method="threshold",
+    min_threshold=100,
+    max_threshold=500,
+    drop=True
+)
+
+# Drop values with a Z-score > 2 (more than 2 standard deviations from the mean)
+ds2 = ds.outliers(
+    target_column=["ORDERS", "CANCELLATIONS"],
+    method="z-score"
+    drop=True,
+    max_zscore=2
+)
+
+# Flag outliers using the iqr method
+ds2 = ds.outliers(
+    target_column=["ORDERS"],
+    method="iqr"
+    drop=False
 )
 ds2.preview()
 ```
