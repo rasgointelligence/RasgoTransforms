@@ -9,7 +9,7 @@ arguments:
     type: column
     description: qualitative values such as names or dates to segment your metric(s) by
   metrics:
-    type: agg_dict
+    type: column_agg_list
     description: numeric, quantitative values that you can measure
   filter_statements:
     type: string_list
