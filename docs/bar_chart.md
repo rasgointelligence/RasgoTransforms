@@ -6,11 +6,11 @@ Compare categorical values across one or more metrics
 
 ## Parameters
 
-|     Argument      |    Type     |                                  Description                                   | Is Optional |
-| ----------------- | ----------- | ------------------------------------------------------------------------------ | ----------- |
-| dimension         | column      | qualitative values such as names or dates to segment your metric(s) by         |             |
-| metrics           | agg_dict    | numeric, quantitative values that you can measure                              |             |
-| filter_statements | string_list | List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL' | True        |
+|     Argument      |      Type       |                                  Description                                   | Is Optional |
+| ----------------- | --------------- | ------------------------------------------------------------------------------ | ----------- |
+| dimension         | column          | qualitative values such as names or dates to segment your metric(s) by         |             |
+| metrics           | column_agg_list | numeric, quantitative values that you can measure                              |             |
+| filter_statements | string_list     | List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL' | True        |
 
 
 ## Example

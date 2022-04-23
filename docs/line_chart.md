@@ -6,11 +6,11 @@ Generate a binned approximation of a continuous column
 
 ## Parameters
 
-|  Argument   |   Type   |                    Description                    | Is Optional |
-| ----------- | -------- | ------------------------------------------------- | ----------- |
-| axis        | column   | axis column                                       |             |
-| metrics     | agg_dict | numeric, quantitative values that you can measure |             |
-| num_buckets | value    | max number of buckets to create; defaults to 200  | True        |
+|  Argument   |      Type       |                    Description                    | Is Optional |
+| ----------- | --------------- | ------------------------------------------------- | ----------- |
+| axis        | column          | axis column                                       |             |
+| metrics     | column_agg_list | numeric, quantitative values that you can measure |             |
+| num_buckets | value           | max number of buckets to create; defaults to 200  | True        |
 
 
 ## Example
