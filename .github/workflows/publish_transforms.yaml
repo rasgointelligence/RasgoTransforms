@@ -1,4 +1,4 @@
-# Publish all Transforms in this Repo Production Environment
+# Publish all Transforms in this Repo Production and Staging Environments
 # Run job each time something is pushed/committed to remote 'main' branch
 name: Publish Transforms
 
