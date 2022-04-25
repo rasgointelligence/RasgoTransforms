@@ -1,0 +1,24 @@
+name: dropna
+tags:
+  - row
+  - data_cleaning
+  - conditional
+description: Remove missing values
+arguments:
+  how:
+    type: value
+    description: Method to determine if record is removed, 'any' removes each record with at least one missing value, 'all' removes records only when all values are missing (default = 'any').
+    is_optional: true
+  subset:
+    type: column_list
+    description: List of columns to check for missing values. All columns are checked if not defined.
+    is_optional: true
+  thresh:
+    type: int
+    description: (Optional) Acts like all, but only requires this number of values to be null to remove a record instead of all.
+    is_optional: true
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.dropna(how='all', subset=['ORDERS', 'SALES'])
+  ds2.preview()
