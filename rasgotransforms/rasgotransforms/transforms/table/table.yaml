@@ -1,0 +1,19 @@
+name: table
+type: insight
+context:
+  chart_type: data_table
+tags:
+description: Compare categorical values across one or more metrics
+arguments:
+  filter_statements:
+    type: string_list
+    is_optional: true
+    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL'
+  num_rows:
+    type: value
+    is_optional: true
+    description: number of rows to return; defaults to 10
+example_code: |
+  ds = rasgo.get.dataset(id)
+  ds2 = ds.table()
+  ds2.preview()
