@@ -9,7 +9,7 @@ arguments:
     type: column
     description: axis column
   metrics:
-    type: agg_dict
+    type: column_agg_list
     description: numeric, quantitative values that you can measure
   num_buckets:
     type: value

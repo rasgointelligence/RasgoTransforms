@@ -14,9 +14,11 @@ arguments:
   partition:
     type: column_list
     description: name of column(s) to partition by for the lag
+    is_required: false
   order_by:
     type: column_list
     description: name of column(s) to order by in the final data set
+    is_required: false
 example_code: |
   ds = rasgo.get.dataset(id)
 

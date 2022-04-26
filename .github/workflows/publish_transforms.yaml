@@ -1,4 +1,4 @@
-# Publish all Transforms in this Repo Production Environment
+# Publish all Transforms in this Repo Production and Staging Environments
 # Run job each time something is pushed/committed to remote 'main' branch
 name: Publish Transforms
 
@@ -20,6 +20,7 @@ jobs:
     env:
       PYTHONPATH: /__w/RasgoTransforms/RasgoTransforms
       RASGO_COMMUNITY_API_KEY: ${{ secrets.RASGO_COMMUNITY_API_KEY }}
+      RASGO_STAGING_COMMUNITY_API_KEY: ${{ secrets.RASGO_STAGING_COMMUNITY_API_KEY }}
 
     steps:
       - uses: actions/checkout@v2
@@ -31,3 +32,6 @@ jobs:
 
       - name: Publish Transforms on Prod
         run: python python/publish_transforms.py "$RASGO_COMMUNITY_API_KEY" -d production
+
+      - name: Publish Transforms on Staging
+        run: python python/publish_transforms.py "$RASGO_STAGING_COMMUNITY_API_KEY" -d staging
