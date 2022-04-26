@@ -1,0 +1,24 @@
+name: split
+tags:
+  - column
+  - natural_language_processing
+description: |
+  Takes a delimiter and target column, splitting the column values by the delimiter into multiple columns.
+arguments:
+  target_col:
+    type: column
+    description: A string column to split into multiple columns.
+  sep:
+    type: string
+    description: This is the delimiter used to split the string.
+  output_cols:
+    type: string_list
+    description: The labels for the new columns. This transformation will create as many columns as are in this list. 
+      If there are more delimiters than output columns, the trailing value with excess delimiters will all be added 
+      to the last column. If there are more output columns than delimiters, the first columns will take the existing 
+      values and the remainder will be null.
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.split(target_col='PRODUCTKEY', sep='-', output_cols=['KEY_PREFIX', 'KEY_ROOT', 'KEY_SUFFIX'])
+  ds2.preview()
