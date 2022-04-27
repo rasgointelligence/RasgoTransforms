@@ -1,6 +1,6 @@
 
 
-# datespine_kh
+# datespine
 
 This transform generates a date spine for your date index, which can replace your date index column for modeling.
 
