@@ -1,5 +1,5 @@
 {% set min_max_query %}
-select min({{ date_col }}) min_date, max({{ date_col }}) max_date from {{ source_table }}
+select min(cast({{ date_col }} as date)) min_date, max(cast({{ date_col }} as date)) max_date from {{ source_table }}
 {% endset %}
 {% set min_max_query_result = run_query(min_max_query) %}
 {% if start_timestamp is defined %}
@@ -20,14 +20,14 @@ select datediff({{ interval_type }}, '{{ min_date }}'::timestamp_ntz, '{{ max_da
 with date_spine as (
     select
            row_number() over (order by null) as interval_id,
-           cast(dateadd(
+            dateadd(
                '{{ interval_type }}',
                interval_id - 1,
-               '{{ min_date }}'::timestamp_ntz) as date) as ts_ntz_interval_start,
-            cast(dateadd(
+               '{{ min_date }}'::timestamp_ntz) as ts_ntz_interval_start,
+            dateadd(
                '{{ interval_type }}',
                interval_id,
-               '{{ min_date }}'::timestamp_ntz) as date) as ts_ntz_interval_end
+               '{{ min_date }}'::timestamp_ntz) as ts_ntz_interval_end
 from table (generator(rowcount => {{ row_count }}))
     )
 select  {{ source_table }}.*,
