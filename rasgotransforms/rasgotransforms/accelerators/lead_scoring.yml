@@ -1,4 +1,4 @@
-name: sfdc_lead_scoring
+name: SFDC Lead Scoring
 description: This accelerator builds a dataset to do lead scoring using Salesforce data
 arguments:
   contact_table:
