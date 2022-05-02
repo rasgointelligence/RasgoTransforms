@@ -2,13 +2,13 @@
 
 # funnel
 
-If you have numeric columns representing the number of times a particular outcome occurs in your data, this transform creates a ready-to-visualize dataset of the survival rate in the funnel
+Creates a funnel visualization-ready dataset from numeric columns representing a hierarchy with summed incidence rates
 
 ## Parameters
 
-|   Argument    |    Type     |                         Description                          | Is Optional |
-| ------------- | ----------- | ------------------------------------------------------------ | ----------- |
-| stage_columns | column_list | Ordered list of columns, from highest in hierarchy to lowest |             |
+|   Argument    |    Type     |                                                                                      Description                                                                                      | Is Optional |
+| ------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| stage_columns | column_list | List of columns to include in the funnel dataset, in order of hierarchy from highest stage to lowest stage (e.g., ["Numer of leads", "Number of contacts", "Number of deals closed"]) |             |
 
 
 ## Example
