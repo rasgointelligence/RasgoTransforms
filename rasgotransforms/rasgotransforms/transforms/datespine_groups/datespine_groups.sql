@@ -55,6 +55,5 @@ FROM GROUP_SPINE G
 LEFT JOIN {{ source_table }} T
   ON {{ date_col }} >= G.GROUP_START 
   AND {{ date_col }} < G.GROUP_END 
-  {% for col in group_by -%}
-     AND G.{{ col }} = T.{{ col }}
+  {% for col in group_by %} AND G.{{ col }} = T.{{ col }}
   {%- endfor %}
