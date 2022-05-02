@@ -16,7 +16,7 @@ Analyze the hierarchical record count of a series of columns by counting the num
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.funnel(stage=["ENGLISHCOUNTRYREGIONNAME", "STATEPROVINCENAME", "CITY"])
+ds2 = ds.sankey(stage=["ENGLISHCOUNTRYREGIONNAME", "STATEPROVINCENAME", "CITY"])
 ds2.preview()
 
 ```
