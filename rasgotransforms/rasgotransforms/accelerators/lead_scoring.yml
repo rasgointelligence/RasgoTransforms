@@ -1,5 +1,5 @@
-name: SFDC Lead Scoring
-description: This accelerator builds a dataset to do lead scoring using Salesforce data
+name: Salesforce Lead Scoring
+description: Salesforce tracks individuals through multiple relationship stages, including contact, lead, and opportunity. This accelerator joins each Salesforce object together, producing a single table with one row per individual so that you can quickly apply a lead scoring model or other insight.
 arguments:
   contact_table:
     type: dataset
