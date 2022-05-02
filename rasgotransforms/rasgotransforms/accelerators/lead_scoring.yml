@@ -1,0 +1,104 @@
+name: Salesforce Lead Scoring
+description: Salesforce tracks individuals through multiple relationship stages, including contact, lead, and opportunity. This accelerator joins each Salesforce object together, producing a single table with one row per individual so that you can quickly apply a lead scoring model or other insight.
+arguments:
+  contact_table:
+    type: dataset
+    description: Salesforce contacts table
+  opportunity_table:
+    type: dataset
+    description: Salesforce opportunities table
+  account_table:
+    type: dataset
+    description: Salesforce accounts table
+operations:
+  get_contact_columns:
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+        - "ID"
+        - "ACCOUNT_ID"
+        - "NAME"
+        - "EMAIL"
+        - "TITLE"
+        - "LEAD_SOURCE"
+        - "CREATED_DATE"
+        - "INITIAL_CONTACT_METHOD_C"
+        - "INITIAL_SOURCE_DETAIL_C"
+        - "MQL_DATE_C"
+        - "SALES_ACCEPTED_DATE_C"
+      source_table: "{{ contact_table }}"
+    description: grab necessary columns from contacts table
+  get_account_columns:
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+        - "ID"
+        - "NAME"
+        - "ACCOUNT_SOURCE"
+      source_table: "{{ account_table }}"
+    description: grab necessary columns from accounts table
+  get_opportunity_columns:
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+        - "ID"
+        - "CONTACT_ID"
+        - "STAGE_NAME"
+        - "AMOUNT"
+      source_table: "{{ opportunity_table }}"
+    description: grab necessary columns from accounts table
+  accounts_contacts:
+    transform_name: join
+    transform_arguments:
+      join_table: "{{ get_account_columns }}"
+      join_type: "LEFT"
+      join_columns:
+        "ACCOUNT_ID": "ID"
+      join_prefix: "acnt"
+      source_table: "{{ get_contact_columns }}"
+    description: join contacts and accounts
+  leads_base:
+    transform_name: join
+    transform_arguments:
+      join_table: "{{ get_opportunity_columns }}"
+      join_type: "LEFT"
+      join_columns:
+        "ID": "CONTACT_ID"
+      join_prefix: "opty"
+      source_table: "{{ accounts_contacts }}"
+    description: join with opportunities tables to get base table for lead scoring
+  leads_target:
+    transform_name: if_then
+    transform_arguments:
+      conditions:
+        - - "OPTY_ID is not null"
+          - 1
+      default: 0
+      alias: "qualified_lead"
+      source_table: "{{ leads_base }}"
+    description: create target variable as qualified lead
+  table:
+    operation_type: INSIGHT
+    transform_arguments:
+      filter_statements:
+        - DATE(CREATED_DATE) > DATEADD('DAY', -7, CURRENT_DATE())
+      source_table: "{{leads_target}}"
+    transform_name: table
+  line_chart:
+    operation_type: INSIGHT
+    transform_arguments:
+      axis: CREATED_DATE
+      metrics:
+        ID:
+          - COUNT
+      source_table: "{{leads_target}}"
+    transform_name: line_chart
+  bar_chart:
+    operation_type: INSIGHT
+    transform_arguments:
+      dimension: LEAD_SOURCE
+      metrics:
+        ID:
+          - COUNT
+      source_table: "{{leads_target}}"
+    transform_name: bar_chart

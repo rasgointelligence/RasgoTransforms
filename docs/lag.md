@@ -10,8 +10,8 @@ Lag shifts your features on a partition index, creating a lookback feature offse
 | --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | columns   | column_list | names of column(s) you want to lag                                                                                                                  |             |
 | amounts   | int_list    | Magnitude of amounts you want to use for the lag. Positive values result in a historical offset; negative amounts result in forward-looking offset. |             |
-| partition | column_list | name of column(s) to partition by for the lag                                                                                                       |             |
-| order_by  | column_list | name of column(s) to order by in the final data set                                                                                                 |             |
+| partition | column_list | name of column(s) to partition by for the lag                                                                                                       | True        |
+| order_by  | column_list | name of column(s) to order by in the final data set                                                                                                 | True        |
 
 
 ## Example

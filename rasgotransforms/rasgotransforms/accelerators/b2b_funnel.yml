@@ -1,0 +1,294 @@
+name: "Business to Business Sales Funnel"
+description: "The B2B sales funnel tracks leads through a traditional sales funnel: from awareness via marketing at top of funnel, to marketing qualified lead, to sales qualified lead, and finally to closed as a won opportunity. The data sources necessary to generate this accelerator are Google Analytics, Hubspot, and Salesforce."
+arguments:
+  contact_table:
+    type: dataset
+    description: Salesforce contacts table
+  opportunity_table:
+    type: dataset
+    description: Salesforce opportunities table
+  account_table:
+    type: dataset
+    description: Salesforce accounts table
+  lead_table:
+    type: dataset
+    description: Salesforce leads table
+  daily_traffic_table:
+    type: dataset
+    description: Google Analytics daily traffic overview table
+  email_event_table:
+    type: dataset
+    description: Hubspot email event table
+operations:
+  salesforce_contacts_clean:
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+        - 'CREATED_DATE'
+        - 'EMAIL'
+        - 'ID'
+      source_table: "{{ contact_table }}"
+    description: Keep the columns from contacts we'll need later
+  salesforce_accounts_clean:
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+        - 'ACCOUNT_SOURCE'
+        - 'CREATED_DATE'
+        - 'ANNUAL_REVENUE'
+        - 'ID'
+      source_table: "{{ account_table }}"
+    description: Keep the accounts from contacts we'll need later
+  salesforce_opportunities_clean:
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+        - 'ACCOUNT_ID'
+        - 'CLOSE_DATE'
+        - 'CONTACT_ID'
+        - 'CREATED_DATE'
+        - 'TYPE'
+        - 'AMOUNT'
+        - 'ID'
+        - 'STAGE_NAME'
+      source_table: "{{ opportunity_table }}"
+    description: Keep the columns from opportunities we'll need later
+  salesforce_leads_clean:
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+        - 'CONVERTED_OPPORTUNITY_ID'
+        - 'CREATED_DATE'
+        - 'LEAD_SOURCE'
+        - 'ANNUAL_REVENUE'
+        - 'ID'
+      source_table: "{{ lead_table }}"
+    description: Keep the columns from leads we'll need later
+  google_analytics_datespine:
+    transform_name: datespine
+    transform_arguments:
+      date_col: DATE
+      interval_type: DAY
+      source_table: "{{ daily_traffic_table }}"
+    description: Create a datespine for our Google Analytics data to ensure we can fully join date columns from other datasets
+  hubspot_datespine:
+    transform_name: datespine
+    transform_arguments:
+      date_col: CREATED
+      interval_type: DAY
+      source_table: "{{ email_event_table }}"
+    description: Create a datespine for our Hubspot data to ensure we can fully join date columns from other datasets
+  google_analytics_datespine_aggregated_metrics:
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+        - 'DATE_SPINE_START'
+        - 'DATE_SPINE_END'
+      aggregations:
+        'BOUNCES':
+          - 'SUM'
+        'IMPRESSIONS':
+          - 'SUM'
+        'NEW_USERS':
+          - 'SUM'
+        'ORGANIC_SEARCHES':
+          - 'SUM'
+        'PAGEVIEWS':
+          - 'SUM'
+        'PAGEVIEWS_PER_SESSION':
+          - 'AVG'
+        'SESSIONS':
+          - 'SUM'
+        'USERS':
+          - 'SUM'
+      source_table: "{{ google_analytics_datespine }}"
+    description: Aggregate our Google Analytics data to a daily level
+  hubspot_daily_emails_sent:
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+        - 'CREATED_SPINE_START'
+        - 'CREATED_SPINE_END'
+      aggregations:
+        'ID':
+          - 'COUNT DISTINCT'
+      source_table: "{{ hubspot_datespine }}"
+    description: Aggregate our Hubspot data to a daily level
+  google_hubspot_daily:
+    transform_name: join
+    transform_arguments:
+      join_table: "{{ hubspot_daily_emails_sent }}"
+      join_type: "LEFT"
+      join_columns:
+        "DATE_SPINE_START": "CREATED_SPINE_START"
+        "DATE_SPINE_END": "CREATED_SPINE_END"
+      join_prefix: "HS_"
+      source_table: "{{ google_analytics_datespine_aggregated_metrics }}"
+    description: Join daily Hubspot metrics to daily Google Analytics metrics
+  salesforce_opportunities_closed_won:
+    transform_name: filter
+    transform_arguments:
+      filter_statements:
+        - "STAGE_NAME = 'Closed Won'"
+      source_table: "{{ salesforce_opportunities_clean }}"
+    description: Filter Salesforce data to only opportunities that are closed and won
+  salesforce_opportunities_closed_won_aggregated:
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+        - 'CLOSE_DATE'
+      aggregations:
+        "ID":
+          - 'COUNT DISTINCT'
+        "AMOUNT":
+          - "SUM"
+      source_table: "{{ salesforce_opportunities_closed_won }}"
+    description: Keep only the date and closed won 'AMOUNT'
+  salesforce_leads_opportunities:
+    transform_name: join
+    transform_arguments:
+      join_table: "{{ salesforce_opportunities_clean }}"
+      join_type: "LEFT"
+      join_columns:
+        "CONVERTED_OPPORTUNITY_ID": "ID"
+      source_table: "{{ salesforce_leads_clean }}"
+    description: Join Salesforce opportunity data to lead data
+  salesforce_leads_opportunities_accounts:
+    transform_name: join
+    transform_arguments:
+      join_table: "{{ salesforce_accounts_clean }}"
+      join_type: "LEFT"
+      join_columns:
+        "ACCOUNT_ID": "ID"
+      source_table: "{{ salesforce_leads_opportunities }}"
+    description: Join Salesforce account data to lead and opportunity data
+  salesforce_leads_complete_data:
+    transform_name: join
+    transform_arguments:
+      join_table: "{{ salesforce_contacts_clean }}"
+      join_type: "LEFT"
+      join_columns:
+        "CONTACT_ID": "ID"
+      source_table: "{{ salesforce_leads_opportunities_accounts }}"
+    description: Complete Salesforce lead data by joining in accounts_contacts
+  salesforce_datespine:
+    transform_name: datespine
+    transform_arguments:
+      date_col: "CREATED_DATE"
+      interval_type: DAY
+      source_table: "{{ salesforce_leads_complete_data }}"
+    description: Create a datespine for our Salesforce data to ensure we can fully join date columns from other datasets
+  salesforce_aggregate:
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+        - "CREATED_DATE_SPINE_START"
+        - "CREATED_DATE_SPINE_END"
+      aggregations:
+        'AMOUNT':
+          - 'SUM'
+        'ID':
+          - 'COUNT'
+          - 'COUNT DISTINCT'
+      source_table: "{{ salesforce_datespine }}"
+    description: Aggregate our Salesforce metrics at a daily level
+  salesforce_aggregated_closed_won_value:
+    transform_name: join
+    transform_arguments:
+      join_table: "{{ salesforce_opportunities_closed_won_aggregated }}"
+      join_type: "LEFT"
+      join_columns:
+        "CREATED_DATE_SPINE_START": "CLOSE_DATE"
+      join_prefix: "CLOSED_WON_"
+      source_table: "{{ salesforce_aggregate }}"
+    description: Join closed won opportunity data onto our aggregated daily Salesforce metrics
+  google_hubspot_salesforce_closed_won_daily:
+    transform_name: join
+    transform_arguments:
+      join_table: "{{ salesforce_aggregated_closed_won_value }}"
+      join_type: "LEFT"
+      join_columns:
+        "DATE_SPINE_START": "CREATED_DATE_SPINE_START"
+        "DATE_SPINE_END": "CREATED_DATE_SPINE_END"
+      source_table: "{{ google_hubspot_daily }}"
+    description: Join Salesforce metric data onto our Google Analytics and Hubspot data
+  needed_columns:
+    transform_name: drop_columns
+    transform_arguments:
+      exclude_cols:
+        - "HS__CREATED_SPINE_END"
+        - "HS_CREATED_SPINE_START"
+        - "DATE_SPINE_END"
+        - "CLOSED_WON__CLOSE_DATE"
+        - "CREATED_DATE_SPINE_END"
+        - "CREATED_DATE_SPINE_START"
+      source_table: "{{ google_hubspot_salesforce_closed_won_daily }}"
+    description: Drop columns contained in multiple datasets
+  imputed_values:
+    transform_name: impute
+    transform_arguments:
+      imputations:
+        "BOUNCES_SUM": 0
+        "HS__ID_COUNTDISTINCT": 0
+        "IMPRESSIONS_SUM": 0
+        "NEW_USERS_SUM": 0
+        "ORGANIC_SEARCHES_SUM": 0
+        "PAGEVIEWS_PER_SESSION_AVG": 0
+        "PAGEVIEWS_SUM": 0
+        "SESSIONS_SUM": 0
+        "AMOUNT_SUM": 0
+        "CLOSED_WON__AMOUNT_SUM": 0
+        "CLOSED_WON__ID_COUNTDISTINCT": 0
+        "ID_COUNT": 0
+        "ID_COUNTDISTINCT": 0
+        "USERS_SUM": 0
+      source_table: "{{ needed_columns }}"
+    description: Impute 0 for all of the nulls in our numeric metrics
+  funnel_with_google_analytics_hubspot_salesforce:
+    transform_name: rename
+    transform_arguments:
+      renames:
+        "BOUNCES_SUM": "TOTAL_BOUNCES"
+        "DATE_SPINE_START": "DATE"
+        "HS__ID_COUNTDISTINCT": "TOTAL_EMAILS_SENT"
+        "IMPRESSIONS_SUM": "TOTAL_IMPRESSIONS"
+        "NEW_USERS_SUM": "TOTAL_NEW_WEBTRAFFIC_USERS"
+        "ORGANIC_SEARCHES_SUM": "TOTAL_ORGANIC_SEARCES"
+        "PAGEVIEWS_PER_SESSION_AVG": "AVERAGE_PAGEVIEWS_PER_SESSION"
+        "PAGEVIEWS_SUM": "TOTAL_PAGEVIEWS"
+        "SESSIONS_SUM": "TOTAL_SESSIONS"
+        "AMOUNT_SUM": "TOTAL_OPPORTUNITIES_CREATED_AMOUNT"
+        "CLOSED_WON__AMOUNT_SUM": "TOTAL_OPPORTUNITIES_CLOSED_WON_AMOUNT"
+        "CLOSED_WON__ID_COUNTDISTINCT": "TOTAL_NUMBER_OPPORTUNITIES_CLOSED_WON"
+        "ID_COUNT": "TOTAL_LEADS_CREATED"
+        "ID_COUNTDISTINCT": "TOTAL_DISTINCT_LEADS_CREATED"
+        "USERS_SUM": "TOTAL_WEBTRAFFIC_USERS"
+      source_table: "{{ imputed_values }}"
+    description: Rename the metrics for final dataset creation
+  leads_over_time:
+    operation_type: INSIGHT
+    transform_arguments:
+      axis: "DATE"
+      metrics:
+        TOTAL_DISTINCT_LEADS_CREATED:
+          - SUM
+      source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
+    transform_name: line_chart
+  opportunities_won_over_time:
+    operation_type: INSIGHT
+    transform_arguments:
+      axis: DATE
+      metrics:
+        TOTAL_NUMBER_OPPORTUNITIES_CLOSED_WON:
+          - SUM
+      source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
+    transform_name: line_chart
+  value_of_opportunities_won_over_time:
+    operation_type: INSIGHT
+    transform_arguments:
+      axis: DATE
+      metrics:
+        TOTAL_OPPORTUNITIES_CLOSED_WON_AMOUNT:
+          - SUM
+      source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
+    transform_name: line_chart
