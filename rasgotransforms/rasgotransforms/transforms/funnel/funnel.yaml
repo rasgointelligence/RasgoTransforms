@@ -1,16 +1,15 @@
 name: funnel
 type: insight
 context:
-  # TODO: do we want to leave this as a sankey? No, right, it's a new chart type?
   chart_type: funnel
-tags: 
-# TODO: this description is trash
-description: If you have numeric columns representing the number of times a particular outcome occurs in your data, this transform creates a ready-to-visualize dataset of the survival rate in the funnel
+tags:
+  - insight
+  - visualization
+description: Creates a funnel visualization-ready dataset from numeric columns representing a hierarchy with summed incidence rates
 arguments:
   stage_columns:
     type: column_list
-    # TOOD: this description is trash, too
-    description: Ordered list of columns, from highest in hierarchy to lowest
+    description: List of columns to include in the funnel dataset, in order of hierarchy from highest stage to lowest stage (e.g., ["Numer of leads", "Number of contacts", "Number of deals closed"])
 example_code: |
   ds = rasgo.get.dataset(id)
 

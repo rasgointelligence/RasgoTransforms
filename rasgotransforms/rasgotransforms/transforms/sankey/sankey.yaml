@@ -3,6 +3,8 @@ type: insight
 context:
   chart_type: sankey
 tags:
+  - insight
+  - visualization
 description: Analyze the hierarchical record count of a series of columns by counting the number of records in each pair of values in hierarchically adjacent columns.
 arguments:
   stage:
