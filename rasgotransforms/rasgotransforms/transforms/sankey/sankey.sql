@@ -1,7 +1,7 @@
 {%- for i in range((stage|length) - 1) -%}
     SELECT
-    '{{ stage[i] }}' || CAST({{ stage[i] }} AS STRING) AS SOURCE_NODE,
-    '{{ stage[i+1] }}' || CAST({{ stage[i+1] }} AS STRING) AS DEST_NODE,
+    '{{ stage[i] }}_' || CAST({{ stage[i] }} AS STRING) AS SOURCE_NODE,
+    '{{ stage[i+1] }}_' || CAST({{ stage[i+1] }} AS STRING) AS DEST_NODE,
     COUNT(*) AS WIDTH
 FROM {{ source_table }}
 GROUP BY
