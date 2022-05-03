@@ -1,26 +1,23 @@
-{%- if minimums is not defined -%}
-with
-{%- for column in columns_to_scale %}
-  agg_{{column}} as (
-  select min({{column}}) as min_{{column}},
-  max({{column}}) as max_{{column}}
-  from {{source_table}}){{ ", " if not loop.last else "" }}
-{% endfor -%}
+{%- set untouched_cols = get_untouched_columns(source_table, columns_to_scale) if overwrite_columns else "*" -%}
 
-select {{source_table}}.*,
+{%- if minimums is not defined -%}
+with min_max_vals as (
+  select
+    {%- for column in columns_to_scale %}
+    min({{column}}) as min_{{column}},
+    max({{column}}) as max_{{column}}{{ "," if not loop.last else "" }}
+    {%- endfor %}
+  from {{source_table}}
+) select {{ source_table + ".*" if not overwrite_columns else untouched_cols}},
 {%- for column in columns_to_scale %}
-({{column}} - min_{{column}}) / (max_{{column}} - min_{{column}}) as {{column}}_min_max_scaled{{ ", " if not loop.last else "" }}
-{% endfor -%}
-FROM
-{% for column in columns_to_scale -%}
-agg_{{column}},
-{%- endfor -%}
-{{source_table}}
+  ({{column}} - min_{{column}}) / (max_{{column}} - min_{{column}}) as {{column if overwrite_columns else column + "_min_max_scaled"}}{{ ", " if not loop.last else "" }}
+{%- endfor %}
+from min_max_vals, {{source_table}}
 
 {%- else -%}
-select *,
+select {{ untouched_cols }},
 {%- for column in columns_to_scale %}
-({{column}} - {{minimums[loop.index0]}}) / ({{maximums[loop.index0]}} - {{minimums[loop.index0]}}) as {{column}}_min_max_scaled{{ ", " if not loop.last else "" }}
-{% endfor -%}
-FROM {{source_table}}
+  ({{column}} - {{minimums[loop.index0]}}) / ({{maximums[loop.index0]}} - {{minimums[loop.index0]}}) as {{column if overwrite_columns else column + "_min_max_scaled"}}{{ ", " if not loop.last else "" }}
+{%- endfor %}
+from {{source_table}}
 {%- endif -%}
