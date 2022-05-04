@@ -1,26 +1,23 @@
-{%- if averages is not defined -%}
-with
-{%- for column in columns_to_scale %}
-  agg_{{column}} as (
-  select avg({{column}}) as avg_{{column}},
-  stddev({{column}}) as stddev_{{column}}
-  from {{source_table}}){{ ", " if not loop.last else "" }}
-{% endfor -%}
+{%- set untouched_cols = get_untouched_columns(source_table, columns_to_scale) if overwrite_columns else "*" -%}
 
-select {{source_table}}.*,
+{%- if averages is not defined or standarddevs is not defined -%}
+with avg_stddev_vals as (
+  select 
+    {%- for column in columns_to_scale %}
+    avg({{column}}) as avg_{{column}},
+    stddev({{column}}) as stddev_{{column}}{{ ", " if not loop.last else "" }}
+    {%- endfor %}
+  from {{source_table}}
+) select {{ source_table + ".*" if not overwrite_columns else untouched_cols}},
 {%- for column in columns_to_scale %}
-({{column}} - avg_{{column}}) / (stddev_{{column}}) as {{column}}_standard_scaled{{ ", " if not loop.last else "" }}
-{% endfor -%}
-FROM
-{% for column in columns_to_scale -%}
-agg_{{column}},
-{%- endfor -%}
-{{source_table}}
+  ({{column}} - avg_{{column}}) / (stddev_{{column}}) as {{column if overwrite_columns else column + "_STANDARD_SCALED"}}{{ ", " if not loop.last else "" }}
+{%- endfor %}
+from avg_stddev_vals, {{source_table}}
 
 {%- else -%}
-select *,
+select {{ untouched_cols }},
 {%- for column in columns_to_scale %}
-({{column}} - {{averages[loop.index0]}}) / ({{standarddevs[loop.index0]}}) as {{column}}_standard_scaled{{ ", " if not loop.last else "" }}
-{% endfor -%}
-FROM {{source_table}}
+  ({{column}} - {{averages[loop.index0]}}) / ({{standarddevs[loop.index0]}}) as {{column if overwrite_columns else column + "_STANDARD_SCALED"}}{{ ", " if not loop.last else "" }}
+{%- endfor %}
+from {{source_table}}
 {%- endif -%}
