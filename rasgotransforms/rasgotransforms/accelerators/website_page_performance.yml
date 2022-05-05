@@ -1,0 +1,135 @@
+name: "Google Analytics Web Page Performance"
+description: "The Web Page Performance analysis uses Google Analytics data, including bounce rate, time on page, number of visits, and total users to create a custom metric that ranks the performance of pages on your site."
+arguments:
+  google_analytics_traffic_table:
+    type: dataset
+    description: Google Analytics traffic table
+  lookback_window:
+    type: int
+    description: This template will create metrics for a timewindow within "x" days of the current date. This is the lookback value.
+operations:
+  metrics_by_page:
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+        - PAGE_TITLE
+      aggregations:
+        "AVG_TIME_ON_PAGE":
+          - "AVG"
+        "BOUNCE_RATE":
+          - "AVG"
+          - "MEDIAN"
+        "ENTRANCES":
+          - "AVG"
+          - "SUM"
+        "EXIT_RATE":
+          - "AVG"
+          - "MEDIAN"
+        "PAGEVIEWS":
+          - "AVG"
+          - "SUM"
+        "UNIQUE_PAGEVIEWS":
+          - "AVG"
+          - "SUM"
+        "USERS":
+          - "AVG"
+          - "SUM"
+      source_table: "{{ google_analytics_traffic_table }}"
+    description: Aggregate metrics by webpage
+  webpage_performance_metric:
+    transform_name: math
+    transform_arguments:
+      source_table: "{{ metrics_by_page }}"
+      math_ops: 
+        - "(USERS_AVG * AVG_TIME_ON_PAGE_AVG) - BOUNCE_RATE_MEDIAN"
+      names:
+        - "CUSTOM_WEBPAGE_METRIC"
+    description: Create the custom webpage scoring metric
+  best_webpages:
+    transform_name: order
+    transform_arguments:
+      source_table: "{{ webpage_performance_metric }}"
+      order_by:
+        "CUSTOM_WEBPAGE_METRIC": "DESC"
+    description: Order the results so that the best performing webpages appear first
+  previous_{{lookback_window}}_days_metrics:
+    transform_name: filter
+    transform_arguments:
+      source_table: "{{ google_analytics_traffic_table }}"
+      filter_statements:
+        - "DATE > (CURRENT_DATE - {{ lookback_window }})"
+    description: Pull data for the last {{ lookback_window }} days
+  metrics_by_page_last_{{lookback_window}}_days:
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+        - PAGE_TITLE
+      aggregations:
+        "AVG_TIME_ON_PAGE":
+          - "AVG"
+        "BOUNCE_RATE":
+          - "AVG"
+          - "MEDIAN"
+        "ENTRANCES":
+          - "AVG"
+          - "SUM"
+        "EXIT_RATE":
+          - "AVG"
+          - "MEDIAN"
+        "PAGEVIEWS":
+          - "AVG"
+          - "SUM"
+        "UNIQUE_PAGEVIEWS":
+          - "AVG"
+          - "SUM"
+        "USERS":
+          - "AVG"
+          - "SUM"
+      # TODO: this aint right
+      source_table: "{{ previous_{{lookback_window}}_days_metrics }}"
+    description: Aggregate metrics by webpage in the lookback window
+  webpage_performance_metric_last_{{lookback_window}}_days:
+    transform_name: math
+    transform_arguments:
+      # TODO: ain't right
+      source_table: "{{ metrics_by_page_last_{{lookback_window}}_days }}"
+      math_ops: 
+        - "(USERS_AVG * AVG_TIME_ON_PAGE_AVG) - BOUNCE_RATE_MEDIAN"
+      names:
+        - "CUSTOM_WEBPAGE_METRIC"
+    description: Create the custom webpage scoring metric in the lookback window
+  best_webpages_last_{{lookback_window}}_days:
+    transform_name: order
+    transform_arguments:
+      # TODO: nope
+      source_table: "{{ webpage_performance_metric_last_{{lookback_window}}_days }}"
+      order_by:
+        "CUSTOM_WEBPAGE_METRIC": "DESC"
+    description: Order the results so that the best performing webpages in the lookback window appear first
+  # leads_over_time:
+  #   operation_type: INSIGHT
+  #   transform_arguments:
+  #     axis: "DATE"
+  #     metrics:
+  #       TOTAL_DISTINCT_LEADS_CREATED:
+  #         - SUM
+  #     source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
+  #   transform_name: line_chart
+  # opportunities_won_over_time:
+  #   operation_type: INSIGHT
+  #   transform_arguments:
+  #     axis: DATE
+  #     metrics:
+  #       TOTAL_NUMBER_OPPORTUNITIES_CLOSED_WON:
+  #         - SUM
+  #     source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
+  #   transform_name: line_chart
+  # value_of_opportunities_won_over_time:
+  #   operation_type: INSIGHT
+  #   transform_arguments:
+  #     axis: DATE
+  #     metrics:
+  #       TOTAL_OPPORTUNITIES_CLOSED_WON_AMOUNT:
+  #         - SUM
+  #     source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
+  #   transform_name: line_chart
