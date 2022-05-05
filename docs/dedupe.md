@@ -6,7 +6,7 @@ Deduplicate a table based on a passed-in composite key. Once an order column and
 
 ## Parameters
 
-|   Argument   |    Type     |                                 Description                                  | Is Optional |
+|     Name     |    Type     |                                 Description                                  | Is Optional |
 | ------------ | ----------- | ---------------------------------------------------------------------------- | ----------- |
 | natural_key  | column_list | Columns forming the grain at which to remove duplicates                      |             |
 | order_col    | column_list | Columns by which to order the result set, such that the first result is kept |             |

@@ -9,7 +9,7 @@ If you omit minimums and maximums, the function will compute the mins and maxes 
 
 ## Parameters
 
-|     Argument     |    Type     |                                                                                  Description                                                                                  | Is Optional |
+|       Name       |    Type     |                                                                                  Description                                                                                  | Is Optional |
 | ---------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | columns_to_scale | column_list | A list of numeric columns that you want to scale                                                                                                                              |             |
 | minimums         | value_list  | An optional argument representing a list of the static minimums to use for each column in columns_to_scale. If omitted, the minimums are calculated directly off each column. | True        |

@@ -6,7 +6,7 @@ Impute missing values in column/columns with the mean, median, mode, or a value
 
 ## Parameters
 
-|     Argument      |      Type       |                                                                                         Description                                                                                         | Is Optional |
+|       Name        |      Type       |                                                                                         Description                                                                                         | Is Optional |
 | ----------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | imputations       | imputation_dict | Dictionary with keys as column names to impute missing values for, and dictionary values the type of imputation stratgey ('mean', 'median', 'mode', <value>)                                |             |
 | flag_missing_vals | boolean         | If True/set will create a new column for every one imputing that has 1 if column in the impuation dict was NULL, 0 if it wasn't. This columns will be named like '<col_name>_missing_flag'. | True        |

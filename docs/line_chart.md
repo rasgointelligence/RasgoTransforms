@@ -6,7 +6,7 @@ Generate a binned approximation of a continuous column
 
 ## Parameters
 
-|  Argument   |      Type       |                    Description                    | Is Optional |
+|    Name     |      Type       |                    Description                    | Is Optional |
 | ----------- | --------------- | ------------------------------------------------- | ----------- |
 | axis        | column          | axis column                                       |             |
 | metrics     | column_agg_list | numeric, quantitative values that you can measure |             |

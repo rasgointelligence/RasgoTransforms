@@ -7,9 +7,9 @@ Rename columns by passing a renames dict.
 
 ## Parameters
 
-| Argument |       Type        |                                      Description                                       | Is Optional |
-| -------- | ----------------- | -------------------------------------------------------------------------------------- | ----------- |
-| renames  | column_value_dict | A dict representing each existing column to be renamed and its corresponding new name. |             |
+|  Name   |       Type        |                                      Description                                       | Is Optional |
+| ------- | ----------------- | -------------------------------------------------------------------------------------- | ----------- |
+| renames | column_value_dict | A dict representing each existing column to be renamed and its corresponding new name. |             |
 
 
 ## Example

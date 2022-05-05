@@ -14,11 +14,6 @@ class PyRasgoEnvironment(Enum):
     LOCAL = "localhost"
 
 
-# Different Types of Transforms
-# This var is used to find all transforms of a type in the
-# directory <root>/<transform_type>_transforms/...
-TRANSFORM_TYPES = ['column', 'row', 'table']
-
 # Base Github Repo for UDT Jinja SQL Links
 GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms"
 

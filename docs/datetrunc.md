@@ -9,9 +9,9 @@ For a list of valid dateparts, refer to [Supported Date and Time Parts](https://
 
 ## Parameters
 
-| Argument |     Type      |                                                Description                                                 | Is Optional |
-| -------- | ------------- | ---------------------------------------------------------------------------------------------------------- | ----------- |
-| dates    | datepart_dict | dict where the keys are names of column(s) you want to datetrunc and the values are the desired date grain |             |
+| Name  |     Type      |                                                Description                                                 | Is Optional |
+| ----- | ------------- | ---------------------------------------------------------------------------------------------------------- | ----------- |
+| dates | datepart_dict | dict where the keys are names of column(s) you want to datetrunc and the values are the desired date grain |             |
 
 
 ## Example

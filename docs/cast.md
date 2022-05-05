@@ -7,7 +7,7 @@ Cast selected columns to a new type
 
 ## Parameters
 
-|     Argument      |      Type       |                                                  Description                                                   | Is Optional |
+|       Name        |      Type       |                                                  Description                                                   | Is Optional |
 | ----------------- | --------------- | -------------------------------------------------------------------------------------------------------------- | ----------- |
 | casts             | cast_value_dict | A dict where the keys are columns and the values are the new type to cast them to.                             |             |
 | overwrite_columns | boolean         | to overwrite column names with the new casted column, use 'true'. otherwise, use 'false'. defaults to 'false'. | True        |

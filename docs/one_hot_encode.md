@@ -6,9 +6,9 @@ One hot encode a column. Create a null value flag for the column if any of the v
 
 ## Parameters
 
-| Argument |  Type  |          Description          | Is Optional |
-| -------- | ------ | ----------------------------- | ----------- |
-| column   | column | Column name to one-hot encode |             |
+|  Name  |  Type  |          Description          | Is Optional |
+| ------ | ------ | ----------------------------- | ----------- |
+| column | column | Column name to one-hot encode |             |
 
 
 ## Example

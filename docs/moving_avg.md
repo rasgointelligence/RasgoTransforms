@@ -6,7 +6,7 @@ generates moving averages per column and per window size
 
 ## Parameters
 
-|   Argument    |    Type     |                                Description                                 | Is Optional |
+|     Name      |    Type     |                                Description                                 | Is Optional |
 | ------------- | ----------- | -------------------------------------------------------------------------- | ----------- |
 | input_columns | column_list | names of column(s) you want to moving average                              |             |
 | window_sizes  | int_list    | the integer values for window sizes you want to use in your moving average |             |

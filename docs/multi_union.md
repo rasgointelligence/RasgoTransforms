@@ -7,7 +7,7 @@ Union n number of datasets with the 'base' dataset, using a common list of colum
 
 ## Parameters
 
-|   Argument    |    Type     |                                                 Description                                                  | Is Optional |
+|     Name      |    Type     |                                                 Description                                                  | Is Optional |
 | ------------- | ----------- | ------------------------------------------------------------------------------------------------------------ | ----------- |
 | union_tables  | table_list  | Datasets to union with the source_table                                                                      |             |
 | union_columns | column_list | Columns to union on. Can be one or more columns but must be named the same thing between all union datasets. |             |

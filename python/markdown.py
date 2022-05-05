@@ -1,13 +1,13 @@
 """
 Module for converting text to different markdown elements
 """
-from typing import Dict
+from typing import Dict, List
 
-from python import utils
+
 from pytablewriter import MarkdownTableWriter
 
-from . import constants
-
+import constants
+import utils
 
 GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoTransforms/blob/main"
 
@@ -26,25 +26,13 @@ def h2(string: str) -> str:
     return f"## {string}"
 
 
-def text(string: str) -> str:
-    """
-    Make and return plain text element
-    """
-    return string
-
-
-def table(transform_args: Dict) -> str:
-    """
-    From transform args dict, make and return a markdown table of
-    transform args descriptions
-    """
+def table(headers: List[str], values: List[List]):
     writer = MarkdownTableWriter(
-        headers=["Argument", "Type", "Description", "Is Optional"],
-        value_matrix=utils.get_table_values(transform_args),
+        headers=headers,
+        value_matrix=values,
         margin=1,  # add a whitespace for both sides of each cell
     )
-    markdown_table = writer.dumps()
-    return markdown_table
+    return writer.dumps()
 
 
 def python_code(code: str) -> str:
@@ -62,4 +50,12 @@ def github_url(transform_type_dir_name: str, transform_name: str, dw_type_dir_na
     return (
         f'{{% embed url="{constants.GITHUB_REPO_URL}/{transform_type_dir_name}'
         f'/{transform_name}{dw_type_dir}/{transform_name}.sql" %}}'
+    )
+
+def github_url(path: str) -> str:
+    """
+    Make and return the embedded url for transform source code
+    """
+    return (
+        f'{{% embed url="{constants.GITHUB_REPO_URL}{path}" %}}'
     )
