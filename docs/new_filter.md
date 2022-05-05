@@ -16,7 +16,7 @@ Apply one or more column filters to the dataset
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.filter(filter_statements=[{'advancedFilterString':'PRODUCTKEY < 200'}, {'columnName':'PRODUCTKEY', 'operator':'>', 'comparisonValue':'101'}]
+ds2 = ds.filter(filter_statements=[{'advancedFilterString':'PRODUCTKEY < 200'}, {'columnName':'PRODUCTKEY', 'operator':'>', 'comparisonValue':'101'}])
 ds2.preview()
 ```
 
