@@ -52,14 +52,14 @@ operations:
       order_by:
         "CUSTOM_WEBPAGE_METRIC": "DESC"
     description: Order the results so that the best performing webpages appear first
-  previous_{{lookback_window}}_days_metrics:
+  lookback_metrics:
     transform_name: filter
     transform_arguments:
       source_table: "{{ google_analytics_traffic_table }}"
       filter_statements:
         - "DATE > (CURRENT_DATE - {{ lookback_window }})"
     description: Pull data for the last {{ lookback_window }} days
-  metrics_by_page_last_{{lookback_window}}_days:
+  lookback_metrics_by_page:
     transform_name: aggregate
     transform_arguments:
       group_by:
@@ -85,24 +85,21 @@ operations:
         "USERS":
           - "AVG"
           - "SUM"
-      # TODO: this aint right
-      source_table: "{{ previous_{{lookback_window}}_days_metrics }}"
+      source_table: "{{ lookback_metrics }}"
     description: Aggregate metrics by webpage in the lookback window
-  webpage_performance_metric_last_{{lookback_window}}_days:
+  lookback_webpage_performance_metric:
     transform_name: math
     transform_arguments:
-      # TODO: ain't right
-      source_table: "{{ metrics_by_page_last_{{lookback_window}}_days }}"
+      source_table: "{{ lookback_metrics_by_page }}"
       math_ops: 
         - "(USERS_AVG * AVG_TIME_ON_PAGE_AVG) - BOUNCE_RATE_MEDIAN"
       names:
         - "CUSTOM_WEBPAGE_METRIC"
     description: Create the custom webpage scoring metric in the lookback window
-  best_webpages_last_{{lookback_window}}_days:
+  lookback_best_webpages:
     transform_name: order
     transform_arguments:
-      # TODO: nope
-      source_table: "{{ webpage_performance_metric_last_{{lookback_window}}_days }}"
+      source_table: "{{ lookback_webpage_performance_metric }}"
       order_by:
         "CUSTOM_WEBPAGE_METRIC": "DESC"
     description: Order the results so that the best performing webpages in the lookback window appear first
@@ -112,21 +109,21 @@ operations:
     transform_arguments:
       column: "CUSTOM_WEBPAGE_METRIC"
       source_table: "{{ best_webpages }}"
-  last_{{lookback_window}}_days_webpage_metric_score_distribution:
+  lookback_webpage_metric_score_distribution:
     operation_type: INSIGHT
     transform_name: histogram
     transform_arguments:
       column: "CUSTOM_WEBPAGE_METRIC"
-      source_table: "{{ best_webpages_last_{{lookback_window}}_days }}"
+      source_table: "{{ lookback_best_webpages }}"
   best_webpages_table:
     operation_type: INSIGHT
     transform_name: table
     transform_arguments:
-      num_rows: 20
       source_table: "{{ best_webpages }}"
-  last_{{lookback_window}}_best_webpages_table:
+      num_rows: "30"
+  lookback_best_webpages_table:
     operation_type: INSIGHT
     transform_name: table
     transform_arguments:
-      num_rows: 20
-      source_table: "{{ best_webpages_last_{{lookback_window}}_days }}"
+      source_table: "{{ lookback_best_webpages }}"
+      num_rows: "30"
