@@ -2,7 +2,7 @@ SELECT *
 FROM {{ source_table }}
 {% for filter_block in filter_statements -%}
 {%- set oloop = loop -%}
-{{ 'WHERE ' if oloop.first else 'AND ' }}
+{{ 'WHERE ' if oloop.first else ' AND ' }}
 {% if 'advancedFilterString' in filter_block -%}
 {{ filter_block['advancedFilterString'] }}
 {%- else -%}
