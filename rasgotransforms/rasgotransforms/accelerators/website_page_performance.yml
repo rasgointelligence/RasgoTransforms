@@ -106,30 +106,27 @@ operations:
       order_by:
         "CUSTOM_WEBPAGE_METRIC": "DESC"
     description: Order the results so that the best performing webpages in the lookback window appear first
-  # leads_over_time:
-  #   operation_type: INSIGHT
-  #   transform_arguments:
-  #     axis: "DATE"
-  #     metrics:
-  #       TOTAL_DISTINCT_LEADS_CREATED:
-  #         - SUM
-  #     source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
-  #   transform_name: line_chart
-  # opportunities_won_over_time:
-  #   operation_type: INSIGHT
-  #   transform_arguments:
-  #     axis: DATE
-  #     metrics:
-  #       TOTAL_NUMBER_OPPORTUNITIES_CLOSED_WON:
-  #         - SUM
-  #     source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
-  #   transform_name: line_chart
-  # value_of_opportunities_won_over_time:
-  #   operation_type: INSIGHT
-  #   transform_arguments:
-  #     axis: DATE
-  #     metrics:
-  #       TOTAL_OPPORTUNITIES_CLOSED_WON_AMOUNT:
-  #         - SUM
-  #     source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
-  #   transform_name: line_chart
+  lifetime_webpage_metric_score_distribution:
+    operation_type: INSIGHT
+    transform_name: histogram
+    transform_arguments:
+      column: "CUSTOM_WEBPAGE_METRIC"
+      source_table: "{{ best_webpages }}"
+  last_{{lookback_window}}_days_webpage_metric_score_distribution:
+    operation_type: INSIGHT
+    transform_name: histogram
+    transform_arguments:
+      column: "CUSTOM_WEBPAGE_METRIC"
+      source_table: "{{ best_webpages_last_{{lookback_window}}_days }}"
+  best_webpages_table:
+    operation_type: INSIGHT
+    transform_name: table
+    transform_arguments:
+      num_rows: 20
+      source_table: "{{ best_webpages }}"
+  last_{{lookback_window}}_best_webpages_table:
+    operation_type: INSIGHT
+    transform_name: table
+    transform_arguments:
+      num_rows: 20
+      source_table: "{{ best_webpages_last_{{lookback_window}}_days }}"
