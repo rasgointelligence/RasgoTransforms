@@ -1,0 +1,15 @@
+name: filter
+tags:
+  - row
+  - data_cleaning
+  - conditional
+description: Apply one or more column filters to the dataset
+arguments:
+  filter_statements:
+    type: filter_list
+    description: list of dictionaries representing filters
+example_code: |
+  ds = rasgo.get.dataset(74)
+
+  ds2 = ds.filter(filter_statements=[{'advancedFilterString':'PRODUCTKEY < 500'}, {'columnName':'PRODUCTKEY', 'operator':'>', 'comparisonValue':'101'}])
+  ds2.preview()
