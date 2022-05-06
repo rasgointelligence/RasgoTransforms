@@ -6,7 +6,7 @@ Apply one or more column filters to the dataset
 
 ## Parameters
 
-|     Argument      |    Type     |                Description                | Is Optional |
+|       Name        |    Type     |                Description                | Is Optional |
 | ----------------- | ----------- | ----------------------------------------- | ----------- |
 | filter_statements | filter_list | list of dictionaries representing filters |             |
 
