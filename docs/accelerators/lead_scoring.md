@@ -13,17 +13,28 @@ Salesforce tracks individuals through multiple relationship stages, including co
 
 ## Output Metrics
 
-**Bolded** elements are indexes
-
 ### leads_target
 
-|      Name       |  Description  |   Source   |
-| --------------- | ------------- | ---------- |
-| **OPTY_ID**     | It's an index | Salesforce |
-| OPTY_CONTACT_ID | It's a metric | Salesforce |
-| OPTY_STAGE_NAME | It's a metric | Salesforce |
-| OPTY_AMOUNT     | It's a metric | Salesforce |
-| QUALIFIED_LEAD  | It's a metric | Salesforce |
+|           Name           | Index |                           Description                           |   Source   |
+| ------------------------ | ----- | --------------------------------------------------------------- | ---------- |
+| ACCOUNT_ID               |       | Salesforce Account ID                                           | Salesforce |
+| NAME                     |       | Contact's name, from the contacts table                         | Salesforce |
+| EMAIL                    | True  | Contact's email, from the contacts table                        | Salesforce |
+| TITLE                    |       | Contact's job title, from the contacts table                    | Salesforce |
+| LEAD_SOURCE              |       | Channel where the contact's info came from                      | Salesforce |
+| CREATED_DATE             |       | Date when the Contact was created                               | Salesforce |
+| INITIAL_CONTACT_METHOD_C |       | First way we interacted with the Contact                        | Salesforce |
+| INITIAL_SOURCE_DETAIL_C  |       | More detail on the channel where we got the contact's info from | Salesforce |
+| MQL_DATE_C               |       | Date on which the lead became qualified by marketing            | Salesforce |
+| SALES_ACCEPTED_DATE_C    |       | Date on which Sales accepted the lead                           | Salesforce |
+| ACNT_ID                  |       | Salesforce account ID                                           | Salesforce |
+| ACNT_NAME                |       | Salesforce account name                                         | Salesforce |
+| ACNT_ACCOUNT_SOURCE      |       | Channel that the account first came from                        | Salesforce |
+| OPTY_ID                  |       | Salesforce Opportunity ID                                       | Salesforce |
+| OPTY_CONTACT_ID          |       | Salesforce Contact ID                                           | Salesforce |
+| OPTY_STAGE_NAME          |       | The stage of the opportunity                                    | Salesforce |
+| OPTY_AMOUNT              |       | The dollar amount of the opportunity                            | Salesforce |
+| QUALIFIED_LEAD           |       | Whether the lead is qualified or not                            | Salesforce |
 
 
 ## Source Code

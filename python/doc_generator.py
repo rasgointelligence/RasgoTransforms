@@ -1,5 +1,5 @@
 import os
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import constants
 import utils
@@ -53,24 +53,20 @@ def generate_accelerator_docs():
         file_path.write_text(markdown)
 
 
-def get_arguments_table_args(table_dictionary: Dict[str, any]) -> str:
+def build_table(fields: List[str], table_dictionary: Dict[str, any]):
     """
     From transform args dict, make and return a markdown table of
     transform args descriptions
     """
-    fields: List[str] = ['type', 'description', 'is_optional']
     headers = ['Name'] + [' '.join([y.capitalize() for y in x.split('_')]) for x in fields]
     values = utils.get_table_values(fields, table_dictionary)
     return headers, values
 
 def get_metrics_tables(output_tables: Dict[str, any]) -> List[str]:
-    elements = []
-    headers = ['Name', 'Description', 'Source']
+    elements = []    
     for table_name, table_dict in output_tables.items():
         elements.append(md.h3(table_name))
-        table_values = [[md.bold(metric), values.get('description', None), values.get('source', None)] for metric,values in table_dict.get('indexes', []).items()] + \
-            [[metric, values.get('description', None), values.get('source', None)] for metric,values in table_dict.get('metrics').items()]
-        elements.append(md.table(headers, table_values))
+        elements.append(md.table(*build_table(['index', 'description', 'source'], table_dict['metrics'])))
     return elements
 
 def get_transform_markdown(
@@ -89,7 +85,7 @@ def get_transform_markdown(
         md.h1(transform_yaml['name']),
         transform_yaml['description'],
         md.h2('Parameters'),
-        md.table(*get_arguments_table_args(transform_yaml['arguments'])),
+        md.table(*build_table(['type', 'description', 'is_optional'], transform_yaml['arguments'])),
         md.h2('Example'),
         DATASET_PREVIEW_TEXT if 'preview-data' in transform_yaml else None,
         md.python_code(DATASET_PREVIEW_CODE) if 'preview-data' in transform_yaml else None,
@@ -112,14 +108,13 @@ def get_accelerator_markdown(
         md.h1(accelerator['name']),
         accelerator['description'],
         md.h2('Parameters'),
-        md.table(*get_arguments_table_args(accelerator['arguments'])),
+        md.table(*build_table(['type', 'description', 'is_optional'], accelerator['arguments'])),
     ]
 
-    if 'output_tables' in accelerator:
+    if 'doc' in accelerator and 'output_tables' in accelerator['doc']:
         markdown_elements.extend([
-            md.h2('Output Metrics'),
-            f'{md.bold("Bolded")} elements are indexes'] + \
-            get_metrics_tables(accelerator['output_tables'])
+            md.h2('Output Metrics')] + \
+            get_metrics_tables(accelerator['doc']['output_tables'])
         )
 
     markdown_elements.extend([
