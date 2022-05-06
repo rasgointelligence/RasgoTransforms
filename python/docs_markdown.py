@@ -26,6 +26,18 @@ def h2(string: str) -> str:
     return f"## {string}"
 
 
+def h3(string: str) -> str:
+    """
+    Make and return text version of H3 Element
+    """
+    return f"### {string}"
+
+def bold(string: str) -> str:
+    """
+    bold that string
+    """
+    return f"**{string}**"
+
 def table(headers: List[str], values: List[List]):
     writer = MarkdownTableWriter(
         headers=headers,

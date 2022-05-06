@@ -102,3 +102,24 @@ operations:
           - COUNT
       source_table: "{{leads_target}}"
     transform_name: bar_chart
+output_tables:
+  leads_target:
+    indexes:
+      OPTY_ID:
+        description: It's an index
+        source: Salesforce
+    metrics:
+      OPTY_CONTACT_ID:
+        description: It's a metric
+        source: Salesforce
+      OPTY_STAGE_NAME:
+        description: It's a metric
+        source: Salesforce
+      OPTY_AMOUNT:
+        description: It's a metric
+        source: Salesforce
+      QUALIFIED_LEAD:
+        description: It's a metric
+        source: Salesforce
+
+        

@@ -1,9 +1,9 @@
 import os
-from typing import Dict
+from typing import Dict, List
 
 import constants
 import utils
-import markdown as md
+import docs_markdown as md
 
 DATASET_PREVIEW_TEXT = """Pull a source Dataset and preview it:"""
 DATASET_PREVIEW_CODE = """ds = rasgo.get.dataset(id)\nprint(ds.preview())"""
@@ -53,6 +53,26 @@ def generate_accelerator_docs():
         file_path.write_text(markdown)
 
 
+def get_arguments_table_args(table_dictionary: Dict[str, any]) -> str:
+    """
+    From transform args dict, make and return a markdown table of
+    transform args descriptions
+    """
+    fields: List[str] = ['type', 'description', 'is_optional']
+    headers = ['Name'] + [' '.join([y.capitalize() for y in x.split('_')]) for x in fields]
+    values = utils.get_table_values(fields, table_dictionary)
+    return headers, values
+
+def get_metrics_tables(output_tables: Dict[str, any]) -> List[str]:
+    elements = []
+    headers = ['Name', 'Description', 'Source']
+    for table_name, table_dict in output_tables.items():
+        elements.append(md.h3(table_name))
+        table_values = [[md.bold(metric), values.get('description', None), values.get('source', None)] for metric,values in table_dict.get('indexes', []).items()] + \
+            [[metric, values.get('description', None), values.get('source', None)] for metric,values in table_dict.get('metrics').items()]
+        elements.append(md.table(headers, table_values))
+    return elements
+
 def get_transform_markdown(
     transform_yaml: Dict,
     transform_dir_name: str,
@@ -69,7 +89,7 @@ def get_transform_markdown(
         md.h1(transform_yaml['name']),
         transform_yaml['description'],
         md.h2('Parameters'),
-        md.table(*utils.get_arguments_table_args(transform_yaml['arguments'])),
+        md.table(*get_arguments_table_args(transform_yaml['arguments'])),
         md.h2('Example'),
         DATASET_PREVIEW_TEXT if 'preview-data' in transform_yaml else None,
         md.python_code(DATASET_PREVIEW_CODE) if 'preview-data' in transform_yaml else None,
@@ -92,12 +112,20 @@ def get_accelerator_markdown(
         md.h1(accelerator['name']),
         accelerator['description'],
         md.h2('Parameters'),
-        md.table(*utils.get_arguments_table_args(accelerator['arguments'])),
-        # md.h2('Example'),
-        # md.python_code(transform_yaml['example_code']),
-        md.h2('Source Code'),
-        md.github_url(f'/{accelerators_path}/{accelerator_file_name}.yml'),
+        md.table(*get_arguments_table_args(accelerator['arguments'])),
     ]
+
+    if 'output_tables' in accelerator:
+        markdown_elements.extend([
+            md.h2('Output Metrics'),
+            f'{md.bold("Bolded")} elements are indexes'] + \
+            get_metrics_tables(accelerator['output_tables'])
+        )
+
+    markdown_elements.extend([
+        md.h2('Source Code'),
+        md.github_url(f'/{accelerators_path}/{accelerator_file_name}.yml')
+    ])
     return '\n\n'.join(x for x in markdown_elements if x)
 
 if __name__ == '__main__':

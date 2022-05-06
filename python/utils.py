@@ -174,16 +174,6 @@ def get_table_values(fields: List[str], table_dict: Dict[str, any]) -> List[List
         table_data.append([name] + [item.get(x, None) for x in fields])
     return table_data
 
-    
-def get_arguments_table_args(table_dictionary: Dict[str, any]) -> str:
-    """
-    From transform args dict, make and return a markdown table of
-    transform args descriptions
-    """
-    fields: List[str] = ['type', 'description', 'is_optional']
-    headers = ['Name'] + [' '.join([y.capitalize() for y in x.split('_')]) for x in fields]
-    values = get_table_values(fields, table_dictionary)
-    return headers, values
 
 
 # ----------------------------------------------
