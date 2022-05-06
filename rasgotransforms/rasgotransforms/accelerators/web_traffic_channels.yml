@@ -88,3 +88,20 @@ operations:
         "BOUNCE_RATE_AVG":
           - AVG
       source_table: '{{ aggregate_metrics_by_channel }}'
+  metrics_over_time:
+    operation_type: INSIGHT
+    transform_name: line_chart
+    transform_arguments:
+      dimension: DATE
+      metrics:
+        "AVG_SESSION_DURATION":
+          - AVG
+        "BOUNCE_RATE":
+          - AVG
+        "GOAL_CONVERSION_RATE_ALL":
+          - AVG
+        "NEW_USERS":
+          - SUM
+        "SESSIONS":
+          - SUM
+      source_table: '{{ google_analytics_web_traffic_table }}'
