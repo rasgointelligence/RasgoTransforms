@@ -2,13 +2,13 @@
 
 # funnel
 
-Creates a funnel visualization-ready dataset from numeric columns representing a hierarchy with summed incidence rates
+Creates a funnel visualization-ready dataset from numeric columns (e.g., ["Number of leads", "Number of contacts", "Number of deals closed"]) representing a hierarchy with summed incidence rates
 
 ## Parameters
 
-|   Argument    |    Type     |                                                                                      Description                                                                                      | Is Optional |
-| ------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| stage_columns | column_list | List of columns to include in the funnel dataset, in order of hierarchy from highest stage to lowest stage (e.g., ["Numer of leads", "Number of contacts", "Number of deals closed"]) |             |
+|   Argument    |    Type     |                                                                                      Description                                                                                       | Is Optional |
+| ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| stage_columns | column_list | List of columns to include in the funnel dataset, in order of hierarchy from highest stage to lowest stage (e.g., ["Number of leads", "Number of contacts", "Number of deals closed"]) |             |
 
 
 ## Example
