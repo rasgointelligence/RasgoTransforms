@@ -1,0 +1,90 @@
+name: Google Analytics Web Traffic Channels
+description: The Web Traffic Channels analysis uses Google Analytics Web Traffic data, including bounce rate, conversion rate, new users, and session duration to create visualizations comparing page performance by channel.
+arguments:
+  google_analytics_web_traffic_table:
+    type: dataset
+    description: Google Analytics Web Traffic Table
+operations:
+  additional_metrics:
+    description: Add metrics for percentage of users who are new, total session time, and total pageviews
+    transform_name: math
+    transform_arguments:
+      math_ops:
+        - (NEW_USERS/USERS * 100)
+        - (AVG_SESSION_DURATION * SESSIONS)
+        - (PAGEVIEWS_PER_SESSION * SESSIONS)
+      names:
+        - PCT_NEW_USERS
+        - TOTAL_SESSION_TIME
+        - TOTAL_PAGEVIEWS
+      source_table: '{{ google_analytics_web_traffic_table }}'
+  aggregate_metrics_by_channel:
+    description: Aggregate web traffic metrics by channel
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+        - CHANNEL_GROUPING
+      aggregations:
+        "AVG_SESSION_DURATION":
+          - AVG
+        "BOUNCE_RATE":
+          - AVG
+        "GOAL_COMPLETIONS_ALL":
+          - SUM
+        "GOAL_CONVERSION_RATE_ALL":
+          - AVG
+        "GOAL_VALUE_ALL":
+          - SUM
+        "NEW_USERS":
+          - SUM
+        "PAGEVIEWS_PER_SESSION":
+          - AVG
+        "PCT_NEW_USERS":
+          - AVG
+        "PERCENT_NEW_SESSIONS":
+          - AVG
+        "SESSIONS":
+          - SUM
+        "TOTAL_PAGEVIEWS":
+          - SUM
+        "TOTAL_SESSION_TIME":
+          - SUM
+        "USERS":
+          - SUM
+      source_table: '{{additional_metrics}}'
+  total_new_users_by_channel:
+    operation_type: INSIGHT
+    transform_name: bar_chart
+    transform_arguments:
+      dimension: CHANNEL_GROUPING
+      metrics:
+        "NEW_USERS_SUM":
+          - SUM
+      source_table: '{{ aggregate_metrics_by_channel }}'
+  conversion_rate_by_channel:
+    operation_type: INSIGHT
+    transform_name: bar_chart
+    transform_arguments:
+      dimension: CHANNEL_GROUPING
+      metrics:
+        "GOAL_CONVERSION_RATE_ALL_AVG":
+          - AVG
+      source_table: '{{ aggregate_metrics_by_channel }}'
+  session_duration_by_channel:
+    operation_type: INSIGHT
+    transform_name: bar_chart
+    transform_arguments:
+      dimension: CHANNEL_GROUPING
+      metrics:
+        "AVG_SESSION_DURATION_AVG":
+          - AVG
+      source_table: '{{ aggregate_metrics_by_channel }}'
+  bounce_rate_by_channel:
+    operation_type: INSIGHT
+    transform_name: bar_chart
+    transform_arguments:
+      dimension: CHANNEL_GROUPING
+      metrics:
+        "BOUNCE_RATE_AVG":
+          - AVG
+      source_table: '{{ aggregate_metrics_by_channel }}'
