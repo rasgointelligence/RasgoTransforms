@@ -22,14 +22,14 @@ FROM CTE_GAINLOSS_SPLIT
 ) , 
 CTE_RSI AS (
 SELECT *
-    , CASE WHEN AVG_LOSS_{{ window }}=0 THEN 100 ELSE 100 - (100 / (1+(AVG_GAIN_{{ window }} / AVG_LOSS_{{ window }}))) END as RSI_{{ window }}
+    , CASE WHEN AVG_LOSS_{{ window }}=0 THEN 100 ELSE 100 - (100 / (1+(AVG_GAIN_{{ window }} / AVG_LOSS_{{ window }}))) END as {{ value_col }}_RSI_{{ window }}
 FROM CTE_MOVINGAVG
 ) ,
 CTE_FINAL AS (
-SELECT {{ order_col }}, {{ partition_col }}, RSI_{{ window }} 
+SELECT {{ order_col }}, {{ partition_col }}, {{ value_col }}_RSI_{{ window }} 
 FROM CTE_RSI
 )
-SELECT A.*, B.RSI_{{ window }}
+SELECT A.*, B.{{ value_col }}_RSI_{{ window }}
 FROM {{ source_table }} A
 INNER JOIN CTE_FINAL B
 ON A.{{ partition_col }} = B.{{ partition_col }}
