@@ -1,4 +1,13 @@
 {%- set untouched_cols = get_untouched_columns(source_table, columns.keys()) + ', ' if not drop_columns else '' -%}
+{%- set drop_cols = [] -%}
+{%- for column in columns.keys() -%}
+    {%- if columns[column].drop -%}
+        {{drop_cols.append(column) or ""}}
+    {%- endif -%}
+{%- endfor -%}
+{%- for col in drop_cols -%}
+    {%- set _x = columns.pop(col) -%}
+{%- endfor -%}
 
 {%- macro get_select_column(name, col) -%}
     {%- set source_col = 'cast(' + name + ' as ' + col.type + ')'  if col.type is defined else name-%}
