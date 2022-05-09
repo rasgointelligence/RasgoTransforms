@@ -9,7 +9,7 @@ Pass in a list named "concat_list", containing the names of the columns and the 
 
 ## Parameters
 
-|     Argument      |    Type    |                                   Description                                    | Is Optional |
+|       Name        |    Type    |                                   Description                                    | Is Optional |
 | ----------------- | ---------- | -------------------------------------------------------------------------------- | ----------- |
 | concat_list       | mixed_list | A list representing each new column to be created.                               |             |
 | alias             | value      | Name for the new column created by the concatenation.                            | True        |

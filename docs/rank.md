@@ -7,7 +7,7 @@ Create a ranking of values in a column.
 
 ## Parameters
 
-|     Argument      |    Type     |                                                                                                        Description                                                                                                        | Is Optional |
+|       Name        |    Type     |                                                                                                        Description                                                                                                        | Is Optional |
 | ----------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | rank_columns      | column_list | The column or expression to order (rank) by                                                                                                                                                                               |             |
 | partition_by      | column_list | The column or expression to partition the window by. Accepts <None>.                                                                                                                                                      | True        |

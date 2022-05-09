@@ -9,7 +9,7 @@ See [this Snowflake doc](https://docs.snowflake.com/en/user-guide/date-time-inpu
 
 ## Parameters
 
-|     Argument      |       Type        |                                              Description                                               | Is Optional |
+|       Name        |       Type        |                                              Description                                               | Is Optional |
 | ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------ | ----------- |
 | dates             | column_value_dict | dict where the values are the date columns and the keys are the date formats to use for the conversion |             |
 | overwrite_columns | boolean           | Optional: if true, the output columns will overwrite the input columns                                 | True        |

@@ -9,7 +9,7 @@ If you omit averages and standarddevs, the function will compute the average and
 
 ## Parameters
 
-|     Argument      |    Type     |                                                                                      Description                                                                                       | Is Optional |
+|       Name        |    Type     |                                                                                      Description                                                                                       | Is Optional |
 | ----------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | columns_to_scale  | column_list | A list of numeric columns that you want to scale                                                                                                                                       |             |
 | averages          | value_list  | An optional argument representing a list of the static averages to use for each column in columns_to_scale. If omitted, the averages are calculated directly off each column.          | True        |
