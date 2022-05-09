@@ -122,7 +122,7 @@ def get_transform_source_code(transform_name: str) -> str:
     """
     From a transform name and type load and return it's source code as a string
     """
-    transform_dir = _get_udt_repo_dir() / "transforms"
+    transform_dir = TRANSFORMS_ROOT / "transforms"
     source_code_path = transform_dir / transform_name / f"{transform_name}.sql"
     source_code_override_path = transform_dir / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.sql"
     if source_code_override_path.exists():
