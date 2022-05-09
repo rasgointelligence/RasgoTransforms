@@ -32,6 +32,14 @@ arguments:
     type: value
     description: A filter to apply to the ranked column. Accepts <None>.
     is_optional: True
+  alias:
+    type: string
+    description: Name of the output column containing rankings
+    is_optional: True
+  overwrite_columns:
+    type: boolean
+    description: "Optional: if true, the columns passed in 'rank_columns' will be dropped from the output"
+    is_optional: True
 example_code: |
   #Return the 5 highest temperatures per date:
   ds = rasgo.get.dataset(dataset_id)

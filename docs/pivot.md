@@ -6,7 +6,7 @@ Transpose unique values in a single column to generate multiple columns, aggrega
 
 ## Parameters
 
-|   Argument   |    Type     |                                                         Description                                                         | Is Optional |
+|     Name     |    Type     |                                                         Description                                                         | Is Optional |
 | ------------ | ----------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | dimensions   | column_list | dimension columns after the pivot runs                                                                                      |             |
 | pivot_column | column      | column to pivot and aggregate                                                                                               |             |

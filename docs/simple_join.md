@@ -7,7 +7,7 @@ Simple join between two datasets that uses a 'USING' clause. Returns all columns
 
 ## Parameters
 
-|   Argument   |    Type     |                                               Description                                                | Is Optional |
+|     Name     |    Type     |                                               Description                                                | Is Optional |
 | ------------ | ----------- | -------------------------------------------------------------------------------------------------------- | ----------- |
 | join_table   | table       | Dataset object to join with the source_table                                                             |             |
 | join_type    | join_type   | LEFT, RIGHT, or INNER                                                                                    |             |

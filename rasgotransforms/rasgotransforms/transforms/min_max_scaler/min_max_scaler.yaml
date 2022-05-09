@@ -18,6 +18,10 @@ arguments:
     type: value_list
     description: An optional argument representing a list of the static maximums to use for each column in columns_to_scale. If omitted, the values are calculated directly off each column.
     is_optional: true
+  overwrite_columns:
+    type: boolean
+    description: "Optional: if true, the scaled values will overwrite values in 'columns_to_scale'. If false, new columns with the scaled values will be generated."
+    is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
 

@@ -6,7 +6,7 @@ Generate an x / y heatmap, which uses the number of rows in each x/y bin as a de
 
 ## Parameters
 
-|  Argument   |  Type  |                   Description                    | Is Optional |
+|    Name     |  Type  |                   Description                    | Is Optional |
 | ----------- | ------ | ------------------------------------------------ | ----------- |
 | x_axis      | column | numeric column to use as the x axis              |             |
 | y_axis      | column | numeric column to use as the y axis              |             |

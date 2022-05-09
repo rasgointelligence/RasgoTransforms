@@ -3,13 +3,15 @@ type: insight
 context:
   chart_type: sankey
 tags:
-description: Analyze the hierarchical record count of a series of columns by counting the number of records in each pair of values in hierarchically adjacent columns.
+  - insight
+  - visualization
+description: Analyze the hierarchical record count of a series of columns by counting the number of records in each pair of values in hierarchically adjacent columns. The columns fed to this transformation should be categorical lables to be counted.
 arguments:
   stage:
     type: column_list
-    description: Ordered list of columns, from highest in hierarchy to lowest
+    description: Ordered list of categorial columns, from highest in hierarchy to lowest
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.funnel(stage=["ENGLISHCOUNTRYREGIONNAME", "STATEPROVINCENAME", "CITY"])
+  ds2 = ds.sankey(stage=["ENGLISHCOUNTRYREGIONNAME", "STATEPROVINCENAME", "CITY"])
   ds2.preview()

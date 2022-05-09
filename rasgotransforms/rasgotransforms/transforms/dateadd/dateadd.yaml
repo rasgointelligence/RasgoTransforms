@@ -15,8 +15,16 @@ arguments:
   offset:
     type: int
     description: Numeric value to increment the date by.
+  alias:
+    type: string
+    description: Name of output column
+    is_optional: true
+  overwrite_columns:
+    type: boolean
+    description: "Optional: if true, the output column will replace the existing 'date' column"
+    is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.dateadd(date_part='year', date='END_DATE', offset=3)
+  ds2 = ds.dateadd(date_part='year', date='END_DATE', offset=3, alias='THREE_YEARS_FUTURE')
   ds2.preview()

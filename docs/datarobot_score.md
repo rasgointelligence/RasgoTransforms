@@ -7,7 +7,7 @@ Retrieves predictions from a DataRobot model that was deployed in Snowflake.
 
 ## Parameters
 
-|    Argument    |    Type     |                                                                                                 Description                                                                                                  | Is Optional |
+|      Name      |    Type     |                                                                                                 Description                                                                                                  | Is Optional |
 | -------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
 | function_name  | value       | name of the custom Snowflake function that represents the DataRobot model                                                                                                                                    |             |
 | include_cols   | column_list | List of columns to select                                                                                                                                                                                    |             |

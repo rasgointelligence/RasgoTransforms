@@ -6,7 +6,7 @@ Lag shifts your features on a partition index, creating a lookback feature offse
 
 ## Parameters
 
-| Argument  |    Type     |                                                                     Description                                                                     | Is Optional |
+|   Name    |    Type     |                                                                     Description                                                                     | Is Optional |
 | --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | columns   | column_list | names of column(s) you want to lag                                                                                                                  |             |
 | amounts   | int_list    | Magnitude of amounts you want to use for the lag. Positive values result in a historical offset; negative amounts result in forward-looking offset. |             |

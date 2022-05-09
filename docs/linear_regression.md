@@ -9,7 +9,7 @@ Currently, only supports a single independent variable.
 
 ## Parameters
 
-| Argument |    Type     |                                                             Description                                                             | Is Optional |
+|   Name   |    Type     |                                                             Description                                                             | Is Optional |
 | -------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | group_by | column_list | Columns to group by before building the linear regression model. Use this field to create multiple models (one per unique grouping) | True        |
 | y        | column      | Dependent variable for the linear regression                                                                                        |             |

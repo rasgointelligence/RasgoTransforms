@@ -6,9 +6,9 @@ A transform that accepts a custom template to execute. Must use the sql template
 
 ## Parameters
 
-| Argument |  Type  |                Description                 | Is Optional |
-| -------- | ------ | ------------------------------------------ | ----------- |
-| sql      | custom | The custom SQL transform template to apply |             |
+| Name |  Type  |                Description                 | Is Optional |
+| ---- | ------ | ------------------------------------------ | ----------- |
+| sql  | custom | The custom SQL transform template to apply |             |
 
 
 ## Example
