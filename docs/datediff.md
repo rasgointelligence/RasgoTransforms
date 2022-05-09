@@ -8,7 +8,7 @@ Difference is calculated as date_1 - date_2.
 
 ## Parameters
 
-| Argument  |    Type     |                                                                                Description                                                                                 | Is Optional |
+|   Name    |    Type     |                                                                                Description                                                                                 | Is Optional |
 | --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | date_part | date_part   | Must be one of the values listed in [Supported Date and Time Parts](https://docs.snowflake.com/en/sql-reference/functions-date-time.html#label-supported-date-time-parts)  |             |
 | date_1    | mixed_value | Starting date. Can be a date column, date, time, or timestamp.                                                                                                             |             |

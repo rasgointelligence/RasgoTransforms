@@ -6,7 +6,7 @@ Performs a SQL UNION or UNION ALL for the parent dataset, and another dataset. O
 
 ## Parameters
 
-|  Argument  |  Type   |                                                                 Description                                                                  | Is Optional |
+|    Name    |  Type   |                                                                 Description                                                                  | Is Optional |
 | ---------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | dataset2   | table   | Dataset to Union/Union All with main dataset                                                                                                 |             |
 | keep_dupes | boolean | Set to True to performn a UNION ALL between the two tables, which keeps rows that are duplicated. Set to False to eliminate duplicate rows.  | True        |

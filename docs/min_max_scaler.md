@@ -9,11 +9,12 @@ If you omit minimums and maximums, the function will compute the mins and maxes 
 
 ## Parameters
 
-|     Argument     |    Type     |                                                                                  Description                                                                                  | Is Optional |
-| ---------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| columns_to_scale | column_list | A list of numeric columns that you want to scale                                                                                                                              |             |
-| minimums         | value_list  | An optional argument representing a list of the static minimums to use for each column in columns_to_scale. If omitted, the minimums are calculated directly off each column. | True        |
-| maximums         | value_list  | An optional argument representing a list of the static maximums to use for each column in columns_to_scale. If omitted, the values are calculated directly off each column.   | True        |
+|       Name        |    Type     |                                                                                  Description                                                                                  | Is Optional |
+| ----------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| columns_to_scale  | column_list | A list of numeric columns that you want to scale                                                                                                                              |             |
+| minimums          | value_list  | An optional argument representing a list of the static minimums to use for each column in columns_to_scale. If omitted, the minimums are calculated directly off each column. | True        |
+| maximums          | value_list  | An optional argument representing a list of the static maximums to use for each column in columns_to_scale. If omitted, the values are calculated directly off each column.   | True        |
+| overwrite_columns | boolean     | Optional: if true, the scaled values will overwrite values in 'columns_to_scale'. If false, new columns with the scaled values will be generated.                             | True        |
 
 
 ## Example

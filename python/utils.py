@@ -11,49 +11,11 @@ import yaml
 from pyrasgo.rasgo import Rasgo
 from pyrasgo.schemas import Transform
 
-from python import constants
+import constants
 
 # ----------------------------------------------
 #      Utils for Doc and Transform Creation
 # ----------------------------------------------
-
-
-def load_all_yaml_files() -> Dict[str, Dict]:
-    """
-    Load and return all the yaml files in the dirs <root>/<transform_type>_transforms
-    If new transform type/dir added be sure to add above in List TRANSFORM_TYPES
-    """
-    transform_yamls = defaultdict(dict)
-
-    transform_dir_path = _get_udt_repo_dir() / "transforms"
-
-    # Get list of all transform names of this type,
-    # by looking at sub-directory names one level down
-    transform_names = [x.name for x in transform_dir_path.iterdir() if x.is_dir()]
-    for transform_name in transform_names:
-        transform_yaml_path = transform_dir_path / transform_name / f"{transform_name}.yaml"
-
-        # Try to load yaml file for transform
-        # If loaded successfully save in return dict
-        try:
-            transform_data = _read_yaml(transform_yaml_path)
-            transform_yamls[transform_name] = transform_data
-        except Exception as e:
-            print(f"Can't read YAML file for transform {transform_name}\n" f"Error Msg: {e}\n")
-
-    return transform_yamls
-
-
-def override_path_exists(transform_name: str, dw_type: str) -> bool:
-    """
-    Returns true is an override file exists for this dw for this transform
-    """
-    transform_dir_path = _get_udt_repo_dir() / "transforms"
-    transform_override_path = transform_dir_path / transform_name / dw_type / f"{transform_name}.sql"
-    if transform_override_path.exists():
-        return True
-    return False
-
 
 def get_root_dir() -> Path:
     """
@@ -63,6 +25,39 @@ def get_root_dir() -> Path:
     root_dir_bytes = subprocess.check_output(cmd)
     root_dir_str = root_dir_bytes.decode('utf-8').strip()
     return Path(root_dir_str)
+DOCS_DIR = get_root_dir() / 'docs'
+TRANSFORMS_ROOT = get_root_dir() / 'rasgotransforms/rasgotransforms'
+
+
+def load_all_yaml_files_as_dicts(path: Path) -> Dict[str, Dict]:
+    """
+    Load and return all the yaml files in the given path
+    """
+    yamls = defaultdict(dict)
+
+    files = list(path.rglob("*.yml")) + list(path.rglob("*.yaml"))
+    for file in files:
+        # Try to load yaml file for transform
+        # If loaded successfully save in return dict
+        try:
+            with open(file, "r") as stream:
+                loaded = yaml.safe_load(stream)
+                yamls[file.stem] = loaded
+        except Exception as e:
+            print(f"Can't read YAML file for transform {file.stem}\n" f"Error Msg: {e}\n")
+
+    return yamls
+
+
+def override_path_exists(transform_dir_path: Path, transform_name: str, dw_type: str) -> bool:
+    """
+    Returns true is an override file exists for this dw for this transform
+    """
+    transform_override_path = transform_dir_path / transform_name / dw_type / f"{transform_name}.sql"
+    if transform_override_path.exists():
+        return True
+    return False
+
 
 
 # ----------------------------------------------
@@ -127,7 +122,7 @@ def get_transform_source_code(transform_name: str) -> str:
     """
     From a transform name and type load and return it's source code as a string
     """
-    transform_dir = _get_udt_repo_dir() / "transforms"
+    transform_dir = TRANSFORMS_ROOT / "transforms"
     source_code_path = transform_dir / transform_name / f"{transform_name}.sql"
     source_code_override_path = transform_dir / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.sql"
     if source_code_override_path.exists():
@@ -168,22 +163,17 @@ def listify_tags(tags: Optional[Union[str, List[str]]]) -> List[str]:
 # ----------------------------------------------
 
 
-def get_table_values(transform_args: Dict) -> List[List[str]]:
+def get_table_values(fields: List[str], table_dict: Dict[str, any]) -> List[List[str]]:
     """
     From a Transform Args Dict derived from YML file,
     generated a nested list of values to populate for the
     Markdown table describing each argument
     """
-    all_data = []
-    for arg_name, arg_info in transform_args.items():
-        row_data = [
-            arg_name,
-            arg_info['type'],
-            arg_info['description'],
-            arg_info.get('is_optional', ''),
-        ]
-        all_data.append(row_data)
-    return all_data
+    table_data = []
+    for name, item in table_dict.items():
+        table_data.append([name] + [item.get(x, None) for x in fields])
+    return table_data
+
 
 
 # ----------------------------------------------
@@ -223,21 +213,3 @@ def _transform_args_have_changed(
     # If nothing changed in transform arguments return False
     return False
 
-
-def _read_yaml(yaml_path: Path) -> Dict:
-    """
-    Read and load a YAML file into a dictionary
-    """
-    with open(yaml_path, "r") as stream:
-        try:
-            return yaml.safe_load(stream)
-        except yaml.YAMLError as e:
-            print(f"Error Parsing YAML file at {yaml_path}" f"\n\nError Msg: {e}")
-
-
-def _get_udt_repo_dir() -> Path:
-    """
-    Get and return the absolute path of the directory
-    containing all transform Jinja and Yaml files
-    """
-    return get_root_dir() / "rasgotransforms" / "rasgotransforms"

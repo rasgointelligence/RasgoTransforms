@@ -102,3 +102,62 @@ operations:
           - COUNT
       source_table: "{{leads_target}}"
     transform_name: bar_chart
+doc:
+  output_tables:
+    leads_target:
+      metrics:
+        ACCOUNT_ID:
+          description: Salesforce Account ID
+          source: Salesforce
+        NAME:
+          description: Contact's name, from the contacts table
+          source: Salesforce
+        EMAIL:
+          description: Contact's email, from the contacts table
+          source: Salesforce
+          index: True
+        TITLE:
+          description: Contact's job title, from the contacts table
+          source: Salesforce
+        LEAD_SOURCE:
+          description: Channel where the contact's info came from
+          source: Salesforce
+        CREATED_DATE:
+          description: Date when the Contact was created
+          source: Salesforce
+        INITIAL_CONTACT_METHOD_C:
+          description: First way we interacted with the Contact
+          source: Salesforce
+        INITIAL_SOURCE_DETAIL_C:
+          description: More detail on the channel where we got the contact's info from
+          source: Salesforce
+        MQL_DATE_C:
+          description: Date on which the lead became qualified by marketing
+          source: Salesforce
+        SALES_ACCEPTED_DATE_C:
+          description: Date on which Sales accepted the lead
+          source: Salesforce
+        ACNT_ID:
+          description: Salesforce account ID
+          source: Salesforce
+        ACNT_NAME:
+          description: Salesforce account name
+          source: Salesforce
+        ACNT_ACCOUNT_SOURCE:
+          description: Channel that the account first came from
+          source: Salesforce
+        OPTY_ID:
+          description: Salesforce Opportunity ID
+          source: Salesforce
+        OPTY_CONTACT_ID:
+          description: Salesforce Contact ID
+          source: Salesforce
+        OPTY_STAGE_NAME:
+          description: The stage of the opportunity
+          source: Salesforce
+        OPTY_AMOUNT:
+          description: The dollar amount of the opportunity
+          source: Salesforce
+        QUALIFIED_LEAD:
+          description: Whether the lead is qualified or not
+          source: Salesforce

@@ -6,7 +6,7 @@ Apply one or more column filters to the dataset
 
 ## Parameters
 
-|     Argument      |    Type     |                                              Description                                              | Is Optional |
+|       Name        |    Type     |                                              Description                                              | Is Optional |
 | ----------------- | ----------- | ----------------------------------------------------------------------------------------------------- | ----------- |
 | filter_statements | string_list | List of where statements filter the table by. Ex. ["<col_name> = 'string'", "<col_name> IS NOT NULL"] |             |
 

@@ -9,7 +9,7 @@ If multiple rules are passed, they are combined and aggregated both together and
 
 ## Parameters
 
-|  Argument  |    Type    |                             Description                              | Is Optional |
+|    Name    |    Type    |                             Description                              | Is Optional |
 | ---------- | ---------- | -------------------------------------------------------------------- | ----------- |
 | rules      | value_list | List of filter rules to use                                          |             |
 | agg_column | column     | Column to aggregate                                                  |             |

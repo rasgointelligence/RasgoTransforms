@@ -6,7 +6,7 @@ Performs a UNPIVOT operation, rotating a table by transforming columns into rows
 
 ## Parameters
 
-|   Argument   |    Type     |                                                                                     Description                                                                                     | Is Optional |
+|     Name     |    Type     |                                                                                     Description                                                                                     | Is Optional |
 | ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | value_column | string      | The name to assign to the generated column that will be populated with the values from the columns in the column list                                                               |             |
 | name_column  | string      | The name to assign to the generated column that will be populated with the names of the columns in the column list                                                                  |             |
