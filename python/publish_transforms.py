@@ -6,9 +6,7 @@ Execute this script with a Installed selected Version of PyRasgo in your
 python Environment
 """
 import argparse
-
 import pyrasgo
-
 import utils
 
 
@@ -38,7 +36,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     published_transform_names = []
 
     # Loop through all transform and respective data in this repo
-    yaml_transforms = utils.load_all_yaml_files()
+    yaml_transforms = utils.load_all_yaml_files_as_dicts(utils.TRANSFORMS_ROOT / 'transforms')
     for transform_name, transform_yaml in yaml_transforms.items():
 
         # Load/parse needed transform data from YAML

@@ -6,7 +6,7 @@ Extracts sequences of consecutive increase/decrease from a time-series dataset
 
 ## Parameters
 
-| Argument |    Type     |           Description           | Is Optional |
+|   Name   |    Type     |           Description           | Is Optional |
 | -------- | ----------- | ------------------------------- | ----------- |
 | group_by | column_list | Columns to group by             |             |
 | order_by | column      | A single column name to sort by |             |

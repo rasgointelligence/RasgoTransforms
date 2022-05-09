@@ -6,9 +6,9 @@ Analyze the hierarchical record count of a series of columns by counting the num
 
 ## Parameters
 
-| Argument |    Type     |                         Description                          | Is Optional |
-| -------- | ----------- | ------------------------------------------------------------ | ----------- |
-| stage    | column_list | Ordered list of columns, from highest in hierarchy to lowest |             |
+| Name  |    Type     |                         Description                          | Is Optional |
+| ----- | ----------- | ------------------------------------------------------------ | ----------- |
+| stage | column_list | Ordered list of columns, from highest in hierarchy to lowest |             |
 
 
 ## Example

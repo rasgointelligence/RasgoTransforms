@@ -9,9 +9,9 @@ Other: DTYPE, COUNT, NULL_COUNT, UNIQUE_COUNT, MOST_FREQUENT, MIN, MAX
 
 ## Parameters
 
-| Argument | Type |                Description                 | Is Optional |
-| -------- | ---- | ------------------------------------------ | ----------- |
-| none     | none | this transform does not take any arguments |             |
+| Name | Type |                Description                 | Is Optional |
+| ---- | ---- | ------------------------------------------ | ----------- |
+| none | none | this transform does not take any arguments |             |
 
 
 ## Example

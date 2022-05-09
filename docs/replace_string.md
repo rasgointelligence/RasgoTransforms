@@ -7,7 +7,7 @@ Returns the subject with the specified pattern (or all occurrences of the patter
 
 ## Parameters
 
-|  Argument   |  Type   |                                                                                       Description                                                                                        | Is Optional |
+|    Name     |  Type   |                                                                                       Description                                                                                        | Is Optional |
 | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | source_col  | column  | A string column from which to replace a pattern.                                                                                                                                         |             |
 | pattern     | string  | This is the regex pattern that you want to match.                                                                                                                                        |             |

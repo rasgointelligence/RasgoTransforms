@@ -6,7 +6,7 @@ Compare categorical values across one or more metrics
 
 ## Parameters
 
-|     Argument      |      Type       |                                  Description                                   | Is Optional |
+|       Name        |      Type       |                                  Description                                   | Is Optional |
 | ----------------- | --------------- | ------------------------------------------------------------------------------ | ----------- |
 | dimension         | column          | qualitative values such as names or dates to segment your metric(s) by         |             |
 | metrics           | column_agg_list | numeric, quantitative values that you can measure                              |             |

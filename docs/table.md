@@ -6,7 +6,7 @@ Compare categorical values across one or more metrics
 
 ## Parameters
 
-|     Argument      |    Type     |                                  Description                                   | Is Optional |
+|       Name        |    Type     |                                  Description                                   | Is Optional |
 | ----------------- | ----------- | ------------------------------------------------------------------------------ | ----------- |
 | filter_statements | string_list | List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL' | True        |
 | num_rows          | value       | number of rows to return; defaults to 10                                       | True        |
