@@ -14,7 +14,7 @@ Example use case: On daily stock data, calculate SLOPE by TICKER, with a 14-peri
 
 ## Parameters
 
-|   Argument    |  Type  |                                          Description                                          | Is Optional |
+|     Name      |  Type  |                                          Description                                          | Is Optional |
 | ------------- | ------ | --------------------------------------------------------------------------------------------- | ----------- |
 | partition_col | column | Grouping column to calculate the slope within.                                                |             |
 | order_col     | column | Column to order rows by when calculating the agg window. Slope automatically sorts ascending. |             |
