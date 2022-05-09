@@ -5,7 +5,7 @@ arguments:
     type: dataset
     description: Google Analytics traffic table
   lookback_window:
-    type: int
+    type: str
     description: This template will create metrics for a timewindow within "x" days of the current date. This is the lookback value.
 operations:
   metrics_by_page:
