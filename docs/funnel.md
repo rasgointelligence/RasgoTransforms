@@ -6,7 +6,7 @@ Creates a funnel visualization-ready dataset from numeric columns (e.g., ["Numbe
 
 ## Parameters
 
-|   Argument    |    Type     |                                                                                      Description                                                                                       | Is Optional |
+|     Name      |    Type     |                                                                                      Description                                                                                       | Is Optional |
 | ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | stage_columns | column_list | List of columns to include in the funnel dataset, in order of hierarchy from highest stage to lowest stage (e.g., ["Number of leads", "Number of contacts", "Number of deals closed"]) |             |
 
