@@ -7,7 +7,7 @@ The Web Page Performance analysis uses Google Analytics data, including bounce r
 |              Name              |  Type   |                                                     Description                                                     | Is Optional |
 | ------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------- | ----------- |
 | google_analytics_traffic_table | dataset | Google Analytics traffic table                                                                                      |             |
-| lookback_window                | int     | This template will create metrics for a timewindow within "x" days of the current date. This is the lookback value. |             |
+| lookback_window                | str     | This template will create metrics for a timewindow within "x" days of the current date. This is the lookback value. |             |
 
 
 ## Source Code
