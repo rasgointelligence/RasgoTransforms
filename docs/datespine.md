@@ -22,7 +22,7 @@ FROM intervals
 
 ## Parameters
 
-|    Argument     |   Type    |                                                                                    Description                                                                                     | Is Optional |
+|      Name       |   Type    |                                                                                    Description                                                                                     | Is Optional |
 | --------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | date_col        | column    | The column used to create intervals. This must be a datetime column.                                                                                                               |             |
 | interval_type   | date_part | A valid SQL datepart to slice the date_col. For interval types, see [this Snowflake doc.](https://docs.snowflake.com/en/sql-reference/data-types-datetime.html#interval-constants) |             |

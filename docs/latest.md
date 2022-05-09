@@ -6,7 +6,7 @@ Impute missing values in ALL columns with the latest value seen in rows prior
 
 ## Parameters
 
-| Argument |    Type     |                                               Description                                                | Is Optional |
+|   Name   |    Type     |                                               Description                                                | Is Optional |
 | -------- | ----------- | -------------------------------------------------------------------------------------------------------- | ----------- |
 | group_by | column_list | List of columns to perform the imputation "within"                                                       |             |
 | order_by | column_list | List of columns to sort ascending, in order to find the last known value for imputation                  |             |

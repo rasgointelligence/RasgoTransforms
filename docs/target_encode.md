@@ -9,10 +9,10 @@ See scikit-learn's [TargetEncoder](https://contrib.scikit-learn.org/category_enc
 
 ## Parameters
 
-| Argument |  Type  |                   Description                   | Is Optional |
-| -------- | ------ | ----------------------------------------------- | ----------- |
-| column   | column | Column name to target encode                    |             |
-| target   | column | Numeric target column to use to create averages |             |
+|  Name  |  Type  |                   Description                   | Is Optional |
+| ------ | ------ | ----------------------------------------------- | ----------- |
+| column | column | Column name to target encode                    |             |
+| target | column | Numeric target column to use to create averages |             |
 
 
 ## Example

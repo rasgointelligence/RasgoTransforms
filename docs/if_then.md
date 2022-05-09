@@ -11,7 +11,7 @@ A default value for the new column should be set, as should the output column na
 
 ## Parameters
 
-|  Argument  |       Type       |                                                            Description                                                            | Is Optional |
+|    Name    |       Type       |                                                            Description                                                            | Is Optional |
 | ---------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | conditions | conditional_list | A nested list. In each inner list the first element would be the condition to check, and the second the value with which to fill. |             |
 | default    | mixed_value      | The default value with which to fill the new column. Please enclose fixed strings in quotes inside of the argument (e.g., below)  |             |

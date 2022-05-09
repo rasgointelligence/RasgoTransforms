@@ -6,7 +6,7 @@ Sample n rows for each value of a column
 
 ## Parameters
 
-|  Argument  |  Type  |                       Description                        | Is Optional |
+|    Name    |  Type  |                       Description                        | Is Optional |
 | ---------- | ------ | -------------------------------------------------------- | ----------- |
 | sample_col | column | The column for which you want to sample                  |             |
 | sample     | dict   | Value of column as a key, n rows to be sampled as values |             |

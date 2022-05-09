@@ -9,7 +9,7 @@ This approach uses a transactional table to aggregate each product purchased in 
 
 ## Parameters
 
-|    Argument    |  Type  |                                        Description                                         | Is Optional |
+|      Name      |  Type  |                                        Description                                         | Is Optional |
 | -------------- | ------ | ------------------------------------------------------------------------------------------ | ----------- |
 | transaction_id | column | Column identifying a unique event ID (i.e., transaction) for which to aggregate line items |             |
 | sep            | value  | Text separator to use when aggregating the strings, i.e. ', ' or '\|'.                      |             |
