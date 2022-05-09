@@ -1,14 +1,14 @@
 
 
-# sankey
+# funnel
 
-Analyze the hierarchical record count of a series of columns by counting the number of records in each pair of values in hierarchically adjacent columns.
+Creates a funnel visualization-ready dataset from numeric columns (e.g., ["Number of leads", "Number of contacts", "Number of deals closed"]) representing a hierarchy with summed incidence rates
 
 ## Parameters
 
-| Argument |    Type     |                         Description                          | Is Optional |
-| -------- | ----------- | ------------------------------------------------------------ | ----------- |
-| stage    | column_list | Ordered list of columns, from highest in hierarchy to lowest |             |
+|     Name      |    Type     |                                                                                      Description                                                                                       | Is Optional |
+| ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| stage_columns | column_list | List of columns to include in the funnel dataset, in order of hierarchy from highest stage to lowest stage (e.g., ["Number of leads", "Number of contacts", "Number of deals closed"]) |             |
 
 
 ## Example
@@ -16,7 +16,7 @@ Analyze the hierarchical record count of a series of columns by counting the num
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.funnel(stage=["ENGLISHCOUNTRYREGIONNAME", "STATEPROVINCENAME", "CITY"])
+ds2 = ds.funnel(stage_columns=["TOTAL_IMPRESSIONS", "TOTAL_EMAILS_SENT", "TOTAL_WEBTRAFFIC_USERS", "TOTAL_LEADS_CREATED", "TOTAL_DEALS_CLOSED"])
 ds2.preview()
 
 ```

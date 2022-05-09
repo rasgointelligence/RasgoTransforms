@@ -1,0 +1,17 @@
+name: funnel
+type: insight
+context:
+  chart_type: funnel
+tags:
+  - insight
+  - visualization
+description: Creates a funnel visualization-ready dataset from numeric columns (e.g., ["Number of leads", "Number of contacts", "Number of deals closed"]) representing a hierarchy with summed incidence rates
+arguments:
+  stage_columns:
+    type: column_list
+    description: List of columns to include in the funnel dataset, in order of hierarchy from highest stage to lowest stage (e.g., ["Number of leads", "Number of contacts", "Number of deals closed"])
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.funnel(stage_columns=["TOTAL_IMPRESSIONS", "TOTAL_EMAILS_SENT", "TOTAL_WEBTRAFFIC_USERS", "TOTAL_LEADS_CREATED", "TOTAL_DEALS_CLOSED"])
+  ds2.preview()
