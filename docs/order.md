@@ -6,7 +6,7 @@ Order a dataset by specified columns, in a specified order
 
 ## Parameters
 
-| Argument |       Type        |                                      Description                                       | Is Optional |
+|   Name   |       Type        |                                      Description                                       | Is Optional |
 | -------- | ----------------- | -------------------------------------------------------------------------------------- | ----------- |
 | order_by | column_value_dict | dict where the keys are column names and the values are the order_method (ASC or DESC) |             |
 

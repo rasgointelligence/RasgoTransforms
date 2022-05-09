@@ -7,9 +7,9 @@ Encode target labels with value between 0 and n_classes-1. See scikit-learn's [L
 
 ## Parameters
 
-| Argument |  Type  |         Description         | Is Optional |
-| -------- | ------ | --------------------------- | ----------- |
-| column   | column | Column name to label encode |             |
+|  Name  |  Type  |         Description         | Is Optional |
+| ------ | ------ | --------------------------- | ----------- |
+| column | column | Column name to label encode |             |
 
 
 ## Example

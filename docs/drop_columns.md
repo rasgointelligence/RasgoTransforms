@@ -9,7 +9,7 @@ Passing both include_cols and exclude_cols will result in an error.
 
 ## Parameters
 
-|   Argument   |    Type     |                                                   Description                                                   | Is Optional |
+|     Name     |    Type     |                                                   Description                                                   | Is Optional |
 | ------------ | ----------- | --------------------------------------------------------------------------------------------------------------- | ----------- |
 | include_cols | column_list | A list of the columns from the dataset you want to keep.                                                        | True        |
 | exclude_cols | column_list | A list of the columns from the dataset you want to drop. Any columns not in the exclude_cols list will be kept. | True        |
