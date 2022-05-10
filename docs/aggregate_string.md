@@ -9,7 +9,7 @@ Uses a text separator to aggregate the string values together, and returns a sin
 
 ## Parameters
 
-|  Argument   |    Type     |                                                         Description                                                          | Is Optional |
+|    Name     |    Type     |                                                         Description                                                          | Is Optional |
 | ----------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | agg_columns | column_list | Columns with string values to aggregate                                                                                      |             |
 | sep         | value       | Text separator to use when aggregating the strings, i.e. ', '.                                                               |             |

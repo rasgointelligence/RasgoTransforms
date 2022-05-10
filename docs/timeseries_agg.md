@@ -13,7 +13,7 @@ within 2 months of this current order.
 
 ## Parameters
 
-|   Argument   |    Type     |                                                                                        Description                                                                                        | Is Optional |
+|     Name     |    Type     |                                                                                        Description                                                                                        | Is Optional |
 | ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | aggregations | agg_dict    | Dictionary of columns and aggregate functions to apply. A column can have a list of multiple aggregates applied. One column will be created for each column:aggregate pair.               |             |
 | date         | column      | Column used to calculate the time window for aggregation                                                                                                                                  |             |

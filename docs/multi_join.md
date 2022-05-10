@@ -7,7 +7,7 @@ Join n number of datasets with the 'base' dataset, using a consistent join_type 
 
 ## Parameters
 
-|   Argument    |    Type     |                                                                           Description                                                                           | Is Optional |
+|     Name      |    Type     |                                                                           Description                                                                           | Is Optional |
 | ------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | join_tables   | table_list  | Datasets to join with the source_table                                                                                                                          |             |
 | join_type     | join_type   | Type of join to run against the base dataset (either LEFT, RIGHT, or INNER)                                                                                     |             |

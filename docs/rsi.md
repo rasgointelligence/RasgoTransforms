@@ -13,7 +13,7 @@ Example use case: On daily stock data, calculate RSI by TICKER, with a 14-period
 
 ## Parameters
 
-|   Argument    |  Type  |                                         Description                                         | Is Optional |
+|     Name      |  Type  |                                         Description                                         | Is Optional |
 | ------------- | ------ | ------------------------------------------------------------------------------------------- | ----------- |
 | partition_col | column | Grouping column to calculate RSI within.                                                    |             |
 | order_col     | column | Column to order rows by when calculating the agg window. RSI automatically sorts ascending. |             |

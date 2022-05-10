@@ -11,7 +11,7 @@ Example use case: Aggregate the last 10 sales for a customer regardless of when 
 
 ## Parameters
 
-|   Argument   |    Type     |                                                                                         Description                                                                                         | Is Optional |
+|     Name     |    Type     |                                                                                         Description                                                                                         | Is Optional |
 | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | aggregations | agg_dict    | Dictionary of columns and aggregate functions to apply. A column can have a list of multiple aggregates applied. One column will be created for each column:aggregate pair.                 |             |
 | order_by     | column_list | Column(s) to order rows by when calculating the agg window                                                                                                                                  |             |

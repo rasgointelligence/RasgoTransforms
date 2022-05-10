@@ -10,7 +10,7 @@ If you don't pass a join_prefix, columns that share the same name in both tables
 
 ## Parameters
 
-|   Argument   |    Type     |                                                  Description                                                   | Is Optional |
+|     Name     |    Type     |                                                  Description                                                   | Is Optional |
 | ------------ | ----------- | -------------------------------------------------------------------------------------------------------------- | ----------- |
 | join_table   | table       | Dataset object to join with the source dataset.                                                                |             |
 | join_type    | join_type   | LEFT, RIGHT, or INNER                                                                                          |             |

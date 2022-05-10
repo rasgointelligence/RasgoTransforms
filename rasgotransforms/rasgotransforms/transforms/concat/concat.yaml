@@ -16,11 +16,15 @@ arguments:
     type: value
     is_optional: true
     description: Name for the new column created by the concatenation.
+  overwrite_columns:
+    type: boolean
+    description: "Optional: if true, the columns in 'concat_list' will be excluded from the output"
+    is_optional: true
 example_code: |
   product = rasgo.get.dataset(75)
   ds2 = product.concat(
     concat_list=['PRODUCTKEY', 'PRODUCTALTERNATEKEY', "' hybridkey'"],
-    new_col_name='Hybrid Key'
+    alias='Hybrid Key'
   )
 
   ds2.preview()
