@@ -1,4 +1,5 @@
-{%- set untouched_cols = get_untouched_columns(source_table, rank_columns) if overwrite_columns else "*" -%}
+{%- set untouched_cols = get_columns(source_table)|list|reject('in', rank_columns)|join(',') if overwrite_columns else "*" -%}
+
 {%- set alias = alias if alias is defined else cleanse_name('RANK_' + '_'.join(rank_columns)) -%}
 
 SELECT {{ untouched_cols }},

@@ -1,4 +1,4 @@
-{%- set untouched_cols = get_untouched_columns(source_table, columns.keys()) + ', ' if not drop_columns else '' -%}
+{%- set untouched_cols = get_columns(source_table)|list|reject('in', columns)|join(',') + ', ' if not drop_columns else "" -%}
 
 {%- macro get_select_column(name, col) -%}
     {%- set source_col = 'cast(' + name + ' as ' + col.type + ')'  if col.type is defined else name-%}
