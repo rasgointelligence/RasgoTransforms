@@ -1,11 +1,3 @@
-{#
-Jinja Macro to generate a query that would get all 
-the columns in a table by fqtn
-#}
-{%- macro get_source_col_names(source_table_fqtn=None) -%}
-    select * from {{ source_table_fqtn }} limit 0
-{%- endmacro -%}
-
 {# Jinja Macro to get the table name from source_id #}
 {%- macro get_table_name(join_table) -%}
     {%- set table = join_table.split('.')[-1] -%}
@@ -13,12 +5,10 @@ the columns in a table by fqtn
 {%- endmacro -%}
 
 {# Get all Columns in Source Table #}
-{%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
-{%- set source_col_names = col_names_source_df.columns.to_list() -%}
+{%- set source_col_names = get_columns(source_table) -%}
 
 {# Get all Columns and Table Name in Join Table #}
-{%- set col_names_join_df = run_query(get_source_col_names(source_table_fqtn=join_table)) -%}
-{%- set join_col_names = col_names_join_df.columns.to_list() -%}
+{%- set join_col_names = get_columns(join_table) -%}
 {%- set join_table_name = get_table_name(join_table) -%}
 
 
