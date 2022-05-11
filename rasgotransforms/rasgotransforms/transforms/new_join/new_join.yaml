@@ -1,0 +1,17 @@
+name: join
+tags:
+  - table
+  - join
+  - reshape
+description: |
+  Join a dataset with another dataset, by matching on one or more columns between the two tables.
+
+  TODO: Finish description
+
+arguments:
+  join_dicts:
+    type: join_dicts
+    description: |
+      List of dictionaries specify how to perform each type of join.
+
+      ... TODO: Fill this
