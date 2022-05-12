@@ -1,0 +1,38 @@
+name: data_display
+type: insight
+context:
+  # TODO: new chart type?
+  chart_type: series
+tags:
+  - insight
+  - time series
+  # TODO: tags are lol when the template can be anything
+  - continuous
+  - discrete
+description: Visualize a dataset flexibly, depending on axes and metrics chosen
+arguments:
+  x-axis:
+    type: column
+    description: X-axis by which to view your data
+  y-axis:
+    type: column
+    description: Y-axis by which to view your data
+    is_optional: true
+  metrics:
+    type: column_agg_list
+    description: thing # TODO: describe the metrics. Are they optional? maybe
+    # is_optional: true
+  num_buckets:
+    type: value
+    description: max number of buckets to create; defaults to 200. # TODO: If the number of rows in the dataset is less than the chosen number of buckets, will default instead to the number of rows in the dataset
+    is_optional: true
+  filter_statements:
+    type: string_list
+    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL' # TODO: only used by chart type bar chart?
+    is_optional: true
+  order_direction:
+    type: string
+    description: Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order
+    is_optional: true
+example_code: |
+  # TODO: put stuff here
