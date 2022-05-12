@@ -1,34 +1,23 @@
 {#
-Jinja Macro to generate a query that would get all 
-the columns in a table by fqtn
-#}
-{%- macro get_source_col_names(source_table_fqtn=None) -%}
-    select * from {{ source_table_fqtn }} limit 0
-{%- endmacro -%}
-
-{#
-Get three things in this loop
-    1. The column names 
+Get two things in this loop
+    1. The column names of each base table in the Join
     2. Mapping of fqtn -> table_name for all tables/FQTNs passed in
 #}
-{%- set table_col_names = [
-    [
-        'source_table',
-        run_query(get_source_col_names(source_table_fqtn=source_table)).columns.to_list()
-        
-    ]
-] 
--%}
-{%- set table_name_mapping = {
-    "source_table": source_table.split('.')[-1]
-    }
--%}
+{%- set source_col_names = [] -%}
+{%- set source_get_columns_keys = get_columns(source_table).keys() -%}
+{%- for col_name in source_get_columns_keys -%}
+    {%- set _x = source_col_names.append(col_name) -%}
+{%- endfor -%}
+{# Init Dict/List of lists we actaully need to get; fill it initially with source_table #}
+{%- set table_col_names = [['source_table', source_col_names]] -%}
+{%- set table_name_mapping = {"source_table": source_table.split('.')[-1]}-%}
 {%- for join_dict in join_dicts -%}
-    {%- set _x = table_col_names.append([
-        join_dict['table_b'],
-        run_query(get_source_col_names(source_table_fqtn=join_dict['table_b'])).columns.to_list()
-        ])
-    -%}
+    {%- set join_table_col_names = [] -%}
+    {%- set join_table_get_columns_keys = get_columns(join_dict['table_b']).keys() -%}
+    {%- for join_table_col_name in join_table_get_columns_keys -%}
+        {%- set _x = join_table_col_names.append(join_table_col_name) -%}
+    {%- endfor -%}
+    {%- set _x = table_col_names.append([join_dict['table_b'], join_table_col_names]) -%}
     {%- set _x = table_name_mapping.__setitem__(
         join_dict["table_b"], join_dict["table_b"].split('.')[-1]
         ) 
@@ -55,7 +44,7 @@ For each table joining, figure out the columns which need to be prefixed
 {%- endfor -%}
 
 {#
-Macro for getting the column selection
+Macro for getting the column selection in full JOIN statement
 
 This includes adding prefixes if we marked that column as needing a prefix
 #}
