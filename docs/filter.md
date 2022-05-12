@@ -2,22 +2,30 @@
 
 # filter
 
-Apply one or more column filters to the dataset
+Filter the dataset. Supports two types of filters:
+  1. Comparison filters, which compare the values in a column with a value
+  2. Advanced filters, which support full SQL strings for custom filtering logic
+
 
 ## Parameters
 
-|       Name        |    Type     |                                              Description                                              | Is Optional |
-| ----------------- | ----------- | ----------------------------------------------------------------------------------------------------- | ----------- |
-| filter_statements | string_list | List of where statements filter the table by. Ex. ["<col_name> = 'string'", "<col_name> IS NOT NULL"] |             |
+| Name  |    Type     |                Description                | Is Optional |
+| ----- | ----------- | ----------------------------------------- | ----------- |
+| items | filter_list | list of dictionaries representing filters |             |
 
 
 ## Example
 
 ```python
-ds = rasgo.get.dataset(id)
+ds = rasgo.get.dataset(74)
 
-ds2 = ds.filter(filter_statements=['MONTH = 4', 'YEAR < 2021', 'COVID_DEATHS IS NOT NULL']
+# comma separated list of 'WHERE' clauses
+ds2 = ds.filter(items=['PRODUCTKEY < 500'])
 ds2.preview()
+
+# full filtering with a column, operator, and comparison value
+ds3 = ds.filter(items=[{'columnName':'PRODUCTKEY', 'operator':'>', 'comparisonValue':'101'}])
+ds3.preview()
 ```
 
 ## Source Code
