@@ -6,33 +6,33 @@ context:
 tags:
   - insight
   - time series
-  # TODO: tags are lol when the template can be anything
-  - continuous
-  - discrete
+  - summary metrics
+  - column distribution
 description: Visualize a dataset flexibly, depending on axes and metrics chosen
 arguments:
-  x-axis:
+  x_axis:
     type: column
-    description: X-axis by which to view your data
-  y-axis:
-    type: column
-    description: Y-axis by which to view your data
-    is_optional: true
+    description: X-axis by which to view your data. Can be categorical, datetime, or numeric. If categorical, will output a bar chart. If datetime or numerical, will result in a line chart.
   metrics:
     type: column_agg_list
-    description: thing # TODO: describe the metrics. Are they optional? maybe
-    # is_optional: true
+    description: numeric, quantitative values that you can measure
   num_buckets:
     type: value
-    description: max number of buckets to create; defaults to 200. # TODO: If the number of rows in the dataset is less than the chosen number of buckets, will default instead to the number of rows in the dataset
+    description: max number of buckets to create; defaults to 200
     is_optional: true
   filter_statements:
     type: string_list
-    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL' # TODO: only used by chart type bar chart?
+    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL'
     is_optional: true
   order_direction:
     type: string
     description: Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order
     is_optional: true
 example_code: |
-  # TODO: put stuff here
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.plot(x_axis='TEMPERATURE', metrics={
+            'RAINFALL': ['SUM', 'AVG'],
+            'SNOWFALL': ['SUM', 'AVG']
+        })
+  ds2.preview()

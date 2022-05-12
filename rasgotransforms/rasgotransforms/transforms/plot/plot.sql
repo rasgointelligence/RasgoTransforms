@@ -1,7 +1,5 @@
--- designed like this because we could get data types from snowflake info schema or postgres, where vals are different. inherent drawback - as we add new DWs with different data types, we'll need to expand this or it may break
--- TODO: redesign when Kimball changes API code
 {%- set axis_type_dict = get_columns(source_table) -%}
-{%- set axis_type_response = axis_type_dict[axis].upper() -%}
+{%- set axis_type_response = axis_type_dict[x_axis].upper() -%}
 {%- if 'DATE' in axis_type_response or 'TIME' in axis_type_response -%}
   {%- set axis_type = "date" -%}
 {%- elif 'NUM' in axis_type_response or 'FLOAT' in axis_type_response or 'INT' in axis_type_response or 'DECIMAL' in axis_type_response or 'DOUBLE' in axis_type_response or 'REAL' in axis_type_response -%}
@@ -9,19 +7,8 @@
 {%- elif 'BINARY' in axis_type_response or 'TEXT' in axis_type_response or 'BOOLEAN' in axis_type_response or 'CHAR' in axis_type_response or 'STRING' in axis_type_response or 'VARBINARY' in axis_type_response -%}
     {%- set axis_type = "categorical" -%}
 {%- else -%}
-{{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
+    {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {%- endif -%}
-
--- -- TODO: if num rows is < num buckets, do we want to error or just set num_buckets to num rows?
--- -- get number of rows. Compare to number of buckets
--- {% set row_count_query %}
--- select count(*) from {{ source_table }}
--- {% endset %}
--- {% set row_count_query_results = run_query(row_count_query) %}
--- {%- set row_count = row_count_query_results[row_count_query_results.columns[0]][0] -%}
--- {%- if row_count < num_buckets -%}
---     {%- set num_buckets = row_count -%}
-
 
 {%- if num_buckets is not defined -%}
     {%- set bucket_count = 200 -%}
@@ -30,21 +17,21 @@
 {%- endif -%}
 
 -- if the axis is continuous or a date, do a line chart
-{%- if axis_type in ['date', 'numeric'] -%}
+{% if axis_type in ['date', 'numeric'] -%}
     WITH AXIS_RANGE AS (
     -- Use a user-defined axis column to calculate the min & max of the axis (and buckets on the axis)
     SELECT
         {% if axis_type == 'date' -%}
-        MIN(DATE_PART(EPOCH_SECOND, {{ axis }}))-1 AS MIN_VAL
-        ,MAX(DATE_PART(EPOCH_SECOND, {{ axis }}))+1 AS MAX_VAL
+            MIN(DATE_PART(EPOCH_SECOND, {{ x_axis }}))-1 AS MIN_VAL
+            ,MAX(DATE_PART(EPOCH_SECOND, {{ x_axis }}))+1 AS MAX_VAL
         {% else -%}
-        MIN({{ axis }})-1 AS MIN_VAL
-    ,MAX({{ axis }})+1 AS MAX_VAL
-        {%- endif %}
+            MIN({{ x_axis }})-1 AS MIN_VAL
+            ,MAX({{ x_axis }})+1 AS MAX_VAL
+        {%- endif -%}
     FROM
         {{ source_table }}
     WHERE
-        {{ axis }} IS NOT NULL
+        {{ x_axis }} IS NOT NULL
     ), EDGES AS (
     SELECT MIN_VAL, MAX_VAL, (MIN_VAL-MAX_VAL) VAL_RANGE, ((MAX_VAL-MIN_VAL)/{{ bucket_count }}) BUCKET_SIZE FROM AXIS_RANGE
     ),
@@ -55,7 +42,7 @@
         MIN_VAL
     ,MAX_VAL
     ,BUCKET_SIZE
-    ,{{ "DATE_PART(EPOCH_SECOND, " + axis +")" if axis_type == 'date' else axis }}::float AS COL_A_VAL
+    ,{{ "DATE_PART(EPOCH_SECOND, " + x_axis +")" if axis_type == 'date' else x_axis }}::float AS COL_A_VAL
     ,WIDTH_BUCKET(COL_A_VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS COL_A_BUCKET
     {%- for col, aggs in metrics.items() %}
     ,{{ col }}
@@ -67,47 +54,46 @@
     )
     -- Run final aggregates on the buckets
     SELECT
-    {% if axi_type == 'date' -%}
-    (MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE))::DATETIME AS {{ axis }}_MIN
-    ,(MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE))::DATETIME AS {{ axis }}_MAX
-    {% else -%}
-    MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE) AS {{ axis }}_MIN
-    ,MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE) AS {{ axis }}_MAX
-    {%- endif %}
-
+    {% if axis_type == 'date' -%}
+        (MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE))::DATETIME AS {{ x_axis }}_MIN
+        ,(MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE))::DATETIME AS {{ x_axis }}_MAX
+    {%- else -%}
+        MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE) AS {{ x_axis }}_MIN
+        ,MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE) AS {{ x_axis }}_MAX
+    {%- endif -%}
     {%- for col, aggs in metrics.items() %}
         {%- for agg in aggs %}
-        ,{{ agg }}({{ col }}) AS {{ agg }}_{{ col }}
+            ,{{ agg }}({{ col }}) AS {{ agg }}_{{ col }}
         {%- endfor -%}
     {%- endfor %}
 
     FROM BUCKETS
-    WHERE {{ axis }}_MIN is not NULL
-    {% if filter_statements is iterable -%}
-    {%- for filter_statement in filter_statements %}
-    AND {{ filter_statement }}
-    {%- endfor -%}
+    WHERE {{ x_axis }}_MIN is not NULL
+    {%- if filter_statements is iterable -%}
+        {%- for filter_statement in filter_statements %}
+            AND {{ filter_statement }}
+        {%- endfor -%}
     {%- endif %}
     GROUP BY 1, 2
     ORDER BY 1
 
--- if the axis is a categorical dimension, build a bar chart
 {%- elif axis_type == 'categorical' -%}
+-- if the axis is a categorical dimension, build a bar chart
     SELECT
-    {{ dimension }},
+    {{ x_axis }},
 
     {%- for col, aggs in metrics.items() %}
-            {%- set outer_loop = loop -%}
+        {%- set outer_loop = loop -%}
         {%- for agg in aggs %}
-        {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
+            {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
         {%- endfor -%}
     {%- endfor %}
     FROM {{ source_table }}
     {% if filter_statements is iterable -%}
-    {%- for filter_statement in filter_statements %}
-    {{ 'WHERE' if loop.first else 'AND' }} {{ filter_statement }}
-    {%- endfor -%}
+        {%- for filter_statement in filter_statements %}
+            {{ 'WHERE' if loop.first else 'AND' }} {{ filter_statement }}
+        {%- endfor -%}
     {%- endif %}
-    GROUP BY {{ dimension }}
-    ORDER BY {{ dimension }} {{ order_direction }}
+    GROUP BY {{ x_axis }}
+    {{ "ORDER BY " + x_axis + " " + order_direction if order_direction else '' }}
 {%- endif -%}
