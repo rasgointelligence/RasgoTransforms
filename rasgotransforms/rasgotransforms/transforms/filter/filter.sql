@@ -1,5 +1,9 @@
 {%- if items is not defined -%}
-    {%- set items = filter_statements -%}
+    {%- if filter_statements is not defined -%}
+        {{ raise_exception('items is empty: there are no filters to apply') }}
+    {%- else -%}
+        {%- set items = filter_statements -%}
+    {%- endif -%}
 {%- endif -%}
 
 SELECT *
