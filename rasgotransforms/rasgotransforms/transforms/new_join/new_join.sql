@@ -25,12 +25,12 @@ Get three things in this loop
 -%}
 {%- for join_dict in join_dicts -%}
     {%- set _x = table_col_names.append([
-        join_dict['join_table'],
-        run_query(get_source_col_names(source_table_fqtn=join_dict['join_table'])).columns.to_list()
+        join_dict['table_b'],
+        run_query(get_source_col_names(source_table_fqtn=join_dict['table_b'])).columns.to_list()
         ])
     -%}
     {%- set _x = table_name_mapping.__setitem__(
-        join_dict["join_table"], join_dict["join_table"].split('.')[-1]
+        join_dict["table_b"], join_dict["table_b"].split('.')[-1]
         ) 
     -%}
 {%- endfor -%}
@@ -45,7 +45,7 @@ For each table joining, figure out the columns which need to be prefixed
     {%- for i in range(0, loop.index) -%}
         {%- set _x = cols_to_check_for_overlap.extend(table_col_names[i][1]) -%}
     {%- endfor %}
-    {%- for join_col in join_table_cols -%}
+    {%- for join_table_col in join_table_cols -%}
         {%- if join_table_col in cols_to_check_for_overlap -%}
             {%- set _x = cols_to_prefix.append(join_table_col) -%}
         {%- endif -%}
@@ -62,10 +62,20 @@ This includes adding prefixes if we marked that column as needing a prefix
 {%- macro get_columns_to_select_in_query() -%}
     {# First get the column selections for the source table #}
     {%- set source_fqtn, source_col_names = table_col_names[0] -%}
-    {%- for source_col_name in source_col_names -%}
-        {{ table_name_mapping[source_fqtn] }}'.'{{ source_col_name }},
-    {% endfor -%}
+    {%- for source_col_name in source_col_names %}
+    {{ table_name_mapping[source_fqtn] }}.{{ source_col_name }},{% endfor -%}
     {# Next get the column selections for the join tables #}
+    {%- for join_table, join_table_cols in table_col_names[1:] -%}
+        {%- set outer_loop = loop -%}
+        {%- set join_dict = join_dicts[loop.index0] -%}
+        {%- for join_table_col in join_table_cols -%}
+            {%- if join_table_col in cols_to_prefix_mapping[join_table] %}
+    {{ table_name_mapping[join_table] }}.{{ join_table_col }} as {{ join_dict["join_prefix_b"] }}__{{ join_table_col }}{{ " " if outer_loop.last and loop.last else "," }}
+            {%- else %}
+    {{ table_name_mapping[join_table] }}.{{ join_table_col }}{{ " " if outer_loop.last and loop.last else "," }}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endfor -%}
 {%- endmacro -%}
 
 
