@@ -12,22 +12,22 @@
 {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {%- endif -%}
 
--- get number of rows. Compare to number of buckets
-{% set row_count_query %}
-select count(*) from {{ source_table }}
-{% endset %}
-{% set row_count_query_results = run_query(row_count_query) %}
-{%- set row_count = row_count_query_results[row_count_query_results.columns[0]][0] -%}
+-- -- TODO: if num rows is < num buckets, do we want to error or just set num_buckets to num rows?
+-- -- get number of rows. Compare to number of buckets
+-- {% set row_count_query %}
+-- select count(*) from {{ source_table }}
+-- {% endset %}
+-- {% set row_count_query_results = run_query(row_count_query) %}
+-- {%- set row_count = row_count_query_results[row_count_query_results.columns[0]][0] -%}
+-- {%- if row_count < num_buckets -%}
+--     {%- set num_buckets = row_count -%}
+
 
 {%- if num_buckets is not defined -%}
     {%- set bucket_count = 200 -%}
 {%- else -%}
     {%- set bucket_count = num_buckets -%}
 {%- endif -%}
-
-{%- if row_count < num_buckets -%}
--- TODO: if num rows is < num buckets, do we want to error or just set num_buckets to num rows?
-    {%- set num_buckets = row_count -%}
 
 -- if the axis is continuous or a date, do a line chart
 {%- if axis_type in ['date', 'numeric'] -%}
@@ -83,6 +83,11 @@ select count(*) from {{ source_table }}
 
     FROM BUCKETS
     WHERE {{ axis }}_MIN is not NULL
+    {% if filter_statements is iterable -%}
+    {%- for filter_statement in filter_statements %}
+    AND {{ filter_statement }}
+    {%- endfor -%}
+    {%- endif %}
     GROUP BY 1, 2
     ORDER BY 1
 

@@ -1,8 +1,8 @@
-name: data_display
+name: plot
 type: insight
 context:
-  # TODO: new chart type?
   chart_type: series
+  default_template: true
 tags:
   - insight
   - time series
