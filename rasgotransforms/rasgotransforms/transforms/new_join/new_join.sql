@@ -69,6 +69,7 @@ This includes adding prefixes if we marked that column as needing a prefix
         {%- set outer_loop = loop -%}
         {%- set join_dict = join_dicts[loop.index0] -%}
         {%- for join_table_col in join_table_cols -%}
+            {# Add prefix if we marked that column as needing a prefix #}
             {%- if join_table_col in cols_to_prefix_mapping[join_table] %}
     {{ table_name_mapping[join_table] }}.{{ join_table_col }} as {{ join_dict["join_prefix_b"] }}__{{ join_table_col }}{{ " " if outer_loop.last and loop.last else "," }}
             {%- else %}
@@ -77,8 +78,12 @@ This includes adding prefixes if we marked that column as needing a prefix
         {%- endfor -%}
     {%- endfor -%}
 {%- endmacro -%}
-
-
-{{get_columns_to_select_in_query()}}
-
-{{source_table}}
+{# Create the Final Join Statement #}
+SELECT {{get_columns_to_select_in_query()}}
+FROM {{source_table}}
+{% for join_dict in join_dicts -%}
+{{ join_dict["join_type"] }} JOIN {{ join_dict["table_b"] }}
+ON {% for join_col1, join_col2 in join_dict["join_on"].items() -%}
+{{ " AND " if loop.index != 1 else "" }}{{ table_name_mapping["source_table"] if loop.index == 1 else table_name_mapping[join_dict["table_a"]] }}.{{ join_col1 }} = {{ table_name_mapping[join_dict["table_b"]] }}.{{ join_col2 }}
+{%- endfor %}
+{% endfor -%}
