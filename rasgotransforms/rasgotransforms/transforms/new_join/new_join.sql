@@ -71,8 +71,9 @@ This includes adding prefixes if we marked that column as needing a prefix
 SELECT {{get_columns_to_select_in_query()}}
 FROM {{source_table}}
 {% for join_dict in join_dicts -%}
+{%- set outer_loop = loop -%}
 {{ join_dict["join_type"] }} JOIN {{ join_dict["table_b"] }}
 ON {% for join_col1, join_col2 in join_dict["join_on"].items() -%}
-{{ " AND " if loop.index != 1 else "" }}{{ table_name_mapping["source_table"] if loop.index == 1 else table_name_mapping[join_dict["table_a"]] }}.{{ join_col1 }} = {{ table_name_mapping[join_dict["table_b"]] }}.{{ join_col2 }}
+{{ " AND " if loop.index != 1 else "" }}{{ table_name_mapping["source_table"] if outer_loop.index == 1 else table_name_mapping[join_dict["table_a"]] }}.{{ join_col1 }} = {{ table_name_mapping[join_dict["table_b"]] }}.{{ join_col2 }}
 {%- endfor %}
 {% endfor -%}
