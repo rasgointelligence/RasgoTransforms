@@ -1,11 +1,3 @@
-{#
-Jinja Macro to generate a query that would get all 
-the columns in a table by fqtn
-#}
-{%- macro get_source_col_names(source_table_fqtn) -%}
-    select * from {{ source_table_fqtn }} limit 0
-{%- endmacro -%}
-
 {# 
 Macro to return the imputation query 
 for a specified imputation col 
@@ -38,8 +30,7 @@ else it will perform that impuattion stagety on column
 
 
 {# Get all Columns in Source Table #}
-{%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
-{%- set source_col_names = col_names_source_df.columns.to_list() -%}
+{%- set source_col_names = get_columns(source_table) -%}
 
 SELECT
 {%- for col in source_col_names -%}

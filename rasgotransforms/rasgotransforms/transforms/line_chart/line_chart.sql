@@ -1,22 +1,4 @@
-{%- macro get_axis_data_type(source_table_fqtn=None) -%}
-    {%- if source_table_fqtn.count('.') == 2 -%}
-      {%- set database, schema, table = source_table_fqtn.split('.') -%}
-        SELECT COLUMN_NAME, DATA_TYPE
-        FROM {{ database }}.information_schema.columns
-        WHERE TABLE_CATALOG = '{{ database|upper }}'
-        AND   TABLE_SCHEMA = '{{ schema|upper }}'
-        AND   TABLE_NAME = '{{ table|upper }}'
-        AND COLUMN_NAME = '{{ axis|upper }}'
-    {%- else -%}
-        SELECT COLUMN_NAME, DATA_TYPE
-        FROM information_schema.columns
-        WHERE TABLE_NAME = '{{ source_table_fqtn|upper }}'
-        AND COLUMN_NAME = '{{ axis|upper }}'
-    {%- endif -%}
-{%- endmacro -%}
-{# Is the axis a DATE, TIMESTAMP, or something else? #}
-{%- set axis_type_df = run_query(get_axis_data_type(source_table_fqtn=source_table)) -%}
-{%- set axis_type_dict = axis_type_df.set_index('COLUMN_NAME')['DATA_TYPE'].to_dict() -%}
+{%- set axis_type_dict = get_columns(source_table) -%}
 {%- if 'DATE' in axis_type_dict[axis] or 'TIMESTAMP' in axis_type_dict[axis] -%}
   {%- set axis_is_date = true -%}
 {%- else -%}

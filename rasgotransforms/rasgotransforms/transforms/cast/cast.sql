@@ -1,25 +1,11 @@
-{%- macro get_source_col_names(source_table_fqtn=None) -%}
-    select * from {{ source_table_fqtn }} limit 0
-{%- endmacro -%}
-
 {%- if overwrite_columns == true -%}
 
-{%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
-{%- set source_col_names = col_names_source_df.columns.to_list() -%}
+{%- set source_columns = get_columns(source_table) -%}
+{%- set untouched_cols = source_columns | reject('in', casts) -%}
 
-{%- set cast_columns = [] -%}
-{%- for target_col, type in casts.items() -%}
-    {{ cast_columns.append(target_col) or "" }}
-{%- endfor -%}
-
-{%- set untouched_cols = source_col_names | reject('in', cast_columns) -%}
-
-SELECT
-{%- for col in untouched_cols %}
-    {{ ", " if not loop.first else " " }}{{ col }}
-{%- endfor %}
+SELECT {% for col in untouched_cols %}{{ col }},{% endfor %}
 {%- for target_col, type in casts.items() %}
-    , CAST({{target_col}} AS {{type}}) AS {{target_col}}
+    CAST({{target_col}} AS {{type}}) AS {{target_col}}{{", " if not loop.last else ""}}
 {%- endfor %}
 FROM {{ source_table }}
 

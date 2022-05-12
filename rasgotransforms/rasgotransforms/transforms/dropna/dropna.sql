@@ -1,13 +1,5 @@
-{#
-Jinja Macro to generate a query that would get all
-the columns in a table by fqtn
-#}
-{%- macro get_source_col_names(source_table_fqtn=None) -%}
-    select * from {{ source_table_fqtn }} limit 0
-{%- endmacro -%}
 {%- if subset is not defined -%}
-{%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
-{%- set subset = col_names_source_df.columns.to_list() -%}
+{%- set subset = get_columns(source_table) -%}
 {%- set source_col_names = subset -%}
 {%- endif -%}
 
@@ -18,7 +10,7 @@ the columns in a table by fqtn
 {%- if how == "any" and thresh is not defined -%}
 select * from {{ source_table }}
 {%- for col in subset %}
-{{ 'where' if loop.first else 'and' }} {{ col }} is not null
+{{ 'where' if loop.first else '    and' }} {{ col }} is not null
 {%- endfor -%}
 
 {%- else -%}
@@ -26,8 +18,7 @@ select * from {{ source_table }}
 {%- set thresh = subset|length -%}
 {%- endif -%}
 {%- if source_col_names is not defined -%}
-{%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
-{%- set source_col_names = col_names_source_df.columns.to_list() -%}
+{%- set source_col_names = get_columns(source_table) -%}
 {%- endif -%}
 with not_null as (
     select *,

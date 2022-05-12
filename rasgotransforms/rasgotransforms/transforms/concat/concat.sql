@@ -1,8 +1,4 @@
-{%- if overwrite_columns -%}
-{%- set untouched_cols = get_untouched_columns(source_table, concat_list) -%}
-{%- else -%}
-{%- set untouched_cols = "*" -%}
-{%- endif -%}
+{%- set untouched_cols = get_columns(source_table)|list|reject('in', concat_list)|join(',') if overwrite_columns else "*" -%}
 
 {%- set alias = cleanse_name(alias) if alias is defined else 'CONCAT_' ~ cleanse_name(concat_list | join('_')) -%}
 

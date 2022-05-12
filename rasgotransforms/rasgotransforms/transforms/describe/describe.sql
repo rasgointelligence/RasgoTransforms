@@ -1,20 +1,5 @@
-{%- macro get_col_names_types(source_table_fqtn=None) -%}
-    {%- if source_table_fqtn.count('.') == 2 -%}
-      {%- set database, schema, table = source_table_fqtn.split('.') -%}
-        SELECT COLUMN_NAME, DATA_TYPE
-        FROM {{ database }}.information_schema.columns
-        WHERE TABLE_CATALOG = '{{ database|upper }}'
-        AND   TABLE_SCHEMA = '{{ schema|upper }}'
-        AND   TABLE_NAME = '{{ table|upper }}'
-    {%- else -%}
-        SELECT COLUMN_NAME, DATA_TYPE
-        FROM information_schema.columns
-        WHERE TABLE_NAME = '{{ source_table_fqtn|upper }}'
-    {%- endif -%}
-{%- endmacro -%}
-{# Get all Columns in Source Table #}
-{%- set names_types_df = run_query(get_col_names_types(source_table_fqtn=source_table)) -%}
-{%- set names_types_list = names_types_df.set_index('COLUMN_NAME')['DATA_TYPE'].to_dict() -%}
+{%- set names_types_list = get_columns(source_table) -%}
+
 
 {%- for key, value in names_types_list.items() -%}
     {% if (value == 'NUMBER' or 'FLOAT' in value or 'INT' in value) %}
