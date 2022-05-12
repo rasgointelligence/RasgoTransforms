@@ -66,3 +66,25 @@ arguments:
         INNER JOIN ADVENTUREWORKS.PUBLIC.DIMCUSTOMER
         ON FACTINTERNETSALES.CUSTOMERKEY = DIMCUSTOMER.CUSTOMERKEY AND FACTINTERNETSALES.DUEDATE = DIMCUSTOMER.BIRTHDATE
         ```
+    
+    example_code: |
+      internet_sales = rasgo.get.dataset(74)
+      customer = rasgo.get.dataset(55)
+      product = rasgo.get.dataset(75)
+
+      ds = product.join(join_dicts=[
+            {
+            'table_b': internet_sales.fqtn,
+            'join_type':'LEFT',
+            'join_prefix_b':'product',
+            'join_on':{'PRODUCTKEY':'PRODUCTKEY'}
+            },
+            {
+            'table_a':internet_sales.fqtn,
+            'table_b':customer.fqtn,
+            'join_on':{'CUSTOMERKEY':'CUSTOMERKEY', 'DUEDATE': 'BIRTHDATE'},
+            'join_type':'INNER',
+            'join_prefix_b':'sales'
+            }
+        ])
+      ds.preview()
