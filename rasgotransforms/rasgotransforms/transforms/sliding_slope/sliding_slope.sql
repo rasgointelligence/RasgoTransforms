@@ -1,5 +1,5 @@
 WITH  CTE_RANK AS (
-SELECT *, RANK() OVER(PARTITION BY {{ partition_col }} ORDER BY {{ order_col }} ASC) AS RANK_{{ order_col }}
+SELECT *, ROW_NUMBER() OVER(PARTITION BY {{ partition_col }} ORDER BY {{ order_col }} ASC) AS RANK_{{ order_col }}
 FROM {{ source_table }}
 ) , 
 CTE_WINDOW AS (
@@ -8,7 +8,7 @@ ARRAY_AGG(ARRAY_CONSTRUCT(B.{{ value_col }}, B.RANK_{{ order_col }})) ARRAY_AGG_
 FROM CTE_RANK A 
 JOIN CTE_RANK B 
 ON A.{{ partition_col }}=B.{{ partition_col }} 
-AND A.{{ order_col }} BETWEEN B.{{ order_col }} AND B.{{ order_col }}+{{ window }} 
+AND A.RANK_{{ order_col }} BETWEEN B.RANK_{{ order_col }} AND B.RANK_{{ order_col }}+{{ window }} 
 GROUP BY A.{{ partition_col }}, A.RANK_{{ order_col }}
 ),
 CTE_SLOPE AS
