@@ -1,0 +1,38 @@
+name: plot
+type: insight
+context:
+  chart_type: series
+  default_template: true
+tags:
+  - insight
+  - time series
+  - summary metrics
+  - column distribution
+description: Visualize a dataset flexibly, depending on axes and metrics chosen
+arguments:
+  x_axis:
+    type: column
+    description: X-axis by which to view your data. Can be categorical, datetime, or numeric. If categorical, will output a bar chart. If datetime or numerical, will result in a line chart.
+  metrics:
+    type: column_agg_list
+    description: numeric, quantitative values that you can measure
+  num_buckets:
+    type: value
+    description: max number of buckets to create; defaults to 200
+    is_optional: true
+  filter_statements:
+    type: string_list
+    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL'
+    is_optional: true
+  order_direction:
+    type: string
+    description: Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order
+    is_optional: true
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.plot(x_axis='TEMPERATURE', metrics={
+            'RAINFALL': ['SUM', 'AVG'],
+            'SNOWFALL': ['SUM', 'AVG']
+        })
+  ds2.preview()
