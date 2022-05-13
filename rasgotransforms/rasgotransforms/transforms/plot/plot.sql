@@ -24,10 +24,10 @@
         {% if axis_type == 'date' -%}
             MIN(DATE_PART(EPOCH_SECOND, {{ x_axis }}))-1 AS MIN_VAL
             ,MAX(DATE_PART(EPOCH_SECOND, {{ x_axis }}))+1 AS MAX_VAL
-        {% else -%}
+        {% else %}
             MIN({{ x_axis }})-1 AS MIN_VAL
             ,MAX({{ x_axis }})+1 AS MAX_VAL
-        {%- endif -%}
+        {%- endif %}
     FROM
         {{ source_table }}
     WHERE
