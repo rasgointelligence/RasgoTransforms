@@ -1,163 +1,451 @@
 name: Salesforce Lead Scoring
-description: Salesforce tracks individuals through multiple relationship stages, including contact, lead, and opportunity. This accelerator joins each Salesforce object together, producing a single table with one row per individual so that you can quickly apply a lead scoring model or other insight.
+description: Salesforce tracks individuals through multiple relationship stages, including contact, lead, and opportunity, and ties this to the account. This accelerator joins each Salesforce object together, producing a single table with one row per lead, and determines if the lead is closed won or lost so that you can quickly apply a lead scoring model or other insight.
 arguments:
-  contact_table:
-    type: dataset
-    description: Salesforce contacts table
-  opportunity_table:
-    type: dataset
-    description: Salesforce opportunities table
-  account_table:
-    type: dataset
+  accounts_table:
     description: Salesforce accounts table
+    argument_type: dataset
+  opportunities_table:
+    description: Salesforce opportunities table
+    argument_type: dataset
+  leads_table:
+    description: Salesforce leads table
+    argument_type: dataset
+  contacts_table:
+    description: Salesforce contacts table
+    argument_type: dataset
 operations:
-  get_contact_columns:
-    transform_name: drop_columns
+  drop_deleted_from_accounts:
+    description: Drop accounts marked as deleted in accounts table
+    transform_name: filter
     transform_arguments:
-      include_cols:
-        - "ID"
-        - "ACCOUNT_ID"
-        - "NAME"
-        - "EMAIL"
-        - "TITLE"
-        - "LEAD_SOURCE"
-        - "CREATED_DATE"
-        - "INITIAL_CONTACT_METHOD_C"
-        - "INITIAL_SOURCE_DETAIL_C"
-        - "MQL_DATE_C"
-        - "SALES_ACCEPTED_DATE_C"
-      source_table: "{{ contact_table }}"
-    description: grab necessary columns from contacts table
-  get_account_columns:
-    transform_name: drop_columns
+      filter_statements:
+      - IS_DELETED = 'false'
+      source_table: '{{accounts_table}}'
+  drop_deleted_from_opportunities:
+    description: Drop opportunities marked as deleted in opportunities table
+    transform_name: filter
     transform_arguments:
-      include_cols:
-        - "ID"
-        - "NAME"
-        - "ACCOUNT_SOURCE"
-      source_table: "{{ account_table }}"
-    description: grab necessary columns from accounts table
-  get_opportunity_columns:
-    transform_name: drop_columns
+      filter_statements:
+      - IS_DELETED = 'false'
+      source_table: '{{opportunities_table}}'
+  drop_deleted_from_leads:
+    description: Drop leads marked as deleted in leads table
+    transform_name: filter
     transform_arguments:
-      include_cols:
-        - "ID"
-        - "CONTACT_ID"
-        - "STAGE_NAME"
-        - "AMOUNT"
-      source_table: "{{ opportunity_table }}"
-    description: grab necessary columns from accounts table
-  accounts_contacts:
-    transform_name: join
+      filter_statements:
+      - IS_DELETED = 'false'
+      source_table: '{{leads_table}}'
+  drop_deleted_from_contacts:
+    description: Drop contacts marked as deleted in contacts table
+    transform_name: filter
     transform_arguments:
-      join_table: "{{ get_account_columns }}"
-      join_type: "LEFT"
-      join_columns:
-        "ACCOUNT_ID": "ID"
-      join_prefix: "acnt"
-      source_table: "{{ get_contact_columns }}"
-    description: join contacts and accounts
-  leads_base:
-    transform_name: join
-    transform_arguments:
-      join_table: "{{ get_opportunity_columns }}"
-      join_type: "LEFT"
-      join_columns:
-        "ID": "CONTACT_ID"
-      join_prefix: "opty"
-      source_table: "{{ accounts_contacts }}"
-    description: join with opportunities tables to get base table for lead scoring
-  leads_target:
+      filter_statements:
+      - IS_DELETED = 'false'
+      source_table: '{{contacts_table}}'
+  opportunity_target:
+    description: Create the target column CLOSED_WON identifying whether or not the opportunity has closed and was marked Closed Won or Closed Lost. If the opportunity has not closed, mark it as NULL.
     transform_name: if_then
     transform_arguments:
       conditions:
-        - - "OPTY_ID is not null"
-          - 1
-      default: 0
-      alias: "qualified_lead"
-      source_table: "{{ leads_base }}"
-    description: create target variable as qualified lead
-  table:
-    operation_type: INSIGHT
+      - - IS_CLOSED = 'true' AND STAGE_NAME = 'Closed Won'
+        - '1'
+      - - IS_CLOSED = 'true' AND STAGE_NAME = 'Closed Lost'
+        - '0'
+      default: 'NULL'
+      alias: CLOSED_WON
+      source_table: '{{drop_deleted_from_opportunities}}'
+  get_account_columns:
+    description: Keep only necessary columns from account table.
+    transform_name: drop_columns
     transform_arguments:
-      filter_statements:
-        - DATE(CREATED_DATE) > DATEADD('DAY', -7, CURRENT_DATE())
-      source_table: "{{leads_target}}"
-    transform_name: table
-  line_chart:
+      include_cols:
+      - ANNUAL_REVENUE
+      - BILLING_COUNTRY
+      - BILLING_POSTAL_CODE
+      - BILLING_STATE
+      - INDUSTRY
+      - NUMBER_OF_EMPLOYEES
+      - WEBSITE
+      - ID
+      - NAME
+      source_table: '{{drop_deleted_from_accounts}}'
+  get_opportunity_columns:
+    description: Keep only necessary columns from opportunity table.
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+      - ACCOUNT_ID
+      - AMOUNT
+      - FISCAL_QUARTER
+      - FISCAL_YEAR
+      - BUSINESS_CASE_C
+      - BUSINESS_OUTCOME_C
+      - CHALLENGES_C
+      - ECONOMIC_BUYER_C
+      - ID
+      - USE_CASE_C
+      - CLOSED_WON
+      source_table: '{{opportunity_target}}'
+  get_lead_columns:
+    description: Keep only necessary columns from lead table.
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+      - CONVERTED_OPPORTUNITY_ID
+      - CONVERTED_CONTACT_ID
+      source_table: '{{drop_deleted_from_leads}}'
+  get_contact_columns:
+    description: Keep only necessary columns from contacts table.
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+      - CREATED_DATE
+      - DEPARTMENT
+      - DESCRIPTION
+      - ASSISTANT_NAME
+      - ASSISTANT_PHONE
+      - EMAIL
+      - ID
+      - INITIAL_CAMPAIGN_C
+      - INITIAL_CONTACT_METHOD_C
+      - INITIAL_CONTENT_C
+      - INITIAL_MEDIUM_C
+      - INITIAL_SOURCE_DETAIL_C
+      - LEAD_SOURCE
+      - MAILING_CITY
+      - MAILING_COUNTRY
+      - MAILING_POSTAL_CODE
+      - MAILING_STATE
+      - NAME
+      - PHONE
+      - TITLE
+      - REPORTS_TO_ID
+      - JOB_TITLE_CATEGORY_C
+      source_table: '{{drop_deleted_from_contacts}}'
+  fix_account_name:
+    description: Avoid multiple NAME columns by specifying the name in the accounts table is the company name.
+    transform_name: rename
+    transform_arguments:
+      renames:
+        NAME: COMPANY_NAME
+      source_table: '{{get_account_columns}}'
+  opp_plus_leads:
+    description: Join leads table to opportunities.
+    transform_name: join
+    transform_arguments:
+      join_table: '{{get_lead_columns}}'
+      join_type: LEFT
+      join_columns:
+        ID: CONVERTED_OPPORTUNITY_ID
+      join_prefix: ''
+      source_table: '{{get_opportunity_columns}}'
+  opp_leads_plus_contacts:
+    description: Join contacts table to opportunities.
+    transform_name: join
+    transform_arguments:
+      join_table: '{{get_contact_columns}}'
+      join_type: LEFT
+      join_columns:
+        CONVERTED_CONTACT_ID: ID
+      source_table: '{{opp_plus_leads}}'
+  opp_leads_contacts_plus_accounts:
+    description: Join accounts to opportunities.
+    transform_name: join
+    transform_arguments:
+      join_table: '{{fix_account_name}}'
+      join_type: LEFT
+      join_columns:
+        ACCOUNT_ID: ID
+      source_table: '{{opp_leads_plus_contacts}}'
+  lead_scoring_modeling_data:
+    description: Drop no longer needed join keys and are left with just the data needed for lead score modeling.
+    transform_name: drop_columns
+    transform_arguments:
+      exclude_cols:
+      - CONVERTED_CONTACT_ID
+      - CONVERTED_OPPORTUNITY_ID
+      source_table: '{{opp_leads_contacts_plus_accounts}}'
+  get_contact_columns_to_be_scored:
+    description: When scoring new leads, opportunities will not be available, so create the data from just contacts and accounts. Keep only those columns necessary from the contacts table.
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+      - ACCOUNT_ID
+      - CREATED_DATE
+      - DEPARTMENT
+      - DESCRIPTION
+      - ASSISTANT_NAME
+      - ASSISTANT_PHONE
+      - EMAIL
+      - ID
+      - INITIAL_CAMPAIGN_C
+      - INITIAL_CONTACT_METHOD_C
+      - INITIAL_CONTENT_C
+      - INITIAL_MEDIUM_C
+      - INITIAL_SOURCE_DETAIL_C
+      - LEAD_SOURCE
+      - MAILING_CITY
+      - MAILING_COUNTRY
+      - MAILING_POSTAL_CODE
+      - MAILING_STATE
+      - NAME
+      - PHONE
+      - TITLE
+      - REPORTS_TO_ID
+      - JOB_TITLE_CATEGORY_C
+      source_table: '{{drop_deleted_from_contacts}}'
+  leads_to_be_scored:
+    description: Join contacts to accounts to create data containing all leads that can be scored.
+    transform_name: join
+    transform_arguments:
+      join_table: '{{fix_account_name}}'
+      join_type: LEFT
+      join_columns:
+        ACCOUNT_ID: ID
+      source_table: '{{get_contact_columns_to_be_scored}}'
+  closed_by_lead_source:
     operation_type: INSIGHT
+    description: Show closed percentage by lead source.
+    transform_name: bar_chart
+    transform_arguments:
+      dimension: LEAD_SOURCE
+      metrics:
+        CLOSED_WON:
+        - AVG
+      source_table: '{{lead_scoring_modeling_data}}'
+  closed_by_industry:
+    operation_type: INSIGHT
+    description: Show close percentage by industry
+    transform_name: bar_chart
+    transform_arguments:
+      dimension: INDUSTRY
+      metrics:
+        CLOSED_WON:
+        - AVG
+      source_table: '{{lead_scoring_modeling_data}}'
+  leads_over_time:
+    operation_type: INSIGHT
+    description: Contacts created over time
+    transform_name: line_chart
     transform_arguments:
       axis: CREATED_DATE
       metrics:
         ID:
-          - COUNT
-      source_table: "{{leads_target}}"
-    transform_name: line_chart
-  bar_chart:
-    operation_type: INSIGHT
-    transform_arguments:
-      dimension: LEAD_SOURCE
-      metrics:
-        ID:
-          - COUNT
-      source_table: "{{leads_target}}"
-    transform_name: bar_chart
+        - COUNT
+      source_table: '{{leads_to_be_scored}}'
 doc:
   output_tables:
-    leads_target:
+    lead_scoring_modeling_data:
       metrics:
         ACCOUNT_ID:
           description: Salesforce Account ID
           source: Salesforce
-        NAME:
-          description: Contact's name, from the contacts table
+        AMOUNT:
+          description: Forecast or actual amount of subscription from the opportunities table
           source: Salesforce
-        EMAIL:
-          description: Contact's email, from the contacts table
+        ANNUAL_REVENUE:
+          description: Annual revenue from the accounts table
           source: Salesforce
-          index: True
-        TITLE:
-          description: Contact's job title, from the contacts table
+        ASSISTANT_NAME:
+          description: Contact's assistant's name from the contacts table
           source: Salesforce
-        LEAD_SOURCE:
-          description: Channel where the contact's info came from
+        ASSISTANT_PHONE:
+          description: Contact's assistant's phone from the contacts table
+          source: Salesforce
+        BILLING_COUNTRY:
+          description: Billing country from the accounts table
+          source: Salesforce
+        BILLING_POSTAL_CODE:
+          description: Billing postal code from the accounts table
+          source: Salesforce
+        BILLING_STATE:
+          description: Billing state from the accounts table
+          source: Salesforce
+        BUSINESS_CASE_C:
+          description: Described business case from the opportunties table
+          source: Salesforce
+        BUSINESS_OUTCOME_C:
+          description: Desired business outcome from the opportunties table
+          source: Salesforce
+        CHALLENGES_C:
+          description: Described challenges from the opportunties table
+          source: Salesforce
+        CLOSED_WON:
+          description: Target generated from the opportunites table. Does this lead convert to being a customer
+          source: Salesforce
+        COMPANY_NAME:
+          description: Company name from the account table
           source: Salesforce
         CREATED_DATE:
-          description: Date when the Contact was created
+          description: Date when the contact was created from the contacts table
+          source: Salesforce
+        DEPARTMENT:
+          description: Contact's department from the contact table
+          source: Salesforce
+        DESCRIPTION:
+          description: Contact's description from the contacts table
+          source: Salesforce
+        ECONOMIC_BUYER_C:
+          description: Economic buyer from the opportunities table
+          source: Salesforce
+        EMAIL:
+          description: Contact's email from the contacts table
+          source: Salesforce
+        FISCAL_QUARTER:
+          description: Fiscal quarter opportuntiy expected to close from the opportunties table
+          source: Salesforce
+        FISCAL_YEAR:
+          description: Fiscal year opportuntiy expected to close from the opportunties table
+          source: Salesforce
+        ID:
+          description: Opportunity ID from the opportunties table
+          source: Salesforce
+        INDUSTRY:
+          description: Industry from the accounts table
+          source: Salesforce
+        INITIAL_CAMPAIGN_C:
+          description: Initial campaign targeted at this contact, from the contacts table
           source: Salesforce
         INITIAL_CONTACT_METHOD_C:
-          description: First way we interacted with the Contact
+          description: Initial contact method for this contact, from the contacts table
+          source: Salesforce
+        INITIAL_CONTENT_C:
+          description: Initial content sent to this contact, from the contacts table
+          source: Salesforce
+        INITIAL_MEDIUM_C:
+          description: Initial medium used to contact this individual, from the contacts table
           source: Salesforce
         INITIAL_SOURCE_DETAIL_C:
-          description: More detail on the channel where we got the contact's info from
+          description: Details on the initial source of this contact, from the contacts table
           source: Salesforce
-        MQL_DATE_C:
-          description: Date on which the lead became qualified by marketing
+        JOB_TITLE_CATEGORY_C:
+          description: Category of the contact's position, from the contacts table
           source: Salesforce
-        SALES_ACCEPTED_DATE_C:
-          description: Date on which Sales accepted the lead
+        LEAD_SOURCE:
+          description: Channel where the contact's information came from, from the contacts table
           source: Salesforce
-        ACNT_ID:
-          description: Salesforce account ID
+        MAILING_CITY:
+          description: Contact's mailing city, from the contacts table
           source: Salesforce
-        ACNT_NAME:
-          description: Salesforce account name
+        MAILING_COUNTRY:
+          description: Contact's mailing country, from the contacts table
           source: Salesforce
-        ACNT_ACCOUNT_SOURCE:
-          description: Channel that the account first came from
+        MAILING_POSTAL_CODE:
+          description: Contact's mailing postal code, from the contacts table
           source: Salesforce
-        OPTY_ID:
-          description: Salesforce Opportunity ID
+        MAILING_STATE:
+          description: Contact's mailing state, from the contacts table
           source: Salesforce
-        OPTY_CONTACT_ID:
-          description: Salesforce Contact ID
+        NAME:
+          description: Name of the contact, from the contacts table
           source: Salesforce
-        OPTY_STAGE_NAME:
-          description: The stage of the opportunity
+        NUMBER_OF_EMPLOYEES:
+          description: Number of employees from the account table
           source: Salesforce
-        OPTY_AMOUNT:
-          description: The dollar amount of the opportunity
+        PHONE:
+          description: Contact's Phone, from the contacts table
           source: Salesforce
-        QUALIFIED_LEAD:
-          description: Whether the lead is qualified or not
+        REPORTS_TO_ID:
+          description: ID in contacts table of the individual this contact reports to, if available. From the contacts table
+          source: Salesforce
+        TITLE:
+          description: Contact's title, from the contacts table
+          source: Salesforce
+        USE_CASE_C:
+          description: Use case of interest to the opportunity, from the opportunities table
+          source: Salesforce
+        WEBSITE:
+          description: Company website from the account table
+          source: Salesforce
+    leads_to_be_scored:
+      metrics:
+        ACCOUNT_ID:
+          description: Salesforce Account ID
+          source: Salesforce
+        ASSISTANT_NAME:
+          description: Contact's assistant's name from the contacts table
+          source: Salesforce
+        ASSISTANT_PHONE:
+          description: Contact's assistant's phone from the contacts table
+          source: Salesforce
+        BILLING_COUNTRY:
+          description: Billing country from the accounts table
+          source: Salesforce
+        BILLING_POSTAL_CODE:
+          description: Billing postal code from the accounts table
+          source: Salesforce
+        BILLING_STATE:
+          description: Billing state from the accounts table
+          source: Salesforce
+        COMPANY_NAME:
+          description: Company name from the account table
+          source: Salesforce
+        CREATED_DATE:
+          description: Date when the contact was created from the contacts table
+          source: Salesforce
+        DEPARTMENT:
+          description: Contact's department from the contact table
+          source: Salesforce
+        DESCRIPTION:
+          description: Contact's description from the contacts table
+          source: Salesforce
+        EMAIL:
+          description: Contact's email from the contacts table
+          source: Salesforce
+        ID:
+          description: Contact ID from the contacts table
+          source: Salesforce
+        INDUSTRY:
+          description: Industry from the accounts table
+          source: Salesforce
+        INITIAL_CAMPAIGN_C:
+          description: Initial campaign targeted at this contact, from the contacts table
+          source: Salesforce
+        INITIAL_CONTACT_METHOD_C:
+          description: Initial contact method for this contact, from the contacts table
+          source: Salesforce
+        INITIAL_CONTENT_C:
+          description: Initial content sent to this contact, from the contacts table
+          source: Salesforce
+        INITIAL_MEDIUM_C:
+          description: Initial medium used to contact this individual, from the contacts table
+          source: Salesforce
+        INITIAL_SOURCE_DETAIL_C:
+          description: Details on the initial source of this contact, from the contacts table
+          source: Salesforce
+        JOB_TITLE_CATEGORY_C:
+          description: Category of the contact's position, from the contacts table
+          source: Salesforce
+        LEAD_SOURCE:
+          description: Channel where the contact's information came from, from the contacts table
+          source: Salesforce
+        MAILING_CITY:
+          description: Contact's mailing city, from the contacts table
+          source: Salesforce
+        MAILING_COUNTRY:
+          description: Contact's mailing country, from the contacts table
+          source: Salesforce
+        MAILING_POSTAL_CODE:
+          description: Contact's mailing postal code, from the contacts table
+          source: Salesforce
+        MAILING_STATE:
+          description: Contact's mailing state, from the contacts table
+          source: Salesforce
+        NAME:
+          description: Name of the contact, from the contacts table
+          source: Salesforce
+        NUMBER_OF_EMPLOYEES:
+          description: Number of employees from the account table
+          source: Salesforce
+        PHONE:
+          description: Contact's Phone, from the contacts table
+          source: Salesforce
+        REPORTS_TO_ID:
+          description: ID in contacts table of the individual this contact reports to, if available. From the contacts table
+          source: Salesforce
+        TITLE:
+          description: Contact's title, from the contacts table
+          source: Salesforce
+        WEBSITE:
+          description: Company website from the account table
           source: Salesforce

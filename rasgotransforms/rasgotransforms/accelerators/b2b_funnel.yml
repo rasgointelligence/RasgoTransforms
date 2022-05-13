@@ -1,294 +1,409 @@
-name: "Business to Business Sales Funnel"
-description: "The B2B sales funnel tracks leads through a traditional sales funnel: from awareness via marketing at top of funnel, to marketing qualified lead, to sales qualified lead, and finally to closed as a won opportunity. The data sources necessary to generate this accelerator are Google Analytics, Hubspot, and Salesforce."
+name: Business to Business Sales Funnel
+description: A sales funnel represents the journey a prospective customer takes on their way to a purchase. In business-to-business sales, the customer is the business or organization that will ultimately purchase the product or service, and engage in a business relationship with the vendor.
 arguments:
-  contact_table:
-    type: dataset
-    description: Salesforce contacts table
   opportunity_table:
-    type: dataset
-    description: Salesforce opportunities table
-  account_table:
-    type: dataset
-    description: Salesforce accounts table
+    description: Salesforce opportunity table
+    argument_type: dataset
   lead_table:
-    type: dataset
-    description: Salesforce leads table
-  daily_traffic_table:
-    type: dataset
-    description: Google Analytics daily traffic overview table
-  email_event_table:
-    type: dataset
-    description: Hubspot email event table
+    description: Salesforce lead table
+    argument_type: dataset
 operations:
-  salesforce_contacts_clean:
-    transform_name: drop_columns
-    transform_arguments:
-      include_cols:
-        - 'CREATED_DATE'
-        - 'EMAIL'
-        - 'ID'
-      source_table: "{{ contact_table }}"
-    description: Keep the columns from contacts we'll need later
-  salesforce_accounts_clean:
-    transform_name: drop_columns
-    transform_arguments:
-      include_cols:
-        - 'ACCOUNT_SOURCE'
-        - 'CREATED_DATE'
-        - 'ANNUAL_REVENUE'
-        - 'ID'
-      source_table: "{{ account_table }}"
-    description: Keep the accounts from contacts we'll need later
-  salesforce_opportunities_clean:
-    transform_name: drop_columns
-    transform_arguments:
-      include_cols:
-        - 'ACCOUNT_ID'
-        - 'CLOSE_DATE'
-        - 'CONTACT_ID'
-        - 'CREATED_DATE'
-        - 'TYPE'
-        - 'AMOUNT'
-        - 'ID'
-        - 'STAGE_NAME'
-      source_table: "{{ opportunity_table }}"
-    description: Keep the columns from opportunities we'll need later
-  salesforce_leads_clean:
-    transform_name: drop_columns
-    transform_arguments:
-      include_cols:
-        - 'CONVERTED_OPPORTUNITY_ID'
-        - 'CREATED_DATE'
-        - 'LEAD_SOURCE'
-        - 'ANNUAL_REVENUE'
-        - 'ID'
-      source_table: "{{ lead_table }}"
-    description: Keep the columns from leads we'll need later
-  google_analytics_datespine:
-    transform_name: datespine
-    transform_arguments:
-      date_col: DATE
-      interval_type: DAY
-      source_table: "{{ daily_traffic_table }}"
-    description: Create a datespine for our Google Analytics data to ensure we can fully join date columns from other datasets
-  hubspot_datespine:
-    transform_name: datespine
-    transform_arguments:
-      date_col: CREATED
-      interval_type: DAY
-      source_table: "{{ email_event_table }}"
-    description: Create a datespine for our Hubspot data to ensure we can fully join date columns from other datasets
-  google_analytics_datespine_aggregated_metrics:
-    transform_name: aggregate
-    transform_arguments:
-      group_by:
-        - 'DATE_SPINE_START'
-        - 'DATE_SPINE_END'
-      aggregations:
-        'BOUNCES':
-          - 'SUM'
-        'IMPRESSIONS':
-          - 'SUM'
-        'NEW_USERS':
-          - 'SUM'
-        'ORGANIC_SEARCHES':
-          - 'SUM'
-        'PAGEVIEWS':
-          - 'SUM'
-        'PAGEVIEWS_PER_SESSION':
-          - 'AVG'
-        'SESSIONS':
-          - 'SUM'
-        'USERS':
-          - 'SUM'
-      source_table: "{{ google_analytics_datespine }}"
-    description: Aggregate our Google Analytics data to a daily level
-  hubspot_daily_emails_sent:
-    transform_name: aggregate
-    transform_arguments:
-      group_by:
-        - 'CREATED_SPINE_START'
-        - 'CREATED_SPINE_END'
-      aggregations:
-        'ID':
-          - 'COUNT DISTINCT'
-      source_table: "{{ hubspot_datespine }}"
-    description: Aggregate our Hubspot data to a daily level
-  google_hubspot_daily:
-    transform_name: join
-    transform_arguments:
-      join_table: "{{ hubspot_daily_emails_sent }}"
-      join_type: "LEFT"
-      join_columns:
-        "DATE_SPINE_START": "CREATED_SPINE_START"
-        "DATE_SPINE_END": "CREATED_SPINE_END"
-      join_prefix: "HS_"
-      source_table: "{{ google_analytics_datespine_aggregated_metrics }}"
-    description: Join daily Hubspot metrics to daily Google Analytics metrics
-  salesforce_opportunities_closed_won:
+  drop_deleted_from_opportunities:
+    description: Drop the data that is marked as deleted in Salesforce
     transform_name: filter
     transform_arguments:
       filter_statements:
-        - "STAGE_NAME = 'Closed Won'"
-      source_table: "{{ salesforce_opportunities_clean }}"
-    description: Filter Salesforce data to only opportunities that are closed and won
-  salesforce_opportunities_closed_won_aggregated:
-    transform_name: aggregate
+      - IS_DELETED = 'false'
+      source_table: '{{opportunity_table}}'
+  drop_deleted_from_leads:
+    description: Drop the data that is marked as deleted in Salesforce
+    transform_name: filter
     transform_arguments:
-      group_by:
-        - 'CLOSE_DATE'
-      aggregations:
-        "ID":
-          - 'COUNT DISTINCT'
-        "AMOUNT":
-          - "SUM"
-      source_table: "{{ salesforce_opportunities_closed_won }}"
-    description: Keep only the date and closed won 'AMOUNT'
-  salesforce_leads_opportunities:
-    transform_name: join
-    transform_arguments:
-      join_table: "{{ salesforce_opportunities_clean }}"
-      join_type: "LEFT"
-      join_columns:
-        "CONVERTED_OPPORTUNITY_ID": "ID"
-      source_table: "{{ salesforce_leads_clean }}"
-    description: Join Salesforce opportunity data to lead data
-  salesforce_leads_opportunities_accounts:
-    transform_name: join
-    transform_arguments:
-      join_table: "{{ salesforce_accounts_clean }}"
-      join_type: "LEFT"
-      join_columns:
-        "ACCOUNT_ID": "ID"
-      source_table: "{{ salesforce_leads_opportunities }}"
-    description: Join Salesforce account data to lead and opportunity data
-  salesforce_leads_complete_data:
-    transform_name: join
-    transform_arguments:
-      join_table: "{{ salesforce_contacts_clean }}"
-      join_type: "LEFT"
-      join_columns:
-        "CONTACT_ID": "ID"
-      source_table: "{{ salesforce_leads_opportunities_accounts }}"
-    description: Complete Salesforce lead data by joining in accounts_contacts
-  salesforce_datespine:
-    transform_name: datespine
-    transform_arguments:
-      date_col: "CREATED_DATE"
-      interval_type: DAY
-      source_table: "{{ salesforce_leads_complete_data }}"
-    description: Create a datespine for our Salesforce data to ensure we can fully join date columns from other datasets
-  salesforce_aggregate:
-    transform_name: aggregate
-    transform_arguments:
-      group_by:
-        - "CREATED_DATE_SPINE_START"
-        - "CREATED_DATE_SPINE_END"
-      aggregations:
-        'AMOUNT':
-          - 'SUM'
-        'ID':
-          - 'COUNT'
-          - 'COUNT DISTINCT'
-      source_table: "{{ salesforce_datespine }}"
-    description: Aggregate our Salesforce metrics at a daily level
-  salesforce_aggregated_closed_won_value:
-    transform_name: join
-    transform_arguments:
-      join_table: "{{ salesforce_opportunities_closed_won_aggregated }}"
-      join_type: "LEFT"
-      join_columns:
-        "CREATED_DATE_SPINE_START": "CLOSE_DATE"
-      join_prefix: "CLOSED_WON_"
-      source_table: "{{ salesforce_aggregate }}"
-    description: Join closed won opportunity data onto our aggregated daily Salesforce metrics
-  google_hubspot_salesforce_closed_won_daily:
-    transform_name: join
-    transform_arguments:
-      join_table: "{{ salesforce_aggregated_closed_won_value }}"
-      join_type: "LEFT"
-      join_columns:
-        "DATE_SPINE_START": "CREATED_DATE_SPINE_START"
-        "DATE_SPINE_END": "CREATED_DATE_SPINE_END"
-      source_table: "{{ google_hubspot_daily }}"
-    description: Join Salesforce metric data onto our Google Analytics and Hubspot data
-  needed_columns:
+      filter_statements:
+      - IS_DELETED = 'false'
+      source_table: '{{lead_table}}'
+  get_opportunity_dates:
+    description: Keep only the columns we need to define the stages of an opportunity. These are the dates and the is_won flag.
     transform_name: drop_columns
     transform_arguments:
-      exclude_cols:
-        - "HS__CREATED_SPINE_END"
-        - "HS_CREATED_SPINE_START"
-        - "DATE_SPINE_END"
-        - "CLOSED_WON__CLOSE_DATE"
-        - "CREATED_DATE_SPINE_END"
-        - "CREATED_DATE_SPINE_START"
-      source_table: "{{ google_hubspot_salesforce_closed_won_daily }}"
-    description: Drop columns contained in multiple datasets
-  imputed_values:
-    transform_name: impute
+      include_cols:
+      - CREATED_DATE
+      - INVESTIGATE_DATE_C
+      - VALIDATION_DATE_C
+      - CLOSE_DATE
+      - IS_WON
+      source_table: '{{drop_deleted_from_opportunities}}'
+  get_lead_dates:
+    description: Keep only the dates that define when MQL and SAL occurred from the leads table.
+    transform_name: drop_columns
     transform_arguments:
-      imputations:
-        "BOUNCES_SUM": 0
-        "HS__ID_COUNTDISTINCT": 0
-        "IMPRESSIONS_SUM": 0
-        "NEW_USERS_SUM": 0
-        "ORGANIC_SEARCHES_SUM": 0
-        "PAGEVIEWS_PER_SESSION_AVG": 0
-        "PAGEVIEWS_SUM": 0
-        "SESSIONS_SUM": 0
-        "AMOUNT_SUM": 0
-        "CLOSED_WON__AMOUNT_SUM": 0
-        "CLOSED_WON__ID_COUNTDISTINCT": 0
-        "ID_COUNT": 0
-        "ID_COUNTDISTINCT": 0
-        "USERS_SUM": 0
-      source_table: "{{ needed_columns }}"
-    description: Impute 0 for all of the nulls in our numeric metrics
-  funnel_with_google_analytics_hubspot_salesforce:
+      include_cols:
+      - MARKETING_QUALIFIED_DATE_C
+      - SALES_ACCEPTED_DATE_C
+      source_table: '{{drop_deleted_from_leads}}'
+  generate_mql:
+    description: Calculate the number of MQLs for each day.
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - MARKETING_QUALIFIED_DATE_C
+      aggregations:
+        MARKETING_QUALIFIED_DATE_C:
+        - COUNT
+      source_table: '{{get_lead_dates}}'
+  rename_mql:
+    description: Rename the columns to better represent the MQLs
     transform_name: rename
     transform_arguments:
       renames:
-        "BOUNCES_SUM": "TOTAL_BOUNCES"
-        "DATE_SPINE_START": "DATE"
-        "HS__ID_COUNTDISTINCT": "TOTAL_EMAILS_SENT"
-        "IMPRESSIONS_SUM": "TOTAL_IMPRESSIONS"
-        "NEW_USERS_SUM": "TOTAL_NEW_WEBTRAFFIC_USERS"
-        "ORGANIC_SEARCHES_SUM": "TOTAL_ORGANIC_SEARCES"
-        "PAGEVIEWS_PER_SESSION_AVG": "AVERAGE_PAGEVIEWS_PER_SESSION"
-        "PAGEVIEWS_SUM": "TOTAL_PAGEVIEWS"
-        "SESSIONS_SUM": "TOTAL_SESSIONS"
-        "AMOUNT_SUM": "TOTAL_OPPORTUNITIES_CREATED_AMOUNT"
-        "CLOSED_WON__AMOUNT_SUM": "TOTAL_OPPORTUNITIES_CLOSED_WON_AMOUNT"
-        "CLOSED_WON__ID_COUNTDISTINCT": "TOTAL_NUMBER_OPPORTUNITIES_CLOSED_WON"
-        "ID_COUNT": "TOTAL_LEADS_CREATED"
-        "ID_COUNTDISTINCT": "TOTAL_DISTINCT_LEADS_CREATED"
-        "USERS_SUM": "TOTAL_WEBTRAFFIC_USERS"
-      source_table: "{{ imputed_values }}"
-    description: Rename the metrics for final dataset creation
-  leads_over_time:
-    operation_type: INSIGHT
+        MARKETING_QUALIFIED_DATE_C: DATE
+        MARKETING_QUALIFIED_DATE_C_COUNT: MQL
+      source_table: '{{generate_mql}}'
+  generate_sal:
+    description: Calculate the number of SALs for each day.
+    transform_name: aggregate
     transform_arguments:
-      axis: "DATE"
-      metrics:
-        TOTAL_DISTINCT_LEADS_CREATED:
-          - SUM
-      source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
-    transform_name: line_chart
-  opportunities_won_over_time:
-    operation_type: INSIGHT
+      group_by:
+      - SALES_ACCEPTED_DATE_C
+      aggregations:
+        SALES_ACCEPTED_DATE_C:
+        - COUNT
+      source_table: '{{get_lead_dates}}'
+  rename_sal:
+    description: Rename the columns to better represent the SALs
+    transform_name: rename
     transform_arguments:
-      axis: DATE
-      metrics:
-        TOTAL_NUMBER_OPPORTUNITIES_CLOSED_WON:
-          - SUM
-      source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
-    transform_name: line_chart
-  value_of_opportunities_won_over_time:
-    operation_type: INSIGHT
+      renames:
+        SALES_ACCEPTED_DATE_C: DATE
+        SALES_ACCEPTED_DATE_C_COUNT: SAL
+      source_table: '{{generate_sal}}'
+  generate_sql:
+    description: Calculate the number of SQLs for each day.
+    transform_name: aggregate
     transform_arguments:
-      axis: DATE
-      metrics:
-        TOTAL_OPPORTUNITIES_CLOSED_WON_AMOUNT:
-          - SUM
-      source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
+      group_by:
+      - CREATED_DATE
+      aggregations:
+        CREATED_DATE:
+        - COUNT
+      source_table: '{{get_opportunity_dates}}'
+  create_sqo:
+    description: Calculate the number of SQOs for each day.
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - INVESTIGATE_DATE_C
+      aggregations:
+        INVESTIGATE_DATE_C:
+        - COUNT
+      source_table: '{{get_opportunity_dates}}'
+  rename_sqo:
+    description: Rename the columns to better represent the SQOs
+    transform_name: rename
+    transform_arguments:
+      renames:
+        INVESTIGATE_DATE_C: DATE
+        INVESTIGATE_DATE_C_COUNT: SQO
+      source_table: '{{create_sqo}}'
+  create_validate:
+    description: Calculate the number of opportunities that entered the validation stage for each day.
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - VALIDATION_DATE_C
+      aggregations:
+        VALIDATION_DATE_C:
+        - COUNT
+      source_table: '{{get_opportunity_dates}}'
+  rename_validate:
+    description: Rename the columns to better represent the opportunities in validation stage
+    transform_name: rename
+    transform_arguments:
+      renames:
+        VALIDATION_DATE_C: DATE
+        VALIDATION_DATE_C_COUNT: Validate
+      source_table: '{{create_validate}}'
+  closed_won:
+    description: Keep only those opportunities that purchased
+    transform_name: filter
+    transform_arguments:
+      filter_statements:
+      - IS_WON = 'true'
+      source_table: '{{get_opportunity_dates}}'
+  create_closed_won:
+    description: Calculate the number of closed won for each day.
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - CLOSE_DATE
+      aggregations:
+        IS_WON:
+        - COUNT
+      source_table: '{{closed_won}}'
+  rename_closed_won:
+    description: Rename the columns to better represent the closed wons
+    transform_name: rename
+    transform_arguments:
+      renames:
+        CLOSE_DATE: DATE
+        IS_WON_COUNT: CLOSED_WON
+      source_table: '{{create_closed_won}}'
+  convert_sql_date:
+    description: Convert created date to date from timestamp
+    transform_name: math
+    transform_arguments:
+      math_ops:
+      - TO_DATE(CREATED_DATE)
+      names:
+      - CREATED_DATE_CONVERT
+      source_table: '{{generate_sql}}'
+  drop_sql_timestamp:
+    description: drop the timestamp, keeping the date
+    transform_name: drop_columns
+    transform_arguments:
+      exclude_cols:
+      - CREATED_DATE
+      source_table: '{{convert_sql_date}}'
+  rename_sql:
+    description: Rename the columns to better represent the SQLs
+    transform_name: rename
+    transform_arguments:
+      renames:
+        CREATED_DATE_CONVERT: DATE
+        CREATED_DATE_COUNT: SQL
+      source_table: '{{drop_sql_timestamp}}'
+  all_dates:
+    description: Combine all the metric tables to get a table contain all dates where one of these metrics were measured
+    transform_name: multi_union
+    transform_arguments:
+      union_tables:
+      - '{{rename_sqo}}'
+      - '{{rename_validate}}'
+      - '{{rename_closed_won}}'
+      - '{{rename_mql}}'
+      - '{{rename_sal}}'
+      union_columns:
+      - DATE
+      source_table: '{{rename_sql}}'
+  deduplicate_dates:
+    description: Deduplicate the dates.
+    transform_name: dedupe
+    transform_arguments:
+      natural_key:
+      - DATE
+      order_col:
+      - DATE
+      order_method: ASC
+      source_table: '{{all_dates}}'
+  generate_datespine:
+    description: Generate a datespine so we have a record for every date between the first and last record in our funnel metrics.
+    transform_name: datespine
+    transform_arguments:
+      date_col: DATE
+      interval_type: day
+      source_table: '{{deduplicate_dates}}'
+  rename_dates:
+    description: Rename date fields
+    transform_name: rename
+    transform_arguments:
+      renames:
+        DATE: ORIGINAL_DATE
+      source_table: '{{generate_datespine}}'
+  convert_datespine_to_date:
+    description: Convert the datespine timestamp to a date
+    transform_name: math
+    transform_arguments:
+      math_ops:
+      - TO_DATE(DATE_SPINE_START)
+      names:
+      - DATE
+      source_table: '{{rename_dates}}'
+  keep_only_datespine_date:
+    description: Keep only the date column we need for the metrics table
+    transform_name: drop_columns
+    transform_arguments:
+      include_cols:
+      - DATE
+      source_table: '{{convert_datespine_to_date}}'
+  join_metrics_tables:
+    description: Join all the metrics into a single table
+    transform_name: multi_join
+    transform_arguments:
+      join_tables:
+      - '{{rename_mql}}'
+      - '{{rename_sal}}'
+      - '{{rename_sql}}'
+      - '{{rename_sqo}}'
+      - '{{rename_validate}}'
+      - '{{rename_closed_won}}'
+      join_type: LEFT
+      join_columns:
+      - DATE
+      join_prefixes:
+      - MQL
+      - SAL
+      - SQL
+      - SQO
+      - VAL
+      - CW
+      source_table: '{{keep_only_datespine_date}}'
+  drop_duplicate_date_columns:
+    description: Drop all date columsn from metrics tables, leaving only one date column
+    transform_name: drop_columns
+    transform_arguments:
+      exclude_cols:
+      - CW_DATE
+      - MQL_DATE
+      - SAL_DATE
+      - SQL_DATE
+      - SQO_DATE
+      - VAL_DATE
+      source_table: '{{join_metrics_tables}}'
+  rename_metrics:
+    description: Rename the metric columns to fix the naming from the join.
+    transform_name: rename
+    transform_arguments:
+      renames:
+        CW_CLOSED_WON: CLOSED_WON
+        MQL_MQL: MQL
+        SAL_SAL: SAL
+        SQL_SQL: SQL
+        SQO_SQO: SQO
+        VAL_VALIDATE: VALIDATE
+      source_table: '{{drop_duplicate_date_columns}}'
+  generate_week:
+    description: Convert the date column to a weekly column for aggregation
+    transform_name: datetrunc
+    transform_arguments:
+      dates:
+        DATE: week
+      source_table: '{{rename_metrics}}'
+  generate_month:
+    description: Convert the date column to a monthly column for aggregation
+    transform_name: datetrunc
+    transform_arguments:
+      dates:
+        DATE: month
+      source_table: '{{generate_week}}'
+  generate_quarter:
+    description: Convert the date column to a quarterly column for aggregation
+    transform_name: datetrunc
+    transform_arguments:
+      dates:
+        DATE: quarter
+      source_table: '{{generate_month}}'
+  replace_null_metrics:
+    description: Replace all the null values in metrics with zeros
+    transform_name: impute
+    transform_arguments:
+      imputations:
+        CLOSED_WON: '0'
+        MQL: '0'
+        SAL: '0'
+        SQL: '0'
+        SQO: '0'
+        VALIDATE: '0'
+      source_table: '{{generate_quarter}}'
+  daily_sales_funnel_metrics:
+    description: rename the new date columns and generate our final daily funnel metrics.
+    transform_name: rename
+    transform_arguments:
+      renames:
+        DATE_MONTH: MONTH
+        DATE_QUARTER: QUARTER
+        DATE_WEEK: WEEK
+      source_table: '{{replace_null_metrics}}'
+  weekly_sale_funnel:
+    operation_type: INSIGHT
+    description: Show weekly funnel metrics
     transform_name: line_chart
+    transform_arguments:
+      axis: WEEK
+      metrics:
+        MQL:
+        - SUM
+        SAL:
+        - SUM
+        SQL:
+        - SUM
+        SQO:
+        - SUM
+        VALIDATE:
+        - SUM
+        CLOSED_WON:
+        - SUM
+      source_table: '{{daily_sales_funnel_metrics}}'
+  quarterly_sales_funnel:
+    operation_type: INSIGHT
+    description: Show quarterly funnel metrics
+    transform_name: line_chart
+    transform_arguments:
+      axis: QUARTER
+      metrics:
+        MQL:
+        - SUM
+        SAL:
+        - SUM
+        SQL:
+        - SUM
+        SQO:
+        - SUM
+        VALIDATE:
+        - SUM
+        CLOSED_WON:
+        - SUM
+      source_table: '{{daily_sales_funnel_metrics}}'
+  monthly_sales_funnel:
+    operation_type: INSIGHT
+    description: Show monthly funnel metrics
+    transform_name: line_chart
+    transform_arguments:
+      axis: MONTH
+      metrics:
+        MQL:
+        - SUM
+        SAL:
+        - SUM
+        SQL:
+        - SUM
+        SQO:
+        - SUM
+        VALIDATE:
+        - SUM
+        CLOSED_WON:
+        - SUM
+      source_table: '{{daily_sales_funnel_metrics}}'
+doc:
+  output_tables:
+    daily_sales_funnel_metrics:
+      metrics:
+        DATE:
+          description: Date on which the stage occured
+          source: Salesforce
+        WEEK:
+          description: Week in which the stage occured
+          source: Salesforce
+        MONTH:
+          description: Month in which the stage occured
+          source: Salesforce
+        QUARTER:
+          description: QUARTER in which the stage occured
+          source: Salesforce
+        MQL:
+          description: Number of MQLs recorded on this date
+          source: Salesforce
+        SAL:
+          description: Number of SALs recorded on this date
+          source: Salesforce
+        SQL:
+          description: Number of SQLs recorded on this date
+          source: Salesforce
+        SQO:
+          description: Number of SQOs recorded on this date
+          source: Salesforce
+        VALIDATE:
+          description: Number of opportunities entering validation stage recorded on this date
+          source: Salesforce
+        CLOSED_WON:
+          description: Number of opportunities that closed successfully recorded on this date
+          source: Salesforce
