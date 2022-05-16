@@ -10,6 +10,17 @@
     {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {%- endif -%}
 
+{%- if group_by is defined and group_by -%}
+    {%- set distinct_val_query -%}
+    select distinct {{ group_by }}
+    from {{ source_table }}
+    limit 100
+    {%- endset -%}
+    {%- set results = run_query(distinct_val_query) -%}
+    {%- set distinct_vals = results[results.columns[0]].to_list() -%}
+    {# TODO: if the length of distinct vals is > some threshold, should we error? #}
+{%- endif -%}
+
 {%- if num_buckets is not defined -%}
     {%- set bucket_count = 200 -%}
 {%- else -%}
@@ -46,6 +57,9 @@
     ,WIDTH_BUCKET(COL_A_VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS COL_A_BUCKET
     {%- for col, aggs in metrics.items() %}
     ,{{ col }}
+    {%- for distinct_val in distinct_vals %}
+    ,CASE WHEN {{ group_by }} = '{{ distinct_val }}' THEN {{ col }} END AS {{ cleanse_name(distinct_val) }}_{{ col }}
+    {%- endfor %}
     {%- endfor %}
 
     FROM
@@ -64,6 +78,9 @@
     {%- for col, aggs in metrics.items() %}
         {%- for agg in aggs %}
             ,{{ agg }}({{ col }}) AS {{ agg }}_{{ col }}
+            {%- for distinct_val in distinct_vals %}
+            ,{{ agg }}({{ cleanse_name(distinct_val) }}_{{ col }}) AS {{ cleanse_name(distinct_val) }}_{{ agg }}_{{ col }}
+            {%- endfor -%}
         {%- endfor -%}
     {%- endfor %}
 
