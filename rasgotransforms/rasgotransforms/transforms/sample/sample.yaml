@@ -8,9 +8,9 @@ arguments:
   num_rows:
     type: value
     description: To sample using a probability of selecting each row, your num_rows should be a decimal less than 1. Otherwise, pass an integer value for number of rows to keep.
-  filter_statements:
+  filters:
     type: filter_list
-    description: list of dictionaries representing filters
+    description: Filter logic on one or more columns. Can choose between a simple comparison filter or advanced filter using free text.
     is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)

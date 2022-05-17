@@ -20,11 +20,11 @@ arguments:
     type: value
     description: max number of buckets to create; defaults to 200
     is_optional: true
-  filter_statements:
+  filters:
     type: filter_list
-    description: list of dictionaries representing filters
+    description: Filter logic on one or more columns. Can choose between a simple comparison filter or advanced filter using free text.
     is_optional: true
-  order_direction:
+  x_axis_order:
     type: sort
     description: Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order
     is_optional: true
