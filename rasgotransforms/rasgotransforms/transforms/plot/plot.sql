@@ -75,11 +75,6 @@
 
     FROM BUCKETS
     WHERE {{ x_axis }}_MIN is not NULL
-    {%- if filter_statements is iterable -%}
-        {%- for filter_statement in filter_statements %}
-            AND {{ filter_statement }}
-        {%- endfor -%}
-    {%- endif %}
     GROUP BY 1, 2
     ORDER BY 1
 
