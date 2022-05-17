@@ -80,7 +80,7 @@ operations:
   table:
     operation_type: INSIGHT
     transform_arguments:
-      filter_statements:
+      filters:
         - DATE(CREATED_DATE) > DATEADD('DAY', -7, CURRENT_DATE())
       source_table: "{{leads_target}}"
     transform_name: table

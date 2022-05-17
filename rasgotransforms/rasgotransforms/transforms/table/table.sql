@@ -6,8 +6,8 @@
 
 SELECT *
 FROM {{ source_table }}
-{%- if filter_statements is defined and filter_statements %}
-{% for filter_block in filter_statements %}
+{%- if filters is defined and filters %}
+{% for filter_block in filters %}
 {%- set oloop = loop -%}
 {{ 'WHERE ' if oloop.first else ' AND ' }}
 {%- if filter_block is not mapping -%}

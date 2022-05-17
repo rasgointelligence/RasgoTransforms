@@ -4,10 +4,10 @@
     {%- set sample_amount = num_rows~' ROWS' -%}
 {% endif %}
 
-{% if filter_statements is defined %}
+{% if filters is defined %}
 WITH filtered AS (
     SELECT * FROM {{source_table}}
-    {% for filter_block in filter_statements %}
+    {% for filter_block in filters %}
     {%- set oloop = loop -%}
     {{ 'WHERE ' if oloop.first else ' AND ' }}
     {%- if filter_block is not mapping -%}

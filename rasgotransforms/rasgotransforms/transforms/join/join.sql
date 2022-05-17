@@ -28,8 +28,8 @@ FROM {{ source_table }} as t1
 {%- for t1_join_col, t2_join_col in join_columns.items() %}
 {{ ' AND' if not loop.first else 'ON'}} t1.{{ t1_join_col }} = t2.{{ t2_join_col }}
 {%- endfor -%}
-{%- if filter_statements is defined and filter_statements %}
-{% for filter_block in filter_statements %}
+{%- if filters is defined and filters %}
+{% for filter_block in filters %}
 {%- set oloop = loop -%}
 {{ 'WHERE ' if oloop.first else ' AND ' }}
 {%- if filter_block is not mapping -%}

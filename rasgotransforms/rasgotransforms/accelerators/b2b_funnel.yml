@@ -128,7 +128,7 @@ operations:
   salesforce_opportunities_closed_won:
     transform_name: filter
     transform_arguments:
-      filter_statements:
+      filters:
         - "STAGE_NAME = 'Closed Won'"
       source_table: "{{ salesforce_opportunities_clean }}"
     description: Filter Salesforce data to only opportunities that are closed and won
