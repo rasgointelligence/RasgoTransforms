@@ -115,5 +115,5 @@
         {%- endfor -%}
     {%- endif %}
     GROUP BY {{ x_axis }}
-    {{ "ORDER BY " + x_axis + " " + order_direction if order_direction else '' }}
+    {{ "ORDER BY " + x_axis + " " + x_axis_order if x_axis_order else '' }}
 {%- endif -%}
