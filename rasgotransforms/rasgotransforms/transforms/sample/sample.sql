@@ -10,15 +10,15 @@ WITH filtered AS (
     {% for filter_block in filters %}
     {%- set oloop = loop -%}
     {{ 'WHERE ' if oloop.first else ' AND ' }}
-    {%- if filter_block is not mapping -%}
-    {{ filter_block }}
-    {%- else -%}
-        {%- if filter_block['operator'] == 'CONTAINS' -%}
-    {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+        {%- if filter_block is not mapping -%}
+            {{ filter_block }}
         {%- else -%}
-    {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+            {%- if filter_block['operator'] == 'CONTAINS' -%}
+                {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+            {%- else -%}
+                {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+            {%- endif -%}
         {%- endif -%}
-    {%- endif -%}
     {%- endfor -%}
 
 )
