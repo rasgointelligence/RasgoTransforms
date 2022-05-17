@@ -22,10 +22,10 @@ arguments:
     type: value
     is_optional: true
     description: Prefix all columns in the join_table with a string to differentiate them
-  filters:
-    type: string_list
+  filter_statements:
+    type: filter_list
+    description: list of dictionaries representing filters
     is_optional: true
-    description: List of SQL statements to use in the WHERE clause, to filter the final joined table
 example_code: |
   internet_sales = rasgo.get.dataset(74)
   product = rasgo.get.dataset(75)

@@ -28,6 +28,18 @@ FROM {{ source_table }} as t1
 {%- for t1_join_col, t2_join_col in join_columns.items() %}
 {{ ' AND' if not loop.first else 'ON'}} t1.{{ t1_join_col }} = t2.{{ t2_join_col }}
 {%- endfor -%}
-{%- for filter_statement in filters %}
-{{ 'WHERE ' if loop.first else ' AND ' }} {{ filter_statement }}
+{%- if filter_statements is defined and filter_statements %}
+{% for filter_block in filter_statements %}
+{%- set oloop = loop -%}
+{{ 'WHERE ' if oloop.first else ' AND ' }}
+{%- if filter_block is not mapping -%}
+{{ filter_block }}
+{%- else -%}
+    {%- if filter_block['operator'] == 'CONTAINS' -%}
+{{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+    {%- else -%}
+{{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+    {%- endif -%}
+{%- endif -%}
 {%- endfor -%}
+{%- endif -%}

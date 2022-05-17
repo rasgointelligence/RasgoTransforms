@@ -6,9 +6,9 @@ tags:
 description: Compare categorical values across one or more metrics
 arguments:
   filter_statements:
-    type: string_list
+    type: filter_list
+    description: list of dictionaries representing filters
     is_optional: true
-    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL'
   num_rows:
     type: value
     is_optional: true

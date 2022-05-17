@@ -69,11 +69,21 @@
 
     FROM BUCKETS
     WHERE {{ x_axis }}_MIN is not NULL
-    {%- if filter_statements is iterable -%}
-        {%- for filter_statement in filter_statements %}
-            AND {{ filter_statement }}
-        {%- endfor -%}
-    {%- endif %}
+    {%- if filter_statements is defined and filter_statements %}
+    {% for filter_block in filter_statements %}
+    {%- set oloop = loop -%}
+    {{ ' AND ' }}
+    {%- if filter_block is not mapping -%}
+    {{ filter_block }}
+    {%- else -%}
+        {%- if filter_block['operator'] == 'CONTAINS' -%}
+    {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+        {%- else -%}
+    {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+        {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+    {%- endif -%}
     GROUP BY 1, 2
     ORDER BY 1
 
@@ -89,11 +99,21 @@
         {%- endfor -%}
     {%- endfor %}
     FROM {{ source_table }}
-    {% if filter_statements is iterable -%}
-        {%- for filter_statement in filter_statements %}
-            {{ 'WHERE' if loop.first else 'AND' }} {{ filter_statement }}
-        {%- endfor -%}
-    {%- endif %}
+    {%- if filter_statements is defined and filter_statements %}
+    {% for filter_block in filter_statements %}
+    {%- set oloop = loop -%}
+    {{ 'WHERE ' if oloop.first else ' AND ' }}
+    {%- if filter_block is not mapping -%}
+    {{ filter_block }}
+    {%- else -%}
+        {%- if filter_block['operator'] == 'CONTAINS' -%}
+    {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+        {%- else -%}
+    {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+        {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+    {%- endif -%}
     GROUP BY {{ x_axis }}
     {{ "ORDER BY " + x_axis + " " + order_direction if order_direction else '' }}
 {%- endif -%}

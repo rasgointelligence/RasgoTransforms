@@ -21,11 +21,11 @@ arguments:
     description: max number of buckets to create; defaults to 200
     is_optional: true
   filter_statements:
-    type: string_list
-    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL'
+    type: filter_list
+    description: list of dictionaries representing filters
     is_optional: true
   order_direction:
-    type: string
+    type: sort
     description: Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order
     is_optional: true
 example_code: |

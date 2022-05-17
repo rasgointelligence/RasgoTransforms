@@ -11,9 +11,19 @@ SELECT
   ,COUNT(1) AS REC_CT
 FROM
   (SELECT {{ column }}::float AS COL FROM {{ source_table }}
-  {%- if filter_statements is iterable -%}
-  {%- for filter_statement in filter_statements %}
-  {{ 'WHERE' if loop.first else 'AND' }} {{ filter_statement }}
+  {%- if filter_statements is defined and filter_statements %}
+  {% for filter_block in filter_statements %}
+  {%- set oloop = loop -%}
+  {{ 'WHERE ' if oloop.first else ' AND ' }}
+  {%- if filter_block is not mapping -%}
+  {{ filter_block }}
+  {%- else -%}
+      {%- if filter_block['operator'] == 'CONTAINS' -%}
+  {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+      {%- else -%}
+  {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+      {%- endif -%}
+  {%- endif -%}
   {%- endfor -%}
   {%- endif -%}
   )
