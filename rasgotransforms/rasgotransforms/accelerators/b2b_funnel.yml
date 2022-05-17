@@ -268,27 +268,27 @@ operations:
   leads_over_time:
     operation_type: INSIGHT
     transform_arguments:
-      axis: "DATE"
+      x_axis: "DATE"
       metrics:
         TOTAL_DISTINCT_LEADS_CREATED:
           - SUM
       source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
-    transform_name: line_chart
+    transform_name: plot
   opportunities_won_over_time:
     operation_type: INSIGHT
     transform_arguments:
-      axis: DATE
+      x_axis: DATE
       metrics:
         TOTAL_NUMBER_OPPORTUNITIES_CLOSED_WON:
           - SUM
       source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
-    transform_name: line_chart
+    transform_name: plot
   value_of_opportunities_won_over_time:
     operation_type: INSIGHT
     transform_arguments:
-      axis: DATE
+      x_axis: DATE
       metrics:
         TOTAL_OPPORTUNITIES_CLOSED_WON_AMOUNT:
           - SUM
       source_table: "{{ funnel_with_google_analytics_hubspot_salesforce }}"
-    transform_name: line_chart
+    transform_name: plot
