@@ -22,7 +22,7 @@ arguments:
     type: boolean
     description: If you want to collapse multiple rows of the same string value into a single distinct value, use TRUE. Otherwise, use FALSE.
   order:
-    type: value
+    type: sort
     description: ASC or DESC, to set the alphabetical order of the agg_column when aggregating it
 example_code: |
   product = rasgo.get.dataset(75)

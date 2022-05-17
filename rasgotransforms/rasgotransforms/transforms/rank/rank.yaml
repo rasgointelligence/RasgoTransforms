@@ -15,7 +15,7 @@ arguments:
     description: The column or expression to partition the window by. Accepts <None>.
     is_optional: True
   order:
-    type: value
+    type: sort
     description: Instruction on how to order the rank_column. Accepts <None>, but defaults to ASC.
       ASC = Ascending
       DESC = Descending

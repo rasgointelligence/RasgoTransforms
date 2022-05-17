@@ -12,7 +12,7 @@ arguments:
     type: column_list
     description: Columns by which to order the result set, such that the first result is kept
   order_method:
-    type: value
+    type: sort
     description: Can be "desc" or "asc". Sets the order behavior for the chosen `order_col`.
 example_code: |
   ds = rasgo.get.dataset(id)
