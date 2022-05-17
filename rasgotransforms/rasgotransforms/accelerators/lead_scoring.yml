@@ -80,28 +80,28 @@ operations:
   table:
     operation_type: INSIGHT
     transform_arguments:
-      filter_statements:
+      filters:
         - DATE(CREATED_DATE) > DATEADD('DAY', -7, CURRENT_DATE())
       source_table: "{{leads_target}}"
     transform_name: table
   line_chart:
     operation_type: INSIGHT
     transform_arguments:
-      axis: CREATED_DATE
+      x_axis: CREATED_DATE
       metrics:
         ID:
           - COUNT
       source_table: "{{leads_target}}"
-    transform_name: line_chart
+    transform_name: plot
   bar_chart:
     operation_type: INSIGHT
     transform_arguments:
-      dimension: LEAD_SOURCE
+      x_axis: LEAD_SOURCE
       metrics:
         ID:
           - COUNT
       source_table: "{{leads_target}}"
-    transform_name: bar_chart
+    transform_name: plot
 doc:
   output_tables:
     leads_target:

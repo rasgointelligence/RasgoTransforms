@@ -6,10 +6,10 @@ Compare categorical values across one or more metrics
 
 ## Parameters
 
-|       Name        |    Type     |                                  Description                                   | Is Optional |
-| ----------------- | ----------- | ------------------------------------------------------------------------------ | ----------- |
-| filter_statements | string_list | List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL' | True        |
-| num_rows          | value       | number of rows to return; defaults to 10                                       | True        |
+|   Name   |    Type     |                                                      Description                                                       | Is Optional |
+| -------- | ----------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- |
+| filters  | filter_list | Filter logic on one or more columns. Can choose between a simple comparison filter or advanced filter using free text. | True        |
+| num_rows | value       | number of rows to return; defaults to 10                                                                               | True        |
 
 
 ## Example

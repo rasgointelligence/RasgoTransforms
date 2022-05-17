@@ -54,45 +54,45 @@ operations:
       source_table: '{{additional_metrics}}'
   total_new_users_by_channel:
     operation_type: INSIGHT
-    transform_name: bar_chart
+    transform_name: plot
     transform_arguments:
-      dimension: CHANNEL_GROUPING
+      x_axis: CHANNEL_GROUPING
       metrics:
         "NEW_USERS_SUM":
           - SUM
       source_table: '{{ aggregate_metrics_by_channel }}'
   conversion_rate_by_channel:
     operation_type: INSIGHT
-    transform_name: bar_chart
+    transform_name: plot
     transform_arguments:
-      dimension: CHANNEL_GROUPING
+      x_axis: CHANNEL_GROUPING
       metrics:
         "GOAL_CONVERSION_RATE_ALL_AVG":
           - AVG
       source_table: '{{ aggregate_metrics_by_channel }}'
   session_duration_by_channel:
     operation_type: INSIGHT
-    transform_name: bar_chart
+    transform_name: plot
     transform_arguments:
-      dimension: CHANNEL_GROUPING
+      x_axis: CHANNEL_GROUPING
       metrics:
         "AVG_SESSION_DURATION_AVG":
           - AVG
       source_table: '{{ aggregate_metrics_by_channel }}'
   bounce_rate_by_channel:
     operation_type: INSIGHT
-    transform_name: bar_chart
+    transform_name: plot
     transform_arguments:
-      dimension: CHANNEL_GROUPING
+      x_axis: CHANNEL_GROUPING
       metrics:
         "BOUNCE_RATE_AVG":
           - AVG
       source_table: '{{ aggregate_metrics_by_channel }}'
   metrics_over_time:
     operation_type: INSIGHT
-    transform_name: line_chart
+    transform_name: plot
     transform_arguments:
-      dimension: DATE
+      x_axis: DATE
       metrics:
         "AVG_SESSION_DURATION":
           - AVG
