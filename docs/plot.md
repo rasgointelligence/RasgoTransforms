@@ -11,8 +11,8 @@ Visualize a dataset flexibly, depending on axes and metrics chosen
 | x_axis            | column          | X-axis by which to view your data. Can be categorical, datetime, or numeric. If categorical, will output a bar chart. If datetime or numerical, will result in a line chart. |             |
 | metrics           | column_agg_list | numeric, quantitative values that you can measure                                                                                                                            |             |
 | num_buckets       | value           | max number of buckets to create; defaults to 200                                                                                                                             | True        |
-| filter_statements | string_list     | List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL'                                                                                               | True        |
-| order_direction   | string          | Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order                                                      | True        |
+| filter_statements | filter_list     | list of dictionaries representing filters                                                                                                                                    | True        |
+| order_direction   | sort            | Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order                                                      | True        |
 
 
 ## Example

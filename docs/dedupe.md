@@ -10,7 +10,7 @@ Deduplicate a table based on a passed-in composite key. Once an order column and
 | ------------ | ----------- | ---------------------------------------------------------------------------- | ----------- |
 | natural_key  | column_list | Columns forming the grain at which to remove duplicates                      |             |
 | order_col    | column_list | Columns by which to order the result set, such that the first result is kept |             |
-| order_method | value       | Can be "desc" or "asc". Sets the order behavior for the chosen `order_col`.  |             |
+| order_method | sort        | Can be "desc" or "asc". Sets the order behavior for the chosen `order_col`.  |             |
 
 
 ## Example

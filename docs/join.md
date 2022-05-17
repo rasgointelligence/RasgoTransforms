@@ -10,13 +10,13 @@ If you don't pass a join_prefix, columns that share the same name in both tables
 
 ## Parameters
 
-|     Name     |    Type     |                                                  Description                                                   | Is Optional |
-| ------------ | ----------- | -------------------------------------------------------------------------------------------------------------- | ----------- |
-| join_table   | table       | Dataset object to join with the source dataset.                                                                |             |
-| join_type    | join_type   | LEFT, RIGHT, or INNER                                                                                          |             |
-| join_columns | join_dict   | Columns to use for the join. Keys are columns in the source_table and values are on columns in the join_table. |             |
-| join_prefix  | value       | Prefix all columns in the join_table with a string to differentiate them                                       | True        |
-| filters      | string_list | List of SQL statements to use in the WHERE clause, to filter the final joined table                            | True        |
+|       Name        |    Type     |                                                  Description                                                   | Is Optional |
+| ----------------- | ----------- | -------------------------------------------------------------------------------------------------------------- | ----------- |
+| join_table        | table       | Dataset object to join with the source dataset.                                                                |             |
+| join_type         | join_type   | LEFT, RIGHT, or INNER                                                                                          |             |
+| join_columns      | join_dict   | Columns to use for the join. Keys are columns in the source_table and values are on columns in the join_table. |             |
+| join_prefix       | value       | Prefix all columns in the join_table with a string to differentiate them                                       | True        |
+| filter_statements | filter_list | list of dictionaries representing filters                                                                      | True        |
 
 
 ## Example
