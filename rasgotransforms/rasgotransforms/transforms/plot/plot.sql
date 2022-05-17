@@ -50,6 +50,12 @@
 
     FROM
         {{ source_table }}
+        {% if filter_statements is iterable -%}
+            {%- for filter_statement in filter_statements %}
+        {{ 'WHERE' if loop.first else 'AND' }} {{ filter_statement }}
+            {%- endfor -%}
+        {%- endif %}
+
         CROSS JOIN EDGES
     )
     -- Run final aggregates on the buckets
