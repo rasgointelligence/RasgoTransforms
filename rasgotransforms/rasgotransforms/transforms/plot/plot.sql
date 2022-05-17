@@ -10,16 +10,11 @@
     {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {%- endif -%}
 
-{%- if group_by is defined and group_by -%}
-    {%- set distinct_val_query -%}
-    select distinct {{ group_by }}
-    from {{ source_table }}
-    limit 100
-    {%- endset -%}
-    {%- set results = run_query(distinct_val_query) -%}
-    {%- set distinct_vals = results[results.columns[0]].to_list() -%}
-    {# TODO: if the length of distinct vals is > some threshold, should we error? #}
-{%- endif -%}
+{% set row_count_query %}
+select count(*) from {{ source_table }})
+{% endset %}
+{% set row_count_query_results = run_query(row_count_query) %}
+{%- set row_count = row_count_query_results[row_count_query_results.columns[0]][0] -%}
 
 {%- if num_buckets is not defined -%}
     {%- set bucket_count = 200 -%}
@@ -27,7 +22,24 @@
     {%- set bucket_count = num_buckets -%}
 {%- endif -%}
 
--- if the axis is continuous or a date, do a line chart
+{%- if row_count < bucket_count -%}
+    {%- set bucket_count = row_count -%}
+{%- endif -%}
+
+{%- if group_by is defined and group_by -%}
+    {%- set distinct_val_query -%}
+        select distinct {{ group_by }}
+        from {{ source_table }}
+        limit 100
+    {%- endset -%}
+    {%- set results = run_query(distinct_val_query) -%}
+    {%- set distinct_vals = results[results.columns[0]].to_list() -%}
+    {%- if distinct_vals|length > 20-%}
+        {{ raise_exception('The group by column has more than 20 distinct values. Please group by columns with less than 20 distinct values.') }}
+    {%- endif -%}
+{%- endif -%}
+
+{# if the axis is continuous or a date, do a line chart #}
 {% if axis_type in ['date', 'numeric'] -%}
     WITH AXIS_RANGE AS (
     -- Use a user-defined axis column to calculate the min & max of the axis (and buckets on the axis)

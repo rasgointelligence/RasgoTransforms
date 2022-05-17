@@ -30,7 +30,7 @@ arguments:
     is_optional: true
   group_by:
     type: column
-    description: A categorical column by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each disting value in the group by column.
+    description: A categorical column by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each disting value in the group by column. If this column has more than 20 distinct values, the plot will not generate.
     is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
