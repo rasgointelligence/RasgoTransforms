@@ -20,5 +20,5 @@ FROM {{ source_table }}
     {%- endif -%}
 {%- endif -%}
 {%- endfor -%}
-{%- endif -%}
+{%- endif %}
 LIMIT {{ row_count }}
