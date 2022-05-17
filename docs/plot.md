@@ -12,7 +12,7 @@ Visualize a dataset flexibly, depending on axes and metrics chosen
 | metrics      | column_agg_list | numeric, quantitative values that you can measure                                                                                                                            |             |
 | num_buckets  | value           | max number of buckets to create; defaults to 200                                                                                                                             | True        |
 | filters      | filter_list     | Filter logic on one or more columns. Can choose between a simple comparison filter or advanced filter using free text.                                                       | True        |
-| x_axis_order | sort            | Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order                                                      | True        |
+| x_axis_order | value           | Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order                                                      | True        |
 
 
 ## Example
