@@ -56,7 +56,7 @@ operations:
     transform_name: filter
     transform_arguments:
       source_table: "{{ google_analytics_traffic_table }}"
-      filter_statements:
+      filters:
         - "DATE > (CURRENT_DATE - {{ lookback_window }})"
     description: Pull data for the last {{ lookback_window }} days
   lookback_metrics_by_page:

@@ -77,6 +77,21 @@ select count(*) from {{ source_table }})
     FROM
         {{ source_table }}
         CROSS JOIN EDGES
+        {%- if filters is defined and filters %}
+            {% for filter_block in filters %}
+            {%- set oloop = loop -%}
+            {{ 'WHERE ' if oloop.first else ' AND ' }}
+                {%- if filter_block is not mapping -%}
+                    {{ filter_block }}
+                {%- else -%}
+                    {%- if filter_block['operator'] == 'CONTAINS' -%}
+                        {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+                    {%- else -%}
+                        {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+                    {%- endif -%}
+                {%- endif -%}
+            {%- endfor -%}
+        {%- endif -%}
     )
     -- Run final aggregates on the buckets
     SELECT
@@ -98,11 +113,6 @@ select count(*) from {{ source_table }})
 
     FROM BUCKETS
     WHERE {{ x_axis }}_MIN is not NULL
-    {%- if filter_statements is iterable -%}
-        {%- for filter_statement in filter_statements %}
-            AND {{ filter_statement }}
-        {%- endfor -%}
-    {%- endif %}
     GROUP BY 1, 2
     ORDER BY 1
 
@@ -118,11 +128,21 @@ select count(*) from {{ source_table }})
         {%- endfor -%}
     {%- endfor %}
     FROM {{ source_table }}
-    {% if filter_statements is iterable -%}
-        {%- for filter_statement in filter_statements %}
-            {{ 'WHERE' if loop.first else 'AND' }} {{ filter_statement }}
+    {%- if filters is defined and filters %}
+        {% for filter_block in filters %}
+        {%- set oloop = loop -%}
+        {{ 'WHERE ' if oloop.first else ' AND ' }}
+            {%- if filter_block is not mapping -%}
+                {{ filter_block }}
+            {%- else -%}
+                {%- if filter_block['operator'] == 'CONTAINS' -%}
+                    {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+                {%- else -%}
+                    {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+                {%- endif -%}
+            {%- endif -%}
         {%- endfor -%}
     {%- endif %}
     GROUP BY {{ x_axis }}
-    {{ ("ORDER BY " + x_axis + " " + order_direction) if order_direction else '' }}
+    {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
 {%- endif -%}
