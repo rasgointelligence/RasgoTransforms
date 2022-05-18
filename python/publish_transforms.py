@@ -60,21 +60,25 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                 continue
             if (name, dw) not in rasgo_transforms:
                 print(
-                    f"No transform with name '{name}' for {dw.capitalize()} warehouse found in Rasgo. "
+                    f"No transform with name '{name}' for {dw} warehouse found in Rasgo. "
                     f"Creating new '{transform_name}' transform "
                     f"in Rasgo {rasgo_domain.upper()} environment."
                 )
 
-                rasgo.create.transform(
-                    name=transform_name,
-                    source_code=source_code,
-                    arguments=transform_args,
-                    description=transform_description,
-                    tags=transform_tags,
-                    type=transform_type,
-                    context=transform_context,
-                    dw_type=dw,
-                )
+                try:
+                    rasgo.create.transform(
+                        name=transform_name,
+                        source_code=source_code,
+                        arguments=transform_args,
+                        description=transform_description,
+                        tags=transform_tags,
+                        type=transform_type,
+                        context=transform_context,
+                        dw_type=dw,
+                    )
+                except Exception:
+                    print(f"CREATE FAILED for transform {transform_name} and DW {dw}")
+                    raise
 
             # If it does exist in Rasgo, check if anything in the
             # transform has changed. If so soft delete that transform
@@ -95,19 +99,23 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                         f"in Rasgo {rasgo_domain.upper()} environment."
                     )
                     rasgo.delete.transform(curr_transform_in_db.id)
-                    rasgo.create.transform(
-                        name=transform_name,
-                        source_code=source_code,
-                        arguments=transform_args,
-                        description=transform_description,
-                        tags=transform_tags,
-                        type=transform_type,
-                        context=transform_context,
-                        dw_type=dw,
-                    )
+                    try:
+                        rasgo.create.transform(
+                            name=transform_name,
+                            source_code=source_code,
+                            arguments=transform_args,
+                            description=transform_description,
+                            tags=transform_tags,
+                            type=transform_type,
+                            context=transform_context,
+                            dw_type=dw,
+                        )
+                    except Exception:
+                        print(f"VERSION CREATE FAILED for transform {transform_name} and DW {dw}")
+                        raise
                 else:
                     print(
-                        f"No updates found for {dw.capitalize()}'s '{transform_name}' transform "
+                        f"No updates found for {dw}'s '{transform_name}' transform "
                         f"found in Rasgo {rasgo_domain.upper()} environment."
                     )
 
@@ -120,7 +128,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     }
     for (name, dw), transform_id in transforms_to_delete.items():
         print(
-            f"Soft Deleting {dw.capitalize()}'s '{name}' transform with db id {transform_id} "
+            f"Soft Deleting {dw}'s '{name}' transform with db id {transform_id} "
             f"in Rasgo {rasgo_domain.upper()} environment"
         )
         rasgo.delete.transform(transform_id)
