@@ -5,8 +5,11 @@ within this Repo
 Execute this script with PyRasgo in your python Environment
 """
 import argparse
+
 import pyrasgo
+
 import utils
+from constants import COMMUNITY_ORGANIZATION_ID
 
 
 def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
@@ -31,8 +34,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
     # Get all Rasgo Transforms
     rasgo = pyrasgo.connect(rasgo_api_key)
 
-    org = rasgo.get.organization()
-    if org.name != "Community":
+    if rasgo.get.user().organization_id != COMMUNITY_ORGANIZATION_ID:
         raise Exception("You are not using the community organization role")
 
     rasgo_transforms = utils.get_all_rasgo_community_transform_keyed_by_name_and_dw_type(rasgo)
