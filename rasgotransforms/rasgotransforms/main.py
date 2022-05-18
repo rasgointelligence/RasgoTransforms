@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-class Datawarehouse(Enum):
+class DataWarehouse(Enum):
     """
     Supported Data Warehouses
     """
@@ -91,9 +91,9 @@ def serve_rasgo_transform_templates(datawarehouse: str) -> List[TransformTemplat
 
 
 def _check_datawarehouse(input_value: str) -> str:
-    supported_dws = "'" + "', '".join([e.value for e in Datawarehouse]) + "'"
+    supported_dws = "'" + "', '".join([e.value for e in DataWarehouse]) + "'"
     try:
-        Datawarehouse[input_value.upper()]
+        DataWarehouse[input_value.upper()]
     except Exception:
         raise ValueError(f'datawarehouse parameter accepts values: {supported_dws}')
     return input_value.lower()

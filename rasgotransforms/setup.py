@@ -36,7 +36,9 @@ setup(
         'rasgotransforms': [
             'transforms/**/*.yaml',
             'transforms/**/*.sql',
+            'transforms/**/*.py',
             'transforms/**/**/*.sql',
+            'transforms/**/**/*.py'
         ]
     },
     install_requires=requirements,
