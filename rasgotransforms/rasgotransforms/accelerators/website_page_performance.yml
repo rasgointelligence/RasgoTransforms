@@ -40,7 +40,7 @@ operations:
     transform_name: math
     transform_arguments:
       source_table: "{{ metrics_by_page }}"
-      math_ops: 
+      math_ops:
         - "(USERS_AVG * AVG_TIME_ON_PAGE_AVG) - BOUNCE_RATE_MEDIAN"
       names:
         - "CUSTOM_WEBPAGE_METRIC"
@@ -91,7 +91,7 @@ operations:
     transform_name: math
     transform_arguments:
       source_table: "{{ lookback_metrics_by_page }}"
-      math_ops: 
+      math_ops:
         - "(USERS_AVG * AVG_TIME_ON_PAGE_AVG) - BOUNCE_RATE_MEDIAN"
       names:
         - "CUSTOM_WEBPAGE_METRIC"

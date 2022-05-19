@@ -17,6 +17,7 @@ import constants
 #      Utils for Doc and Transform Creation
 # ----------------------------------------------
 
+
 def get_root_dir() -> Path:
     """
     Get and return the root directory absolute path of this git repo
@@ -25,6 +26,8 @@ def get_root_dir() -> Path:
     root_dir_bytes = subprocess.check_output(cmd)
     root_dir_str = root_dir_bytes.decode('utf-8').strip()
     return Path(root_dir_str)
+
+
 DOCS_DIR = get_root_dir() / 'docs'
 TRANSFORMS_ROOT = get_root_dir() / 'rasgotransforms/rasgotransforms'
 
@@ -57,7 +60,6 @@ def override_path_exists(transform_dir_path: Path, transform_name: str, dw_type:
     if transform_override_path.exists():
         return True
     return False
-
 
 
 # ----------------------------------------------
@@ -175,7 +177,6 @@ def get_table_values(fields: List[str], table_dict: Dict[str, any]) -> List[List
     return table_data
 
 
-
 # ----------------------------------------------
 #      Private Helper Funcs for this File
 # ----------------------------------------------
@@ -212,4 +213,3 @@ def _transform_args_have_changed(
 
     # If nothing changed in transform arguments return False
     return False
-
