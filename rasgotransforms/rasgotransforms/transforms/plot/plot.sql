@@ -10,8 +10,8 @@
     {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {%- endif -%}
 
-{% set row_count_query %}
-select count(*) from {{ source_table }})
+{%- set row_count_query %}
+select count(*) from {{ source_table }}
 {% endset %}
 {% set row_count_query_results = run_query(row_count_query) %}
 {%- set row_count = row_count_query_results[row_count_query_results.columns[0]][0] -%}
@@ -22,8 +22,8 @@ select count(*) from {{ source_table }})
     {%- set bucket_count = num_buckets -%}
 {%- endif -%}
 
-{%- if row_count < bucket_count -%}
-    {%- set bucket_count = row_count -%}
+{%- if row_count|int < bucket_count|int -%}
+    {%- set bucket_count = row_count|int -%}
 {%- endif -%}
 
 {%- if group_by is defined and group_by -%}
@@ -40,9 +40,9 @@ select count(*) from {{ source_table }})
 {%- endif -%}
 
 {# if the axis is continuous or a date, do a line chart #}
-{% if axis_type in ['date', 'numeric'] -%}
+{%- if axis_type in ['date', 'numeric'] -%}
     WITH AXIS_RANGE AS (
-    -- Use a user-defined axis column to calculate the min & max of the axis (and buckets on the axis)
+    {# Use a user-defined axis column to calculate the min & max of the axis (and buckets on the axis) #}
     SELECT
         {% if axis_type == 'date' -%}
             MIN(DATE_PART(EPOCH_SECOND, {{ x_axis }}))-1 AS MIN_VAL
@@ -60,8 +60,8 @@ select count(*) from {{ source_table }})
     ),
     BUCKETS AS (
     SELECT
-        -- Assigns a bucket to each value of each column in user's column list
-        -- Row count of result set should match the row count of the raw table
+        {# Assigns a bucket to each value of each column in users column list #}
+        {# Row count of result set should match the row count of the raw table #}
         MIN_VAL
     ,MAX_VAL
     ,BUCKET_SIZE
@@ -93,7 +93,7 @@ select count(*) from {{ source_table }})
             {%- endfor -%}
         {%- endif -%}
     )
-    -- Run final aggregates on the buckets
+    {# Run final aggregates on the buckets #}
     SELECT
     {% if axis_type == 'date' -%}
         (MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE))::DATETIME AS {{ x_axis }}_MIN
@@ -117,32 +117,57 @@ select count(*) from {{ source_table }})
     ORDER BY 1
 
 {%- elif axis_type == 'categorical' -%}
--- if the axis is a categorical dimension, build a bar chart
-    SELECT
-    {{ x_axis }},
+{# if the axis is a categorical dimension, build a bar chart #}
+    {%- if distinct_vals is defined and distinct_vals %}
+        WITH TEMP AS (
+            SELECT
+            {{ x_axis }}
+            {% for col, aggs in metrics.items() %}
+                {% for distinct_val in distinct_vals %}
+                    ,CASE WHEN {{ group_by }} = '{{ distinct_val }}' THEN {{ col }} END AS {{ cleanse_name(distinct_val) }}_{{ col }}
+                {%- endfor %}
+            {%- endfor %}
+            FROM {{ source_table }}
+        )
+        SELECT
+        {{ x_axis }}
+        {% for col, aggs in metrics.items() %}
+            {% for agg in aggs %}
+                {% for distinct_val in distinct_vals %}
+                    ,{{ agg }}({{ cleanse_name(distinct_val) }}_{{ col }}) AS {{ cleanse_name(distinct_val) }}_{{ agg }}_{{ col }}
+                {%- endfor %}
+            {%- endfor %}
+        {%- endfor %}
+        FROM TEMP
+        GROUP BY {{ x_axis }}
+        {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
+    {%- else %}
+        SELECT
+        {{ x_axis }},
 
-    {%- for col, aggs in metrics.items() %}
-        {%- set outer_loop = loop -%}
-        {%- for agg in aggs %}
-            {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
-        {%- endfor -%}
-    {%- endfor %}
-    FROM {{ source_table }}
-    {%- if filters is defined and filters %}
-        {% for filter_block in filters %}
-        {%- set oloop = loop -%}
-        {{ 'WHERE ' if oloop.first else ' AND ' }}
-            {%- if filter_block is not mapping -%}
-                {{ filter_block }}
-            {%- else -%}
-                {%- if filter_block['operator'] == 'CONTAINS' -%}
-                    {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+        {%- for col, aggs in metrics.items() %}
+            {%- set outer_loop = loop -%}
+            {%- for agg in aggs %}
+                {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
+            {%- endfor -%}
+        {%- endfor %}
+        FROM {{ source_table }}
+        {%- if filters is defined and filters %}
+            {% for filter_block in filters %}
+            {%- set oloop = loop -%}
+            {{ 'WHERE ' if oloop.first else ' AND ' }}
+                {%- if filter_block is not mapping -%}
+                    {{ filter_block }}
                 {%- else -%}
-                    {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+                    {%- if filter_block['operator'] == 'CONTAINS' -%}
+                        {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+                    {%- else -%}
+                        {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+                    {%- endif -%}
                 {%- endif -%}
-            {%- endif -%}
-        {%- endfor -%}
-    {%- endif %}
-    GROUP BY {{ x_axis }}
-    {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
+            {%- endfor -%}
+        {%- endif %}
+        GROUP BY {{ x_axis }}
+        {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
+    {% endif %}
 {%- endif -%}
