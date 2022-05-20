@@ -75,9 +75,6 @@ def infer_columns(
         loader.exec_module(module)
         function = module.infer_columns
         output_columns = function(args=transform_args, source_columns=source_columns)
-        cleaned_output_columns = {}
-        for column_name, column_type in output_columns.items():
-            cleaned_output_columns[cleanse_name(column_name)] = get_dtype(column_type)
-        return cleaned_output_columns
+        return {cleanse_name(name): get_dtype(column_type)  for name, column_type in output_columns.items()}
     else:
         return None
