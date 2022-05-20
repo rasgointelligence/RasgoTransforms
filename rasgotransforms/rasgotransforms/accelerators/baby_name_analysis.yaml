@@ -2,144 +2,120 @@ name: Baby Name Analysis Accelerator
 description: Build an introductory dataset using Rasgo accelerators!
 arguments:
   annual_baby_names_table:
-    description: "TODO:"
+    description: "The Rasgo Community baby names dataset"
     argument_type: dataset
   baby_name:
-    description: "TODO: whats your name?"
+    description: "Input your name here!"
     argument_type: value
 operations:
   total_baby_count_by_state:
-    description: Groups rows by the group_by items applying aggregations functions for the resulting group and selected columns
     transform_name: aggregate
     transform_arguments:
       group_by:
-      - STATE
+        - STATE
       aggregations:
         BABYCOUNT:
-        - SUM
-      source_table: '{{source_table}}'
+          - SUM
+      source_table: '{{annual_baby_names_table}}'
   rank_per_year:
-    description: Create a ranking of values in a column.
     transform_name: rank
     transform_arguments:
       rank_columns:
-      - BABYCOUNT
+        - BABYCOUNT
       partition_by:
-      - YEAR
+        - YEAR
       rank_type: percent
       alias: PercentRank
-      source_table: '{{source_table}}'
+      source_table: '{{ annual_baby_names_table }}'
   rank_per_year_per_state:
-    description: Create a ranking of values in a column.
     transform_name: rank
     transform_arguments:
       rank_columns:
-      - BABYCOUNT
+        - BABYCOUNT
       partition_by:
-      - YEAR
-      - STATE
+        - YEAR
+        - STATE
       rank_type: percent
       alias: RankPerYearPerState
       source_table: '{{ rank_per_year }}'
   convert_to_percent:
-    description: Calculate one or more new columns using math functions.
     transform_name: math
     transform_arguments:
       math_ops:
-      - PERCENTRANK * 100
-      - RANKPERYEARPERSTATE * 100
+        - PERCENTRANK * 100
+        - RANKPERYEARPERSTATE * 100
       names:
-      - AnnualRanking
-      - AnnualStateRanking
+        - AnnualRanking
+        - AnnualStateRanking
       source_table: '{{ rank_per_year_per_state }}'
   filter_to_my_name:
-    description: 'Filter the dataset. Supports two types of filters:  1. Comparison filters, which compare the values in a column with a value  2. Advanced filters, which support full SQL strings for custom filtering logic'
     transform_name: filter
     transform_arguments:
       items:
-      - columnName: BABYNAME
-        operator: '='
-        comparisonValue: '{{ baby_name }}'
+        - columnName: BABYNAME
+          operator: '='
+          comparisonValue: "'{{ baby_name }}'"
       source_table: '{{convert_to_percent }}'
   most_popular_state:
-    description: A transform that accepts a custom template to execute. Must use the sql template argument `source_table` to reference the Rasgo dataset which will serve as the base of any SELECT
     transform_name: apply
     transform_arguments:
-      sql: 'Select Top 1 *
-        from {{ source_table }}
-        order by AnnualStateRanking DESC
-        '
-      source_table: '{{filter_to_my_name }}'
+      sql: 'Select Top 1 * from {{ filter_to_my_name }} order by AnnualStateRanking DESC'
+      source_table: '{{ filter_to_my_name }}'
   join:
-    description: Join a dataset with another dataset, by matching on one or more columns between the two tables.If you pass a join_prefix, all column names in the join table will be named "{join_prefix}_{columnname}".If you don't pass a join_prefix, columns that share the same name in both tables will be only have the column from the base table included in the final output.
     transform_name: join
     transform_arguments:
       join_table: '{{total_baby_count_by_state }}'
       join_type: INNER
       join_columns:
         STATE: STATE
-      filters: []
       source_table: '{{ filter_to_my_name }}'
   normalized_babycount_by_state:
-    description: Calculate one or more new columns using math functions.
     transform_name: math
     transform_arguments:
       math_ops:
-      - BABYCOUNT / BABYCOUNT_SUM
+        - BABYCOUNT / BABYCOUNT_SUM
       names:
-      - CountNormalizedByState
+        - CountNormalizedByState
       source_table: '{{ join }}'
   my_name:
-    description: Drop columns by passing either an include_cols list of columns to include or an exclude_cols list of columns to exclude.Passing both include_cols and exclude_cols will result in an error.
     transform_name: drop_columns
     transform_arguments:
       include_cols:
-      - BABYNAME
+        - BABYNAME
       source_table: '{{most_popular_state }}'
   most_popular_state_and_year_combination_for_my_name:
     operation_type: INSIGHT
-    description: Compare categorical values across one or more metrics
     transform_name: table
     transform_arguments:
-      filters: []
       source_table: '{{ most_popular_state }}'
   hi_my_name_is:
     operation_type: INSIGHT
-    description: Compare categorical values across one or more metrics
     transform_name: table
     transform_arguments:
-      filters: []
       source_table: '{{ my_name }}'
-  what_genders_use_my_name?:
+  what_genders_use_my_name:
     operation_type: INSIGHT
-    description: Analyze the hierarchical record count of a series of columns by counting
-      the number of records in each pair of values in hierarchically adjacent columns.
-      The columns fed to this transformation should be categorical lables to be counted.
     transform_name: sankey
     transform_arguments:
       stage:
-      - BABYNAME
-      - GENDER
+        - BABYNAME
+        - GENDER
       source_table: '{{ filter_to_my_name }}'
   which_state_likes_my_name_the_most:
     operation_type: INSIGHT
-    description: Visualize a dataset flexibly, depending on axes and metrics chosen
     transform_name: plot
     transform_arguments:
       x_axis: STATE
       metrics:
         COUNTNORMALIZEDBYSTATE:
-        - SUM
-      filters: []
+          - SUM
       source_table: '{{ normalized_babycount_by_state }}'
   popularity_of_my_name_over_time:
     operation_type: INSIGHT
-    description: Visualize a dataset flexibly, depending on axes and metrics chosen
     transform_name: plot
     transform_arguments:
       x_axis: YEAR
       metrics:
         BABYCOUNT:
-        - SUM
-      filters: []
+          - SUM
       source_table: '{{ filter_to_my_name }}'
