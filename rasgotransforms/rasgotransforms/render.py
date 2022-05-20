@@ -55,7 +55,7 @@ def cleanse_name(symbol: str) -> str:
     symbol = re.sub('[^A-Z0-9_]+', '', symbol)
     # if symbol is empty, at least returns '_'
     # if starts with a decimal prefix with '_'
-    symbol = '_' + symbol if symbol[0].isdecimal() or not symbol else symbol
+    symbol = f'_{symbol}' if not symbol or symbol[0].isdecimal() else symbol
 
     return symbol
 
