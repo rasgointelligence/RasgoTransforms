@@ -1,6 +1,6 @@
 name: Product-Led Growth Funnel
-description: "The product-led growth funnel tracks users through a common Software as a Service (SaaS) funnel: 
-  from awareness via marketing at top of funnel, to free product user, to qualified lead for an enterprise sales motion, 
+description: "The product-led growth funnel tracks users through a common Software as a Service (SaaS) funnel:
+  from awareness via marketing at top of funnel, to free product user, to qualified lead for an enterprise sales motion,
   to closed won. The data sources necessary to generate this accelerator are Google Analytics, Heap, and Salesforce."
 arguments:
   contact_table:
@@ -333,7 +333,7 @@ operations:
   plg_over_time:
     operation_type: INSIGHT
     transform_arguments:
-      axis: DATE
+      x_axis: DATE
       metrics:
         LEADS_CREATED:
           - SUM
@@ -354,4 +354,4 @@ operations:
         BOUNCES:
           - SUM
       source_table: "{{ daily_metrics }}"
-    transform_name: line_chart
+    transform_name: plot
