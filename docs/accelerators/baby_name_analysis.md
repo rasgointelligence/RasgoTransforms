@@ -4,10 +4,10 @@ Build an introductory dataset using Rasgo accelerators!
 
 ## Parameters
 
-|          Name           | Type |      Description       | Is Optional |
-| ----------------------- | ---- | ---------------------- | ----------- |
-| annual_baby_names_table |      | TODO:                  |             |
-| baby_name               |      | TODO: whats your name? |             |
+|          Name           | Type |              Description               | Is Optional |
+| ----------------------- | ---- | -------------------------------------- | ----------- |
+| annual_baby_names_table |      | The Rasgo Community baby names dataset |             |
+| baby_name               |      | Input your name here!                  |             |
 
 
 ## Source Code
