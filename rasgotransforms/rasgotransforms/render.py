@@ -51,10 +51,7 @@ def cleanse_name(symbol: str) -> str:
     delete anything that is not letters, numbers, or underscores
     if first character is a number, add an underscore to the beginning
     """
-    symbol = str(symbol)
-    symbol = symbol.strip()
-    symbol = symbol.replace(' ', '_').replace('-', '_')
-    symbol = symbol.upper()
+    symbol = str(symbol).strip().replace(' ', '_').replace('-', '_').upper()
     symbol = re.sub('[^A-Z0-9_]+', '', symbol)
     # if symbol is empty, at least returns '_'
     # if starts with a decimal prefix with '_'
