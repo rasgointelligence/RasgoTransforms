@@ -38,7 +38,7 @@ setup(
             'transforms/**/*.sql',
             'transforms/**/*.py',
             'transforms/**/**/*.sql',
-            'transforms/**/**/*.py'
+            'transforms/**/**/*.py',
         ]
     },
     install_requires=requirements,

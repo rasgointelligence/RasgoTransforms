@@ -1,7 +1,29 @@
-DATE_PARTS = ['year', 'month', 'day', 'dayofweek', 'dayofweekiso', 'dayofyear',
-              'week', 'weekiso', 'quarter', 'yearofweek', 'yearofweekiso']
-TIME_PARTS = ['hour', 'minute', 'second', 'millisecond', 'nanosecond', 'epoch_second', 'epoch_millisecond',
-              'epoch_microsecond', 'epoch_nanosecond', 'timezone_hour', 'timezone_minute']
+DATE_PARTS = [
+    'year',
+    'month',
+    'day',
+    'dayofweek',
+    'dayofweekiso',
+    'dayofyear',
+    'week',
+    'weekiso',
+    'quarter',
+    'yearofweek',
+    'yearofweekiso',
+]
+TIME_PARTS = [
+    'hour',
+    'minute',
+    'second',
+    'millisecond',
+    'nanosecond',
+    'epoch_second',
+    'epoch_millisecond',
+    'epoch_microsecond',
+    'epoch_nanosecond',
+    'timezone_hour',
+    'timezone_minute',
+]
 
 
 def infer_columns(args, source_columns) -> dict:

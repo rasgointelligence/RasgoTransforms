@@ -2,6 +2,7 @@
 #     'AVG', 'CORR', 'COUNT',
 # ]
 
+
 def infer_columns(args, source_columns) -> dict:
     out_cols = {}
     for col in args['group_by']:

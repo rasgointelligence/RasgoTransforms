@@ -33,7 +33,6 @@ DTYPES = {
     "variant": "variant",
     "object": "object",
     "array": "array",
-
     # Aliases
     "double precision": "double",
     "doubleprecision": "double",

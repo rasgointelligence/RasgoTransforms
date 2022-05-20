@@ -27,8 +27,7 @@ def get_dw_type(dw_type: str) -> Optional[DataWarehouse]:
 def get_path(transform_name: str, dw_type: Optional[DataWarehouse] = None) -> Optional[str]:
     root_dir = os.path.dirname(__file__)
     if dw_type:
-        function_path = Path(root_dir, 'transforms', transform_name, dw_type.value,
-                             f'{transform_name}.py')
+        function_path = Path(root_dir, 'transforms', transform_name, dw_type.value, f'{transform_name}.py')
         if os.path.exists(function_path):
             return str(function_path.absolute())
     function_path = Path(root_dir, 'transforms', transform_name, f'{transform_name}.py')
@@ -65,10 +64,7 @@ def cleanse_name(symbol: str) -> str:
 
 
 def infer_columns(
-        transform_name: str,
-        transform_args: Dict[str, Any],
-        source_columns: Dict[str, str],
-        dw_type: Optional[str] = None
+    transform_name: str, transform_args: Dict[str, Any], source_columns: Dict[str, str], dw_type: Optional[str] = None
 ) -> Optional[Dict[str, str]]:
     dw_type = get_dw_type(dw_type)
     function_path = get_path(transform_name, dw_type)
@@ -81,10 +77,7 @@ def infer_columns(
         module = util.module_from_spec(spec)
         loader.exec_module(module)
         function = module.infer_columns
-        output_columns = function(
-            args=transform_args,
-            source_columns=source_columns
-        )
+        output_columns = function(args=transform_args, source_columns=source_columns)
         cleaned_output_columns = {}
         for column_name, column_type in output_columns.items():
             cleaned_output_columns[cleanse_name(column_name)] = get_dtype(column_type)
