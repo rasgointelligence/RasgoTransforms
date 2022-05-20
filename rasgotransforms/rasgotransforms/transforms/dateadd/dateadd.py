@@ -9,8 +9,10 @@ def infer_columns(args, source_columns) -> dict:
         output_type = source_columns[args['date']]
     else:
         output_type = 'date'
-    if not args['overwrite_columns']:
-        source_columns[f"{args['date']}_add{args['offset']}{args['date_part']}".upper()] = output_type
-    else:
+    if 'overwrite_columns' in args and args['overwrite_columns']:
         source_columns[args['date'].upper()] = output_type
+    elif 'alias' in args and args['alias']:
+        source_columns[args['alias']] = output_type
+    else:
+        source_columns[f"{args['date']}_add{args['offset']}{args['date_part']}".upper()] = output_type
     return source_columns
