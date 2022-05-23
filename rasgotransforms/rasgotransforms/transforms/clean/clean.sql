@@ -1,4 +1,5 @@
-{%- set untouched_cols = get_untouched_columns(source_table, columns.keys()) + ', ' if not drop_columns else '' -%}
+{%- set untouched_cols = get_columns(source_table)|list|reject('in', columns)|join(',')  + ', ' if not drop_columns else "" -%}
+
 {%- set drop_cols = [] -%}
 {%- for column in columns.keys() -%}
     {%- if columns[column].drop -%}
@@ -20,7 +21,7 @@
             {%- set impute = 'avg' if col.impute == 'mean' else col.impute -%}
             {%- set impute_expression = impute + '(' + source_col + ') over ()' -%}
         {%- else -%}
-            {%- set impute_expression = "'" + col.impute + "'" if col.impute is string else col.impute -%}
+            {%- set impute_expression = "'" + col.impute + "'" if col.impute is string else col.impute|string -%}
         {%- endif -%}
         {%- set output = 'coalesce(' + source_col + ', ' + impute_expression + ')' -%}
     {%- endif -%}
