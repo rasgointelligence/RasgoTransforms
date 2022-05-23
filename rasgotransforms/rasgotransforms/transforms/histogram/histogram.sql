@@ -10,7 +10,7 @@ SELECT
   ,COL AS VAL
   ,COUNT(1) AS REC_CT
 FROM
-  (SELECT {{ column }}::float AS COL FROM {{ source_table }}
+  (SELECT CAST({{ column }} AS FLOAT) AS COL FROM {{ source_table }}
   {%- if filters is defined and filters %}
     {% for filter_block in filters %}
         {%- set oloop = loop -%}

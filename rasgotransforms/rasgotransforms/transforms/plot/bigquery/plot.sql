@@ -45,8 +45,8 @@ select count(*) from {{ source_table }}
     {# Use a user-defined axis column to calculate the min & max of the axis (and buckets on the axis) #}
     SELECT
         {% if axis_type == 'date' -%}
-            MIN(DATE_PART(EPOCH_SECOND, {{ x_axis }}))-1 AS MIN_VAL
-            ,MAX(DATE_PART(EPOCH_SECOND, {{ x_axis }}))+1 AS MAX_VAL
+            MIN(UNIX_SECONDS({{ x_axis }}))-1 AS MIN_VAL
+            ,MAX(UNIX_SECONDS({{ x_axis }}))+1 AS MAX_VAL
         {% else %}
             MIN({{ x_axis }})-1 AS MIN_VAL
             ,MAX({{ x_axis }})+1 AS MAX_VAL
@@ -65,7 +65,7 @@ select count(*) from {{ source_table }}
         MIN_VAL
     ,MAX_VAL
     ,BUCKET_SIZE
-    ,{{ "DATE_PART(EPOCH_SECOND, " + x_axis +")" if axis_type == 'date' else x_axis }}::float AS COL_A_VAL
+    ,CAST({{ "UNIX_SECONDS(" + x_axis +")" if axis_type == 'date' else x_axis }} AS FLOAT) AS COL_A_VAL
     ,WIDTH_BUCKET(COL_A_VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS COL_A_BUCKET
     {%- if group_by is defined and group_by %}
         {%- for col, aggs in metrics.items() %}
@@ -101,8 +101,8 @@ select count(*) from {{ source_table }}
     {# Run final aggregates on the buckets #}
     SELECT
     {% if axis_type == 'date' -%}
-        (MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE))::DATETIME AS {{ x_axis }}_MIN
-        ,(MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE))::DATETIME AS {{ x_axis }}_MAX
+        CAST((MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE)) AS DATETIME) AS {{ x_axis }}_MIN
+        ,CAST((MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE)) AS DATETIME) AS {{ x_axis }}_MAX
     {%- else -%}
         MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE) AS {{ x_axis }}_MIN
         ,MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE) AS {{ x_axis }}_MAX
