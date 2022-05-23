@@ -18,7 +18,7 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
   
-  ds2 = ds.impute(
+  ds2 = ds.clean(
       columns={
           'GLD_ADJUSTED_CLOSE': {
               'type': 'FLOAT',
