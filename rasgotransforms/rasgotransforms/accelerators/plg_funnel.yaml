@@ -1,0 +1,572 @@
+name: Product-Led Growth Funnel
+description: The product-led growth funnel tracks users through a common Software as a Service (SaaS) funnel - 
+  from awareness via marketing at top of funnel, to free product user, to qualified lead for an enterprise sales motion,
+  to closed won. The data sources necessary to generate this accelerator are Google Analytics, Heap, and Salesforce.
+arguments:
+  page_traffic:
+    description: Google Analytics daily page traffic table.
+    argument_type: dataset
+  opportunities:
+    description: Salesforce opportunity table
+    argument_type: dataset
+  daily_active_users:
+    description: Heap daily active users table.
+    argument_type: dataset
+  daily_traffic_table:
+    description: Google Analytics daily traffic overview table
+    argument_type: dataset
+operations:
+  docswebtraffic:
+    description: Keep only documentation traffic
+    transform_name: filter
+    transform_arguments:
+      items:
+      - PAGE_TITLE LIKE '%Doc%'
+      source_table: '{{page_traffic}}'
+  dropdeletedfromopportunities:
+    description: Drop the data that is marked as deleted in Salesforce
+    transform_name: filter
+    transform_arguments:
+      items:
+      - columnName: IS_DELETED
+        operator: '='
+        comparisonValue: 'false'
+      source_table: '{{opportunities}}'
+  getclosedwon:
+    description: Keep only those opportunities that were closed won in Salesforce
+    transform_name: filter
+    transform_arguments:
+      items:
+      - columnName: IS_DELETED
+        operator: '='
+        comparisonValue: 'false'
+      - columnName: IS_WON
+        operator: '='
+        comparisonValue: 'true'
+      source_table: '{{opportunities}}'
+  createweekly:
+    description: Create weekly variable
+    transform_name: datetrunc
+    transform_arguments:
+      dates:
+        THEDATE: week
+      source_table: '{{daily_active_users}}'
+  defineorgtype:
+    description: Cleanly identify enterprise vs free accounts
+    transform_name: if_then
+    transform_arguments:
+      conditions:
+      - - ORGANIZATION_TYPE = 'ENTERPRISE'
+        - '''ENTERPRISE'''
+      default: '''FREE'''
+      alias: ORG_TYPE
+      source_table: '{{createweekly}}'
+  weeklyusers:
+    description: Aggregate users at a daily level
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - THEDATE_WEEK
+      - USERNAME
+      - ORG_TYPE
+      aggregations:
+        HOURSACTIVE:
+        - SUM
+        THEDATE:
+        - COUNT
+      source_table: '{{defineorgtype}}'
+  weeklyusage:
+    description: Generate weekly aggregate usage of all users
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - THEDATE_WEEK
+      aggregations:
+        HOURSACTIVE_SUM:
+        - SUM
+        THEDATE_COUNT:
+        - SUM
+        USERNAME:
+        - COUNT
+      source_table: '{{weeklyusers}}'
+  renameweeklyusage:
+    description: rename weekly aggregate usage for clarity
+    transform_name: rename
+    transform_arguments:
+      renames:
+        THEDATE_WEEK: WEEK
+        HOURSACTIVE_SUM_SUM: WEEKLY_USAGE
+        THEDATE_COUNT_SUM: WEEKLY_USER_DAYS
+        USERNAME_COUNT: WEEKLY_USERS
+      source_table: '{{weeklyusage}}'
+  enterpriseweeklyusers:
+    description: Keep enterprise users
+    transform_name: filter
+    transform_arguments:
+      items:
+      - columnName: ORG_TYPE
+        operator: '='
+        comparisonValue: '''ENTERPRISE'''
+      source_table: '{{weeklyusers}}'
+  plgweeklyusers:
+    description: keep free users
+    transform_name: filter
+    transform_arguments:
+      items:
+      - columnName: ORG_TYPE
+        operator: <>
+        comparisonValue: '''ENTERPRISE'''
+      source_table: '{{weeklyusers}}'
+  plgidweeklyrepeats:
+    description: Create variable to record next week PLG user uses product if repeats
+    transform_name: lag
+    transform_arguments:
+      columns:
+      - THEDATE_WEEK
+      amounts:
+      - -1
+      partition:
+      - USERNAME
+      order_by:
+      - THEDATE_WEEK
+      source_table: '{{plgweeklyusers}}'
+  weeklyplgusers:
+    description: Create record of signup and first weekly repeat for free users
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - USERNAME
+      aggregations:
+        LAG_THEDATE_WEEK__1:
+        - MIN
+        THEDATE_WEEK:
+        - MIN
+      source_table: '{{plgidweeklyrepeats}}'
+  createplgrepeatindicator:
+    description: Identify free users who use product in a second week
+    transform_name: if_then
+    transform_arguments:
+      conditions:
+      - - LAG_THEDATE_WEEK__1_MIN IS NOT NULL
+        - '1'
+      default: '0'
+      alias: REPEAT_USER
+      source_table: '{{weeklyplgusers}}'
+  weeklyplgnewusers:
+    description: Identify new user signups and percent that repeat as users
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - THEDATE_WEEK_MIN
+      aggregations:
+        THEDATE_WEEK_MIN:
+        - COUNT
+        REPEAT_USER:
+        - SUM
+      source_table: '{{createplgrepeatindicator}}'
+  renameplgweeklynewusers:
+    description: Rename free user data for clarity
+    transform_name: rename
+    transform_arguments:
+      renames:
+        THEDATE_WEEK_MIN: WEEK
+        REPEAT_USER_SUM: PLG_WEEKLY_USERS_WILL_REPEAT
+        THEDATE_WEEK_MIN_COUNT: PLG_WEEKLY_NEW_USERS
+      source_table: '{{weeklyplgnewusers}}'
+  weeklyplgrepeatusers:
+    description: Count first time a new user repeats by week.
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - LAG_THEDATE_WEEK__1_MIN
+      aggregations:
+        LAG_THEDATE_WEEK__1_MIN:
+        - COUNT
+      source_table: '{{weeklyplgusers}}'
+  renameplgweeklyrepeatusers:
+    description: Rename new user repeats for clarity
+    transform_name: rename
+    transform_arguments:
+      renames:
+        LAG_THEDATE_WEEK__1_MIN: WEEK
+        LAG_THEDATE_WEEK__1_MIN_COUNT: PLG_WEEKLY_REPEAT_USERS
+      source_table: '{{weeklyplgrepeatusers}}'
+  entidweeklyrepeats:
+    description: Identify enterprise users who use product in a second week
+    transform_name: lag
+    transform_arguments:
+      columns:
+      - THEDATE_WEEK
+      amounts:
+      - -1
+      partition:
+      - USERNAME
+      order_by:
+      - THEDATE_WEEK
+      source_table: '{{enterpriseweeklyusers}}'
+  weeklyentusers:
+    description: Create record of signup and first weekly repeat for enterprise users
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - USERNAME
+      aggregations:
+        LAG_THEDATE_WEEK__1:
+        - MIN
+        THEDATE_WEEK:
+        - MIN
+      source_table: '{{entidweeklyrepeats}}'
+  createentrepeatindicator:
+    description: Identify enterprise users who use product in a second week
+    transform_name: if_then
+    transform_arguments:
+      conditions:
+      - - LAG_THEDATE_WEEK__1_MIN IS NOT NULL
+        - '1'
+      default: '0'
+      alias: REPEAT_USER
+      source_table: '{{weeklyentusers}}'
+  weeklyentrepeatusers:
+    description: Count first time a new enterprise user repeats by week.
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - LAG_THEDATE_WEEK__1_MIN
+      aggregations:
+        LAG_THEDATE_WEEK__1_MIN:
+        - COUNT
+      source_table: '{{weeklyentusers}}'
+  weeklyentnewusers:
+    description: Identify new enterprise user signups and percent that repeat as users
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - THEDATE_WEEK_MIN
+      aggregations:
+        REPEAT_USER:
+        - SUM
+        THEDATE_WEEK_MIN:
+        - COUNT
+      source_table: '{{createentrepeatindicator}}'
+  renameentweeklyrepeatusers:
+    description: Rename enterprise repeat user data for clarity
+    transform_name: rename
+    transform_arguments:
+      renames:
+        LAG_THEDATE_WEEK__1_MIN: WEEK
+        LAG_THEDATE_WEEK__1_MIN_COUNT: ENT_WEEKLY_REPEAT_USERS
+      source_table: '{{weeklyentrepeatusers}}'
+  renameentweeklynewusers:
+    description: Rename enterprise user data for clarity
+    transform_name: rename
+    transform_arguments:
+      renames:
+        THEDATE_WEEK_MIN: WEEK
+        REPEAT_USER_SUM: ENT_WEEKLY_USERS_WILL_REPEAT
+        THEDATE_WEEK_MIN_COUNT: ENT_WEEKLY_NEW_USERS
+      source_table: '{{weeklyentnewusers}}'
+  docscreateweek:
+    description: Create weekly variable for docs data
+    transform_name: datetrunc
+    transform_arguments:
+      dates:
+        DATE: week
+      source_table: '{{docswebtraffic}}'
+  weeklydocstraffic:
+    description: Calculate weekly traffic for documentation pages
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - DATE_WEEK
+      aggregations:
+        ENTRANCES:
+        - SUM
+        USERS:
+        - SUM
+      source_table: '{{docscreateweek}}'
+  weeklydocsusers:
+    description: Rename weekly documentation traffic
+    transform_name: rename
+    transform_arguments:
+      renames:
+        DATE_WEEK: WEEK
+        ENTRANCES_SUM: DOCS_SESSIONS
+        USERS_SUM: DOCS_USERS
+      source_table: '{{weeklydocstraffic}}'
+  websitecreateweek:
+    description: Create weekly variable for website traffic
+    transform_name: datetrunc
+    transform_arguments:
+      dates:
+        DATE: week
+      source_table: '{{daily_traffic_table}}'
+  weeklywebsitetraffic:
+    description: Calculate weekly website traffic
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - DATE_WEEK
+      aggregations:
+        SESSIONS:
+        - SUM
+        USERS:
+        - SUM
+      source_table: '{{websitecreateweek}}'
+  weeklywebsiteusers:
+    description: Rename weekly website traffic
+    transform_name: rename
+    transform_arguments:
+      renames:
+        DATE_WEEK: WEEK
+        SESSIONS_SUM: WEBSITE_SESSIONS
+        USERS_SUM: WEBSITE_USERS
+      source_table: '{{weeklywebsitetraffic}}'
+  weeklytraffic:
+    description: Combine weekly website and docs traffic
+    transform_name: join
+    transform_arguments:
+      join_table: '{{weeklydocsusers}}'
+      join_type: LEFT
+      join_columns:
+        WEEK: WEEK
+      filters: []
+      source_table: '{{weeklywebsiteusers}}'
+  weeklyclosedwon:
+    description: Create weekly variable for closed won
+    transform_name: datetrunc
+    transform_arguments:
+      dates:
+        CLOSE_DATE: week
+      source_table: '{{getclosedwon}}'
+  createclosedwon:
+    description: Calculate weekly closed won
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - CLOSE_DATE_WEEK
+      aggregations:
+        CLOSE_DATE_WEEK:
+        - COUNT
+      source_table: '{{weeklyclosedwon}}'
+  renameclosedwon:
+    description: Rename weekly closed won
+    transform_name: rename
+    transform_arguments:
+      renames:
+        CLOSE_DATE_WEEK: WEEK
+        CLOSE_DATE_WEEK_COUNT: CLOSED_WON
+      source_table: '{{createclosedwon}}'
+  trafficandcw:
+    description: Add closed won to metrics
+    transform_name: join
+    transform_arguments:
+      join_table: '{{renameclosedwon}}'
+      join_type: LEFT
+      join_columns:
+        WEEK: WEEK
+      filters: []
+      source_table: '{{weeklytraffic}}'
+  weeklysqo:
+    description: Create weekly variable for SQO
+    transform_name: datetrunc
+    transform_arguments:
+      dates:
+        INVESTIGATE_DATE_C: week
+      source_table: '{{dropdeletedfromopportunities}}'
+  createsqo:
+    description: Calculate weekly SQO
+    transform_name: aggregate
+    transform_arguments:
+      group_by:
+      - INVESTIGATE_DATE_C_WEEK
+      aggregations:
+        INVESTIGATE_DATE_C_WEEK:
+        - COUNT
+      source_table: '{{weeklysqo}}'
+  renamesqo:
+    description: Rename weekly SQO
+    transform_name: rename
+    transform_arguments:
+      renames:
+        INVESTIGATE_DATE_C_WEEK: WEEK
+        INVESTIGATE_DATE_C_WEEK_COUNT: SQO
+      source_table: '{{createsqo}}'
+  trafficandopps:
+    description: Add SQO to metrics
+    transform_name: join
+    transform_arguments:
+      join_table: '{{renamesqo}}'
+      join_type: LEFT
+      join_columns:
+        WEEK: WEEK
+      filters: []
+      source_table: '{{trafficandcw}}'
+  trafficoppsandusage:
+    description: Add weekly product usage to metrics
+    transform_name: join
+    transform_arguments:
+      join_table: '{{renameweeklyusage}}'
+      join_type: LEFT
+      join_columns:
+        WEEK: WEEK
+      filters: []
+      source_table: '{{trafficandopps}}'
+  plusnewplg:
+    description: Add weekly free new user counts to metrics
+    transform_name: join
+    transform_arguments:
+      join_table: '{{renameplgweeklynewusers}}'
+      join_type: LEFT
+      join_columns:
+        WEEK: WEEK
+      filters: []
+      source_table: '{{trafficoppsandusage}}'
+  plusplgrepeatusers:
+    description: Add weekly free repeat users to metrics
+    transform_name: join
+    transform_arguments:
+      join_table: '{{renameplgweeklyrepeatusers}}'
+      join_type: LEFT
+      join_columns:
+        WEEK: WEEK
+      filters: []
+      source_table: '{{plusnewplg}}'
+  plusentnewusers:
+    description: Add weekly new enterprise users to metrics
+    transform_name: join
+    transform_arguments:
+      join_table: '{{renameentweeklynewusers}}'
+      join_type: LEFT
+      join_columns:
+        WEEK: WEEK
+      filters: []
+      source_table: '{{plusplgrepeatusers}}'
+  plgmetrics:
+    description: Add enterprise repeat users to create final PLG metrics
+    transform_name: join
+    transform_arguments:
+      join_table: '{{renameentweeklyrepeatusers}}'
+      join_type: LEFT
+      join_columns:
+        WEEK: WEEK
+      filters: []
+      source_table: '{{plusentnewusers}}'
+  sqoandclosedwon:
+    operation_type: INSIGHT
+    transform_name: plot
+    transform_arguments:
+      x_axis: WEEK
+      metrics:
+        SQO:
+        - SUM
+        CLOSED_WON:
+        - SUM
+      filters: []
+      source_table: '{{plgmetrics}}'
+  awarenessweeklywebsitevisitors:
+    operation_type: INSIGHT
+    transform_name: plot
+    transform_arguments:
+      x_axis: WEEK
+      metrics:
+        WEBSITE_USERS:
+        - SUM
+      filters: []
+      source_table: '{{plgmetrics}}'
+  educationweeklydocsvisitors:
+    operation_type: INSIGHT
+    transform_name: plot
+    transform_arguments:
+      x_axis: WEEK
+      metrics:
+        DOCS_USERS:
+        - SUM
+      filters: []
+      source_table: '{{plgmetrics}}'
+  trialstarts:
+    operation_type: INSIGHT
+    transform_name: plot
+    transform_arguments:
+      x_axis: WEEK
+      metrics:
+        PLG_WEEKLY_NEW_USERS:
+        - SUM
+      filters: []
+      source_table: '{{plgmetrics}}'
+  trialengagedrepeatusers:
+    operation_type: INSIGHT
+    transform_name: plot
+    transform_arguments:
+      x_axis: WEEK
+      metrics:
+        PLG_WEEKLY_REPEAT_USERS:
+        - SUM
+      filters: []
+      source_table: '{{plgmetrics}}'
+  totalusersbyweek:
+    operation_type: INSIGHT
+    transform_name: plot
+    transform_arguments:
+      x_axis: WEEK
+      metrics:
+        WEEKLY_USERS:
+        - SUM
+      filters: []
+      source_table: '{{plgmetrics}}'
+  totalusagehoursbyweek:
+    operation_type: INSIGHT
+    transform_name: plot
+    transform_arguments:
+      x_axis: WEEK
+      metrics:
+        WEEKLY_USAGE:
+        - SUM
+      filters: []
+      source_table: '{{plgmetrics}}'
+  retentioncohort:
+    operation_type: INSIGHT
+    transform_name: plot
+    transform_arguments:
+      x_axis: WEEK
+      metrics:
+        PLG_WEEKLY_NEW_USERS:
+        - SUM
+        PLG_WEEKLY_USERS_WILL_REPEAT:
+        - SUM
+      filters: []
+      source_table: '{{plgmetrics}}'
+doc:
+  output_tables:
+    plgmetrics:
+      CLOSED_WON:
+        description: Weekly count of Closed Won Accounts
+      DOCS_SESSIONS:
+        description: Weekly count of sessions on product documentation
+      WEEKLY_USAGE:
+        description: Weekly hours of usage on the product
+      ENT_WEEKLY_NEW_USERS:
+        description: Weekly count of new enterprise user signups
+      WEEKLY_USERS:
+        description: Weekly count of number of users on the product
+      WEBSITE_SESSIONS:
+        description: Weekly count of sessions on the website
+      WEEKLY_USER_DAYS:
+        description: Weekly count of the number of user-days on the product
+      ENT_WEEKLY_REPEAT_USERS:
+        description: Weekly count of the number of first time repeat enterprise users
+      SQO:
+        description: Weekly count of SQOs
+      ENT_WEEKLY_USERS_WILL_REPEAT:
+        description: Weekly count of new enterprise users who will use in another week
+      PLG_WEEKLY_USERS_WILL_REPEAT:
+        description: Weekly count of new free users who will use in another week
+      WEEK:
+        description: Week this data starts on
+      PLG_WEEKLY_NEW_USERS:
+        description: Weekly count of free user signups
+      WEBSITE_USERS:
+        description: Weekly count of number of users on website
+      DOCS_USERS:
+        description: Weekly count of number of users on product documentation 
+      PLG_WEEKLY_REPEAT_USERS:
+        description: Weekly count of the number of first time repeat free users
