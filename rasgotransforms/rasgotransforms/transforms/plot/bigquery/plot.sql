@@ -67,12 +67,17 @@ select count(*) from {{ source_table }}
     ,BUCKET_SIZE
     ,CAST({{ "UNIX_SECONDS(" + x_axis +")" if axis_type == 'date' else x_axis }} AS FLOAT) AS COL_A_VAL
     ,WIDTH_BUCKET(COL_A_VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS COL_A_BUCKET
-    {%- for col, aggs in metrics.items() %}
-    ,{{ col }}
-    {%- for distinct_val in distinct_vals %}
-    ,CASE WHEN {{ group_by }} = '{{ distinct_val }}' THEN {{ col }} END AS {{ cleanse_name(distinct_val) }}_{{ col }}
-    {%- endfor %}
-    {%- endfor %}
+    {%- if group_by is defined and group_by %}
+        {%- for col, aggs in metrics.items() %}
+            {%- for distinct_val in distinct_vals %}
+                ,CASE WHEN {{ group_by }} = '{{ distinct_val }}' THEN {{ col }} END AS {{ cleanse_name(distinct_val) }}_{{ col }}
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        {%- for col, aggs in metrics.items() %}
+            ,{{ col }}
+        {%- endfor %}
+    {%- endif %}
 
     FROM
         {{ source_table }}
@@ -102,14 +107,21 @@ select count(*) from {{ source_table }}
         MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE) AS {{ x_axis }}_MIN
         ,MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE) AS {{ x_axis }}_MAX
     {%- endif -%}
-    {%- for col, aggs in metrics.items() %}
-        {%- for agg in aggs %}
-            ,{{ agg }}({{ col }}) AS {{ agg }}_{{ col }}
-            {%- for distinct_val in distinct_vals %}
-            ,{{ agg }}({{ cleanse_name(distinct_val) }}_{{ col }}) AS {{ cleanse_name(distinct_val) }}_{{ agg }}_{{ col }}
+    {%- if group_by is defined and group_by %}
+        {%- for col, aggs in metrics.items() %}
+            {%- for agg in aggs %}
+                {%- for distinct_val in distinct_vals %}
+                    ,{{ agg }}({{ cleanse_name(distinct_val) }}_{{ col }}) AS {{ cleanse_name(distinct_val) }}_{{ agg }}_{{ col }}
+                {%- endfor -%}
             {%- endfor -%}
-        {%- endfor -%}
-    {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        {%- for col, aggs in metrics.items() %}
+            {%- for agg in aggs %}
+                ,{{ agg }}({{ col }}) AS {{ agg }}_{{ col }}
+            {%- endfor -%}
+        {%- endfor %}
+    {%- endif %}
 
     FROM BUCKETS
     WHERE {{ x_axis }}_MIN is not NULL
