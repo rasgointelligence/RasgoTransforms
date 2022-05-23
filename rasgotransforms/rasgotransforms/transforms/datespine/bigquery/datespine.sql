@@ -24,9 +24,9 @@ with date_spine as (
                 cast('{{ min_date }}' as timestamp),
                 INTERVAL interval_id - 1 {{ interval_type }}
                 ) as ts_ntz_interval_start,
-            dateadd(
+            DATE_ADD(
                 cast('{{ min_date }}' as timestamp)
-                INTERVAL interval_id '{{ interval_type }}'
+                INTERVAL interval_id {{ interval_type }}
                ) as ts_ntz_interval_end
 from table (generator(rowcount => {{ row_count }}))
     )
