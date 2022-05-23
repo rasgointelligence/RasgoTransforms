@@ -22,7 +22,7 @@ with date_spine as (
            row_number() over (order by null) as interval_id,
             dateadd(
                 cast('{{ min_date }}' as timestamp),
-                INTERVAL interval_id - 1 '{{ interval_type }}'
+                INTERVAL interval_id - 1 {{ interval_type }}
                 ) as ts_ntz_interval_start,
             dateadd(
                 cast('{{ min_date }}' as timestamp)
