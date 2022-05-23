@@ -13,14 +13,14 @@ select min(cast({{ date_col }} as date)) min_date, max(cast({{ date_col }} as da
     {% set max_date = min_max_query_result[min_max_query_result.columns[1]][0] %}
 {% endif %}
 {% set row_count_query %}
-select datediff(cast('{{ min_date }}' as date), cast('{{ max_date }}' as date), {{ interval_type }})
+select DATE_DIFF(cast('{{ min_date }}' as date), cast('{{ max_date }}' as date), {{ interval_type }})
 {% endset %}
 {% set row_count_query_results = run_query(row_count_query) %}
 {%- set row_count = row_count_query_results[row_count_query_results.columns[0]][0] -%}
 with date_spine as (
     select
            row_number() over (order by null) as interval_id,
-            dateadd(
+            DATE_ADD(
                 cast('{{ min_date }}' as timestamp),
                 INTERVAL interval_id - 1 {{ interval_type }}
                 ) as ts_ntz_interval_start,
