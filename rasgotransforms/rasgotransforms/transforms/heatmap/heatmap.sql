@@ -29,9 +29,9 @@ BUCKETS AS (
    ,MIN_Y_VAL
    ,MAX_Y_VAL
    ,Y_BUCKET_SIZE
-   ,{{ x_axis }}::float AS COL_X_VAL
+   ,CAST({{ x_axis }} AS FLOAT) AS COL_X_VAL
    ,WIDTH_BUCKET(COL_X_VAL, MIN_X_VAL, MAX_X_VAL, {{ bucket_count }}) AS COL_X_BUCKET
-   ,{{ y_axis }}::float AS COL_Y_VAL
+   ,CAST({{ y_axis }} AS FLOAT) AS COL_Y_VAL
    ,WIDTH_BUCKET(COL_Y_VAL, MIN_Y_VAL, MAX_Y_VAL, {{ bucket_count }}) AS COL_Y_BUCKET
   FROM
     {{ source_table }}
