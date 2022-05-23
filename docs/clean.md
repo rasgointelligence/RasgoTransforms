@@ -17,7 +17,7 @@ Cast data types, rename or drop columns, impute missing values, and filter value
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.impute(
+ds2 = ds.clean(
     columns={
         'GLD_ADJUSTED_CLOSE': {
             'type': 'FLOAT',
