@@ -12,14 +12,14 @@ operations:
     description: Drop the data that is marked as deleted in Salesforce
     transform_name: filter
     transform_arguments:
-      filter_statements:
+      filters:
       - IS_DELETED = 'false'
       source_table: '{{opportunity_table}}'
   drop_deleted_from_leads:
     description: Drop the data that is marked as deleted in Salesforce
     transform_name: filter
     transform_arguments:
-      filter_statements:
+      filters:
       - IS_DELETED = 'false'
       source_table: '{{lead_table}}'
   get_opportunity_dates:
@@ -127,7 +127,7 @@ operations:
     description: Keep only those opportunities that purchased
     transform_name: filter
     transform_arguments:
-      filter_statements:
+      filters:
       - IS_WON = 'true'
       source_table: '{{get_opportunity_dates}}'
   create_closed_won:
@@ -316,9 +316,9 @@ operations:
   weekly_sale_funnel:
     operation_type: INSIGHT
     description: Show weekly funnel metrics
-    transform_name: line_chart
+    transform_name: plot
     transform_arguments:
-      axis: WEEK
+      x_axis: WEEK
       metrics:
         MQL:
         - SUM
@@ -336,9 +336,9 @@ operations:
   quarterly_sales_funnel:
     operation_type: INSIGHT
     description: Show quarterly funnel metrics
-    transform_name: line_chart
+    transform_name: plot
     transform_arguments:
-      axis: QUARTER
+      x_axis: QUARTER
       metrics:
         MQL:
         - SUM
@@ -356,9 +356,9 @@ operations:
   monthly_sales_funnel:
     operation_type: INSIGHT
     description: Show monthly funnel metrics
-    transform_name: line_chart
+    transform_name: plot
     transform_arguments:
-      axis: MONTH
+      x_axis: MONTH
       metrics:
         MQL:
         - SUM

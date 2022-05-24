@@ -537,36 +537,37 @@ operations:
       source_table: '{{plgmetrics}}'
 doc:
   output_tables:
-    plgmetrics:
-      CLOSED_WON:
-        description: Weekly count of Closed Won Accounts
-      DOCS_SESSIONS:
-        description: Weekly count of sessions on product documentation
-      WEEKLY_USAGE:
-        description: Weekly hours of usage on the product
-      ENT_WEEKLY_NEW_USERS:
-        description: Weekly count of new enterprise user signups
-      WEEKLY_USERS:
-        description: Weekly count of number of users on the product
-      WEBSITE_SESSIONS:
-        description: Weekly count of sessions on the website
-      WEEKLY_USER_DAYS:
-        description: Weekly count of the number of user-days on the product
-      ENT_WEEKLY_REPEAT_USERS:
-        description: Weekly count of the number of first time repeat enterprise users
-      SQO:
-        description: Weekly count of SQOs
-      ENT_WEEKLY_USERS_WILL_REPEAT:
-        description: Weekly count of new enterprise users who will use in another week
-      PLG_WEEKLY_USERS_WILL_REPEAT:
-        description: Weekly count of new free users who will use in another week
-      WEEK:
-        description: Week this data starts on
-      PLG_WEEKLY_NEW_USERS:
-        description: Weekly count of free user signups
-      WEBSITE_USERS:
-        description: Weekly count of number of users on website
-      DOCS_USERS:
-        description: Weekly count of number of users on product documentation
-      PLG_WEEKLY_REPEAT_USERS:
-        description: Weekly count of the number of first time repeat free users
+    plg_metrics:
+      metrics:
+        CLOSED_WON:
+          description: Weekly count of Closed Won Accounts
+        DOCS_SESSIONS:
+          description: Weekly count of sessions on product documentation
+        WEEKLY_USAGE:
+          description: Weekly hours of usage on the product
+        ENT_WEEKLY_NEW_USERS:
+          description: Weekly count of new enterprise user signups
+        WEEKLY_USERS:
+          description: Weekly count of number of users on the product
+        WEBSITE_SESSIONS:
+          description: Weekly count of sessions on the website
+        WEEKLY_USER_DAYS:
+          description: Weekly count of the number of user-days on the product
+        ENT_WEEKLY_REPEAT_USERS:
+          description: Weekly count of the number of first time repeat enterprise users
+        SQO:
+          description: Weekly count of SQOs
+        ENT_WEEKLY_USERS_WILL_REPEAT:
+          description: Weekly count of new enterprise users who will use in another week
+        PLG_WEEKLY_USERS_WILL_REPEAT:
+          description: Weekly count of new free users who will use in another week
+        WEEK:
+          description: Week this data starts on
+        PLG_WEEKLY_NEW_USERS:
+          description: Weekly count of free user signups
+        WEBSITE_USERS:
+          description: Weekly count of number of users on website
+        DOCS_USERS:
+          description: Weekly count of number of users on product documentation
+        PLG_WEEKLY_REPEAT_USERS:
+          description: Weekly count of the number of first time repeat free users

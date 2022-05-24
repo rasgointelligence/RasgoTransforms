@@ -18,28 +18,28 @@ operations:
     description: Drop accounts marked as deleted in accounts table
     transform_name: filter
     transform_arguments:
-      filter_statements:
+      filters:
       - IS_DELETED = 'false'
       source_table: '{{accounts_table}}'
   drop_deleted_from_opportunities:
     description: Drop opportunities marked as deleted in opportunities table
     transform_name: filter
     transform_arguments:
-      filter_statements:
+      filters:
       - IS_DELETED = 'false'
       source_table: '{{opportunities_table}}'
   drop_deleted_from_leads:
     description: Drop leads marked as deleted in leads table
     transform_name: filter
     transform_arguments:
-      filter_statements:
+      filters:
       - IS_DELETED = 'false'
       source_table: '{{leads_table}}'
   drop_deleted_from_contacts:
     description: Drop contacts marked as deleted in contacts table
     transform_name: filter
     transform_arguments:
-      filter_statements:
+      filters:
       - IS_DELETED = 'false'
       source_table: '{{contacts_table}}'
   opportunity_target:
@@ -206,9 +206,9 @@ operations:
   closed_by_lead_source:
     operation_type: INSIGHT
     description: Show closed percentage by lead source.
-    transform_name: bar_chart
+    transform_name: plot
     transform_arguments:
-      dimension: LEAD_SOURCE
+      x_axis: LEAD_SOURCE
       metrics:
         CLOSED_WON:
         - AVG
@@ -216,9 +216,9 @@ operations:
   closed_by_industry:
     operation_type: INSIGHT
     description: Show close percentage by industry
-    transform_name: bar_chart
+    transform_name: plot
     transform_arguments:
-      dimension: INDUSTRY
+      x_axis: INDUSTRY
       metrics:
         CLOSED_WON:
         - AVG
@@ -226,9 +226,9 @@ operations:
   leads_over_time:
     operation_type: INSIGHT
     description: Contacts created over time
-    transform_name: line_chart
+    transform_name: plot
     transform_arguments:
-      axis: CREATED_DATE
+      x_axis: CREATED_DATE
       metrics:
         ID:
         - COUNT
