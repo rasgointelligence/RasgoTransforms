@@ -21,3 +21,5 @@ GITHUB_REPO_URL = "https://github.com/rasgointelligence/RasgoTransforms/blob/mai
 # TODO: When we support multiple DWs in the API
 # we'll need to refactor the functions that consume this
 RASGO_DATAWAREHOUSE = 'snowflake'
+
+COMMUNITY_ORGANIZATION_ID: int = 1

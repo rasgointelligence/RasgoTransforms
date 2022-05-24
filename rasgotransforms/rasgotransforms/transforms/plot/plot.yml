@@ -20,13 +20,17 @@ arguments:
     type: value
     description: max number of buckets to create; defaults to 200
     is_optional: true
-  filter_statements:
-    type: string_list
-    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL'
+  filters:
+    type: filter_list
+    description: Filter logic on one or more columns. Can choose between a simple comparison filter or advanced filter using free text.
     is_optional: true
-  order_direction:
-    type: string
+  x_axis_order:
+    type: value
     description: Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order
+    is_optional: true
+  group_by:
+    type: column
+    description: A categorical column by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each distinct value in the group by column. If this column has more than 20 distinct values, the plot will not generate.
     is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)

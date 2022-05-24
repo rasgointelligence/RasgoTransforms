@@ -333,7 +333,7 @@ operations:
   plg_over_time:
     operation_type: INSIGHT
     transform_arguments:
-      axis: DATE
+      x_axis: DATE
       metrics:
         LEADS_CREATED:
           - SUM
@@ -354,4 +354,4 @@ operations:
         BOUNCES:
           - SUM
       source_table: "{{ daily_metrics }}"
-    transform_name: line_chart
+    transform_name: plot
