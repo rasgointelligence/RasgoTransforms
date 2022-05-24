@@ -56,7 +56,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
 
         # If a transform with that name isn't in Rasgo, create it
         for (name, dw), source_code in transform_source_code_variants.items():
-            if dw not in ("GENERIC", "SNOWFLAKE", "BIGQUERY"):
+            if dw not in ("UNSET", "SNOWFLAKE", "BIGQUERY"):
                 continue
             if (name, dw) not in rasgo_transforms:
                 print(
