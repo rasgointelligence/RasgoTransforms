@@ -1,5 +1,5 @@
 name: Product-Led Growth Funnel
-description: The product-led growth funnel tracks users through a common Software as a Service (SaaS) funnel - 
+description: The product-led growth funnel tracks users through a common Software as a Service (SaaS) funnel -
   from awareness via marketing at top of funnel, to free product user, to qualified lead for an enterprise sales motion,
   to closed won. The data sources necessary to generate this accelerator are Google Analytics, Heap, and Salesforce.
 arguments:
@@ -567,6 +567,6 @@ doc:
       WEBSITE_USERS:
         description: Weekly count of number of users on website
       DOCS_USERS:
-        description: Weekly count of number of users on product documentation 
+        description: Weekly count of number of users on product documentation
       PLG_WEEKLY_REPEAT_USERS:
         description: Weekly count of the number of first time repeat free users

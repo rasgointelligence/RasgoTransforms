@@ -1,6 +1,6 @@
 name: Sales Growth Funnel
-description: "The sales growth funnel tracks users through a common Software as a Service (SaaS) sales funnel: 
-  from awareness via marketing at top of funnel, to product user, to qualified lead for an enterprise sales motion, 
+description: "The sales growth funnel tracks users through a common Software as a Service (SaaS) sales funnel:
+  from awareness via marketing at top of funnel, to product user, to qualified lead for an enterprise sales motion,
   to closed won. The data sources necessary to generate this accelerator are Google Analytics, Heap, and Salesforce."
 arguments:
   contact_table:
