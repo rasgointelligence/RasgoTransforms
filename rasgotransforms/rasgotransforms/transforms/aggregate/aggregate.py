@@ -9,5 +9,6 @@ def infer_columns(args, source_columns) -> dict:
         out_cols[col] = source_columns[col.upper()]
     for col in args['aggregations'].keys():
         for agg in args['aggregations'][col]:
+            agg = agg.replace(' ', '')
             out_cols[f'{col}_{agg}'] = 'NUMERIC'
     return out_cols
