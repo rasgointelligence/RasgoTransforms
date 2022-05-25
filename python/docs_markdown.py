@@ -32,11 +32,13 @@ def h3(string: str) -> str:
     """
     return f"### {string}"
 
+
 def bold(string: str) -> str:
     """
     bold that string
     """
     return f"**{string}**"
+
 
 def table(headers: List[str], values: List[List]):
     writer = MarkdownTableWriter(
@@ -64,10 +66,9 @@ def github_url(transform_type_dir_name: str, transform_name: str, dw_type_dir_na
         f'/{transform_name}{dw_type_dir}/{transform_name}.sql" %}}'
     )
 
+
 def github_url(path: str) -> str:
     """
     Make and return the embedded url for transform source code
     """
-    return (
-        f'{{% embed url="{constants.GITHUB_REPO_URL}{path}" %}}'
-    )
+    return f'{{% embed url="{constants.GITHUB_REPO_URL}{path}" %}}'

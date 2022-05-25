@@ -3,13 +3,21 @@ tags:
   - row
   - data_cleaning
   - conditional
-description: Apply one or more column filters to the dataset
+description: |
+  Filter the dataset. Supports two types of filters:
+    1. Comparison filters, which compare the values in a column with a value
+    2. Advanced filters, which support full SQL strings for custom filtering logic
 arguments:
-  filter_statements:
-    type: string_list
-    description: List of where statements filter the table by. Ex. ["<col_name> = 'string'", "<col_name> IS NOT NULL"]
+  items:
+    type: filter_list
+    description: list of dictionaries representing filters
 example_code: |
-  ds = rasgo.get.dataset(id)
-
-  ds2 = ds.filter(filter_statements=['MONTH = 4', 'YEAR < 2021', 'COVID_DEATHS IS NOT NULL']
+  ds = rasgo.get.dataset(74)
+  
+  # comma separated list of 'WHERE' clauses
+  ds2 = ds.filter(items=['PRODUCTKEY < 500'])
   ds2.preview()
+
+  # full filtering with a column, operator, and comparison value
+  ds3 = ds.filter(items=[{'columnName':'PRODUCTKEY', 'operator':'>', 'comparisonValue':'101'}])
+  ds3.preview()

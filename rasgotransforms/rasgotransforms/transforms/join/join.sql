@@ -1,11 +1,3 @@
-{#
-Jinja Macro to generate a query that would get all 
-the columns in a table by fqtn
-#}
-{%- macro get_source_col_names(source_table_fqtn=None) -%}
-    select * from {{ source_table_fqtn }} limit 0
-{%- endmacro -%}
-
 {# Jinja Macro to get the table name from source_id #}
 {%- macro get_table_name(join_table) -%}
     {%- set table = join_table.split('.')[-1] -%}
@@ -13,12 +5,10 @@ the columns in a table by fqtn
 {%- endmacro -%}
 
 {# Get all Columns in Source Table #}
-{%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
-{%- set source_col_names = col_names_source_df.columns.to_list() -%}
+{%- set source_col_names = get_columns(source_table) -%}
 
 {# Get all Columns and Table Name in Join Table #}
-{%- set col_names_join_df = run_query(get_source_col_names(source_table_fqtn=join_table)) -%}
-{%- set join_col_names = col_names_join_df.columns.to_list() -%}
+{%- set join_col_names = get_columns(join_table) -%}
 {%- set join_table_name = get_table_name(join_table) -%}
 
 
@@ -38,6 +28,18 @@ FROM {{ source_table }} as t1
 {%- for t1_join_col, t2_join_col in join_columns.items() %}
 {{ ' AND' if not loop.first else 'ON'}} t1.{{ t1_join_col }} = t2.{{ t2_join_col }}
 {%- endfor -%}
-{%- for filter_statement in filters %}
-{{ 'WHERE ' if loop.first else ' AND ' }} {{ filter_statement }}
-{%- endfor -%}
+{%- if filters is defined and filters %}
+    {% for filter_block in filters %}
+        {%- set oloop = loop -%}
+        {{ 'WHERE ' if oloop.first else ' AND ' }}
+            {%- if filter_block is not mapping -%}
+                {{ filter_block }}
+            {%- else -%}
+                {%- if filter_block['operator'] == 'CONTAINS' -%}
+                    {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+                {%- else -%}
+                    {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+                {%- endif -%}
+            {%- endif -%}
+    {%- endfor -%}
+{%- endif -%}

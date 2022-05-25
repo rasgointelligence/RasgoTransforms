@@ -1,6 +1,6 @@
 {%- if overwrite_columns -%}
 {%- set alias = date -%}
-{%- set untouched_cols = get_untouched_columns(source_table, [alias]) -%}
+{%- set untouched_cols = get_columns(source_table)|list|reject('in', [alias])|join(',') -%}
 {%- else -%}
 {%- set untouched_cols = "*" -%}
 {%- endif -%}

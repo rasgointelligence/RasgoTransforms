@@ -1,8 +1,4 @@
-{%- macro get_source_col_names(source_table_fqtn=None) -%}
-    select * from {{ source_table_fqtn }} limit 0
-{%- endmacro -%}
-{%- set col_names_source_df = run_query(get_source_col_names(source_table_fqtn=source_table)) -%}
-{%- set source_col_names = col_names_source_df.columns.to_list() -%}
+{%- set source_col_names = get_columns(source_table) -%}
 
 SELECT 
 {%- for group_item in group_by %}

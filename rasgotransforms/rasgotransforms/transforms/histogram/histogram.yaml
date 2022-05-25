@@ -8,10 +8,10 @@ arguments:
   column:
     type: column
     description: numeric column to use to generate the histogram
-  filter_statements:
-    type: string_list
+  filters:
+    type: filter_list
+    description: Filter logic on one or more columns. Can choose between a simple comparison filter or advanced filter using free text.
     is_optional: true
-    description: List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL'
   num_buckets:
     type: value
     is_optional: true

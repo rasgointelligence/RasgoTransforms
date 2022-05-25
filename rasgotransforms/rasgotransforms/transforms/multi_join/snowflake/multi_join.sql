@@ -1,9 +1,3 @@
-{# Jinja Macro to get columns for a table #}
-{%- macro get_column_names(fqtn) -%}
-    select top 0 * from {{ fqtn }}
-{%- endmacro -%}
-
-
 {%- if join_prefixes|length != join_tables|length -%}
 {{ raise_exception('Provide a join_prefix for each join_table in the join_tables list') }}
 {%- elif join_prefixes|length == join_tables|length -%}
@@ -13,8 +7,7 @@ t0.*
 {% for fqtn in join_tables -%}
 {%- set table_alias = cleanse_name(join_prefixes[loop.index-1]) -%}
 {%- set o_loop = loop -%}
-{%- set col_names_df = run_query(get_column_names(fqtn=fqtn)) -%}
-{%- set col_names = col_names_df.columns.to_list() -%}
+{%- set col_names = get_columns(fqtn) -%}
     {% for column in col_names %}
 , t{{o_loop.index}}.{{column}} as {{ table_alias~'_'~column }}
     {%- endfor %}

@@ -1,4 +1,4 @@
-{%- set untouched_cols = get_untouched_columns(source_table, columns_to_scale) if overwrite_columns else "*" -%}
+{%- set untouched_cols = get_columns(source_table)|list|reject('in', columns_to_scale)|join(',') if overwrite_columns else "*" -%}
 
 {%- if averages is not defined or standarddevs is not defined -%}
 with avg_stddev_vals as (

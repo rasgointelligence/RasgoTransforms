@@ -1,4 +1,4 @@
-{%- set untouched_cols = get_untouched_columns(source_table, dates.keys()) if overwrite_columns else "*" -%}
+{%- set untouched_cols = get_columns(source_table)|list|reject('in', dates)|join(',') if overwrite_columns else "*" -%}
 
 SELECT {{ untouched_cols }},
 {%- for target_col, date_format in dates.items() %}
