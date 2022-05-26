@@ -1,5 +1,5 @@
 {%- set source_col_names = get_columns(source_table) -%}
-{%- set alias = cleanse_name(table_alias) -%}
+{%- set alias = cleanse_name(prefix) -%}
 SELECT
 {%- for column in source_col_names %}
    {{column}} AS {{ alias~'_'~column }}{{',' if not loop.last else ''}}
