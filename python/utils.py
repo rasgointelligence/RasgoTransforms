@@ -137,7 +137,7 @@ def get_transform_source_code_all_dws(transform_name: str) -> Dict[Tuple[str, st
     transform_dir = TRANSFORMS_ROOT / "transforms"
     source_code_path = transform_dir / transform_name / f"{transform_name}.sql"
     if source_code_path.exists():
-        variants[(transform_name, "GENERIC")] = source_code_path.read_text(encoding="utf-8")
+        variants[(transform_name, "UNSET")] = source_code_path.read_text(encoding="utf-8")
 
     other_dws = [
         path

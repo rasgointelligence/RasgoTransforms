@@ -16,4 +16,4 @@ The sales growth funnel tracks users through a common Software as a Service (Saa
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/accelerators/plg.yml" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/accelerators/sales_growth_funnel.yml" %}

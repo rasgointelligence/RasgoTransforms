@@ -1,6 +1,6 @@
-# Sales Growth Funnel
+# Omni-channel performance
 
-The sales growth funnel tracks users through a common Software as a Service (SaaS) sales funnel: from awareness via marketing at top of funnel, to product user, to qualified lead for an enterprise sales motion, to closed won. The data sources necessary to generate this accelerator are Google Analytics, Heap, and Salesforce.
+Omni-channel performance tracks leads through a traditional sales funnel: from awareness via marketing at top of funnel, to marketing qualified lead, to sales qualified lead, and finally to closed as a won opportunity. The data sources necessary to generate this accelerator are Google Analytics, Hubspot, and Salesforce.
 
 ## Parameters
 
@@ -11,9 +11,9 @@ The sales growth funnel tracks users through a common Software as a Service (Saa
 | account_table       | dataset | Salesforce accounts table                     |             |
 | lead_table          | dataset | Salesforce leads table                        |             |
 | daily_traffic_table | dataset | Google Analytics daily traffic overview table |             |
-| heap_users_table    | dataset | Heap Users Table                              |             |
+| email_event_table   | dataset | Hubspot email event table                     |             |
 
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/accelerators/plg.yml" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/accelerators/omni_channel_performance.yml" %}

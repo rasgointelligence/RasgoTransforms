@@ -1,5 +1,3 @@
-{%- set untouched_cols = get_columns(source_table)|list|reject('in', columns)|join(',')  + ', ' if not drop_columns else "" -%}
-
 {%- set drop_cols = [] -%}
 {%- for column in columns.keys() -%}
     {%- if columns[column].drop -%}
@@ -51,7 +49,7 @@ from {{ source_table }}
 
 {%- else -%}
 with cleaned as (
-    select {{ untouched_cols }}
+    select
     {%- for column in columns.keys() %}
         {{ get_select_column(column, columns[column]) }}{{ ", " if not loop.last else "" }}
     {%- endfor %}

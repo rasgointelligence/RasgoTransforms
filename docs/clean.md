@@ -6,10 +6,9 @@ Cast data types, rename or drop columns, impute missing values, and filter value
 
 ## Parameters
 
-|     Name     |    Type    |                                                                                                                                                                          Description                                                                                                                                                                          | Is Optional |
-| ------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| columns      | clean_dict | Dictionary with keys as column names to clean, values are all optional: type - the dtype to cast the values to, name - the new name for a column, impute - an imputation strategy or value for replacing null values ('mean', 'median', 'mode', <value>), filter - a filter statement to filter the output table, drop - drops column from the output if true |             |
-| drop_columns | boolean    | If True/set will drop all of the columns not included in the 'columns' argument.                                                                                                                                                                                                                                                                              | True        |
+|  Name   |    Type    |                                                                                                                                                                          Description                                                                                                                                                                          | Is Optional |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| columns | clean_dict | Dictionary with keys as column names to clean, values are all optional: type - the dtype to cast the values to, name - the new name for a column, impute - an imputation strategy or value for replacing null values ('mean', 'median', 'mode', <value>), filter - a filter statement to filter the output table, drop - drops column from the output if true |             |
 
 
 ## Example
@@ -34,8 +33,7 @@ ds2 = ds.clean(
         'DATE': {
             'type': 'string'
         }
-    },
-    drop_columns=True
+    }
 )
 
 ds2.preview()
