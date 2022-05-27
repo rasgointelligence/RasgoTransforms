@@ -1,0 +1,15 @@
+name: suffix
+tags:
+  - row
+  - data_cleaning
+description: Add a suffix to each column name
+arguments:
+  prefix:
+    type: value
+    description: text to suffix each column name with
+example_code: |
+  ds = rasgo.get.dataset(74)
+
+  ds2 = ds.suffix(suffix='PRODUCT')
+
+  ds2.preview()
