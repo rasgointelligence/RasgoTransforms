@@ -39,7 +39,7 @@ def publish_accelerators(rasgo_api_key: str, rasgo_domain: str) -> None:
                 failures.append(f'Failed to parse accelerator definition {file.stem}: {str(e)}')
 
     # jsonify accelerators and use those to do a full object comparison
-    rasgo_set = set(x.json() for x in  [pyrasgo.schemas.AcceleratorCreate(**(x.__dict__)) for x in rasgo_acclerators])
+    rasgo_set = set(x.json() for x in [pyrasgo.schemas.AcceleratorCreate(**(x.__dict__)) for x in rasgo_acclerators])
     local_set = set(x.json() for x in local_accelerators)
 
     # get set of items to add and delete. If a definition has changed, it will be deleted and re-added
@@ -52,9 +52,9 @@ def publish_accelerators(rasgo_api_key: str, rasgo_domain: str) -> None:
 
     # calculate updated, added, deleted
     print("\nUpdating Accelerators:")
-    updated = (set(to_delete) & set(to_add))
-    deleted = (set(to_delete) - set(to_add))
-    added = (set(to_add) - set(to_delete))
+    updated = set(to_delete) & set(to_add)
+    deleted = set(to_delete) - set(to_add)
+    added = set(to_add) - set(to_delete)
 
     if updated:
         print(f'U {chr(10).join(u for u in updated)}')
@@ -74,9 +74,9 @@ def publish_accelerators(rasgo_api_key: str, rasgo_domain: str) -> None:
             rasgo.create.accelerator(accelerator_create=next(iter([x for x in local_accelerators if x.name == add])))
         except Exception as e:
             failures.append(f'Failed to add accelerator {add}: {str(e)}')
-            
+
     if failures:
-        print('\nFailures:\n'+'\n'.join(failures)+'\n')
+        print('\nFailures:\n' + '\n'.join(failures) + '\n')
         raise RuntimeError('Encountered failures updating Accelerators!')
 
 
