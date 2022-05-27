@@ -32,14 +32,13 @@ def publish_accelerators(rasgo_api_key: str, rasgo_domain: str) -> None:
     path = utils.TRANSFORMS_ROOT / 'accelerators'
     files = list(path.rglob("*.yml")) + list(path.rglob("*.yaml"))
     for file in files:
-        with open(file, "r") as stream:
-            try:
-                local_accelerators.append(rasgo.create._build_accelerator(stream.read()))
-            except Exception as e:
-                failures.append(f'Failed to parse accelerator definition {file.stem}: {str(e)}')
+        try:
+            local_accelerators.append(rasgo.create._build_accelerator(file.read_text()))
+        except Exception as e:
+            failures.append(f'Failed to parse accelerator definition {file.stem}: {str(e)}')
 
     # jsonify accelerators and use those to do a full object comparison
-    rasgo_set = set(x.json() for x in [pyrasgo.schemas.AcceleratorCreate(**(x.__dict__)) for x in rasgo_acclerators])
+    rasgo_set = set(pyrasgo.schemas.AcceleratorCreate(**(x.__dict__)).json() for x in rasgo_acclerators)
     local_set = set(x.json() for x in local_accelerators)
 
     # get set of items to add and delete. If a definition has changed, it will be deleted and re-added
@@ -57,11 +56,11 @@ def publish_accelerators(rasgo_api_key: str, rasgo_domain: str) -> None:
     added = set(to_add) - set(to_delete)
 
     if updated:
-        print(f'U {chr(10).join(u for u in updated)}')
+        print(f'UPDATING  {chr(10).join(updated)}')
     if deleted:
-        print(f'D {chr(10).join(d for d in deleted)}')
+        print(f'DELETING  {chr(10).join(deleted)}')
     if added:
-        print(f'A {chr(10).join(a for a in added)}')
+        print(f'ADDING    {chr(10).join(added)}')
 
     for delete in to_delete:
         try:
@@ -76,7 +75,7 @@ def publish_accelerators(rasgo_api_key: str, rasgo_domain: str) -> None:
             failures.append(f'Failed to add accelerator {add}: {str(e)}')
 
     if failures:
-        print('\nFailures:\n' + '\n'.join(failures) + '\n')
+        print('\nFailures:\n{}\n'.format('\n'.join(failures)))
         raise RuntimeError('Encountered failures updating Accelerators!')
 
 
