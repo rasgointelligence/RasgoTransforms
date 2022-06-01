@@ -1,5 +1,5 @@
 name: Active User Analysis
-description: 
+description:
 arguments:
   daily_active_users:
     description: Heap daily active users table.
