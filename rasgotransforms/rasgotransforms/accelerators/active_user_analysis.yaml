@@ -461,38 +461,39 @@ operations:
       source_table: '{{usermetrics}}'
 doc:
   output_tables:
-    usermetrics:
-      WEEKLY_USAGE_BY_PLG:
-        description: Weekly hours used by free PLG users
-      PLG_WEEKLY_USERS_WILL_REPEAT:
-        description: Weekly count of new free users this week that return another week
-      ENT_WEEKLY_FIRST_REPEAT_USERS:
-        description: Weekly count of first week an enterprise user repeats
-      PLG_WEEKLY_FIRST_REPEAT_USERS:
-        description: Weekly count of first week a PLG user repeats
-      ENT_WEEKLY_USERS_WILL_REPEAT:
-        description: Weekly count of new free users this week that return another week
-      WEEKLY_TOTAL_ENT_REPEAT_USERS:
-        description: Weekly count of all enterprise repeat users
-      WEEKLY_USERS:
-        description: Total number of weekly users
-      PLG_WEEKLY_NEW_USERS:
-        description: New PLG users in the week
-      WEEKLY_USER_DAYS:
-        description: Total number of users by day in the week
-      ENT_WEEKLY_NEW_USERS:
-        description: New enterprise users in the week
-      WEEKLY_USERS_BY_ENT:
-        description: Total weekly enterprise users
-      ORG_TYPE:
-        description: Organization type (always enterprise)
-      WEEK:
-        description: Week the data is for
-      WEEKLY_USAGE_BY_ENT:
-        description: Total hours spent by enterprise users
-      WEEKLY_USERS_BY_PLG:
-        description: Total weekly free users
-      WEEKLY_USAGE:
-        description: Total hours used by all users
-      WEEKLY_TOTAL_PLG_REPEAT_USERS:
-        description: Weekly count of all PLG repeat users
+    active_user_analysis_metrics:
+      metrics:
+        WEEKLY_USAGE_BY_PLG:
+          description: Weekly hours used by free PLG users
+        PLG_WEEKLY_USERS_WILL_REPEAT:
+          description: Weekly count of new free users this week that return another week
+        ENT_WEEKLY_FIRST_REPEAT_USERS:
+          description: Weekly count of first week an enterprise user repeats
+        PLG_WEEKLY_FIRST_REPEAT_USERS:
+          description: Weekly count of first week a PLG user repeats
+        ENT_WEEKLY_USERS_WILL_REPEAT:
+          description: Weekly count of new free users this week that return another week
+        WEEKLY_TOTAL_ENT_REPEAT_USERS:
+          description: Weekly count of all enterprise repeat users
+        WEEKLY_USERS:
+          description: Total number of weekly users
+        PLG_WEEKLY_NEW_USERS:
+          description: New PLG users in the week
+        WEEKLY_USER_DAYS:
+          description: Total number of users by day in the week
+        ENT_WEEKLY_NEW_USERS:
+          description: New enterprise users in the week
+        WEEKLY_USERS_BY_ENT:
+          description: Total weekly enterprise users
+        ORG_TYPE:
+          description: Organization type (always enterprise)
+        WEEK:
+          description: Week the data is for
+        WEEKLY_USAGE_BY_ENT:
+          description: Total hours spent by enterprise users
+        WEEKLY_USERS_BY_PLG:
+          description: Total weekly free users
+        WEEKLY_USAGE:
+          description: Total hours used by all users
+        WEEKLY_TOTAL_PLG_REPEAT_USERS:
+          description: Weekly count of all PLG repeat users
