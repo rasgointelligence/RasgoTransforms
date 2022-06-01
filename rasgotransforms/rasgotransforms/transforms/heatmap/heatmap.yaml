@@ -10,7 +10,11 @@ arguments:
     description: numeric column to use as the x axis
   y_axis:
     type: column
-    description: numeric column to use as the y axis 
+    description: numeric column to use as the y axis
+  filters:
+    type: filter_list
+    description: Filter logic on one or more columns. Can choose between a simple comparison filter or advanced filter using free text.
+    is_optional: true
   num_buckets:
     type: value
     is_optional: true
