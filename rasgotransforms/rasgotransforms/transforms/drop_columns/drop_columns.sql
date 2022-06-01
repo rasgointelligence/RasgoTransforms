@@ -4,22 +4,22 @@
 
 {%- if include_cols is defined -%}
 SELECT 
-{% for col in include_cols -%}
-{{col}}{{ ", " if not loop.last else " " }}
+{%- for col in include_cols %}
+    {{col}}{{ ", " if not loop.last else " " }}
 {%- endfor %}
 FROM {{source_table}}
 {%- endif -%}
 
 {%- if exclude_cols is defined -%}
 {%- set source_col_names = get_columns(source_table) -%}
-{%- set new_columns = source_col_names | reject('in', exclude_cols) -%}
+{%- set new_columns = source_col_names | reject('in', exclude_cols|upper) -%}
 
 
 SELECT
-{% for col in new_columns -%}
-{{ col }}{{ ", " if not loop.last else " " }}
+{%- for col in new_columns %}
+    {{ col }}{{ ", " if not loop.last else " " }}
 {%- endfor %}
 FROM {{ source_table }}
 
 {%- endif -%}
-{% endif %}
+{%- endif -%}
