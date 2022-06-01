@@ -5,6 +5,6 @@ SELECT
     {{target_col}} AS {{new_name}}{{ ", " if not loop.last else "" }}
 {%- endfor -%}
 {%- for col in source_col_names %}
-    {%- if col not in renames %}, {{col}}{%- endif -%}
+    {%- if col|upper not in renames|upper %}, {{col|upper}}{%- endif -%}
 {% endfor %}
 FROM {{ source_table }}

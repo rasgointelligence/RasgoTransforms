@@ -3,7 +3,7 @@
 {% else %}
 
 {%- if include_cols is defined -%}
-SELECT
+SELECT 
 {%- for col in include_cols %}
     {{col}}{{ ", " if not loop.last else " " }}
 {%- endfor %}
@@ -12,7 +12,7 @@ FROM {{source_table}}
 
 {%- if exclude_cols is defined -%}
 {%- set source_col_names = get_columns(source_table) -%}
-{%- set new_columns = source_col_names | reject('in', exclude_cols) -%}
+{%- set new_columns = source_col_names | reject('in', exclude_cols|upper) -%}
 
 
 SELECT
