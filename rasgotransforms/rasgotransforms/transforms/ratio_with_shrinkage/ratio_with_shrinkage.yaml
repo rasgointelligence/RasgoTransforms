@@ -1,0 +1,33 @@
+name: ratio_with_shrinkage
+tags:
+  - row
+  - math
+description: |
+  Performs empirical bayesian estimation with shrinkage towards a beta prior.
+  Given a dataset with a numerator and a denominator, will calculate the raw ratio as numerator / denom, 
+  as well as provide an adjusted ratio that shrinks the ratio towards the observed beta prior.
+
+  This is a simplified version that establishes the priors directly from the data given a min_cutoff count of observations.
+
+  NOTE: your data should already be aggregated before performing this operation.
+arguments:
+  numerator:
+    type: column
+    description: |
+      A column that is pre-aggregated to contain the count of positive cases
+  denom:
+    type: column
+    description: |
+      A column that is pre-aggregated to contain the count of ALL cases
+  min_cutoff:
+    type: int
+    description: |
+      Enter a minimum value to limit the denominator when creating the prior estimates. Example: if estimating a batter's hitting percentage, 
+      entering 500 would limit the estimation of the priors to be only for batters with over 500 at-bats.
+
+example_code: |
+  ds = rasgo.get.dataset(fqtn="BATTING_AVERAGES")
+
+  ds2 = ds.ratio_with_shrinkage(numerator = 'HITS', 
+                denom = 'AT_BATS', 
+                min_cutoff = 500)

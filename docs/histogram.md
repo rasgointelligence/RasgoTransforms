@@ -6,11 +6,11 @@ Analyze the value distribution of a single continuous variable by binning it and
 
 ## Parameters
 
-|       Name        |    Type     |                                  Description                                   | Is Optional |
-| ----------------- | ----------- | ------------------------------------------------------------------------------ | ----------- |
-| column            | column      | numeric column to use to generate the histogram                                |             |
-| filter_statements | string_list | List of SQL where statements to filter the table by, i.e. 'COLUMN IS NOT NULL' | True        |
-| num_buckets       | value       | max number of buckets to create; defaults to 200                               | True        |
+|    Name     |    Type     |                                                      Description                                                       | Is Optional |
+| ----------- | ----------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- |
+| column      | column      | numeric column to use to generate the histogram                                                                        |             |
+| filters     | filter_list | Filter logic on one or more columns. Can choose between a simple comparison filter or advanced filter using free text. | True        |
+| num_buckets | value       | max number of buckets to create; defaults to 200                                                                       | True        |
 
 
 ## Example

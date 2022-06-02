@@ -5,7 +5,7 @@ import os
 import subprocess
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, Tuple
 
 import yaml
 from pyrasgo.rasgo import Rasgo
@@ -17,6 +17,7 @@ import constants
 #      Utils for Doc and Transform Creation
 # ----------------------------------------------
 
+
 def get_root_dir() -> Path:
     """
     Get and return the root directory absolute path of this git repo
@@ -25,6 +26,8 @@ def get_root_dir() -> Path:
     root_dir_bytes = subprocess.check_output(cmd)
     root_dir_str = root_dir_bytes.decode('utf-8').strip()
     return Path(root_dir_str)
+
+
 DOCS_DIR = get_root_dir() / 'docs'
 TRANSFORMS_ROOT = get_root_dir() / 'rasgotransforms/rasgotransforms'
 
@@ -44,7 +47,7 @@ def load_all_yaml_files_as_dicts(path: Path) -> Dict[str, Dict]:
                 loaded = yaml.safe_load(stream)
                 yamls[file.stem] = loaded
         except Exception as e:
-            print(f"Can't read YAML file for transform {file.stem}\n" f"Error Msg: {e}\n")
+            print(f"Can't read YAML file {file.stem}\n Error Msg: {e}\n")
 
     return yamls
 
@@ -57,7 +60,6 @@ def override_path_exists(transform_dir_path: Path, transform_name: str, dw_type:
     if transform_override_path.exists():
         return True
     return False
-
 
 
 # ----------------------------------------------
@@ -83,6 +85,15 @@ def get_all_rasgo_transform_keyed_by_name(rasgo: Rasgo) -> Dict[str, Transform]:
     """
     transform_in_rasgo = rasgo.get.transforms()
     return {t.name: t for t in transform_in_rasgo}
+
+
+def get_all_rasgo_community_transform_keyed_by_name_and_dw_type(rasgo: Rasgo) -> Dict[Tuple[str, str], Transform]:
+    """
+    Return a Dict of all transforms keyed by names the respective
+    transform as their value
+    """
+    transform_in_rasgo = rasgo.get.community_transforms()
+    return {(t.name, t.dw_type): t for t in transform_in_rasgo}
 
 
 def transform_needs_versioning(
@@ -118,18 +129,26 @@ def transform_needs_versioning(
     return transform_needs_versioning
 
 
-def get_transform_source_code(transform_name: str) -> str:
+def get_transform_source_code_all_dws(transform_name: str) -> Dict[Tuple[str, str], str]:
     """
-    From a transform name and type load and return it's source code as a string
+    From a transform name and type load and return its source code as a string
     """
+    variants = {}
     transform_dir = TRANSFORMS_ROOT / "transforms"
     source_code_path = transform_dir / transform_name / f"{transform_name}.sql"
-    source_code_override_path = transform_dir / transform_name / constants.RASGO_DATAWAREHOUSE / f"{transform_name}.sql"
-    if source_code_override_path.exists():
-        source_code_path = source_code_override_path
-    with open(source_code_path) as fp:
-        source_code = fp.read()
-    return source_code
+    if source_code_path.exists():
+        variants[(transform_name, "UNSET")] = source_code_path.read_text(encoding="utf-8")
+
+    other_dws = [
+        path
+        for path in (transform_dir / transform_name).glob("*")
+        if path.is_dir() and (path / f"{transform_name}.sql").exists()
+    ]
+
+    for dw in other_dws:
+        variants[(transform_name, dw.name.upper())] = (dw / f"{transform_name}.sql").read_text(encoding="utf-8")
+
+    return variants
 
 
 def parse_transform_args_from_yaml(transform_yaml: Dict) -> List[Dict[str, str]]:
@@ -175,7 +194,6 @@ def get_table_values(fields: List[str], table_dict: Dict[str, any]) -> List[List
     return table_data
 
 
-
 # ----------------------------------------------
 #      Private Helper Funcs for this File
 # ----------------------------------------------
@@ -212,4 +230,3 @@ def _transform_args_have_changed(
 
     # If nothing changed in transform arguments return False
     return False
-

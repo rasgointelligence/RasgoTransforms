@@ -1,6 +1,6 @@
-# Product-Led Growth Funnel
+# Sales Growth Funnel
 
-The product-led growth funnel tracks users through a common Software as a Service (SaaS) funnel: from awareness via marketing at top of funnel, to free product user, to qualified lead for an enterprise sales motion, to closed won. The data sources necessary to generate this accelerator are Google Analytics, Heap, and Salesforce.
+The sales growth funnel tracks users through a common Software as a Service (SaaS) sales funnel: from awareness via marketing at top of funnel, to product user, to qualified lead for an enterprise sales motion, to closed won. The data sources necessary to generate this accelerator are Google Analytics, Heap, and Salesforce.
 
 ## Parameters
 

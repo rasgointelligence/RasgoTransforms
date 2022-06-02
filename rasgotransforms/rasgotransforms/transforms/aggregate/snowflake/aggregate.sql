@@ -36,7 +36,7 @@ GROUP BY {{ group_by | join(', ') }})
 {%- for col, aggs in entropy_aggs.items() -%}
 , 
 CTE_{{ col }} AS (
-SELECT
+SELECT 
 {%- for group_item in group_by %}
     {{ group_item }},
 {%- endfor -%}
@@ -46,7 +46,7 @@ FROM {{ source_table }}
 GROUP BY {{ group_by | join(', ') }},{{ col }}
 ),
 CTE_{{ col }}_RATIO AS (
-SELECT
+SELECT 
 {%- for group_item in group_by %}
     {{ group_item }},
 {%- endfor -%}

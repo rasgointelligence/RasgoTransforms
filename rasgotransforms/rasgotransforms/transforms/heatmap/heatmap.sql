@@ -29,13 +29,28 @@ BUCKETS AS (
    ,MIN_Y_VAL
    ,MAX_Y_VAL
    ,Y_BUCKET_SIZE
-   ,{{ x_axis }}::float AS COL_X_VAL
+   ,CAST({{ x_axis }} AS FLOAT) AS COL_X_VAL
    ,WIDTH_BUCKET(COL_X_VAL, MIN_X_VAL, MAX_X_VAL, {{ bucket_count }}) AS COL_X_BUCKET
-   ,{{ y_axis }}::float AS COL_Y_VAL
+   ,CAST({{ y_axis }} AS FLOAT) AS COL_Y_VAL
    ,WIDTH_BUCKET(COL_Y_VAL, MIN_Y_VAL, MAX_Y_VAL, {{ bucket_count }}) AS COL_Y_BUCKET
   FROM
     {{ source_table }}
     CROSS JOIN EDGES
+    {%- if filters is defined and filters %}
+        {% for filter_block in filters %}
+          {%- set oloop = loop -%}
+          {{ 'WHERE ' if oloop.first else ' AND ' }}
+              {%- if filter_block is not mapping -%}
+                  {{ filter_block }}
+              {%- else -%}
+                  {%- if filter_block['operator'] == 'CONTAINS' -%}
+                      {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+                  {%- else -%}
+                      {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+                  {%- endif -%}
+              {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
 )
 -- Run final aggregates on the buckets
 SELECT
