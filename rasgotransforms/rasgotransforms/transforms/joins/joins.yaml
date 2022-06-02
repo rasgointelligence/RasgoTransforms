@@ -4,7 +4,7 @@ tags:
   - join
   - reshape
 description: |
-  Join a one or multiple datasets with the base/source dataset
+  Join one or more datasets together using SQL joins. Supported join types include INNER, LEFT, RIGHT.
 
 arguments:
   join_dicts:
