@@ -13,7 +13,7 @@ def to_camel_case(snake_str):
 
 def get_some_transforms(dw_type: str):
     return [
-        {**x.__dict__, **{'dw_type': dw_type}}
+        {**x.__dict__, 'dw_type': dw_type}
         for x in rasgotransforms.serve_rasgo_transform_templates(datawarehouse=dw_type)
     ]
 
