@@ -1,4 +1,4 @@
+boto3
 pyrasgo>=0.4.27
 pytablewriter
 pyyaml
-boto3

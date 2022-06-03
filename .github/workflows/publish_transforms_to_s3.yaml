@@ -33,4 +33,3 @@ jobs:
 
       - name: Publish Transforms to S3
         run: python python/publish_transforms_to_s3.py
-
