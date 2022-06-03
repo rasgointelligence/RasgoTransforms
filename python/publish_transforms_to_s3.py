@@ -8,7 +8,7 @@ import boto3
 
 def to_camel_case(snake_str):
     components = snake_str.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])
+    return f"{components[0]}{''.join(x.title() for x in components[1:])}"
 
 
 def get_some_transforms(dw_type: str):
