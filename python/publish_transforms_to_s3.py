@@ -2,8 +2,10 @@
 Python Script to Publish all Transforms (for every DW) to S3
 """
 import json
-import rasgotransforms
+
 import boto3
+
+import rasgotransforms
 
 
 def to_camel_case(snake_str):
