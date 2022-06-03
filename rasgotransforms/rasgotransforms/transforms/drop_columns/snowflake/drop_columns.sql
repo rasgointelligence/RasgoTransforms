@@ -11,7 +11,7 @@ FROM {{source_table}}
 {%- endif -%}
 
 {%- if exclude_cols is defined -%}
-{%- set exclude_cols = (exclude_cols|join|upper).split() -%}
+{%- set exclude_cols = (exclude_cols|join(',')|upper).split(',') -%}
 {%- set source_col_names = get_columns(source_table) -%}
 {%- set new_columns = source_col_names | reject('in', exclude_cols) -%}
 
