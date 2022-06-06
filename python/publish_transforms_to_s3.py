@@ -5,7 +5,7 @@ import json
 
 import boto3
 
-from rasgotransforms.main import serve_rasgo_transform_templates, DataWarehouse
+import rasgotransforms
 
 
 def to_camel_case(snake_str):
@@ -16,7 +16,7 @@ def to_camel_case(snake_str):
 def get_some_transforms(dw_type: str):
     return [
         {**x.__dict__, 'dw_type': dw_type}
-        for x in serve_rasgo_transform_templates(datawarehouse=dw_type)
+        for x in rasgotransforms.serve_rasgo_transform_templates(datawarehouse=dw_type)
     ]
 
 
@@ -25,7 +25,7 @@ def publish_transforms() -> None:
     Build the json and push it to S3
     """
     # get ALL the transforms for each DW Type in the DataWarehouse Enum
-    raw_transforms = [y for z in [get_some_transforms(x.name) for x in DataWarehouse] for y in z]
+    raw_transforms = [y for z in [get_some_transforms(x.name) for x in rasgotransforms.DataWarehouse] for y in z]
     # snake -> camel
     raw_transforms = [{to_camel_case(k): v for k, v in x.items()} for x in raw_transforms]
 

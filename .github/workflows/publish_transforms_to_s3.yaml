@@ -18,7 +18,7 @@ jobs:
       image: "python:3.7"
 
     env:
-      PYTHONPATH: /__w/RasgoTransforms/RasgoTransforms
+      PYTHONPATH: rasgotransforms
       AWS_ACCESS_KEY_ID: ${{ secrets.S3_UPLOAD_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_UPLOAD_SECRET_ACCESS_KEY }}
 
