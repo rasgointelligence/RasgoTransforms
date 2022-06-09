@@ -28,6 +28,7 @@ def publish_transforms() -> None:
     raw_transforms = [y for z in [get_some_transforms(x.name) for x in rasgotransforms.DataWarehouse] for y in z]
     # snake -> camel
     raw_transforms = [{to_camel_case(k): v for k, v in x.items()} for x in raw_transforms]
+    print(f'Publishing {len(raw_transforms)} Rasgo Transforms to S3')
 
     # upload to s3 with public read permissions
     s3 = boto3.client('s3')

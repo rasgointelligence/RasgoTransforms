@@ -16,6 +16,10 @@ arguments:
     type: column_list
     description: A list of the columns from the dataset you want to drop. Any columns not in the exclude_cols list will be kept.
     is_optional: true
+  case_sensitive_exclude:
+    type: boolean
+    description: Should column names be matched using case sensitivity when excluding columns
+    is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
 
