@@ -12,11 +12,9 @@ FROM {{source_table}}
 
 {%- if exclude_cols is defined -%}
 {%- set source_col_names = get_columns(source_table) -%}
-
-    {%- if not case_sensitive_exclude -%}
-        {%- set exclude_cols = (exclude_cols|join(',')|upper).split(',') -%}
-        {%- set source_col_names =(source_col_names|join(',')|upper).split(',') -%}
-    {%- endif -%}
+{# Upper case both inputs and column names to ensure case insensitive name matching #}
+{%- set exclude_cols = (exclude_cols|join(',')|upper).split(',') -%}
+{%- set source_col_names =(source_col_names|join(',')|upper).split(',') -%}
 
 {%- set new_columns = source_col_names | reject('in', exclude_cols) -%}
 
