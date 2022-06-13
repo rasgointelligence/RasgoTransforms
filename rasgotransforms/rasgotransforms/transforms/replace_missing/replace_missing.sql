@@ -20,7 +20,7 @@ else it will perform that impuattion stagety on column
     COALESCE({{ col }}, {{ impute_expression }} ) as {{ col }}
 {%- endmacro -%}
 
-{# Marco to generate a query to flag missing values #}
+{# Macro to generate a query to flag missing values #}
 {%- macro get_flag_missing_query(col) -%}
     CASE
         WHEN {{ col }} IS NULL then 1
@@ -34,8 +34,8 @@ else it will perform that impuattion stagety on column
 
 SELECT
 {%- for col in source_col_names -%}
-    {%- if col in imputations %}
-    {{ get_impute_query(col, imputations[col]) }}{{ ',' if flag_missing_vals or not loop.last else ''}}
+    {%- if col in replacements %}
+    {{ get_impute_query(col, replacements[col]) }}{{ ',' if flag_missing_vals or not loop.last else ''}}
     {%- if flag_missing_vals %}
     {{ get_flag_missing_query(col) }}{{ ',' if not loop.last else ''}}
     {%- endif -%}
