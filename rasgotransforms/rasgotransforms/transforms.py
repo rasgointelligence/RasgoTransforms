@@ -9,6 +9,10 @@ from .main import DataWarehouse
 
 
 class Transforms(object):
+    """
+    Dynamically adds class methods which render each transform in the package
+    """
+
     def __init__(self):
         transforms_dir = Path(os.path.dirname(__file__), 'transforms')
         for transform_path in transforms_dir.rglob('*/*.yaml'):
@@ -63,6 +67,10 @@ def _gen_method_docstring(transform_config: Dict) -> str:
 
 
 def _get_render_method(transform_config):
+    """
+    Creates the class method used to render jinja templates which is dynamically added to the transforms module
+    """
+
     def render_transform(
         *args,
         source_table: str,
@@ -92,6 +100,9 @@ def _get_render_method(transform_config):
 
 
 def _get_transform_path(name: str, dw_type: DataWarehouse):
+    """
+    Returns the default or data warehouse specific template file given the transform name
+    """
     root_dir = os.path.dirname(__file__)
     if dw_type:
         function_path = Path(root_dir, 'transforms', name, dw_type.value, f'{name}.sql')
@@ -100,14 +111,3 @@ def _get_transform_path(name: str, dw_type: DataWarehouse):
     function_path = Path(root_dir, 'transforms', name, f'{name}.sql')
     if os.path.exists(function_path):
         return str(function_path)
-
-
-if __name__ == '__main__':
-    transforms = Transforms()
-    sql = transforms.drop_columns(
-        dw_type='bigquery',
-        source_columns={'DB.SCHEMA.TABLE': {'COL1': 'varchar', 'COPY_COL1': 'varchar', 'COL2': 'int', 'COL3': 'bool'}},
-        exclude_cols=['COL1'],
-        source_table='DB.SCHEMA.TABLE',
-    )
-    print(sql)
