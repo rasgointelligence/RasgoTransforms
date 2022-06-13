@@ -1,8 +1,7 @@
 name: remove_outliers
 tags:
-  - row
-  - math
-  - conditional
+  - data_cleaning
+  - data_quality
 description: |
   This function determines which records in the table are an outlier based on a given 
   statistical method (z-score, IQR, or manual threshold) and a target column. It produces 
