@@ -7,16 +7,16 @@
 
 with source_query as (
     select
-        cast(date_trunc('day', cast({{ timestamp }} as date)) as date) as date_day,
+        cast(date_trunc('day', cast({{ time_dimension }} as date)) as date) as date_day,
         {%- for dimension in dimensions %}
         {{ dimension }},
         {%- endfor %}
-        {{ target_sql }} as property_to_aggregate
+        {{ target_expression }} as property_to_aggregate
 
     from {{ source_table }}
     where 1=1
         {%- for filter in filters %}
-        and {{ filter.field }} {{ filter.operator }} {{ filter.value }}
+        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
         {%- endfor %}
 ),
 calendar as (

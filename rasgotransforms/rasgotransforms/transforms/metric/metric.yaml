@@ -4,14 +4,14 @@ tags:
   - insight
 description: Calculate metric values given a metric definition
 arguments:
-  timestamp:
+  time_dimension:
     type: column
     description: The date/datetime column by which the metric will be aggregated
-  target_sql:
+  target_expression:
     type: column
     description: The target column used to calculate the metric, can also be a sql string '(e.g. cast(target_column as string)')
   aggregation_type:
-    type: string
+    type: agg
     description: the Aggregation method used to calculate the metric (e.g. 'sum', 'count_distinct', 'max')
   time_grain:
     type: string
@@ -21,7 +21,7 @@ arguments:
     description: List of columns used to group by in metric aggregation
     is_optional: true
   filters:
-    type: list
+    type: filter_list
     description: List of objects containing filters used to filter the source data. A filter object must contain the fields 'field', 'operator', and 'value'. String values should be wrapped in single quotes.
     is_optional: true
   alias:
@@ -34,8 +34,8 @@ example_code: |
 
   ds2 = ds.metric(
       source_table="DBTTEST.TUTORIAL.ORDERS",
-      timestamp='ORDERDATE',
-      target_sql=SALESAMOUNT',
+      time_dimension='ORDERDATE',
+      target_expression=SALESAMOUNT',
       aggregation_type='sum',
       alias='weekly_sales',
       time_grain='week',
