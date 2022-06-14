@@ -1,4 +1,4 @@
-name: join
+name: joins
 tags:
   - table
   - join
@@ -72,7 +72,7 @@ example_code: |
   customer = rasgo.get.dataset(55)
   product = rasgo.get.dataset(75)
 
-  ds = product.join(join_dicts=[
+  ds = product.joins(join_dicts=[
         {
         'table_b': internet_sales.fqtn,
         'join_type':'LEFT',
