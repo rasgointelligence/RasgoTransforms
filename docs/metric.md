@@ -15,6 +15,8 @@ Calculate metric values given a metric definition
 | dimensions        | column_list | List of columns used to group by in metric aggregation                                                                                                                                         | True        |
 | filters           | filter_list | List of objects containing filters used to filter the source data. A filter object must contain the fields 'field', 'operator', and 'value'. String values should be wrapped in single quotes. | True        |
 | alias             | string      | The name of the output metric value column                                                                                                                                                     | True        |
+| start_date        | timestamp   | The start of the period for which metric values will be calculated (2010-01-01 if unset)                                                                                                       | True        |
+| num_days          | int         | The number of days after the start_date for which metric values will be calculated (7300 if unset)                                                                                             | True        |
 
 
 ## Example

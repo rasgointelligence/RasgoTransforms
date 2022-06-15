@@ -14,7 +14,7 @@ with source_query as (
         {{ target_expression }} as property_to_aggregate
 
     from {{ source_table }}
-    where 1=1
+    where {{ time_dimension }} >= '{{ start_date }}'
         {%- for filter in filters %}
         and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
         {%- endfor %}
@@ -25,7 +25,7 @@ calendar as (
             cast(dateadd(
                 'day',
                 interval_id-1,
-                '2010-01-01'::timestamp_ntz) as date) as date_day,
+                '{{ start_date }}'::timestamp_ntz) as date) as date_day,
             cast(date_trunc('week', date_day) as date) as date_week,
             cast(date_trunc('month', date_day) as date) as date_month,
             case

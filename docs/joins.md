@@ -1,6 +1,6 @@
 
 
-# join
+# joins
 
 Join one or more datasets together using SQL joins. Supported join types include INNER, LEFT, RIGHT.
 
@@ -19,7 +19,7 @@ internet_sales = rasgo.get.dataset(74)
 customer = rasgo.get.dataset(55)
 product = rasgo.get.dataset(75)
 
-ds = product.join(join_dicts=[
+ds = product.joins(join_dicts=[
       {
       'table_b': internet_sales.fqtn,
       'join_type':'LEFT',
