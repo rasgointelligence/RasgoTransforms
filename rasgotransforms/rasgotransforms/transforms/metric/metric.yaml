@@ -28,6 +28,14 @@ arguments:
     type: string
     description: The name of the output metric value column
     is_optional: true
+  start_date:
+    type: timestamp
+    description: The start of the period for which metric values will be calculated (2010-01-01 if unset)
+    is_optional: true
+  num_days:
+    type: int
+    description: The number of days after the start_date for which metric values will be calculated (7300 if unset)
+    is_optional: true
 
 example_code: |
   ds = rasgo.get.dataset(id)
