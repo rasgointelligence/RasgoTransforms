@@ -82,9 +82,9 @@ final as (
     select
         cast(period as timestamp) as period_start,
         {%- if time_grain|lower == 'quarter' %}
-        dateadd('second', -1, dateadd('month',3, period_start)) as period_end,
+        dateadd('second', -1, dateadd('month',3, period_start)) as period_min,
         {%- else %}
-        dateadd('second', -1, dateadd('{{ time_grain }}',1, period_start)) as period_end,
+        dateadd('second', -1, dateadd('{{ time_grain }}',1, period_start)) as period_max,
         {%- endif %}
         {%- for dimension in dimensions %}
         {{ dimension }},
