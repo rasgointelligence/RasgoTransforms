@@ -1,6 +1,5 @@
 {%- set start_date = '2010-01-01' if not start_date else start_date -%}
 {%- set num_days = 7300 if not num_days else num_days -%}
-{%- set time_grain = 'date_' + time_grain -%}
 {%- set alias = 'metric_value' if not alias else alias -%}
 {%- set distinct = true if 'distinct' in aggregation_type|lower else false -%}
 {%- set aggregation_type = aggregation_type|upper|replace('_', '')|replace('DISTINCT', '')|replace('MEAN', 'AVG') -%}
@@ -39,7 +38,7 @@ calendar as (
 ),
 spine__time as (
         select
-        {{ time_grain }} as period,
+        date_{{ time_grain }} as period,
         date_day
         from calendar
 ),
@@ -81,7 +80,12 @@ bounded as (
 ),
 final as (
     select
-        period,
+        cast(period as timestamp) as period_start,
+        {%- if time_grain|lower == 'quarter' %}
+        dateadd('second', -1, dateadd('month',3, period_start)) as period_end,
+        {%- else %}
+        dateadd('second', -1, dateadd('{{ time_grain }}',1, period_start)) as period_end,
+        {%- endif %}
         {%- for dimension in dimensions %}
         {{ dimension }},
         {%- endfor %}
