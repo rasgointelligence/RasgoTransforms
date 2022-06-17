@@ -11,7 +11,7 @@ description: |
    
   The result is a summarized table. 
 arguments:
-  group_by:
+  group_cols:
     type: column_list
     description: The column(s) used to partition you data into groups.
       Islands will be searched within each group
