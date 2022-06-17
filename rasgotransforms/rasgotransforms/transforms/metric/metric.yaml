@@ -1,0 +1,64 @@
+name: metric
+type: insight
+tags:
+  - insight
+description: Calculate metric values given a metric definition
+arguments:
+  time_dimension:
+    type: column
+    description: The date/datetime column by which the metric will be aggregated
+  target_expression:
+    type: column
+    description: The target column used to calculate the metric, can also be a sql string '(e.g. cast(target_column as string)')
+  aggregation_type:
+    type: agg
+    description: the Aggregation method used to calculate the metric (e.g. 'sum', 'count_distinct', 'max')
+  time_grain:
+    type: string
+    description: The time grain (day, week, month, quarter, year) used to create the datespine that the metric is aggregated by
+  dimensions:
+    type: column_list
+    description: List of columns used to group by in metric aggregation
+    is_optional: true
+  filters:
+    type: filter_list
+    description: List of objects containing filters used to filter the source data. A filter object must contain the fields 'field', 'operator', and 'value'. String values should be wrapped in single quotes.
+    is_optional: true
+  alias:
+    type: string
+    description: The name of the output metric value column
+    is_optional: true
+  start_date:
+    type: timestamp
+    description: The start of the period for which metric values will be calculated (2010-01-01 if unset)
+    is_optional: true
+  num_days:
+    type: int
+    description: The number of days after the start_date for which metric values will be calculated (7300 if unset)
+    is_optional: true
+
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.metric(
+      source_table="DBTTEST.TUTORIAL.ORDERS",
+      time_dimension='ORDERDATE',
+      target_expression=SALESAMOUNT',
+      aggregation_type='sum',
+      alias='weekly_sales',
+      time_grain='week',
+      dimensions=['PRODUCTKEY'],
+      filters=[
+        {
+          'field': 'UNITPRICE',
+          'operator': '>=',
+          'value': 1
+        },
+        {
+          'field': 'DEPARTMENT',
+          'operator': 'like'
+          'value': "'%electronics'"
+        }
+      ]
+  )
+  ds2.preview()

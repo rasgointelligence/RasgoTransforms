@@ -47,7 +47,7 @@ def load_all_yaml_files_as_dicts(path: Path) -> Dict[str, Dict]:
                 loaded = yaml.safe_load(stream)
                 yamls[file.stem] = loaded
         except Exception as e:
-            print(f"Can't read YAML file for transform {file.stem}\n" f"Error Msg: {e}\n")
+            print(f"Can't read YAML file {file.stem}\n Error Msg: {e}\n")
 
     return yamls
 

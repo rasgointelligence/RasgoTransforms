@@ -1,0 +1,37 @@
+# Publish all Accelerators in this Repo Production and Staging Environments
+# Run job each time something is pushed/committed to remote 'main' branch
+name: Publish Accelerators
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-accelerators:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    container:
+      image: "python:3.7"
+
+    env:
+      PYTHONPATH: /__w/RasgoTransforms/RasgoTransforms
+      RASGO_COMMUNITY_API_KEY: ${{ secrets.RASGO_COMMUNITY_API_KEY }}
+      RASGO_STAGING_COMMUNITY_API_KEY: ${{ secrets.RASGO_STAGING_COMMUNITY_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Python Requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r python/requirements.txt
+
+      - name: Publish Accelerators on Prod
+        run: python python/publish_accelerators.py "$RASGO_COMMUNITY_API_KEY" -d production
+
+      - name: Publish Accelerators on Staging
+        run: python python/publish_accelerators.py "$RASGO_STAGING_COMMUNITY_API_KEY" -d staging

@@ -3,23 +3,26 @@
 {% else %}
 
 {%- if include_cols is defined -%}
-SELECT 
-{% for col in include_cols -%}
-{{col}}{{ ", " if not loop.last else " " }}
+SELECT
+{%- for col in include_cols %}
+    {{col}}{{ ", " if not loop.last else " " }}
 {%- endfor %}
 FROM {{source_table}}
 {%- endif -%}
 
 {%- if exclude_cols is defined -%}
 {%- set source_col_names = get_columns(source_table) -%}
-{%- set new_columns = source_col_names | reject('in', exclude_cols) -%}
 
+{# Upper exclude cols to ensure case insensitive name matching #}
+{%- set exclude_cols = (exclude_cols|join(',')|upper).split(',') -%}
 
 SELECT
-{% for col in new_columns -%}
-{{ col }}{{ ", " if not loop.last else " " }}
-{%- endfor %}
+{% for column_name in source_col_names %}
+    {%- if column_name.upper() not in exclude_cols -%}
+        {{ "\t"+column_name }}{{ ", \n" if not loop.last else " " }}
+    {%- endif -%}
+{% endfor %}
 FROM {{ source_table }}
 
 {%- endif -%}
-{% endif %}
+{%- endif -%}
