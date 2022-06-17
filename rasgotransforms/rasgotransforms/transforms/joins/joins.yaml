@@ -4,18 +4,16 @@ tags:
   - join
   - reshape
 description: |
-  Join one or more datasets together using SQL joins. Supported join types include INNER, LEFT, RIGHT.
+  Join one or more datasets together using SQL joins. Supported join types include INNER, LEFT, RIGHT, FULL OUTER, and CROSS.
 
 arguments:
   join_dicts:
     type: join_dicts
     description: |
-      List of 'join_dict' dictionaries which specify how to perform each type of join.
-
-      See example of input and output below to get a better understanding transform arguements should be defined
+      List of 'join_dict' dictionaries which specify how to perform each join.
 
       Each Dictionary will have the following values
-        1. join_type: Literal['LEFT', 'RIGHT', 'INNER']
+        1. join_type: Literal['LEFT', 'RIGHT', 'INNER', 'FULL OUTER', 'CROSS']
           - Type of Join to Perform
         2. table_a: str dataset.FQTN (only needed if not first 'join_dict' in list)
            - Specfies the table/fqtn to join in the `FROM ...` clause
@@ -31,9 +29,7 @@ arguments:
             ON `<table_A_col_name_dict_key> = table_B_col_name_dict_value>`
           - join_on dict can contain mutiple values
       
-        Example Input Output
-
-        The following transform below with produce the following SQL 
+        Example: 
 
         ```python
         internet_sales = rasgo.get.dataset(74)
@@ -57,6 +53,8 @@ arguments:
         ])
         print(ds.sql)
         ```
+
+        Will produce the following SQL:
 
         ```sql
         SELECT ...
@@ -85,6 +83,11 @@ example_code: |
         'join_on':{'CUSTOMERKEY':'CUSTOMERKEY', 'DUEDATE': 'BIRTHDATE'},
         'join_type':'INNER',
         'join_prefix_b':'sales'
+        },
+        {
+        'table_a':internet_sales.fqtn,
+        'table_b':customer.fqtn,
+        'join_type':'CROSS'
         }
     ])
   ds.preview()
