@@ -36,6 +36,10 @@ arguments:
     type: int
     description: The number of days after the start_date for which metric values will be calculated (7300 if unset)
     is_optional: true
+  flatten:
+    type: bool
+    description: "(Default: true) If true, the resulting data will be pivoted on the distinct dimension columns"
+    is_optional: true
 
 example_code: |
   ds = rasgo.get.dataset(id)
