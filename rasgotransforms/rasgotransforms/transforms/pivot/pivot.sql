@@ -4,8 +4,16 @@ from {{ source_table }}
 limit 1000
 {%- endset -%}
 
+{%- set run_query_error_message -%}
+This transform depends on dynamic values to work, but no Datawarehouse connection is available. 
+Instead, please use the `list_of_vals` argument to provide these values explicitly
+{%- endset -%}
+
 {%- if list_of_vals is not defined -%}
     {%- set results = run_query(distinct_val_query) -%}
+    {%- if results is none -%}
+        {{ raise_exception(run_query_error_message) }}
+    {%- endif -%}
     {%- set distinct_vals = results[results.columns[0]].to_list() -%}
 {%- else -%}
     {%- set distinct_vals = list_of_vals -%}
@@ -17,7 +25,6 @@ limit 1000
 {{ cleanse_name(val) }}{{ ', ' if not loop.last else '' }}
 {%- endfor -%}
 {%- endmacro -%}
-
 
 SELECT {{ dimensions | join(", ") }}, {{ get_values(distinct_vals) }}
 FROM ( SELECT {{ dimensions | join(", ") }}, {{ pivot_column }}, {{ value_column }} FROM {{ source_table }})
