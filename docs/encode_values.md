@@ -1,0 +1,42 @@
+
+
+# label_encode
+
+Encodes values in a column through a variety of methods:
+
+Label Encoding:
+Encode target labels with value between 0 and n_classes-1. See scikit-learn's [LabelEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html#sklearn.preprocessing.LabelEncoder) for full documentation.
+
+Target Encoding:
+Encode a categorical column with the average value of a target column for the corresponding value of the categorical column.
+See scikit-learn's [TargetEncoder](https://contrib.scikit-learn.org/category_encoders/targetencoder.html) for full documentation.
+
+One Hot Encoding:
+Encode a categorical column as a 0 or 1 for each possible category, each of which will be it's own row.
+
+
+## Parameters
+
+|  Name  |  Type  |                                  Description                                   | Is Optional |
+| ------ | ------ | ------------------------------------------------------------------------------ | ----------- |
+| method | string | Encoding method which will be used ('label', 'target', or 'oh')                |             |
+| column | column | Column name to label encode                                                    |             |
+| target | column | Required if method = 'target'. Numeric target column to use to create averages | True        |
+
+
+## Example
+
+```python
+ds = rasgo.get.dataset(id)
+
+ds2 = ds.label_encode(column='WEATHER_DESCRIPTION', method='oh')
+ds2.preview()
+
+ds3 = ds.target_encode(column='WEATHER_DESCRIPTION', target='DAILY_HIGH_TEMP')
+ds3.preview()
+```
+
+## Source Code
+
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/encode_values/snowflake/encode_values.sql" %}
+
