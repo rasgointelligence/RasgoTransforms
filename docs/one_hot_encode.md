@@ -6,9 +6,10 @@ One hot encode a column. Create a null value flag for the column if any of the v
 
 ## Parameters
 
-|  Name  |  Type  |          Description          | Is Optional |
-| ------ | ------ | ----------------------------- | ----------- |
-| column | column | Column name to one-hot encode |             |
+|     Name     |    Type     |                                         Description                                         | Is Optional |
+| ------------ | ----------- | ------------------------------------------------------------------------------------------- | ----------- |
+| column       | column      | Column name to one-hot encode                                                               |             |
+| list_of_vals | string_list | optional argument to override the dynamic lookup of all values in the target one-hot column | True        |
 
 
 ## Example
