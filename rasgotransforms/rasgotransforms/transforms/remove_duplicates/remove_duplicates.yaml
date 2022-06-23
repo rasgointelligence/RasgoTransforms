@@ -1,4 +1,4 @@
-name: dedupe
+name: remove_duplicates
 tags:
   - table
   - data_quality
@@ -17,7 +17,7 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.dedupe(
+  ds2 = ds.remove_duplicates(
     natural_key=["FIPS", "DS_WEATHER_ICON", "DATE"],
     order_col=["DATE", "FIPS"],
     order_method="asc"

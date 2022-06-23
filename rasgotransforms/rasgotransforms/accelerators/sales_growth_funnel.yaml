@@ -279,9 +279,9 @@ operations:
       source_table: "{{ join_opportunities }}"
     description: Drop date spine columns
   daily_metrics:
-    transform_name: impute
+    transform_name: replace_missing
     transform_arguments:
-      imputations:
+      replacements:
         "LEADS_CREATED": 0
         "CONTACTS_CREATED": 0
         "ACCOUNTS_CREATED": 0

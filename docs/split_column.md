@@ -1,6 +1,6 @@
 
 
-# split
+# split_column
 
 Takes a delimiter and target column, splitting the column values by the delimiter into multiple columns.
 
@@ -19,12 +19,12 @@ Takes a delimiter and target column, splitting the column values by the delimite
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.split(target_col='PRODUCTKEY', sep='-', output_cols=['KEY_PREFIX', 'KEY_ROOT', 'KEY_SUFFIX'])
+ds2 = ds.split_column(target_col='PRODUCTKEY', sep='-', output_cols=['KEY_PREFIX', 'KEY_ROOT', 'KEY_SUFFIX'])
 ds2.preview()
 
 ```
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/split/split.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/split_column/split_column.sql" %}
 

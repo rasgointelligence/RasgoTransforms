@@ -1,3 +1,4 @@
+
 {%- set source_col_names = get_columns(source_table) -%}
 
 SELECT
