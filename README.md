@@ -50,4 +50,3 @@ def infer_columns(args, source_columns) -> dict:
 
 # About Us
 Rasgo Transforms are maintained by *[Rasgo](https://rasgoml.com)*.
-
