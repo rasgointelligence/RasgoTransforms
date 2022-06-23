@@ -18,9 +18,8 @@
         {{ raise_exception('There are more than 100 distinct groups given the current dimensions. Please select dimensions with fewer distinct groups to aggregate by.') }}
     {%- endif -%}
     {%- for val in distinct_vals.itertuples() -%}
-        _
         {%- for column in distinct_vals.columns -%}
-            {{ cleanse_name(val[column])|replace('_', '') }}{{'_' if not loop.last else ''}}
+            {{ val[column] }}{{'_' if not loop.last else ''}}
         {%- endfor -%}
         {{ ',' if not loop.last else ''}}
     {%- endfor %}
@@ -124,9 +123,9 @@ select * from tidy_data
 , 
 combined_dimensions as (
     select
-        concat('_', 
+        concat( 
         {%- for dimension in dimensions -%} 
-            {{ dimension}}{{ ",'_'," if not loop.last else ''}}
+            {{ dimension }}{{ ",'_'," if not loop.last else ''}}
         {%- endfor -%}) as dimensions,
         period_min,
         period_max,
@@ -138,7 +137,7 @@ pivoted as (
         period_min,
         period_max,
         {% for val in distinct_values -%}
-        {{ val }}{{',' if not loop.last else ''}}
+        {{ cleanse_name(val) }}{{',' if not loop.last else ''}}
         {%- endfor %}
     from (
         select 
@@ -158,7 +157,7 @@ pivoted as (
         period_min,
         period_max,
         {% for val in distinct_values -%}
-        {{ val }}{{',' if not loop.last else ''}}
+        {{ cleanse_name(val) }}{{',' if not loop.last else ''}}
         {%- endfor %}
     )
 )
