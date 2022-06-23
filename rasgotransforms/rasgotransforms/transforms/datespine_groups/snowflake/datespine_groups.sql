@@ -1,14 +1,24 @@
-{% set row_count_query %}
-select datediff('{{ interval_type }}', '{{ start_timestamp }}'::timestamp_ntz, '{{ end_timestamp }}'::timestamp_ntz)
-{% endset %}
-{% set row_count_query_results = run_query(row_count_query) %}
-{% set row_count = row_count_query_results[row_count_query_results.columns[0]][0] %}
+{%- set min_max_query -%}
+select min(cast({{ date_col }} as date)) min_date, max(cast({{ date_col }} as date)) max_date from {{ source_table }}
+{% endset -%}
+{% set min_max_query_result = run_query(min_max_query) -%}
+{% if start_timestamp is defined -%}
+    {% set min_date = start_timestamp -%}
+{% else -%}
+    {% set min_date = min_max_query_result[min_max_query_result.columns[0]][0] -%}
+{% endif -%}
+{% if  end_timestamp is defined -%}
+    {% set max_date = end_timestamp -%}
+{% else -%}
+    {% set max_date = min_max_query_result[min_max_query_result.columns[1]][0] -%}
+{% endif -%}
+{% set row_count = (max_date|string|todatetime - min_date|string|todatetime).days + 1 -%}
 
 WITH GLOBAL_SPINE AS (
   SELECT
     ROW_NUMBER() OVER (ORDER BY NULL) as INTERVAL_ID,
-    DATEADD('{{ interval_type }}', (INTERVAL_ID - 1), '{{ start_timestamp }}'::timestamp_ntz) as SPINE_START,
-    DATEADD('{{ interval_type }}', INTERVAL_ID, '{{ start_timestamp }}'::timestamp_ntz) as SPINE_END
+    DATEADD('{{ interval_type }}', (INTERVAL_ID - 1), '{{ min_date }}'::timestamp_ntz) as SPINE_START,
+    DATEADD('{{ interval_type }}', INTERVAL_ID, '{{ min_date }}'::timestamp_ntz) as SPINE_END
   FROM TABLE (GENERATOR(ROWCOUNT => {{ row_count }}))
 ), 
 GROUPS AS (
