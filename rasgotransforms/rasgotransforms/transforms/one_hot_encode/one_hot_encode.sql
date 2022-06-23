@@ -5,7 +5,7 @@ Instead, please use the `list_of_vals` argument to provide these values explicit
 
 {%- if list_of_vals is not defined -%}
     {%- set distinct_col_vals =  run_query("SELECT DISTINCT " +  column + " FROM " + source_table)[column].to_list() -%}
-    {%- if results is none -%}
+    {%- if distinct_col_vals is none -%}
         {{ raise_exception(run_query_error_message) }}
     {%- endif -%}
 {%- else -%}
