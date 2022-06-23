@@ -17,7 +17,7 @@ Rasgo Transforms is a library of SQL templates that can be called like functions
 
 # Writing Transforms
 
-Transforms are SQL templates that are rendered using arguments that we define in a config `.yaml.` file. To add a transform, you must include the jinja template file which produces the SQL, the config yaml file which defines the arguments needed for the template to render, and optionally, a python file with the `get_columns` function implemented which is used to infer the columns their types of a table created from a transform's sql query.
+Transforms are SQL templates that are rendered using arguments that we define in a config `.yaml.` file. To add a transform, you must include the jinja template file which produces the SQL, the config yaml file which defines the arguments needed for the template to render, and optionally, a python file with the `infer_columns` function implemented which is used to infer the columns their types of a table created from a transform's sql query.
 
 The new transform should be added to the projects file structure like this:
 
