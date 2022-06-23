@@ -5,7 +5,7 @@ limit 1000
 {%- endset -%}
 
 {%- set run_query_error_message -%}
-This transform depends on dynamic values to work, but no Datawarehouse connection is available. 
+This transform depends on dynamic values to work, but no Data Warehouse connection is available. 
 Instead, please use the `list_of_vals` argument to provide these values explicitly
 {%- endset -%}
 
