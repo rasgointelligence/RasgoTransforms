@@ -19,7 +19,7 @@
     {%- endif -%}
     {%- for val in distinct_vals.itertuples() -%}
         {%- for column in distinct_vals.columns -%}
-            {{ cleanse_name(val[column])|replace('_', '') }}{{'_' if not loop.last else ''}}
+            {{ val[column] }}{{'_' if not loop.last else ''}}
         {%- endfor -%}
         {{ ',' if not loop.last else ''}}
     {%- endfor %}
