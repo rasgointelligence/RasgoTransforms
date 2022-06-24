@@ -117,7 +117,7 @@ tidy_data as (
     order by {{ range(1, dimensions|length + 2)|join(', ') }}
 )
 {%- if not dimensions or not flatten %}
-select * from tidy_data
+select * from tidy_data order by period_min
 {%- else -%}
 {%- set distinct_values = get_distinct_values(dimensions).split(',') -%}
 , 
@@ -161,5 +161,5 @@ pivoted as (
         {%- endfor %}
     )
 )
-select * from pivoted
+select * from pivoted order by period_min
 {%- endif -%}
