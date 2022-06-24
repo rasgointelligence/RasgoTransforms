@@ -1,7 +1,12 @@
+{% if start_timestamp is not defined or end_timestamp is not defined -%}
 {%- set min_max_query -%}
 select min(cast({{ date_col }} as date)) min_date, max(cast({{ date_col }} as date)) max_date from {{ source_table }}
 {% endset -%}
 {% set min_max_query_result = run_query(min_max_query) -%}
+{% if min_max_query_result is none -%}
+{{ raise_exception('start_timstamp and end_timestamp must be provided when no Data Warehouse connection is available')}}
+{% endif -%}
+{% endif -%}
 {% if start_timestamp is defined -%}
     {% set min_date = start_timestamp -%}
 {% else -%}
