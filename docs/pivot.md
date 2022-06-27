@@ -8,7 +8,7 @@ Transpose unique values in a single column to generate multiple columns, aggrega
 
 |     Name     |    Type     |                                                         Description                                                         | Is Optional |
 | ------------ | ----------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| dimensions   | column_list | dimension columns after the pivot runs                                                                                      |             |
+| dimensions   | column_list | dimension columns after the pivot runs                                                                                      | True        |
 | pivot_column | column      | column to pivot and aggregate                                                                                               |             |
 | value_column | column      | column with row values that will become columns                                                                             |             |
 | agg_method   | agg         | method of aggregation (i.e. sum, avg, min, max, etc.)                                                                       |             |
