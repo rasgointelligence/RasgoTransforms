@@ -9,6 +9,7 @@ arguments:
   dimensions:
     type: column_list
     description: dimension columns after the pivot runs
+    is_optional: true
   pivot_column:
     type: column
     description: column to pivot and aggregate

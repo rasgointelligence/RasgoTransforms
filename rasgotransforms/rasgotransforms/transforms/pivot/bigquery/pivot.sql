@@ -21,7 +21,7 @@ SELECT * FROM (
     FROM {{ source_table }}
 )
 PIVOT ( 
-    {{ agg_method }} ( {{ pivot_column }} ) as {{ pivot_column }}
+    {{ agg_method }} ( {{ pivot_column }} ) as _
     FOR {{ value_column }} IN ( 
         {%- for val in distinct_vals %}
         {%- if val is string -%}
