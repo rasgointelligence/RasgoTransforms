@@ -7,6 +7,10 @@ arguments:
   column:
     type: column
     description: Column name to one-hot encode
+  list_of_vals:
+    type: string_list
+    description: optional argument to override the dynamic lookup of all values in the target one-hot column
+    is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
 

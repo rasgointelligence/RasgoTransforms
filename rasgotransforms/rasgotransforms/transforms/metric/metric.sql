@@ -3,6 +3,27 @@
 {%- set alias = 'metric_value' if not alias else alias -%}
 {%- set distinct = true if 'distinct' in aggregation_type|lower else false -%}
 {%- set aggregation_type = aggregation_type|upper|replace('_', '')|replace('DISTINCT', '')|replace('MEAN', 'AVG') -%}
+{%- set flatten = flatten if flatten is defined else true -%}
+
+{%- macro get_distinct_values(columns) -%}
+    {%- set distinct_val_query -%}
+        select distinct
+            {%- for column in columns %}
+            {{ column }}{{', ' if not loop.last else ''}}
+            {%- endfor %}
+        from {{ source_table }} limit 101
+    {%- endset -%}
+    {%- set distinct_vals = run_query(distinct_val_query) -%}
+    {%- if distinct_vals.shape[0] > 100 %}
+        {{ raise_exception('There are more than 100 distinct groups given the current dimensions. Please select dimensions with fewer distinct groups to aggregate by.') }}
+    {%- endif -%}
+    {%- for val in distinct_vals.itertuples() -%}
+        {%- for column in distinct_vals.columns -%}
+            {{ val[column] }}{{'_' if not loop.last else ''}}
+        {%- endfor -%}
+        {{ ',' if not loop.last else ''}}
+    {%- endfor %}
+{%- endmacro -%}
 
 with source_query as (
     select
@@ -78,7 +99,7 @@ bounded as (
             max(case when has_data then period end) over ()  as upper_bound
     from joined
 ),
-final as (
+tidy_data as (
     select
         cast(period as timestamp) as period_min,
         {%- if time_grain|lower == 'quarter' %}
@@ -95,4 +116,50 @@ final as (
     and period <= upper_bound
     order by {{ range(1, dimensions|length + 2)|join(', ') }}
 )
-select * from final
+{%- if not dimensions or not flatten %}
+select * from tidy_data order by period_min
+{%- else -%}
+{%- set distinct_values = get_distinct_values(dimensions).split(',') -%}
+, 
+combined_dimensions as (
+    select
+        concat( 
+        {%- for dimension in dimensions -%} 
+            {{ dimension }}{{ ",'_'," if not loop.last else ''}}
+        {%- endfor -%}) as dimensions,
+        period_min,
+        period_max,
+        {{ alias }}
+    from tidy_data
+),
+pivoted as (
+    select
+        period_min,
+        period_max,
+        {% for val in distinct_values -%}
+        {{ cleanse_name(val) }}{{',' if not loop.last else ''}}
+        {%- endfor %}
+    from (
+        select 
+            period_min,
+            period_max,
+            {{ alias }},
+            dimensions
+        from combined_dimensions
+    )
+    pivot (
+        sum({{ alias }}) for dimensions in (
+            {% for val in distinct_values -%}
+            '{{ val }}'{{',' if not loop.last else ''}}
+            {%- endfor %}
+        )
+    ) as p (
+        period_min,
+        period_max,
+        {% for val in distinct_values -%}
+        {{ cleanse_name(val) }}{{',' if not loop.last else ''}}
+        {%- endfor %}
+    )
+)
+select * from pivoted order by period_min
+{%- endif -%}
