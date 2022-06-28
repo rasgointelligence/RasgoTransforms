@@ -15,9 +15,11 @@
     {%- if col.impute is not defined -%}
         {%- set output = source_col -%}
     {%- else -%}
-        {%- if col.impute | lower in  ['mean', 'median', 'mode', 'max', 'min', 'sum', 'avg'] -%}
+        {%- if col.impute | lower in  ['mean', 'median', 'mode', 'max', 'min', 'sum', 'avg', 'count'] -%}
             {%- set impute = 'avg' if col.impute == 'mean' else col.impute -%}
             {%- set impute_expression = impute + '(' + source_col + ') over ()' -%}
+        {%- elif col.impute|lower == 'count_distinct' -%}
+            {%- set impute_expression = 'count(distinct ' + source_col + ') over ()' -%}
         {%- else -%}
             {%- set impute_expression = "'" + col.impute + "'" if col.impute is string else col.impute|string -%}
         {%- endif -%}
@@ -41,7 +43,7 @@
 {%- set filter_statement = get_filter_statement(columns) -%}
 
 {%- if filter_statement == "" -%}
-select {{ untouched_cols }}
+select
 {%- for column in columns.keys() %}
   {{ get_select_column(column, columns[column]) }}{{ ", " if not loop.last else "" }}
 {%- endfor %}

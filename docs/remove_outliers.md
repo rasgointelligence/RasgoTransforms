@@ -1,10 +1,10 @@
 
 
-# outliers
+# remove_outliers
 
 This function determines which records in the table are an outlier based on a given 
 statistical method (z-score, IQR, or manual threshold) and a target column. It produces 
-a new column named 'OUTLER_<target_column>' which is TRUE for records that are outliers, 
+a new column named 'OUTLIER_<target_column>' which is TRUE for records that are outliers, 
 and FALSE for records that aren't.
 
 
@@ -26,7 +26,7 @@ and FALSE for records that aren't.
 ds = rasgo.get.dataset(id)
 
 # Drop outliers using a manual threshold
-ds2 = ds.outliers(
+ds2 = ds.remove_outliers(
     target_column=["ORDERS", "CANCELLATIONS"],
     method="threshold",
     min_threshold=100,
@@ -35,7 +35,7 @@ ds2 = ds.outliers(
 )
 
 # Drop values with a Z-score > 2 (more than 2 standard deviations from the mean)
-ds2 = ds.outliers(
+ds2 = ds.remove_outliers(
     target_column=["ORDERS", "CANCELLATIONS"],
     method="z-score"
     drop=True,
@@ -43,7 +43,7 @@ ds2 = ds.outliers(
 )
 
 # Flag outliers using the iqr method
-ds2 = ds.outliers(
+ds2 = ds.remove_outliers(
     target_column=["ORDERS"],
     method="iqr"
     drop=False
@@ -53,5 +53,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/outliers/outliers.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/remove_outliers/remove_outliers.sql" %}
 

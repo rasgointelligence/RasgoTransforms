@@ -1,4 +1,4 @@
-name: split
+name: split_column
 tags:
   - column
   - natural_language_processing
@@ -20,5 +20,5 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.split(target_col='PRODUCTKEY', sep='-', output_cols=['KEY_PREFIX', 'KEY_ROOT', 'KEY_SUFFIX'])
+  ds2 = ds.split_column(target_col='PRODUCTKEY', sep='-', output_cols=['KEY_PREFIX', 'KEY_ROOT', 'KEY_SUFFIX'])
   ds2.preview()
