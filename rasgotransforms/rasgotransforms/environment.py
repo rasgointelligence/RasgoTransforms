@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 from itertools import combinations, permutations, product
 from typing import Callable, Optional, Dict
+from .exceptions import RenderException
 
 
 class RasgoEnvironment(Environment):
@@ -56,9 +57,11 @@ class RasgoEnvironment(Environment):
                 return source_columns[fqtn]
 
             override_globals['get_columns'] = get_columns
-
-        template = self.from_string(source_code)
-        rendered = template.render(**arguments, **override_globals)
+        try:
+            template = self.from_string(source_code)
+            rendered = template.render(**arguments, **override_globals)
+        except Exception as e:
+            raise RenderException(e)
         return rendered
 
 
