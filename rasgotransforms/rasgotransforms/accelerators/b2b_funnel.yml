@@ -187,7 +187,7 @@ operations:
       source_table: '{{rename_sql}}'
   deduplicate_dates:
     description: Deduplicate the dates.
-    transform_name: dedupe
+    transform_name: remove_duplicates
     transform_arguments:
       natural_key:
       - DATE
@@ -294,9 +294,9 @@ operations:
       source_table: '{{generate_month}}'
   replace_null_metrics:
     description: Replace all the null values in metrics with zeros
-    transform_name: impute
+    transform_name: replace_missing
     transform_arguments:
-      imputations:
+      replacements:
         CLOSED_WON: '0'
         MQL: '0'
         SAL: '0'

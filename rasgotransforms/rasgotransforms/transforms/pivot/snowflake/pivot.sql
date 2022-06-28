@@ -26,7 +26,8 @@ Instead, please use the `list_of_vals` argument to provide these values explicit
 {%- endfor -%}
 {%- endmacro -%}
 
-SELECT {{ dimensions | join(", ") }}, {{ get_values(distinct_vals) }}
-FROM ( SELECT {{ dimensions | join(", ") }}, {{ pivot_column }}, {{ value_column }} FROM {{ source_table }})
+
+SELECT {{ dimensions | join(", ") }}{{ ',' if dimensions else ''}} {{ get_values(distinct_vals) }}
+FROM ( SELECT {{ dimensions | join(", ") }}{{ ',' if dimensions else ''}} {{ pivot_column }}, {{ value_column }} FROM {{ source_table }})
 PIVOT ( {{ agg_method }} ( {{ pivot_column }} ) FOR {{ value_column }} IN ( '{{ distinct_vals | join("', '") }}' ) ) as p
-( {{ dimensions | join(", ") }}, {{ get_values(distinct_vals) }} )
+( {{ dimensions | join(", ") }}{{ ',' if dimensions else ''}} {{ get_values(distinct_vals) }} )

@@ -39,5 +39,5 @@ test.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/summarize_islands/summarize_islands.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/summarize_islands/snowflake/summarize_islands.sql" %}
 
