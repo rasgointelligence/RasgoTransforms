@@ -6,7 +6,7 @@ SELECT
 {%- for col, aggs in aggregations.items() %}
         {%- set outer_loop = loop -%}
     {%- for agg in aggs %}
-    {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
+    {{ agg }}({{ col }}{{ ", '|'" if agg|lower == 'listagg' else ""}}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
     {%- endfor -%}
 {%- endfor %}
 FROM {{ source_table }}

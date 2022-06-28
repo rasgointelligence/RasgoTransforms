@@ -225,9 +225,9 @@ operations:
       source_table: "{{ google_hubspot_salesforce_closed_won_daily }}"
     description: Drop columns contained in multiple datasets
   imputed_values:
-    transform_name: impute
+    transform_name: replace_missing
     transform_arguments:
-      imputations:
+      replacements:
         "BOUNCES_SUM": 0
         "HS__ID_COUNTDISTINCT": 0
         "IMPRESSIONS_SUM": 0

@@ -1,0 +1,90 @@
+name: reshape
+tags:
+  - table
+  - reshape
+  - math
+  - aggregate
+description: |
+  Pivot: Transpose unique values in a single column to generate multiple columns, aggregating as needed. The pivot will dynamically generate a column per unique value, or you can pass a list_of_vals with the unique values you wish to create columns for.
+  Unpivot: Opposite of pivot, transforms a table by transforming columns into rows
+arguments:
+  method:
+    type: string
+    description: Method to reshape table 'pivot' to transpose unique values in a column to generate multiple columns or 'unpivot' to do the opposite.
+  values:
+    type: column
+    description: column to pivot and aggregate. Required for 'pivot' method.
+    is_optional: true
+  columns:
+    type: column
+    description: |
+      Pivot: column with row values that will become columns. Required for 'pivot' method.
+      Unpivot: List of columns in the source table that will be narrowed into a single pivot column. The column names will populate name_column, and the column values will populate value_column.
+    is_optional: true
+  agg_method:
+    type: agg
+    description: method of aggregation (i.e. sum, avg, min, max, etc.). Required for 'pivot' method.
+    is_optional: true
+  value_column:
+    type: string
+    description: The name to assign to the generated column that will be populated with the values from the columns in the column list. Required for 'unpivot' method.
+    is_optional: true
+  name_column:
+    type: string
+    description: The name to assign to the generated column that will be populated with the names of the columns in the column list. Required for 'unpivot' method.
+    is_optional: true
+  dimensions:
+    type: column_list
+    description: Applicable to 'pivot' method only. Dimension columns after the pivot runs.
+    is_optional: true
+  list_of_vals:
+    type: string_list
+    description: optional argument to override the dynamic lookup of all values in the value_column and only pivot a provided list of values
+    is_optional: true
+
+
+example_code: |
+  ds2 = ds.reshape(
+    dimensions=['DATE'],
+    values='CLOSE',
+    columns='SYMBOL',
+    agg_method='AVG',
+    list_of_vals=['JP','GOOG','DIS','APLE'],
+    method='pivot'
+  )
+  ds2.preview()
+
+  ds3 = ds2.reshape(
+    value_column="CLOSE",
+    name_column="SYMBOL",
+    columns=['JP','GOOG','DIS','APLE'],
+    method='unpivot'
+  )
+  ds3.preview()
+
+preview-data: |
+  |    | DATE       | SYMBOL   |   CLOSE |
+  |---:|:-----------|:---------|--------:|
+  |  0 | 1990-09-26 | APA      |  4.8797 |
+  |  1 | 1990-08-06 | APA      |  4.3312 |
+  |  2 | 1990-06-12 | APA      |  3.8123 |
+  |  3 | 2007-10-19 | XRX      | 36.0728 |
+  |  4 | 2007-08-20 | XRX      | 34.4498 |
+  |  5 | 2007-07-10 | XRX      | 42.5646 |
+  |  6 | 2007-03-07 | XRX      | 36.3541 |
+  |  7 | 2007-03-01 | XRX      | 37.1547 |
+  |  8 | 2007-01-04 | XRX      | 36.5489 |
+  |  9 | 2006-07-13 | XRX      | 29.7325 |
+post-transform-data: |
+  |    | DATE       |      JP |     GOOG |      DIS |    APLE |
+  |---:|:-----------|--------:|---------:|---------:|--------:|
+  |  0 | 2013-07-26 |         |  441.022 |  59.0729 |         |
+  |  1 | 2017-11-21 | 19.7923 | 1034.49  |  99.3686 | 16.48   |
+  |  2 | 2006-11-17 |         |  248.464 |  27.0257 |         |
+  |  3 | 2005-09-12 |         |  154.292 |  20.39   |         |
+  |  4 | 1999-07-01 |         |          |  22.1751 |         |
+  |  5 | 1998-02-03 |         |          |  27.3093 |         |
+  |  6 | 1996-04-22 |         |          |  15.2845 |         |
+  |  7 | 2017-07-25 |  7.221  |  950.7   | 102.668  | 15.0863 |
+  |  8 | 2006-12-08 |         |  241.151 |  28.2154 |         |
+  |  9 | 2016-12-12 |  8.1188 |  789.27  |  99.65   | 15.739  |

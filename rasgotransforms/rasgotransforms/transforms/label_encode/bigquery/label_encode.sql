@@ -1,7 +1,7 @@
 with distinct_values as (    
   select distinct 
     rank() over(order by {{ column }} asc) as id,
-    {{ column }})
+    {{ column }}
   from {{ source_table }} 
   order by {{ column }} asc
 )
