@@ -1,0 +1,25 @@
+name: remove_duplicates
+tags:
+  - table
+  - data_quality
+  - data_cleaning
+description:  Deduplicate a table based on a passed-in composite key. Once an order column and an order method are selected, only the top record from the resulting grouped and ordered dataset will be kept.
+arguments:
+  natural_key:
+    type: column_list
+    description: Columns forming the grain at which to remove duplicates
+  order_col:
+    type: column_list
+    description: Columns by which to order the result set, such that the first result is kept
+  order_method:
+    type: value
+    description: Can be "desc" or "asc". Sets the order behavior for the chosen `order_col`.
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.remove_duplicates(
+    natural_key=["FIPS", "DS_WEATHER_ICON", "DATE"],
+    order_col=["DATE", "FIPS"],
+    order_method="asc"
+  )
+  ds2.preview()

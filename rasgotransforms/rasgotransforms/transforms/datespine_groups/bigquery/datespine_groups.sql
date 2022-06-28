@@ -1,17 +1,39 @@
-{% set row_count_query %}
-select datediff(cast('{{ start_timestamp }}' as timestamp), cast('{{ end_timestamp }}' as timestamp), {{ interval_type }})
-{% endset %}
-{% set row_count_query_results = run_query(row_count_query) %}
-{% set row_count = row_count_query_results[row_count_query_results.columns[0]][0] %}
-
-WITH GLOBAL_SPINE AS (
-  SELECT
-    ROW_NUMBER() OVER (ORDER BY NULL) as INTERVAL_ID,
-    DATEADD(cast('{{ start_timestamp }}' as timestamp), INTERVAL (INTERVAL_ID - 1) {{ interval_type }}) as SPINE_START,
-    DATEADD(cast('{{ start_timestamp }}' as timestamp), INTERVAL INTERVAL_ID {{ interval_type }}) as SPINE_END
-  FROM TABLE (GENERATOR(ROWCOUNT => {{ row_count }}))
+{% if start_timestamp is not defined or end_timestamp is not defined -%}
+{%- set min_max_query -%}
+select min(cast({{ date_col }} as date)) min_date, max(cast({{ date_col }} as date)) max_date from {{ source_table }}
+{% endset -%}
+{% set min_max_query_result = run_query(min_max_query) -%}
+{% if min_max_query_result is none -%}
+{{ raise_exception('start_timstamp and end_timestamp must be provided when no Data Warehouse connection is available')}}
+{% endif -%}
+{% endif -%}
+{% if start_timestamp is defined -%}
+    {% set min_date = start_timestamp -%}
+{% else -%}
+    {% set min_date = min_max_query_result[min_max_query_result.columns[0]][0] -%}
+{% endif -%}
+{% if  end_timestamp is defined -%}
+    {% set max_date = end_timestamp -%}
+{% else -%}
+    {% set max_date = min_max_query_result[min_max_query_result.columns[1]][0] -%}
+{% endif -%}
+{% set row_count = (max_date|string|todatetime - min_date|string|todatetime).days + 1 -%}
+with calendar as (
+  select
+    date_day,
+    date_trunc(date_day, week) as date_week,
+    date_trunc(date_day, month) as date_month,
+    date_trunc(date_day, quarter) as date_quarter,
+    date_trunc(date_day, year) as date_year,
+    from unnest(generate_date_array('{{ min_date }}', '{{ max_date }}')) as date_day
+),
+GLOBAL_SPINE AS (
+  select
+    distinct date_{{ interval_type }} as SPINE_START,
+    date_add(date_{{ interval_type }}, INTERVAL 1 {{ interval_type }}) SPINE_END,
+  from calendar
 ), 
-GROUPS AS (
+CATEGORIES AS (
   SELECT 
     {% for col in group_by -%}
     {{ col }},
@@ -31,8 +53,8 @@ GROUP_SPINE AS (
     {%- endfor %}
     SPINE_START AS GROUP_START, 
     SPINE_END AS GROUP_END
-  FROM GROUPS G
-  CROSS JOIN LATERAL (
+  FROM CATEGORIES G
+  CROSS JOIN (
     SELECT
       SPINE_START, SPINE_END
     FROM GLOBAL_SPINE S

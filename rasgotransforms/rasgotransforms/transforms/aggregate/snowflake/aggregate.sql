@@ -24,7 +24,7 @@ SELECT
       {{ agg|replace(" DISTINCT", "") }}(DISTINCT {{ col }}) as {{ col ~ '_' ~ agg|replace(" DISTINCT", "") ~ 'DISTINCT'}},
       {%- do final_col_list.append('BASIC_AGGS.' ~ col ~ '_' ~ agg|replace(" DISTINCT", "") ~ 'DISTINCT') -%}
      {%- else %}
-     {{ agg }}({{ col }}) as {{ col ~ '_' ~ agg }},
+     {{ agg }}({{ col }}{{ ", '|'" if agg|lower == 'listagg' else ""}}) as {{ col ~ '_' ~ agg }},
      {%- do final_col_list.append('BASIC_AGGS.' ~ col ~ '_' ~ agg) -%}
      {%- endif -%}
     {%- endif -%}

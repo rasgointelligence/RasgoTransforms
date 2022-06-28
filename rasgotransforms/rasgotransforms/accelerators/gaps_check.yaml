@@ -1,0 +1,76 @@
+name: Data Quality Check - Gaps
+description: Analyzes and reports any gaps in a given dataset, where rows may have stopped appearing that satisfy a given condition
+arguments:
+  source_table:
+    description: The dataset to analyze for gaps
+    argument_type: dataset
+  date_col:
+    description: Date column
+    argument_type: column
+    context:
+      tableArg: source_table
+  buffer_date_part:
+    description: A valid SQL datepart to be used for defining how long of a gap is expected
+    argument_type: date_part
+  buffer_size:
+    description: An integer of how many date parts will be considered adjacent, versus a gap.
+    argument_type: int
+  group_cols:
+    description: A list of columns to "group by" when searching for gaps
+    argument_type: column_list
+    context:
+      tableArg: source_table
+  conditions:
+    description: A list of conditions to qualify a "good" record (goal is to find gaps where good records dont happen). Use 1=1 if you have no special conditions.
+    argument_type: math_list
+operations:
+  summarize_islands:
+    transform_name: summarize_islands
+    transform_arguments:
+      json_string_arguments: '{ "group_cols": {{group_cols | tojson}}, "conditions": {{conditions | tojson}} }'
+      date_col: '{{date_col}}'
+      buffer_date_part: '{{buffer_date_part}}'
+      buffer_size: '{{buffer_size}}'
+      source_table: '{{source_table}}'
+  lag:
+    transform_name: lag
+    transform_arguments:
+      json_string_arguments: '{ "partition": {{group_cols | tojson}} }'
+      columns:
+      - ISLAND_START_DATETIME
+      amounts:
+      - -1
+      order_by:
+      - ISLAND_START_DATETIME
+      source_table: '{{summarize_islands}}'
+  filter:
+    transform_name: filter
+    transform_arguments:
+      items:
+      - columnName: LAG_ISLAND_START_DATETIME__1
+        operator: is not NULL
+        comparisonValue: ''
+      source_table: '{{lag}}'
+  datediff:
+    transform_name: datediff
+    transform_arguments:
+      date_part: '{{buffer_date_part}}'
+      date_1: ISLAND_END_DATETIME
+      date_2: LAG_ISLAND_START_DATETIME__1
+      alias: GAP_LENGTH
+      source_table: '{{filter}}'
+  rename:
+    transform_name: rename
+    transform_arguments:
+      renames:
+        ISLAND_END_DATETIME: GAP_BEGIN_DATE
+        LAG_ISLAND_START_DATETIME__1: GAP_END_DATE
+      source_table: '{{datediff}}'
+  drop_columns:
+    transform_name: drop_columns
+    transform_arguments:
+      exclude_cols:
+      - ISLAND_START_DATETIME
+      - ISLAND_ROW_COUNT
+      - ISLAND_DURATION_{{buffer_date_part}}
+      source_table: '{{rename}}'

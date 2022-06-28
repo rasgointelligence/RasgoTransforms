@@ -1,4 +1,17 @@
-{%- set distinct_col_vals =  run_query("SELECT DISTINCT " +  column + " FROM " + source_table)[column].to_list() -%}
+{%- set run_query_error_message -%}
+This transform depends on dynamic values to work, but no Data Warehouse connection is available. 
+Instead, please use the `list_of_vals` argument to provide these values explicitly
+{%- endset -%}
+
+{%- if list_of_vals is not defined -%}
+    {%- set results = run_query("SELECT DISTINCT " +  column + " FROM " + source_table) -%}
+    {%- if results is none -%}
+        {{ raise_exception(run_query_error_message) }}
+    {%- endif -%}
+    {%- set distinct_col_vals = results[column].to_list() -%}
+{%- else -%}
+    {%- set distinct_col_vals = list_of_vals -%}
+{%- endif -%}
 
 SELECT *,
 {% for val in distinct_col_vals %}

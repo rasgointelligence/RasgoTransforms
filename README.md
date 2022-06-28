@@ -9,10 +9,11 @@
 
 # Rasgo Transforms
 
-Rasgo Transforms provide jinja SQL templates that can be applied to your data using rasgoQL, a pandas-like python package.
-- Transforms are equivalent to SQL functions that accept a table or view from your eixsting DataWarehouse and return a SQL string to transform it
-- Rasgo has built a starter library of transforms for you to use or fork
-- *Coming Soon:* Users will be able to create their own Transforms and add them to a private namespace or contribute to the open-source library
+Rasgo Transforms is a library of SQL templates that can be called like functions. They use jinja for templating and are compatible with multiple Rasgo tools:
+- [RasgoQL](https://github.com/rasgointelligence/RasgoQL), an open source python package to transform data in SQL
+- [PyRasgo](https://pypi.org/project/pyrasgo/), a python library for interacting with Rasgo
+- [Rasgo SQL Generator](https://app.rasgoml.com/sql), a browser tool for generating SQL via a user interface
+- [Rasgo](https://rasgoml.com), our enterprise self-service analytics product
 
 # Writing Transforms
 
@@ -47,14 +48,5 @@ def infer_columns(args, source_columns) -> dict:
     return out_columns
 ```
 
-# Running Transforms
-
-Rasgo Transforms can be applied via:
-- your Rasgo Feature Store account ([pyrasgo](https://pypi.org/project/pyrasgo/) - Account required)
-- using the Rasgo open-source package ([rasgoql](https://pypi.org/project/rasgoql/) - totally free).
-
 # About Us
-Rasgo Transforms are maintained by *[Rasgo](https://rasgoml.com)*. Rasgo's enterprise feature store integrates with your data warehouse to help users build features faster, collaborate with team members, and serve features to models in production.
-
-
-<i>Built for Data Scientists, by Data Scientists</i>
+Rasgo Transforms are maintained by *[Rasgo](https://rasgoml.com)*.
