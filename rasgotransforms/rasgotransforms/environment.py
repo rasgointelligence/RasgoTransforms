@@ -2,30 +2,40 @@ from jinja2 import Environment
 import re
 from datetime import datetime
 from itertools import combinations, permutations, product
-from typing import Callable, Optional, Union, Dict
+from typing import Callable, Optional, Dict
 
 
-class Renderer(Environment):
+class RasgoEnvironment(Environment):
     def __init__(self, run_query: Callable, *args, **kwargs):
-        super().__init__()
-        self.jinja_environment = Environment(*args, extensions=['jinja2.ext.do', 'jinja2.ext.loopcontrols'], **kwargs)
-        self.jinja_environment.filters['todatetime'] = datetime.fromisoformat
-        self.jinja_environment.globals = self._source_code_functions()
-        self.jinja_environment.globals['run_query'] = run_query
+        super().__init__(*args, extensions=self.rasgo_extensions, **kwargs)
+        for filter_name, method in self.rasgo_filters.items():
+            self.filters[filter_name] = method
+        self.globals = self.rasgo_globals
+        self.globals['run_query'] = run_query
 
-    def _source_code_functions(self):
+    @property
+    def rasgo_extensions(self):
+        return ['jinja2.ext.do', 'jinja2.ext.loopcontrols']
+
+    @property
+    def rasgo_globals(self):
         return {
             "cleanse_name": cleanse_template_symbol,
             "raise_exception": raise_exception,
             "itertools": {"combinations": combinations, "permutations": permutations, "product": product},
         }
 
+    @property
+    def rasgo_filters(self):
+        return {"todatetime": datetime.fromisoformat}
+
     def render(
         self,
         source_code: str,
         source_table: str,
         arguments: dict,
-        source_columns: Optional[Union[Dict[str, Dict[str, str]], Callable]] = None,
+        source_columns: Optional[Dict[str, Dict[str, str]]] = None,
+        override_globals: Optional[Dict[str, Callable]] = None,
     ) -> str:
         """
         Given the source code of a jinja template, its arguments, and metadata about the source table,
@@ -36,19 +46,19 @@ class Renderer(Environment):
         (e.g. get_columns(fqtn): return {column_name: column_type}
         """
         arguments['source_table'] = source_table
-        if source_columns and type(source_columns) is dict:
+
+        if not override_globals:
+            override_globals = {}
+
+        if source_columns and 'get_columns' not in override_globals:
 
             def get_columns(fqtn):
                 return source_columns[fqtn]
 
-        else:
-            get_columns = source_columns
+            override_globals['get_columns'] = get_columns
 
-        template_fns = {
-            "get_columns": get_columns,
-        }
-        template = self.jinja_environment.from_string(source_code)
-        rendered = template.render(**arguments, **template_fns)
+        template = self.from_string(source_code)
+        rendered = template.render(**arguments, **override_globals)
         return rendered
 
 

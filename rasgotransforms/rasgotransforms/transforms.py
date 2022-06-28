@@ -4,7 +4,7 @@ from pathlib import Path
 import inspect
 import yaml
 
-from .jinja import render
+from .environment import RasgoEnvironment
 from .main import DataWarehouse
 
 
@@ -13,12 +13,38 @@ class Transforms(object):
     Dynamically adds class methods which render each transform in the package
     """
 
-    def __init__(self):
+    def __init__(self, dw_type: str, run_query: Optional[Callable] = None):
+        self.dw_type = DataWarehouse(dw_type.lower())
+        self.run_query = run_query
+        self.env = RasgoEnvironment(run_query=run_query)
         transforms_dir = Path(os.path.dirname(__file__), 'transforms')
         for transform_path in transforms_dir.rglob('*/*.yaml'):
             with open(transform_path) as fp:
                 transform_config = yaml.safe_load(fp)
-            setattr(self.__class__, transform_config['name'], _get_render_method(transform_config))
+            setattr(self.__class__, transform_config['name'], self._get_render_method(transform_config))
+
+    def _get_render_method(self, transform_config):
+        """
+        Creates the class method used to render jinja templates which is dynamically added to the transforms module
+        """
+
+        def render_transform(
+            *args,
+            source_table: str,
+            source_columns: Optional[Union[Dict[str, Dict[str, str]], Callable]] = None,
+            **kwargs,
+        ) -> str:
+            template_path = _get_transform_path(name=transform_config['name'], dw_type=self.dw_type)
+            with open(template_path) as fp:
+                source_code = fp.read()
+            return self.env.render(
+                source_code=source_code, source_table=source_table, arguments=kwargs, source_columns=source_columns
+            )
+
+        render_transform.__name__ = transform_config['name']
+        render_transform.__signature__ = _gen_method_signature(render_transform, transform_config)
+        render_transform.__doc__ = _gen_method_docstring(transform_config)
+        return render_transform
 
 
 def _gen_method_signature(udt_func: Callable, transform_config: Dict) -> inspect.Signature:
@@ -39,8 +65,6 @@ def _gen_method_signature(udt_func: Callable, transform_config: Dict) -> inspect
     params += [
         inspect.Parameter(name='source_table', kind=inspect.Parameter.KEYWORD_ONLY),
         inspect.Parameter(name='source_columns', kind=inspect.Parameter.KEYWORD_ONLY),
-        inspect.Parameter(name='dw_type', kind=inspect.Parameter.KEYWORD_ONLY),
-        inspect.Parameter(name='run_query', kind=inspect.Parameter.KEYWORD_ONLY),
     ]
 
     return sig.replace(parameters=params)
@@ -64,39 +88,6 @@ def _gen_method_docstring(transform_config: Dict) -> str:
         f"{docstring}\n\n  Returns:\n    Returns an the rendered sql for the " f"{transform_config['name']} transform"
     )
     return docstring
-
-
-def _get_render_method(transform_config):
-    """
-    Creates the class method used to render jinja templates which is dynamically added to the transforms module
-    """
-
-    def render_transform(
-        *args,
-        source_table: str,
-        source_columns: Optional[Union[Dict[str, Dict[str, str]], Callable]] = None,
-        dw_type: Optional[str] = None,
-        run_query: Optional[Callable] = None,
-        **kwargs,
-    ) -> str:
-        if not dw_type:
-            dw_type = 'snowflake'
-        dw_type = DataWarehouse(dw_type)
-        template_path = _get_transform_path(name=transform_config['name'], dw_type=dw_type)
-        with open(template_path) as fp:
-            source_code = fp.read()
-        return render(
-            source_code=source_code,
-            source_table=source_table,
-            arguments=kwargs,
-            source_columns=source_columns,
-            run_query=run_query,
-        )
-
-    render_transform.__name__ = transform_config['name']
-    render_transform.__signature__ = _gen_method_signature(render_transform, transform_config)
-    render_transform.__doc__ = _gen_method_docstring(transform_config)
-    return render_transform
 
 
 def _get_transform_path(name: str, dw_type: DataWarehouse):
