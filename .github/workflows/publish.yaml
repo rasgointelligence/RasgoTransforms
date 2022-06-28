@@ -26,12 +26,26 @@ jobs:
         pip install setuptools wheel twine --upgrade
         pip install -r rasgotransforms/requirements.txt
 
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+    - name: Update version
+      run: echo __version__ = \"${{ steps.get_version.outputs.VERSION }}\" > rasgotransforms/rasgotransforms/version.py
+
+    - name: Commit and push version bump
       run: |
-        cd rasgotransforms
-        python setup.py sdist bdist_wheel
-        twine upload dist/*
+        git config --global user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add .
+        git commit -m "Update version"
+        git push
+
+#    - name: Build and publish
+#      env:
+#        TWINE_USERNAME: __token__
+#        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+#      run: |
+#        cd rasgotransforms
+#        python setup.py sdist bdist_wheel
+#        twine upload dist/*
