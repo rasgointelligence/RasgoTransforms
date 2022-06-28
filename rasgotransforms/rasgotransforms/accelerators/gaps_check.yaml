@@ -16,12 +16,12 @@ arguments:
     description: An integer of how many date parts will be considered adjacent, versus a gap.
     argument_type: int
   group_cols:
-    description: (optional) A list of columns to "group by" when searching for gaps
+    description: A list of columns to "group by" when searching for gaps
     argument_type: column_list
     context:
       tableArg: source_table
   conditions:
-    description: (optional) A list of conditions to qualify a "good" record (goal is to find gaps where good records dont happen)
+    description: A list of conditions to qualify a "good" record (goal is to find gaps where good records dont happen). Use 1=1 if you have no special conditions.
     argument_type: math_list
 operations:
   summarize_islands:
@@ -59,14 +59,18 @@ operations:
       date_2: LAG_ISLAND_START_DATETIME__1
       alias: GAP_LENGTH
       source_table: '{{filter}}'
-  clean:
-    transform_name: clean
+  rename:
+    transform_name: rename
     transform_arguments:
-      columns:
-        GAP_LENGTH: {}
-        ISLAND_END_DATETIME:
-          name: GAP_BEGIN_DATE
-        LAG_ISLAND_START_DATETIME__1:
-          name: GAP_END_DATE
-        PLAYERID: {}
+      renames:
+        ISLAND_END_DATETIME: GAP_BEGIN_DATE
+        LAG_ISLAND_START_DATETIME__1: GAP_END_DATE
       source_table: '{{datediff}}'
+  drop_columns:
+    transform_name: drop_columns
+    transform_arguments:
+      exclude_cols:
+      - ISLAND_START_DATETIME
+      - ISLAND_ROW_COUNT
+      - ISLAND_DURATION_{{buffer_date_part}}
+      source_table: '{{rename}}'
