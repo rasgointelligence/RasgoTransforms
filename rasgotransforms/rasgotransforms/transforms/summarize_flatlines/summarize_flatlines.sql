@@ -9,8 +9,8 @@ WITH CTE_SEQUENCES AS (
 SELECT
   {%- for group_item in group_by %} S.{{ group_item }},{%- endfor -%}
   S.{{ value_col }} as REPEATED_VALUE,
-  MIN(S.DATE) AS FLATLINE_START_DATE,
-  MAX(S.DATE) AS FLATLINE_END_DATE,
+  MIN(S.{{ order_col }}) AS FLATLINE_START_DATE,
+  MAX(S.{{ order_col }}) AS FLATLINE_END_DATE,
   COUNT(*) AS OCCURRENCE_COUNT
 FROM
   CTE_SEQUENCES S
