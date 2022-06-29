@@ -26,20 +26,11 @@ jobs:
         pip install setuptools wheel twine --upgrade
         pip install -r rasgotransforms/requirements.txt
 
-    - name: Get the version
-      id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-
-    - name: Update version
-      run: echo __version__ = \"${{ steps.get_version.outputs.VERSION }}\" > rasgotransforms/rasgotransforms/version.py
-
-    - name: Commit and push version bump
+    - name: Verify version
       run: |
-        git config --global user.name "github-actions"
-        git config user.email "github-actions@github.com"
-        git add rasgotransforms/rasgotransforms/version.py
-        git commit -m "Update version"
-        git push
+        cd rasgotransforms/rasgotransforms
+        python -c "from version import __version__; assert __version__ == \"${GITHUB_REF#refs/tags/}\", \"Versions don\'t match\""
+        cd ../..
 
     - name: Build and publish
       env:
