@@ -1,0 +1,36 @@
+name: summarize_flatlines
+tags:
+  - table
+  - reshape
+  - data_quality
+description: |
+  Given a dataset, searches finds "flatline" sequences of a repeated values that do not change. 
+  
+  Choose a value column, a column to be used for ordering (such as a date), and a minimum cutoff for the number of repeated occurrences to consider.
+   
+  The result is a summarized table. 
+arguments:
+  group_by:
+    type: column_list
+    description: The column(s) used to partition you data into groups.
+      Flatlines (repeated values) will be searched within each group
+  value_col:
+    type: column
+    description: The column for which to search for flatlines.
+  order_col:
+    type: column
+    description: The column used to order the rows within groups.
+  min_repeat_count:
+    type: int
+    description: The minimum length of a sequence of repeated values to consider
+  
+example_code: |
+  ds = rasgo.get.dataset()
+
+  test = ds.apply(group_by=['TICKER','SYMBOL'],
+                  value_col='CLOSE',
+                  order_col='DATE',
+                  min_repeat_count=1
+                  )
+
+  test.preview()
