@@ -15,7 +15,7 @@ The result is a summarized table.
 | ---------------- | ----------- | -------------------------------------------------------------------------------------------------------------------- | ----------- |
 | group_by         | column_list | The column(s) used to partition you data into groups. Flatlines (repeated values) will be searched within each group |             |
 | value_col        | column      | The column for which to search for flatlines.                                                                        |             |
-| date_col         | column      | The column used to order the rows within groups.                                                                     |             |
+| order_col        | column      | The column used to order the rows within groups.                                                                     |             |
 | min_repeat_count | int         | The minimum length of a sequence of repeated values to consider                                                      |             |
 
 
@@ -24,10 +24,9 @@ The result is a summarized table.
 ```python
 ds = rasgo.get.dataset()
 
-test = ds.apply(date_col='TICKER',
-                group_by=['TICKER','SYMBOL'],
+test = ds.apply(group_by=['TICKER','SYMBOL'],
                 value_col='CLOSE',
-                date_col='DATE',
+                order_col='DATE',
                 min_repeat_count=1
                 )
 
