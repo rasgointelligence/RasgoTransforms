@@ -66,13 +66,9 @@ class RasgoEnvironment(Environment):
 
 
 def cleanse_template_symbol(symbol: str) -> str:
-    symbol = str(symbol)
-    symbol = symbol.strip()
-    symbol = symbol.replace(' ', '_').replace('-', '_')
-    symbol = symbol.upper()
+    symbol = str(symbol).strip().replace(' ', '_').replace('-', '_')
     symbol = re.sub('[^A-Z0-9_]+', '', symbol)
     symbol = '_' + symbol if symbol[0].isdecimal() or not symbol else symbol
-
     return symbol
 
 

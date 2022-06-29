@@ -1,4 +1,3 @@
-import os
 from typing import Callable, Dict, Optional, Union, Tuple
 from pathlib import Path
 import inspect
@@ -8,6 +7,8 @@ from rasgotransforms.render.environment import RasgoEnvironment
 from rasgotransforms.main import DataWarehouse
 from rasgotransforms.render.infer_columns import infer_columns
 from rasgotransforms.exceptions import RenderException
+
+__all__ = ["Transforms"]
 
 
 class Transforms(object):
@@ -19,7 +20,7 @@ class Transforms(object):
         self.dw_type = DataWarehouse(dw_type.lower())
         self.run_query = run_query
         self.env = RasgoEnvironment(run_query=run_query)
-        transforms_dir = Path(os.path.dirname(__file__), '../transforms')
+        transforms_dir = Path(__file__).parent.parent / 'transforms'
         for transform_path in transforms_dir.rglob('*/*.yaml'):
             with open(transform_path) as fp:
                 transform_config = yaml.safe_load(fp)
@@ -37,7 +38,7 @@ class Transforms(object):
             return_columns: bool = False,
             **kwargs,
         ) -> Union[str, Tuple[str, Dict[str, str]]]:
-            template_path = _get_transform_path(name=transform_config['name'], dw_type=self.dw_type)
+            template_path = get_transform_path(name=transform_config['name'], dw_type=self.dw_type)
             with open(template_path) as fp:
                 source_code = fp.read()
             sql = self.env.render(
@@ -57,12 +58,12 @@ class Transforms(object):
                 return sql
 
         render_transform.__name__ = transform_config['name']
-        render_transform.__signature__ = _gen_method_signature(render_transform, transform_config)
-        render_transform.__doc__ = _gen_method_docstring(transform_config)
+        render_transform.__signature__ = gen_method_signature(render_transform, transform_config)
+        render_transform.__doc__ = gen_method_docstring(transform_config)
         return render_transform
 
 
-def _gen_method_signature(udt_func: Callable, transform_config: Dict) -> inspect.Signature:
+def gen_method_signature(udt_func: Callable, transform_config: Dict) -> inspect.Signature:
     """
     Creates and returns a method signature.
 
@@ -85,7 +86,7 @@ def _gen_method_signature(udt_func: Callable, transform_config: Dict) -> inspect
     return sig.replace(parameters=params)
 
 
-def _gen_method_docstring(transform_config: Dict) -> str:
+def gen_method_docstring(transform_config: Dict) -> str:
     """
     Generate and return a docstring for a transform method
     with transform description, args, and return specified.
@@ -105,15 +106,15 @@ def _gen_method_docstring(transform_config: Dict) -> str:
     return docstring
 
 
-def _get_transform_path(name: str, dw_type: DataWarehouse):
+def get_transform_path(name: str, dw_type: DataWarehouse):
     """
     Returns the default or data warehouse specific template file given the transform name
     """
-    root_dir = os.path.dirname(__file__)
+    root_dir = Path(__file__).parent.parent
     if dw_type:
-        function_path = Path(root_dir, '../transforms', name, dw_type.value, f'{name}.sql')
+        function_path = root_dir / 'transforms' / name / dw_type.value / f'{name}.sql'
         if function_path.exists():
             return str(function_path.absolute())
-    function_path = Path(root_dir, '../transforms', name, f'{name}.sql')
-    if os.path.exists(function_path):
+    function_path = root_dir / 'transforms' / name / f'{name}.sql'
+    if function_path.exists():
         return str(function_path)
