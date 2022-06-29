@@ -17,7 +17,7 @@ arguments:
   value_col:
     type: column
     description: The column for which to search for flatlines.
-  date_col:
+  order_col:
     type: column
     description: The column used to order the rows within groups.
   min_repeat_count:
@@ -27,10 +27,9 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset()
 
-  test = ds.apply(date_col='TICKER',
-                  group_by=['TICKER','SYMBOL'],
+  test = ds.apply(group_by=['TICKER','SYMBOL'],
                   value_col='CLOSE',
-                  date_col='DATE',
+                  order_col='DATE',
                   min_repeat_count=1
                   )
 
