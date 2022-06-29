@@ -41,11 +41,11 @@ jobs:
         git commit -m "Update version"
         git push
 
-#    - name: Build and publish
-#      env:
-#        TWINE_USERNAME: __token__
-#        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-#      run: |
-#        cd rasgotransforms
-#        python setup.py sdist bdist_wheel
-#        twine upload dist/*
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+      run: |
+        cd rasgotransforms
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
