@@ -1,11 +1,13 @@
 import os
-from typing import Callable, Dict, Optional, Union
+from typing import Callable, Dict, Optional, Union, Tuple
 from pathlib import Path
 import inspect
 import yaml
 
-from .environment import RasgoEnvironment
-from .main import DataWarehouse
+from rasgotransforms.render.environment import RasgoEnvironment
+from rasgotransforms.main import DataWarehouse
+from rasgotransforms.render.infer_columns import infer_columns
+from rasgotransforms.exceptions import RenderException
 
 
 class Transforms(object):
@@ -17,7 +19,7 @@ class Transforms(object):
         self.dw_type = DataWarehouse(dw_type.lower())
         self.run_query = run_query
         self.env = RasgoEnvironment(run_query=run_query)
-        transforms_dir = Path(os.path.dirname(__file__), 'transforms')
+        transforms_dir = Path(os.path.dirname(__file__), '../transforms')
         for transform_path in transforms_dir.rglob('*/*.yaml'):
             with open(transform_path) as fp:
                 transform_config = yaml.safe_load(fp)
@@ -31,15 +33,28 @@ class Transforms(object):
         def render_transform(
             *args,
             source_table: str,
-            source_columns: Optional[Union[Dict[str, Dict[str, str]], Callable]] = None,
+            source_columns: Optional[Dict[str, Dict[str, str]]] = None,
+            return_columns: bool = False,
             **kwargs,
-        ) -> str:
+        ) -> Union[str, Tuple[str, Dict[str, str]]]:
             template_path = _get_transform_path(name=transform_config['name'], dw_type=self.dw_type)
             with open(template_path) as fp:
                 source_code = fp.read()
-            return self.env.render(
+            sql = self.env.render(
                 source_code=source_code, source_table=source_table, arguments=kwargs, source_columns=source_columns
             )
+            if return_columns:
+                if not source_columns:
+                    raise RenderException('If return_columns is True, the source_columns must be passed in.')
+                inferred_columns = infer_columns(
+                    transform_name=transform_config['name'],
+                    transform_args=kwargs,
+                    source_columns=source_columns[source_table],
+                    dw_type=self.dw_type.value,
+                )
+                return sql, inferred_columns
+            else:
+                return sql
 
         render_transform.__name__ = transform_config['name']
         render_transform.__signature__ = _gen_method_signature(render_transform, transform_config)
@@ -96,9 +111,9 @@ def _get_transform_path(name: str, dw_type: DataWarehouse):
     """
     root_dir = os.path.dirname(__file__)
     if dw_type:
-        function_path = Path(root_dir, 'transforms', name, dw_type.value, f'{name}.sql')
+        function_path = Path(root_dir, '../transforms', name, dw_type.value, f'{name}.sql')
         if function_path.exists():
             return str(function_path.absolute())
-    function_path = Path(root_dir, 'transforms', name, f'{name}.sql')
+    function_path = Path(root_dir, '../transforms', name, f'{name}.sql')
     if os.path.exists(function_path):
         return str(function_path)

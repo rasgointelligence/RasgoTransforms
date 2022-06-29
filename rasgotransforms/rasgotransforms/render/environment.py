@@ -3,7 +3,7 @@ import re
 from datetime import datetime
 from itertools import combinations, permutations, product
 from typing import Callable, Optional, Dict
-from .exceptions import RenderException
+from rasgotransforms.exceptions import RenderException
 
 
 class RasgoEnvironment(Environment):
