@@ -42,9 +42,7 @@ class RasgoEnvironment(Environment):
         Given the source code of a jinja template, its arguments, and metadata about the source table,
         this renders the transform sql.
 
-        Source columns can be a mapping of table names to columns (e.g. {table_name: {column_name: column_type}})
-        or a function which returns a mapping of columns names to column types given a table fqtn
-        (e.g. get_columns(fqtn): return {column_name: column_type}
+        Source columns can is a mapping of table names to columns (e.g. {table_name: {column_name: column_type}})
         """
         arguments['source_table'] = source_table
 

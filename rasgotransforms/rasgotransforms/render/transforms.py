@@ -16,10 +16,10 @@ class Transforms(object):
     Dynamically adds class methods which render each transform in the package
     """
 
-    def __init__(self, dw_type: str, run_query: Optional[Callable] = None):
+    def __init__(self, dw_type: str, run_query: Optional[Callable] = None, **kwargs):
         self.dw_type = DataWarehouse(dw_type.lower())
         self.run_query = run_query
-        self.env = RasgoEnvironment(run_query=run_query)
+        self.env = RasgoEnvironment(run_query=run_query, **kwargs)
         transforms_dir = Path(__file__).parent.parent / 'transforms'
         for transform_path in transforms_dir.rglob('*/*.yaml'):
             with open(transform_path) as fp:
