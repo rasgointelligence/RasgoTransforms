@@ -3,10 +3,9 @@ Functions to render Transform Templates
 """
 from typing import Dict, Any, Optional
 from pathlib import Path
-from .main import DataWarehouse
-from .dtypes import DTYPES
+from rasgotransforms.main import DataWarehouse
+from rasgotransforms.dtypes import DTYPES
 from importlib import machinery, util
-import os
 import re
 
 
@@ -26,13 +25,13 @@ def get_path(transform_name: str, dw_type: Optional[DataWarehouse] = None) -> Op
     """
     Gets the python file for the given transform specific to the given data warehouse if one exists
     """
-    root_dir = os.path.dirname(__file__)
+    root_dir = Path(__file__).parent.parent
     if dw_type:
-        function_path = Path(root_dir, 'transforms', transform_name, dw_type.value, f'{transform_name}.py')
+        function_path = root_dir / 'transforms' / transform_name / dw_type.value / f'{transform_name}.py'
         if function_path.exists():
             return str(function_path.absolute())
-    function_path = Path(root_dir, 'transforms', transform_name, f'{transform_name}.py')
-    if os.path.exists(function_path):
+    function_path = root_dir / 'transforms' / transform_name / f'{transform_name}.py'
+    if function_path.exists():
         return str(function_path)
 
 

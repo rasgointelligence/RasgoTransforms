@@ -28,10 +28,7 @@ setup(
         'Rasgo': 'https://www.rasgoml.com/',
     },
     license='GNU Affero General Public License v3 or later (AGPLv3+)',
-    packages=[
-        'rasgotransforms',
-        'rasgotransforms/transforms',
-    ],
+    packages=['rasgotransforms', 'rasgotransforms/transforms', 'rasgotransforms/render'],
     package_data={
         'rasgotransforms': [
             'transforms/**/*.yaml',
