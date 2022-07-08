@@ -40,6 +40,11 @@ arguments:
     type: bool
     description: "(Default: true) If true, the resulting data will be pivoted on the distinct dimension columns"
     is_optional: true
+  max_num_groups:
+    type: int
+    description: |
+      (Default: 10) The maximum number of groups in a dimention to group by. Groups are ordered by number of records and the top groups are chosen and others are added to a 'Other' group.
+    is_optional: true
 
 example_code: |
   ds = rasgo.get.dataset(id)

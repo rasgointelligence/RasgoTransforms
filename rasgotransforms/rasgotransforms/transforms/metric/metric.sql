@@ -4,35 +4,53 @@
 {%- set distinct = true if 'distinct' in aggregation_type|lower else false -%}
 {%- set aggregation_type = aggregation_type|upper|replace('_', '')|replace('DISTINCT', '')|replace('MEAN', 'AVG') -%}
 {%- set flatten = flatten if flatten is defined else true -%}
+{%- set max_num_groups = max_num_groups if max_num_groups is defined else 10 -%}
 
 {%- macro get_distinct_values(columns) -%}
     {%- set distinct_val_query -%}
-        select distinct
+        select
             {%- for column in columns %}
-            {{ column }}{{', ' if not loop.last else ''}}
+            {{ column }},
             {%- endfor %}
-        from {{ source_table }} limit 101
+            {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}{{ target_expression}}) as vals
+        from {{ source_table }} 
+        group by {{ range(1, dimensions|length + 1)|join(', ') }}
+        order by vals desc
+        limit {{ max_num_groups + 1}}
     {%- endset -%}
     {%- set distinct_vals = run_query(distinct_val_query) -%}
-    {%- if distinct_vals.shape[0] > 100 %}
-        {{ raise_exception('There are more than 100 distinct groups given the current dimensions. Please select dimensions with fewer distinct groups to aggregate by.') }}
-    {%- endif -%}
     {%- for val in distinct_vals.itertuples() -%}
-        {%- for column in distinct_vals.columns -%}
+        {%- for column in distinct_vals.columns[:-1] -%}
             {{ val[column] }}{{'_' if not loop.last else ''}}
         {%- endfor -%}
-        {{ ',' if not loop.last else ''}}
+        {{ '|$|' if not loop.last else ''}}
     {%- endfor %}
 {%- endmacro -%}
+
+{%- if dimensions -%}
+{%- set distinct_values = get_distinct_values(dimensions).split('|$|') -%}
+{%- if distinct_values|length > max_num_groups %}
+{%- set distinct_values = distinct_values[:-1] + ['Other'] -%}
+{%- endif -%}
+{%- endif -%}
 
 with source_query as (
     select
         cast(date_trunc('day', cast({{ time_dimension }} as date)) as date) as date_day,
         {%- for dimension in dimensions %}
-        {{ dimension }},
+        case
+            when {{ dimension }} in (
+                {%- for val in distinct_values %}
+                '{{ val }}'{{',' if not loop.last else ''}}
+                {%- endfor %}
+            ) then {{ dimension }}
+            {%- if 'None' in distinct_values %}
+            when {{ dimension }} is null then 'None'
+            {%- endif %}
+            else 'Other'
+        end as {{ dimension }},
         {%- endfor %}
         {{ target_expression }} as property_to_aggregate
-
     from {{ source_table }}
     where {{ time_dimension }} >= '{{ start_date }}'
         {%- for filter in filters %}
@@ -119,7 +137,6 @@ tidy_data as (
 {%- if not dimensions or not flatten %}
 select * from tidy_data order by period_min
 {%- else -%}
-{%- set distinct_values = get_distinct_values(dimensions).split(',') -%}
 , 
 combined_dimensions as (
     select
