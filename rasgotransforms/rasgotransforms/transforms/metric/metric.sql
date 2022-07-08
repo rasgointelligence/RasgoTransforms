@@ -12,11 +12,11 @@
             {%- for column in columns %}
             {{ column }},
             {%- endfor %}
-            count(*) as num_records
+            {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}{{ target_expression}}) as vals
         from {{ source_table }} 
         group by {{ range(1, dimensions|length + 1)|join(', ') }}
-        order by num_records desc
-        limit {{ max_num_groups }}
+        order by vals desc
+        limit {{ max_num_groups + 1}}
     {%- endset -%}
     {%- set distinct_vals = run_query(distinct_val_query) -%}
     {%- for val in distinct_vals.itertuples() -%}
@@ -28,7 +28,10 @@
 {%- endmacro -%}
 
 {%- if dimensions -%}
-{%- set distinct_values = get_distinct_values(dimensions).split('|$|') + ['Other'] -%}
+{%- set distinct_values = get_distinct_values(dimensions).split('|$|') -%}
+{%- if distinct_values|length > max_num_groups %}
+{%- set distinct_values = distinct_values[:-1] + ['Other'] -%}
+{%- endif -%}
 {%- endif -%}
 
 with source_query as (
