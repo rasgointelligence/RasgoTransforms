@@ -18,6 +18,7 @@ Calculate metric values given a metric definition
 | start_date        | timestamp   | The start of the period for which metric values will be calculated (2010-01-01 if unset)                                                                                                       | True        |
 | num_days          | int         | The number of days after the start_date for which metric values will be calculated (7300 if unset)                                                                                             | True        |
 | flatten           | bool        | (Default: true) If true, the resulting data will be pivoted on the distinct dimension columns                                                                                                  | True        |
+| max_num_groups    | int         | (Default: 10) The maximum number of groups in a dimention to group by. Groups are ordered by number of records and the top groups are chosen and others are added to a 'Other' group.          | True        |
 
 
 ## Example
