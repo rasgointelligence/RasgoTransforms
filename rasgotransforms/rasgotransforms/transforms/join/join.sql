@@ -37,6 +37,8 @@ FROM {{ source_table }} as t1
             {%- else -%}
                 {%- if filter_block['operator'] == 'CONTAINS' -%}
                     {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+                {%- elif filter_block['operator'] == 'IN' -%}
+                    {{ filter_block['columnName'] }} {{ filter_block['operator'] }} ({{ filter_block['comparisonValue'] }})
                 {%- else -%}
                     {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
                 {%- endif -%}
