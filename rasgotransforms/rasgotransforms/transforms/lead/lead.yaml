@@ -1,0 +1,26 @@
+name: lead
+tags:
+  - column
+  - date_time
+  - feature_engineering
+description: Lead shifts your features on a partition index, creating a look-forward feature offset by an amount. Lead supports generating multiple leads in one transform by generating each unique combination of columns and amounts from your inputs.
+arguments:
+  columns:
+    type: column_list
+    description: names of column(s) you want to lead
+  amounts:
+    type: int_list
+    description: Magnitude of amounts you want to use for the lead.
+  partition:
+    type: column_list
+    description: name of column(s) to partition by for the lead
+    is_optional: true
+  order_by:
+    type: column_list
+    description: name of column(s) to order by in the final data set
+    is_optional: true
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.lead(columns=['OPEN', 'CLOSE'], amounts=[1,2,3,7], order_by=['DATE, 'TICKER'], partition=['TICKER'])
+  ds2.preview()
