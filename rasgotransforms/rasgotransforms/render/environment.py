@@ -11,7 +11,8 @@ class RasgoEnvironment(Environment):
         super().__init__(*args, extensions=self.rasgo_extensions, **kwargs)
         for filter_name, method in self.rasgo_filters.items():
             self.filters[filter_name] = method
-        self.globals = self.rasgo_globals
+        for name, value in self.rasgo_globals.items():
+            self.globals[name] = value
         self.globals['run_query'] = run_query
 
     @property
