@@ -1,5 +1,15 @@
+{%- set start_date = '2010-01-01' if not start_date else start_date -%}
+{%- set end_date = '2030-01-01' if not end_date else end_date -%}
+{%- set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 -%}
+{%- set alias = 'metric_value' if not alias else alias -%}
+{%- set distinct = true if 'distinct' in aggregation_type|lower else false -%}
+{%- set aggregation_type = aggregation_type|upper|replace('_', '')|replace('DISTINCT', '')|replace('MEAN', 'AVG') -%}
+{%- set flatten = flatten if flatten is defined else true -%}
+{%- set max_num_groups = max_num_groups if max_num_groups is defined else 10 -%}
+{%- set bucket_count = bucket_count if bucket_count is defined else 200 -%}
+{%- set filters = filters if filters is defined else [] -%}
 {%- set axis_type_dict = get_columns(source_table) -%}
-{%- set axis_type_response = axis_type_dict[x_axis].upper() -%}
+{%- set axis_type_response = axis_type_dict[time_dimension.upper()].upper() -%}
 {%- if 'DATE' in axis_type_response or 'TIME' in axis_type_response -%}
   {%- set axis_type = "date" -%}
 {%- elif 'NUM' in axis_type_response or 'FLOAT' in axis_type_response or 'INT' in axis_type_response or 'DECIMAL' in axis_type_response or 'DOUBLE' in axis_type_response or 'REAL' in axis_type_response -%}
@@ -9,177 +19,324 @@
 {%- else -%}
     {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {%- endif -%}
-
-{%- set row_count_query %}
-select count(*) from {{ source_table }}
-{% endset %}
-{% set row_count_query_results = run_query(row_count_query) %}
-{%- set row_count = row_count_query_results[row_count_query_results.columns[0]][0] -%}
-
-{%- if num_buckets is not defined -%}
-    {%- set bucket_count = 200 -%}
-{%- else -%}
-    {%- set bucket_count = num_buckets -%}
+{%- if axis_type == 'date' -%}
+{%- do filters.append({'columnName': time_dimension, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) -%}
+{%- do filters.append({'columnName': time_dimension, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
 {%- endif -%}
 
-{%- if row_count|int < bucket_count|int -%}
-    {%- set bucket_count = row_count|int -%}
-{%- endif -%}
-
-{%- if group_by is defined and group_by -%}
-    {%- set distinct_val_query -%}
-        select distinct {{ group_by }}
-        from {{ source_table }}
-        limit 100
+{%- macro get_distinct_values(column) -%}
+    {%- set distinct_val_query %}
+        select
+            to_char({{ column }}) as {{ column }},
+            {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}{{ target_expression}}) as vals
+        from {{ source_table }} 
+        where true
+            {%- for filter in filters %}
+            and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+            {%- endfor %}
+        group by 1
+        order by vals desc
+        limit {{ max_num_groups + 1}}
     {%- endset -%}
-    {%- set results = run_query(distinct_val_query) -%}
-    {%- set distinct_vals = results[results.columns[0]].to_list() -%}
-    {%- if distinct_vals|length > 20-%}
-        {{ raise_exception('The group by column has more than 20 distinct values. Please group by columns with less than 20 distinct values.') }}
-    {%- endif -%}
+    {%- set distinct_vals = run_query(distinct_val_query) -%}
+    {%- for val in distinct_vals.itertuples() -%}
+        {%- for column in distinct_vals.columns[:-1] -%}
+            {{ val[column] }}{{'_' if not loop.last else ''}}
+        {%- endfor -%}
+        {{ '|$|' if not loop.last else ''}}
+    {%- endfor %}
+{%- endmacro -%}
+
+{%- if dimension -%}
+{%- set distinct_values = get_distinct_values(dimension).split('|$|') -%}
+{%- if distinct_values|length > max_num_groups %}
+{%- set distinct_values = distinct_values[:-1] + ['Other'] -%}
+{%- endif -%}
 {%- endif -%}
 
-{# if the axis is continuous or a date, do a line chart #}
-{%- if axis_type in ['date', 'numeric'] -%}
-    WITH AXIS_RANGE AS (
-    {# Use a user-defined axis column to calculate the min & max of the axis (and buckets on the axis) #}
-    SELECT
-        {% if axis_type == 'date' -%}
-            MIN(DATE_PART(EPOCH_SECOND, {{ x_axis }}))-1 AS MIN_VAL
-            ,MAX(DATE_PART(EPOCH_SECOND, {{ x_axis }}))+1 AS MAX_VAL
-        {% else %}
-            MIN({{ x_axis }})-1 AS MIN_VAL
-            ,MAX({{ x_axis }})+1 AS MAX_VAL
-        {%- endif %}
-    FROM
-        {{ source_table }}
-    WHERE
-        {{ x_axis }} IS NOT NULL
-    ), EDGES AS (
-    SELECT MIN_VAL, MAX_VAL, (MIN_VAL-MAX_VAL) VAL_RANGE, ((MAX_VAL-MIN_VAL)/{{ bucket_count }}) BUCKET_SIZE FROM AXIS_RANGE
-    ),
-    BUCKETS AS (
-    SELECT
-        {# Assigns a bucket to each value of each column in users column list #}
-        {# Row count of result set should match the row count of the raw table #}
-        MIN_VAL
-    ,MAX_VAL
-    ,BUCKET_SIZE
-    ,CAST({{ "DATE_PART(EPOCH_SECOND, " + x_axis +")" if axis_type == 'date' else x_axis }} AS FLOAT) AS COL_A_VAL
-    ,WIDTH_BUCKET(COL_A_VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS COL_A_BUCKET
-    {%- if group_by is defined and group_by %}
-        {%- for col, aggs in metrics.items() %}
-            {%- for distinct_val in distinct_vals %}
-                ,CASE WHEN {{ group_by }} = '{{ distinct_val }}' THEN {{ col }} END AS {{ cleanse_name(distinct_val) }}_{{ col }}
-            {%- endfor %}
-        {%- endfor %}
-    {%- else %}
-        {%- for col, aggs in metrics.items() %}
-            ,{{ col }}
-        {%- endfor %}
-    {%- endif %}
-
-    FROM
-        {{ source_table }}
-        CROSS JOIN EDGES
-        {%- if filters is defined and filters %}
-            {% for filter_block in filters %}
-            {%- set oloop = loop -%}
-            {{ 'WHERE ' if oloop.first else ' AND ' }}
-                {%- if filter_block is not mapping -%}
-                    {{ filter_block }}
-                {%- else -%}
-                    {%- if filter_block['operator'] == 'CONTAINS' -%}
-                        {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
-                    {%- else -%}
-                        {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
-                    {%- endif -%}
-                {%- endif -%}
-            {%- endfor -%}
-        {%- endif -%}
-    )
-    {# Run final aggregates on the buckets #}
-    SELECT
-    {% if axis_type == 'date' -%}
-        CAST((MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE)) AS DATETIME) AS {{ x_axis }}_MIN
-        ,CAST((MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE)) AS DATETIME) AS {{ x_axis }}_MAX
-    {%- else -%}
-        MIN_VAL+((COL_A_BUCKET-1)*BUCKET_SIZE) AS {{ x_axis }}_MIN
-        ,MIN_VAL+(COL_A_BUCKET*BUCKET_SIZE) AS {{ x_axis }}_MAX
-    {%- endif -%}
-    {%- if group_by is defined and group_by %}
-        {%- for col, aggs in metrics.items() %}
-            {%- for agg in aggs %}
-                {%- for distinct_val in distinct_vals %}
-                    ,{{ agg }}({{ cleanse_name(distinct_val) }}_{{ col }}) AS {{ cleanse_name(distinct_val) }}_{{ agg }}_{{ col }}
-                {%- endfor -%}
-            {%- endfor -%}
-        {%- endfor %}
-    {%- else %}
-        {%- for col, aggs in metrics.items() %}
-            {%- for agg in aggs %}
-                ,{{ agg }}({{ col }}) AS {{ agg }}_{{ col }}
-            {%- endfor -%}
-        {%- endfor %}
-    {%- endif %}
-
-    FROM BUCKETS
-    WHERE {{ x_axis }}_MIN is not NULL
-    GROUP BY 1, 2
-    ORDER BY 1
-
-{%- elif axis_type == 'categorical' -%}
-{# if the axis is a categorical dimension, build a bar chart #}
-    {%- if distinct_vals is defined and distinct_vals %}
-        WITH TEMP AS (
-            SELECT
-            {{ x_axis }}
-            {% for col, aggs in metrics.items() %}
-                {% for distinct_val in distinct_vals %}
-                    ,CASE WHEN {{ group_by }} = '{{ distinct_val }}' THEN {{ col }} END AS {{ cleanse_name(distinct_val) }}_{{ col }}
+{%- if axis_type == 'date' %}
+with source_query as (
+    select
+        cast(date_trunc('day', cast({{ time_dimension }} as date)) as date) as date_day,
+        {%- if dimension %}
+        case
+            when to_char({{ dimension }}) in (
+                {%- for val in distinct_values %}
+                '{{ val }}'{{',' if not loop.last else ''}}
                 {%- endfor %}
+            ) then to_char({{ dimension }})
+            {%- if 'None' in distinct_values %}
+            when {{ dimension }} is null then 'None'
+            {%- endif %}
+            else 'Other'
+        end as {{ dimension }},
+        {%- endif %}
+        {{ target_expression }} as property_to_aggregate
+    from {{ source_table }}
+    where true
+        {%- for filter in filters %}
+        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {%- endfor %}
+),
+calendar as (
+    select
+            row_number() over (order by null) as interval_id,
+            cast(dateadd(
+                'day',
+                interval_id-1,
+                '{{ start_date }}'::timestamp_ntz) as date) as date_day,
+            cast(date_trunc('week', date_day) as date) as date_week,
+            cast(date_trunc('month', date_day) as date) as date_month,
+            case
+                when month(date_day) in (1, 2, 3) then date_from_parts(year(date_day), 1, 1)
+                when month(date_day) in (4, 5, 6) then date_from_parts(year(date_day), 4, 1)
+                when month(date_day) in (7, 8, 9) then date_from_parts(year(date_day), 7, 1)
+                when month(date_day) in (10, 11, 12) then date_from_parts(year(date_day), 10, 1)
+            end as date_quarter,
+            cast(date_trunc('year', date_day) as date) as date_year
+    from table (generator(rowcount => {{ num_days }}))
+),
+{%- if dimension %}
+spine__time as (
+        select
+        date_{{ time_grain }} as period,
+        date_day
+        from calendar
+),
+spine__values__{{ dimension }} as (
+    select distinct {{ dimension }}
+    from source_query
+),
+spine as (
+    select *
+    from spine__time
+        cross join spine__values__{{ dimension }}
+),
+{%- else %}
+spine as (
+        select
+        date_{{ time_grain }} as period,
+        date_day
+        from calendar
+),
+{%- endif %}
+joined as (
+    select
+        spine.period,
+        {%- if dimension %}
+        spine.{{ dimension }},
+        {%- endif %}
+        {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}source_query.property_to_aggregate) as {{ alias }},
+        boolor_agg(source_query.date_day is not null) as has_data
+    from spine
+    left outer join source_query on source_query.date_day = spine.date_day
+        {%- if dimension %}
+        and (source_query.{{ dimension }} = spine.{{ dimension }}
+            or source_query.{{ dimension }} is null and spine.{{ dimension }} is null)
+        {%- endif %}
+    group by 1{{ ', 2' if dimension }}
+),
+bounded as (
+    select
+        *,
+            min(case when has_data then period end) over ()  as lower_bound,
+            max(case when has_data then period end) over ()  as upper_bound
+    from joined
+),
+tidy_data as (
+    select
+        cast(period as timestamp) as x_min,
+        {%- if time_grain|lower == 'quarter' %}
+        dateadd('second', -1, dateadd('month',3, x_min)) as x_max,
+        {%- else %}
+        dateadd('second', -1, dateadd('{{ time_grain }}',1, x_min)) as x_max,
+        {%- endif %}
+        {%- if dimension %}
+        {{ dimension }},
+        {%- endif %}
+        coalesce({{ alias }}, 0) as {{ alias }}
+    from bounded
+    where period >= lower_bound
+    and period <= upper_bound
+    order by 1, 2{{ ', 3' if dimension }}
+)
+
+{%- elif axis_type == 'numeric' %}
+
+with axis_range as (
+    select
+        min({{ time_dimension }}) - 1 as min_val,
+        max({{ time_dimension }}) + 1 as max_val
+    from {{ source_table }}
+    where {{ time_dimension }} is not null
+),
+edges as (
+    select 
+        min_val, 
+        max_val, 
+        (min_val-max_val) val_range, 
+        ((max_val-min_val)/{{ bucket_count }}) bucket_size 
+    from axis_range
+),
+buckets as (
+    select
+        min_val,
+        max_val,
+        bucket_size,
+        cast({{ time_dimension }} as float) as col_a_val,
+        width_bucket(col_a_val, min_val, max_val, {{ bucket_count }}) as bucket,
+        {{ target_expression }} as property_to_aggregate
+        {{ ', ' + dimension if dimension else ''}}
+    from
+        {{ source_table }}
+        cross join edges
+    where true
+        {%- for filter in filters %}
+        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {%- endfor %}
+),
+source_query as (
+    select 
+        bucket, 
+        property_to_aggregate{{ ', ' if dimension }}
+        {{ dimension if dimension }}
+    from buckets
+),
+{%- if dimension %}
+bucket_spine as (
+    select
+        row_number() over (order by null) as bucket
+    from table (generator(rowcount => {{ bucket_count }}))
+), spine__values__{{ dimension }} as (
+    select distinct {{ dimension }} from {{ source_table }}
+), spine as (
+    select * from bucket_spine
+        cross join spine__values__{{ dimension }}
+),
+{%- else %}
+spine as (
+    select
+        row_number() over (order by null) as bucket
+    from table (generator(rowcount => {{ bucket_count }}))
+),
+{%- endif %}
+joined as (
+    select
+        spine.bucket,
+        {%- if dimension %}
+        spine.{{ dimension }},
+        {%- endif %}
+        {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}source_query.property_to_aggregate) as {{ alias }},
+        boolor_agg(source_query.bucket is not null) as has_data
+    from spine
+    left outer join source_query on source_query.bucket = spine.bucket
+        {%- if dimension %}
+        and (source_query.{{ dimension }} = spine.{{ dimension }}
+            or source_query.{{ dimension }} is null and spine.{{ dimension }} is null)
+        {%- endif %}
+    group by 1{{ ', 2' if dimension }}
+), tidy_data as (
+    select
+        min_val+((bucket-1)*bucket_size) as x_min,
+        min_val+(bucket*bucket_size) as x_max,
+        {{ alias }}{{ '\n\t\t, ' + dimension if dimension else ''}}
+    from joined
+        cross join edges
+)
+
+{%- endif -%}
+{%- if axis_type in ['date', 'numeric'] -%}
+{%- if not dimension or not flatten %}
+select * from tidy_data order by period_min
+{%- else -%}
+,
+pivoted as (
+    select
+        x_min,
+        x_max,
+        {% for val in distinct_values -%}
+        {{ cleanse_name(val) }}{{',' if not loop.last else ''}}
+        {%- endfor %}
+    from (
+        select 
+            x_min,
+            x_max,
+            {{ alias }},
+            {{ dimension }}
+        from tidy_data
+    )
+    pivot (
+        sum({{ alias }}) for {{ dimension }} in (
+            {% for val in distinct_values -%}
+            '{{ val }}'{{',' if not loop.last else ''}}
             {%- endfor %}
-            FROM {{ source_table }}
         )
+    ) as p (
+        x_min,
+        x_max,
+        {% for val in distinct_values -%}
+        {{ cleanse_name(val) }}{{',' if not loop.last else ''}}
+        {%- endfor %}
+    )
+)
+select * from pivoted order by x_min
+{%- endif -%}
+
+
+
+{%- else %}
+
+{%- if distinct_vals is defined and distinct_vals %}
+    WITH TEMP AS (
         SELECT
         {{ x_axis }}
         {% for col, aggs in metrics.items() %}
-            {% for agg in aggs %}
-                {% for distinct_val in distinct_vals %}
-                    ,{{ agg }}({{ cleanse_name(distinct_val) }}_{{ col }}) AS {{ cleanse_name(distinct_val) }}_{{ agg }}_{{ col }}
-                {%- endfor %}
+            {% for distinct_val in distinct_vals %}
+                ,CASE WHEN {{ group_by }} = '{{ distinct_val }}' THEN {{ col }} END AS {{ cleanse_name(distinct_val) }}_{{ col }}
             {%- endfor %}
         {%- endfor %}
-        FROM TEMP
-        GROUP BY {{ x_axis }}
-        {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
-    {%- else %}
-        SELECT
-        {{ x_axis }},
-
-        {%- for col, aggs in metrics.items() %}
-            {%- set outer_loop = loop -%}
-            {%- for agg in aggs %}
-                {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
-            {%- endfor -%}
-        {%- endfor %}
         FROM {{ source_table }}
-        {%- if filters is defined and filters %}
-            {% for filter_block in filters %}
-            {%- set oloop = loop -%}
-            {{ 'WHERE ' if oloop.first else ' AND ' }}
-                {%- if filter_block is not mapping -%}
-                    {{ filter_block }}
+    )
+    SELECT
+    {{ x_axis }}
+    {% for col, aggs in metrics.items() %}
+        {% for agg in aggs %}
+            {% for distinct_val in distinct_vals %}
+                ,{{ agg }}({{ cleanse_name(distinct_val) }}_{{ col }}) AS {{ cleanse_name(distinct_val) }}_{{ agg }}_{{ col }}
+            {%- endfor %}
+        {%- endfor %}
+    {%- endfor %}
+    FROM TEMP
+    GROUP BY {{ x_axis }}
+    {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
+{%- else %}
+    SELECT
+    {{ x_axis }},
+
+    {%- for col, aggs in metrics.items() %}
+        {%- set outer_loop = loop -%}
+        {%- for agg in aggs %}
+            {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
+        {%- endfor -%}
+    {%- endfor %}
+    FROM {{ source_table }}
+    {%- if filters is defined and filters %}
+        {% for filter_block in filters %}
+        {%- set oloop = loop -%}
+        {{ 'WHERE ' if oloop.first else ' AND ' }}
+            {%- if filter_block is not mapping -%}
+                {{ filter_block }}
+            {%- else -%}
+                {%- if filter_block['operator'] == 'CONTAINS' -%}
+                    {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
                 {%- else -%}
-                    {%- if filter_block['operator'] == 'CONTAINS' -%}
-                        {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
-                    {%- else -%}
-                        {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
-                    {%- endif -%}
+                    {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
                 {%- endif -%}
-            {%- endfor -%}
-        {%- endif %}
-        GROUP BY {{ x_axis }}
-        {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
-    {% endif %}
-{%- endif -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif %}
+    GROUP BY {{ x_axis }}
+    {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
+{% endif %}
+
+{%- endif %}
