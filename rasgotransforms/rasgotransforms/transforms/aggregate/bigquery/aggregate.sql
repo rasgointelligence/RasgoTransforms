@@ -1,3 +1,15 @@
+{%- set median_aggs = {} -%}
+{%- set mode_aggs = {} -%}
+{%- for col, aggs in aggregations.items() -%}
+    {%- for agg in aggs -%}
+        {%- if 'MEDIAN' in agg|upper -%}
+            {%- median_aggs[col] = agg -%}
+        {%- elif 'MODE' in agg|upper -%}
+            {%- mode_aggs[col] = agg -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endfor -%}
+
 SELECT
 {%- for group_item in group_by %}
     {{ group_item }},
