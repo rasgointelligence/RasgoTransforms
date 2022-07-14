@@ -46,8 +46,8 @@
     {%- endfor %}
 {%- endmacro -%}
 
-{%- if dimension -%}
-{%- set distinct_values = get_distinct_values(dimension).split('|$|') -%}
+{%- if group_by -%}
+{%- set distinct_values = get_distinct_values(group_by).split('|$|') -%}
 {%- if distinct_values|length > max_num_groups %}
 {%- set distinct_values = distinct_values[:-1] + ['Other'] -%}
 {%- endif -%}
@@ -57,18 +57,18 @@
 with source_query as (
     select
         cast(date_trunc('day', cast({{ x_axis }} as date)) as date) as date_day,
-        {%- if dimension %}
+        {%- if group_by %}
         case
-            when to_char({{ dimension }}) in (
+            when to_char({{ group_by }}) in (
                 {%- for val in distinct_values %}
                 '{{ val }}'{{',' if not loop.last else ''}}
                 {%- endfor %}
-            ) then to_char({{ dimension }})
+            ) then to_char({{ group_by }})
             {%- if 'None' in distinct_values %}
-            when {{ dimension }} is null then 'None'
+            when {{ group_by }} is null then 'None'
             {%- endif %}
             else 'Other'
-        end as {{ dimension }},
+        end as {{ group_by }},
         {%- endif %}
         {%- for column in metrics.keys() %}
         {{ column }}{{ ',' if not loop.last }}
@@ -97,21 +97,21 @@ calendar as (
             cast(date_trunc('year', date_day) as date) as date_year
     from table (generator(rowcount => {{ num_days }}))
 ),
-{%- if dimension %}
+{%- if group_by %}
 spine__time as (
         select
         date_{{ time_grain }} as period,
         date_day
         from calendar
 ),
-spine__values__{{ dimension }} as (
-    select distinct {{ dimension }}
+spine__values__{{ group_by }} as (
+    select distinct {{ group_by }}
     from source_query
 ),
 spine as (
     select *
     from spine__time
-        cross join spine__values__{{ dimension }}
+        cross join spine__values__{{ group_by }}
 ),
 {%- else %}
 spine as (
@@ -124,8 +124,8 @@ spine as (
 joined as (
     select
         spine.period,
-        {%- if dimension %}
-        spine.{{ dimension }},
+        {%- if group_by %}
+        spine.{{ group_by }},
         {%- endif %}
         {%- for column, aggs in metrics.items() %}
         {%- for aggregation_type in aggs %}
@@ -135,11 +135,11 @@ joined as (
         boolor_agg(source_query.date_day is not null) as has_data
     from spine
     left outer join source_query on source_query.date_day = spine.date_day
-        {%- if dimension %}
-        and (source_query.{{ dimension }} = spine.{{ dimension }}
-            or source_query.{{ dimension }} is null and spine.{{ dimension }} is null)
+        {%- if group_by %}
+        and (source_query.{{ group_by }} = spine.{{ group_by }}
+            or source_query.{{ group_by }} is null and spine.{{ group_by }} is null)
         {%- endif %}
-    group by 1{{ ', 2' if dimension }}
+    group by 1{{ ', 2' if group_by }}
 ),
 bounded as (
     select
@@ -156,8 +156,8 @@ tidy_data as (
         {%- else %}
         dateadd('second', -1, dateadd('{{ time_grain }}',1, x_min)) as x_max,
         {%- endif %}
-        {%- if dimension %}
-        {{ dimension }},
+        {%- if group_by %}
+        {{ group_by }},
         {%- endif %}
         {%- for column, aggs in metrics.items() %}
         {%- set oloop = loop %}
@@ -168,7 +168,7 @@ tidy_data as (
     from bounded
     where period >= lower_bound
     and period <= upper_bound
-    order by 1, 2{{ ', 3' if dimension }}
+    order by 1, 2{{ ', 3' if group_by }}
 )
 
 {%- elif axis_type == 'numeric' %}
@@ -189,7 +189,7 @@ edges as (
     from axis_range
 ),
 buckets as (
-    select {{ '\n        ' + dimension + ',' if dimension }}
+    select {{ '\n        ' + group_by + ',' if group_by }}
         min_val,
         max_val,
         bucket_size,
@@ -207,23 +207,25 @@ buckets as (
         {%- endfor %}
 ),
 source_query as (
-    select {{ '\n        ' + dimension + ',' if dimension}}
+    select {{ '\n        ' + group_by + ',' if group_by}}
         bucket, 
         {%- for column in metrics.keys() %}
         {{ column }}{{ ',' if not loop.last }}
         {%- endfor %}
     from buckets
 ),
-{%- if dimension %}
+{%- if group_by %}
 bucket_spine as (
     select
         row_number() over (order by null) as bucket
     from table (generator(rowcount => {{ bucket_count }}))
-), spine__values__{{ dimension }} as (
-    select distinct {{ dimension }} from {{ source_table }}
-), spine as (
+),
+spine__values__{{ group_by }} as (
+    select distinct {{ group_by }} from {{ source_table }}
+),
+spine as (
     select * from bucket_spine
-        cross join spine__values__{{ dimension }}
+        cross join spine__values__{{ group_by }}
 ),
 {%- else %}
 spine as (
@@ -233,7 +235,7 @@ spine as (
 ),
 {%- endif %}
 joined as (
-    select {{ '\n        spine.' + dimension + ',' if dimension}}
+    select {{ '\n        spine.' + group_by + ',' if group_by}}
         spine.bucket,
         {%- for column, aggs in metrics.items() %}
         {%- for aggregation_type in aggs %}
@@ -243,13 +245,14 @@ joined as (
         boolor_agg(source_query.bucket is not null) as has_data
     from spine
     left outer join source_query on source_query.bucket = spine.bucket
-        {%- if dimension %}
-        and (source_query.{{ dimension }} = spine.{{ dimension }}
-            or source_query.{{ dimension }} is null and spine.{{ dimension }} is null)
+        {%- if group_by %}
+        and (source_query.{{ group_by }} = spine.{{ group_by }}
+            or source_query.{{ group_by }} is null and spine.{{ group_by }} is null)
         {%- endif %}
-    group by 1{{ ', 2' if dimension }}
-), tidy_data as (
-    select {{ dimension + ',' if dimension }}
+    group by 1{{ ', 2' if group_by }}
+),
+tidy_data as (
+    select {{ group_by + ',' if group_by }}
         {%- for column, aggs in metrics.items() %}
         {%- for aggregation_type in aggs %}
         {{ cleanse_name(aggregation_type + '_' + column)}},
@@ -263,7 +266,7 @@ joined as (
 
 {%- endif -%}
 {%- if axis_type in ['date', 'numeric'] -%}
-{%- if not dimension or not flatten %}
+{%- if not group_by or not flatten %}
 select * from tidy_data order by period_min
 {%- else -%}
 ,
@@ -272,7 +275,7 @@ select * from tidy_data order by period_min
 {%- for column, aggs in metrics.items() -%}
 {%- for aggregation_type in aggs -%}
 {%- set metric_name = cleanse_name(aggregation_type + '_' + column) -%}
-{%- do metric_names.append(metric_name) -%}
+{%- do metric_names.append(metric_name) %}
 pivoted__{{ metric_name }} as (
     select
         x_min_{{ metric_name }},
@@ -287,11 +290,11 @@ pivoted__{{ metric_name }} as (
             x_min,
             x_max,
             {{ metric_name }},
-            {{ dimension }}
+            {{ group_by }}
         from tidy_data
     )
     pivot (
-        sum({{ metric_name }}) for {{ dimension }} in (
+        sum({{ metric_name }}) for {{ group_by }} in (
             {% for val in distinct_values -%}
             '{{ val }}'{{',' if not loop.last else ''}}
             {%- endfor %}
