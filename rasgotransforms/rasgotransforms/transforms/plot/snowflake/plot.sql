@@ -71,7 +71,9 @@ with source_query as (
             else 'Other'
         end as {{ dimension }},
         {%- endif %}
-        {{ target_expression }} as property_to_aggregate
+        {%- for column in metrics.keys() %}
+        {{ column }}{{ ',' if not loop.last }}
+        {%- endfor %}
     from {{ source_table }}
     where true
         {%- for filter in filters %}
@@ -126,7 +128,11 @@ joined as (
         {%- if dimension %}
         spine.{{ dimension }},
         {%- endif %}
-        {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}source_query.property_to_aggregate) as {{ alias }},
+        {%- for column, aggs in metrics.items() %}
+        {%- for aggregation_type in aggs %}
+        {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in aggregation_type|lower else ''}} source_query.{{ column }}) as {{ cleanse_name(aggregation_type + '_' + column)}},
+        {%- endfor %}
+        {%- endfor %}
         boolor_agg(source_query.date_day is not null) as has_data
     from spine
     left outer join source_query on source_query.date_day = spine.date_day
@@ -154,7 +160,12 @@ tidy_data as (
         {%- if dimension %}
         {{ dimension }},
         {%- endif %}
-        coalesce({{ alias }}, 0) as {{ alias }}
+        {%- for column, aggs in metrics.items() %}
+        {%- set oloop = loop %}
+        {%- for aggregation_type in aggs %}
+        {{ cleanse_name(aggregation_type + '_' + column)}}{{ ',' if not (loop.last and oloop.last) }}
+        {%- endfor %}
+        {%- endfor %}
     from bounded
     where period >= lower_bound
     and period <= upper_bound
@@ -250,39 +261,62 @@ joined as (
 select * from tidy_data order by period_min
 {%- else -%}
 ,
-pivoted as (
+{% set metric_names = [] -%}
+{%- set column_names = [] -%}
+{%- for column, aggs in metrics.items() -%}
+{%- for aggregation_type in aggs -%}
+{%- set metric_name = cleanse_name(aggregation_type + '_' + column) -%}
+{%- do metric_names.append(metric_name) -%}
+pivoted__{{ metric_name }} as (
     select
-        x_min,
-        x_max,
+        x_min_{{ metric_name }},
+        x_max_{{ metric_name }},
         {% for val in distinct_values -%}
-        {{ cleanse_name(val) }}{{',' if not loop.last else ''}}
+        {%- set column_name = cleanse_name(val) + '_' + metric_name -%}
+        {%- do column_names.append(column_name) -%}
+        {{ column_name }}{{',' if not loop.last else ''}}
         {%- endfor %}
     from (
         select 
             x_min,
             x_max,
-            {{ alias }},
+            {{ metric_name }},
             {{ dimension }}
         from tidy_data
     )
     pivot (
-        sum({{ alias }}) for {{ dimension }} in (
+        sum({{ metric_name }}) for {{ dimension }} in (
             {% for val in distinct_values -%}
             '{{ val }}'{{',' if not loop.last else ''}}
             {%- endfor %}
         )
     ) as p (
-        x_min,
-        x_max,
+        x_min_{{ metric_name }},
+        x_max_{{ metric_name }},
         {% for val in distinct_values -%}
-        {{ cleanse_name(val) }}{{',' if not loop.last else ''}}
+        {{ cleanse_name(val) + '_' + metric_name }}{{',' if not loop.last else ''}}
         {%- endfor %}
     )
+),
+{%- endfor %}
+{%- endfor %}
+pivoted as (
+    select *
+    from pivoted__{{ metric_names[0] }}
+        {%- for i in range(1, metric_names|length) %}
+        left join pivoted__{{ metric_names[i] }}
+            on x_min_{{ metric_names[0] }} = x_min_{{ metric_names[i] }}
+            and x_max_{{ metric_names[0] }} = x_max_{{ metric_names[i] }}
+        {%- endfor %}
 )
-select * from pivoted order by x_min
-{%- endif -%}
-
-
+select 
+    x_min_{{ metric_names[0] }} as x_min,
+    x_max_{{ metric_names[0] }} as x_max,
+    {%- for column_name in column_names %}
+    {{ column_name }}{{ ',' if not loop.last }}
+    {%- endfor %}
+from pivoted order by x_min
+{%- endif %}
 
 {%- else %}
 
