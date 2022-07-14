@@ -1,15 +1,12 @@
 {%- set start_date = '2010-01-01' if not start_date else start_date -%}
 {%- set end_date = '2030-01-01' if not end_date else end_date -%}
 {%- set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 -%}
-{%- set alias = 'metric_value' if not alias else alias -%}
-{%- set distinct = true if 'distinct' in aggregation_type|lower else false -%}
-{%- set aggregation_type = aggregation_type|upper|replace('_', '')|replace('DISTINCT', '')|replace('MEAN', 'AVG') -%}
 {%- set flatten = flatten if flatten is defined else true -%}
 {%- set max_num_groups = max_num_groups if max_num_groups is defined else 10 -%}
 {%- set bucket_count = bucket_count if bucket_count is defined else 200 -%}
 {%- set filters = filters if filters is defined else [] -%}
 {%- set axis_type_dict = get_columns(source_table) -%}
-{%- set axis_type_response = axis_type_dict[time_dimension.upper()].upper() -%}
+{%- set axis_type_response = axis_type_dict[x_axis.upper()].upper() -%}
 {%- if 'DATE' in axis_type_response or 'TIME' in axis_type_response -%}
   {%- set axis_type = "date" -%}
 {%- elif 'NUM' in axis_type_response or 'FLOAT' in axis_type_response or 'INT' in axis_type_response or 'DECIMAL' in axis_type_response or 'DOUBLE' in axis_type_response or 'REAL' in axis_type_response -%}
@@ -20,15 +17,17 @@
     {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {%- endif -%}
 {%- if axis_type == 'date' -%}
-{%- do filters.append({'columnName': time_dimension, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) -%}
-{%- do filters.append({'columnName': time_dimension, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
+{%- do filters.append({'columnName': x_axis, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) -%}
+{%- do filters.append({'columnName': x_axis, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
 {%- endif -%}
 
 {%- macro get_distinct_values(column) -%}
+    {%- set target_column = (metrics.keys()|list)[0] -%}
+    {%- set aggregation_type = metrics[target_column][0] -%}
     {%- set distinct_val_query %}
         select
             to_char({{ column }}) as {{ column }},
-            {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}{{ target_expression}}) as vals
+            {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct ' in aggregation_type|lower else ''}}{{ target_column }}) as vals
         from {{ source_table }} 
         where true
             {%- for filter in filters %}
@@ -57,7 +56,7 @@
 {%- if axis_type == 'date' %}
 with source_query as (
     select
-        cast(date_trunc('day', cast({{ time_dimension }} as date)) as date) as date_day,
+        cast(date_trunc('day', cast({{ x_axis }} as date)) as date) as date_day,
         {%- if dimension %}
         case
             when to_char({{ dimension }}) in (
@@ -176,10 +175,10 @@ tidy_data as (
 
 with axis_range as (
     select
-        min({{ time_dimension }}) - 1 as min_val,
-        max({{ time_dimension }}) + 1 as max_val
+        min({{ x_axis }}) - 1 as min_val,
+        max({{ x_axis }}) + 1 as max_val
     from {{ source_table }}
-    where {{ time_dimension }} is not null
+    where {{ x_axis }} is not null
 ),
 edges as (
     select 
@@ -190,14 +189,15 @@ edges as (
     from axis_range
 ),
 buckets as (
-    select
+    select {{ '\n        ' + dimension + ',' if dimension }}
         min_val,
         max_val,
         bucket_size,
-        cast({{ time_dimension }} as float) as col_a_val,
+        cast({{ x_axis }} as float) as col_a_val,
         width_bucket(col_a_val, min_val, max_val, {{ bucket_count }}) as bucket,
-        {{ target_expression }} as property_to_aggregate
-        {{ ', ' + dimension if dimension else ''}}
+        {%- for column in metrics.keys() %}
+        {{ column }}{{ ',' if not loop.last }}
+        {%- endfor %}
     from
         {{ source_table }}
         cross join edges
@@ -207,10 +207,11 @@ buckets as (
         {%- endfor %}
 ),
 source_query as (
-    select 
+    select {{ '\n        ' + dimension + ',' if dimension}}
         bucket, 
-        property_to_aggregate{{ ', ' if dimension }}
-        {{ dimension if dimension }}
+        {%- for column in metrics.keys() %}
+        {{ column }}{{ ',' if not loop.last }}
+        {%- endfor %}
     from buckets
 ),
 {%- if dimension %}
@@ -232,12 +233,13 @@ spine as (
 ),
 {%- endif %}
 joined as (
-    select
+    select {{ '\n        spine.' + dimension + ',' if dimension}}
         spine.bucket,
-        {%- if dimension %}
-        spine.{{ dimension }},
-        {%- endif %}
-        {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}source_query.property_to_aggregate) as {{ alias }},
+        {%- for column, aggs in metrics.items() %}
+        {%- for aggregation_type in aggs %}
+        {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in aggregation_type|lower else ''}}source_query.{{ column }}) as {{ cleanse_name(aggregation_type + '_' + column)}},
+        {%- endfor %}
+        {%- endfor %}
         boolor_agg(source_query.bucket is not null) as has_data
     from spine
     left outer join source_query on source_query.bucket = spine.bucket
@@ -247,10 +249,14 @@ joined as (
         {%- endif %}
     group by 1{{ ', 2' if dimension }}
 ), tidy_data as (
-    select
+    select {{ dimension + ',' if dimension }}
+        {%- for column, aggs in metrics.items() %}
+        {%- for aggregation_type in aggs %}
+        {{ cleanse_name(aggregation_type + '_' + column)}},
+        {%- endfor %}
+        {%- endfor %}
         min_val+((bucket-1)*bucket_size) as x_min,
-        min_val+(bucket*bucket_size) as x_max,
-        {{ alias }}{{ '\n\t\t, ' + dimension if dimension else ''}}
+        min_val+(bucket*bucket_size) as x_max
     from joined
         cross join edges
 )
