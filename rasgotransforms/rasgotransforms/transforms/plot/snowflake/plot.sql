@@ -3,7 +3,7 @@
 {%- set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 -%}
 {%- set flatten = flatten if flatten is defined else true -%}
 {%- set max_num_groups = max_num_groups if max_num_groups is defined else 10 -%}
-{%- set bucket_count = bucket_count if bucket_count is defined else 200 -%}
+{%- set bucket_count = num_buckets if num_buckets is defined else 200 -%}
 {%- set filters = filters if filters is defined else [] -%}
 {%- set axis_type_dict = get_columns(source_table) -%}
 {%- set axis_type_response = axis_type_dict[x_axis.upper()].upper() -%}
@@ -82,8 +82,8 @@ with source_query as (
 {%- if time_grain|lower == 'all'%}
 spine as (
     select 
-        cast('{{ start_date }}' as timestamp_ntz) as x_min,
-        cast('{{ end_date }}' as timestamp_ntz) as x_max
+        cast('{{ start_date }}' as timestamp_ntz) as {{ x_axis }}_min,
+        cast('{{ end_date }}' as timestamp_ntz) as {{ x_axis }}_max
 ),
 joined as (
     select *
@@ -92,8 +92,8 @@ joined as (
 ),
 tidy_data as (
     select {{ '\n        ' + group_by + ',' if group_by }}
-        x_min,
-        x_max,
+        {{ x_axis }}_min,
+        {{ x_axis }}_max,
         {%- for column, aggs in metrics.items() %}
         {%- set oloop = loop %}
         {%- for aggregation_type in aggs %}
@@ -175,11 +175,11 @@ bounded as (
 ),
 tidy_data as (
     select
-        cast(period as timestamp) as x_min,
+        cast(period as timestamp) as {{ x_axis }}_min,
         {%- if time_grain|lower == 'quarter' %}
-        dateadd('second', -1, dateadd('month',3, x_min)) as x_max,
+        dateadd('second', -1, dateadd('month',3, {{ x_axis }}_min)) as {{ x_axis }}_max,
         {%- else %}
-        dateadd('second', -1, dateadd('{{ time_grain }}',1, x_min)) as x_max,
+        dateadd('second', -1, dateadd('{{ time_grain }}',1, {{ x_axis }}_min)) as {{ x_axis }}_max,
         {%- endif %}
         {%- if group_by %}
         {{ group_by }},
@@ -284,8 +284,8 @@ tidy_data as (
         {{ cleanse_name(aggregation_type + '_' + column)}},
         {%- endfor %}
         {%- endfor %}
-        min_val+((bucket-1)*bucket_size) as x_min,
-        min_val+(bucket*bucket_size) as x_max
+        min_val+((bucket-1)*bucket_size) as {{ x_axis }}_min,
+        min_val+(bucket*bucket_size) as {{ x_axis }}_max
     from joined
         cross join edges
 )
@@ -313,8 +313,8 @@ pivoted__{{ metric_name }} as (
         {%- endfor %}
     from (
         select 
-            x_min,
-            x_max,
+            {{ x_axis }}_min,
+            {{ x_axis }}_max,
             {{ metric_name }},
             {{ group_by }}
         from tidy_data
@@ -345,12 +345,12 @@ pivoted as (
         {%- endfor %}
 )
 select 
-    x_min_{{ metric_names[0] }} as x_min,
-    x_max_{{ metric_names[0] }} as x_max,
+    x_min_{{ metric_names[0] }} as {{ x_axis }}_min,
+    x_max_{{ metric_names[0] }} as {{ x_axis }}_max,
     {%- for column_name in column_names %}
     {{ column_name }}{{ ',' if not loop.last }}
     {%- endfor %}
-from pivoted order by x_min
+from pivoted order by {{ x_axis }}_min
 {%- endif %}
 
 {%- else %}
