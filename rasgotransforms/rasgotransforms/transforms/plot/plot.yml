@@ -32,6 +32,32 @@ arguments:
     type: column
     description: A categorical column by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each distinct value in the group by column. If this column has more than 20 distinct values, the plot will not generate.
     is_optional: true
+  start_date:
+    type: timestamp
+    description: |
+      Required if x_axis is type date/datetime 
+      The end of the period for which metric values will be calculated
+  end_date:
+    type: timestamp
+    description: |
+      Required if x_axis is type date/datetime 
+      The end of the period for which metric values will be calculated
+    is_optional: true
+  time_grain:
+    type: string
+    description: |
+      Required if the x_axis is type date/datetime
+      The time grain (day, week, month, quarter, year) used to create the datespine that the metric is aggregated by
+    is_optional: true
+  max_num_groups:
+    type: int
+    description: |
+      (Default: 10) If group_by is specified, this is the max number of distinct groups that will be aggregated, all others will by combined in a 'Other' group
+    is_optional: true
+  bucket_count:
+    type: int
+    description: |
+      (Default: 200) If the x_axis is a numeric type, it will be bucketed into this number of buckets
 example_code: |
   ds = rasgo.get.dataset(id)
 
