@@ -79,6 +79,31 @@ with source_query as (
         and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
         {%- endfor %}
 ),
+{%- if time_grain|lower == 'all'%}
+spine as (
+    select 
+        cast('{{ start_date }}' as timestamp_ntz) as x_min,
+        cast('{{ end_date }}' as timestamp_ntz) as x_max
+),
+joined as (
+    select *
+    from source_query
+        cross join spine
+),
+tidy_data as (
+    select {{ '\n        ' + group_by + ',' if group_by }}
+        x_min,
+        x_max,
+        {%- for column, aggs in metrics.items() %}
+        {%- set oloop = loop %}
+        {%- for aggregation_type in aggs %}
+        {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in aggregation_type|lower else ''}}{{ column }}) as {{ cleanse_name(aggregation_type + '_' + column)}}{{ ',' if not (loop.last and oloop.last) }}
+        {%- endfor %}
+        {%- endfor %}
+    from joined
+    group by 1, 2{{ ', 3' if group_by}}
+)
+{%- else %}
 calendar as (
     select
             row_number() over (order by null) as interval_id,
@@ -170,6 +195,7 @@ tidy_data as (
     and period <= upper_bound
     order by 1, 2{{ ', 3' if group_by }}
 )
+{%- endif %}
 
 {%- elif axis_type == 'numeric' %}
 
