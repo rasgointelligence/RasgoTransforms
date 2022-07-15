@@ -54,10 +54,6 @@ arguments:
     description: |
       (Default: 10) If group_by is specified, this is the max number of distinct groups that will be aggregated, all others will by combined in a 'Other' group
     is_optional: true
-  bucket_count:
-    type: int
-    description: |
-      (Default: 200) If the x_axis is a numeric type, it will be bucketed into this number of buckets
 example_code: |
   ds = rasgo.get.dataset(id)
 
