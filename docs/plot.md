@@ -18,7 +18,6 @@ Visualize a dataset flexibly, depending on axes and metrics chosen
 | end_date       | timestamp       | Required if x_axis is type date/datetime  The end of the period for which metric values will be calculated                                                                                                                                                 | True        |
 | time_grain     | string          | Required if the x_axis is type date/datetime The time grain (day, week, month, quarter, year) used to create the datespine that the metric is aggregated by                                                                                                | True        |
 | max_num_groups | int             | (Default: 10) If group_by is specified, this is the max number of distinct groups that will be aggregated, all others will by combined in a 'Other' group                                                                                                  | True        |
-| bucket_count   | int             | (Default: 200) If the x_axis is a numeric type, it will be bucketed into this number of buckets                                                                                                                                                            |             |
 
 
 ## Example
