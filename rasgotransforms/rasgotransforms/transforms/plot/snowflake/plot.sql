@@ -1,6 +1,3 @@
-{%- set start_date = '2010-01-01' if not start_date else start_date -%}
-{%- set end_date = '2030-01-01' if not end_date else end_date -%}
-{%- set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 -%}
 {%- set flatten = flatten if flatten is defined else true -%}
 {%- set max_num_groups = max_num_groups if max_num_groups is defined else 10 -%}
 {%- set bucket_count = num_buckets if num_buckets is defined else 200 -%}
@@ -17,6 +14,14 @@
     {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {%- endif -%}
 {%- if axis_type == 'date' -%}
+{%- if timeseries_options -%}
+{%- set start_date = '2010-01-01' if not timeseries_options.start_date else timeseries_options.start_date -%}
+{%- set end_date = '2030-01-01' if not timeseries_options.end_date else timeseries_options.end_date -%}
+{%- set time_grain = 'day' if not timeseries_options.time_grain else timeseries_options.time_grain -%}
+{%- else -%}
+{{ raise_exception("Parameter 'timeseries_options' must be given when 'x_axis' is a column of type datetime")}}
+{%- endif -%}
+{%- set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 -%}
 {%- do filters.append({'columnName': x_axis, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) -%}
 {%- do filters.append({'columnName': x_axis, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
 {%- endif -%}
@@ -174,15 +179,12 @@ bounded as (
     from joined
 ),
 tidy_data as (
-    select
+    select {{ '\n        ' + group_by if group_by }}
         cast(period as timestamp) as {{ x_axis }}_min,
         {%- if time_grain|lower == 'quarter' %}
         dateadd('second', -1, dateadd('month',3, {{ x_axis }}_min)) as {{ x_axis }}_max,
         {%- else %}
         dateadd('second', -1, dateadd('{{ time_grain }}',1, {{ x_axis }}_min)) as {{ x_axis }}_max,
-        {%- endif %}
-        {%- if group_by %}
-        {{ group_by }},
         {%- endif %}
         {%- for column, aggs in metrics.items() %}
         {%- set oloop = loop %}
@@ -293,7 +295,7 @@ tidy_data as (
 {%- endif -%}
 {%- if axis_type in ['date', 'numeric'] -%}
 {%- if not group_by or not flatten %}
-select * from tidy_data order by period_min
+select * from tidy_data order by {{ x_axis }}_min {{ x_axis_order if x_axis_order }}
 {%- else -%}
 ,
 {% set metric_names = [] -%}
@@ -350,7 +352,7 @@ select
     {%- for column_name in column_names %}
     {{ column_name }}{{ ',' if not loop.last }}
     {%- endfor %}
-from pivoted order by {{ x_axis }}_min
+from pivoted order by {{ x_axis }}_min {{ x_axis_order if x_axis_order }}
 {%- endif %}
 
 {%- else %}
