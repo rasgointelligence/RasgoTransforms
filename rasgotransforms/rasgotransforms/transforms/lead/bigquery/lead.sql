@@ -6,7 +6,7 @@
 {%- endif -%}
 {%- for amount in amounts -%}
     {%- if amount < 0 -%}
-        {{ raise_exception('BigQuery cannot use negative values for a lead function. Please utilize lead for backwards looking windows.') }}
+        {{ raise_exception('BigQuery cannot use negative values for a lead function. Please utilize lag for backwards looking windows.') }}
     {%- endif -%}
 {%- endfor -%}
 SELECT *,
