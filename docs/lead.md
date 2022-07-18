@@ -21,6 +21,7 @@ ds = rasgo.get.dataset(id)
 
 ds2 = ds.lead(columns=['OPEN', 'CLOSE'], amounts=[1,2,3,7], order_by=['DATE, 'TICKER'], partition=['TICKER'])
 ds2.preview()
+
 ```
 
 ## Source Code
