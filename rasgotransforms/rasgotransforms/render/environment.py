@@ -11,7 +11,8 @@ class RasgoEnvironment(Environment):
         super().__init__(*args, extensions=self.rasgo_extensions, **kwargs)
         for filter_name, method in self.rasgo_filters.items():
             self.filters[filter_name] = method
-        self.globals = self.rasgo_globals
+        for name, value in self.rasgo_globals.items():
+            self.globals[name] = value
         self.globals['run_query'] = run_query
 
     @property
@@ -65,8 +66,8 @@ class RasgoEnvironment(Environment):
 
 def cleanse_template_symbol(symbol: str) -> str:
     symbol = str(symbol).strip().replace(' ', '_').replace('-', '_')
-    symbol = re.sub('[^A-Z0-9_]+', '', symbol)
-    symbol = '_' + symbol if symbol[0].isdecimal() or not symbol else symbol
+    symbol = re.sub('[^A-Za-z0-9_]+', '', symbol)
+    symbol = '_' + symbol if not symbol or symbol[0].isdecimal() else symbol
     return symbol
 
 

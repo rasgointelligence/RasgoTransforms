@@ -7,13 +7,17 @@
 {%- set max_num_groups = max_num_groups if max_num_groups is defined else 10 -%}
 
 {%- macro get_distinct_values(columns) -%}
-    {%- set distinct_val_query -%}
+    {%- set distinct_val_query %}
         select
             {%- for column in columns %}
-            {{ column }},
+            to_char({{ column }}) as {{ column }},
             {%- endfor %}
             {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}{{ target_expression}}) as vals
         from {{ source_table }} 
+        where {{ time_dimension }} >= '{{ start_date }}'
+            {%- for filter in filters %}
+            and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+            {%- endfor %}
         group by {{ range(1, dimensions|length + 1)|join(', ') }}
         order by vals desc
         limit {{ max_num_groups + 1}}
@@ -39,11 +43,11 @@ with source_query as (
         cast(date_trunc('day', cast({{ time_dimension }} as date)) as date) as date_day,
         {%- for dimension in dimensions %}
         case
-            when {{ dimension }} in (
+            when to_char({{ dimension }}) in (
                 {%- for val in distinct_values %}
                 '{{ val }}'{{',' if not loop.last else ''}}
                 {%- endfor %}
-            ) then {{ dimension }}
+            ) then to_char({{ dimension }})
             {%- if 'None' in distinct_values %}
             when {{ dimension }} is null then 'None'
             {%- endif %}
