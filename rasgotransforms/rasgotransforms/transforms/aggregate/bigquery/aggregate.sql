@@ -1,11 +1,11 @@
-{%- set median_aggs = {} -%}
-{%- set mode_aggs = {} -%}
+{%- set median_aggs = dict() -%}
+{%- set mode_aggs = dict() -%}
 {%- for col, aggs in aggregations.items() -%}
     {%- for agg in aggs -%}
         {%- if 'MEDIAN' in agg|upper -%}
-            {%- median_aggs[col] = agg -%}
+            {%- set _ = median_aggs.update({col: agg}) -%}
         {%- elif 'MODE' in agg|upper -%}
-            {%- mode_aggs[col] = agg -%}
+            {%- set _ = mode_aggs.update({col: agg}) -%}
         {%- endif -%}
     {%- endfor -%}
 {%- endfor -%}
@@ -13,7 +13,7 @@
 {%- if median_aggs -%}
     WITH MEDIAN_CTE AS(
         SELECT
-            DISTINCT( {{ group_by | join(', ') }} )
+            DISTINCT {{ group_by | join(', ') }}
             {%- for med_col, med_agg in median_aggs.items() %}
                 ,PERCENTILE_CONT( {{ med_col }}, 0.5) OVER (PARTITION BY {{ group_by | join(', ') }}) AS {{ med_col }}_MEDIAN
             {%- endfor %}
@@ -32,7 +32,7 @@
                 ,{{ mode_col }} AS {{ mode_col }}_MODE
             FROM (
                 SELECT
-                    DISTINCT( {{ group_by | join(', ') }} )
+                    {{ group_by | join(', ') }}
                     ,{{ mode_col }}
                     ,ROW_NUMBER() OVER (PARTITION BY {{ group_by | join(', ') }} ORDER BY COUNT({{ mode_col }}) DESC) rn
                 FROM {{ source_table }}
@@ -54,9 +54,9 @@ AGGS AS (
             {%- for agg in aggs %}
                 {%- if ('MEDIAN' not in agg|upper and 'MODE' not in agg|upper) %}
                     {%- if ' DISTINCT' in agg|upper %}
-                        {{ agg|replace(" DISTINCT", "") }}(DISTINCT {{ col }}) as {{ col ~ '_' ~ agg|replace(" DISTINCT", "") ~ 'DISTINCT'}}{{ '' if loop.last and outer_loop.last else ',' }}
+                        ,{{ agg|replace(" DISTINCT", "") }}(DISTINCT {{ col }}) as {{ col ~ '_' ~ agg|replace(" DISTINCT", "") ~ 'DISTINCT'}}
                     {%- else %}
-                        {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
+                        ,{{ agg }}({{ col }}) as {{ col + '_' + agg }}
                     {%- endif %}
                 {%- endif %}
             {%- endfor -%}
@@ -81,7 +81,7 @@ FROM AGGS a
     LEFT JOIN MEDIAN_CTE med
     ON
     {%- for group_col in group_by %}
-        {{'a.' + group_col + ' = med.' + group_col + ('AND ' if not loop.last else '')}}
+        {{'a.' + group_col + ' = med.' + group_col + (' AND' if not loop.last else '')}}
     {%- endfor %}
 {%- endif %}
 {%- if mode_aggs %}
