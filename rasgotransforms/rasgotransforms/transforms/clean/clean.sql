@@ -11,7 +11,7 @@
 {%- macro get_select_column(name, col) -%}
     {%- set source_col = 'cast(' + name + ' as ' + col.type + ')'  if col.type is defined else name-%}
     {% set output_col_name = name if col.name is not defined else cleanse_name(col.name) %}
-    {%- set impute_expression = '' -%}
+    {%- set impute_expression = 'NULL' -%}
     {%- if col.impute is not defined -%}
         {%- set output = source_col -%}
     {%- else -%}
