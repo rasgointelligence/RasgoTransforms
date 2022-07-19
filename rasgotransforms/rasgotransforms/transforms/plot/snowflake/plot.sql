@@ -36,7 +36,13 @@
         from {{ source_table }} 
         where true
             {%- for filter in filters %}
+            {%- if filter is not mapping %}
+            and {{ filter }}
+            {%- elif filter.operator|upper == 'CONTAINS' %}
+            and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+            {%- else %}
             and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+            {%- endif %}
             {%- endfor %}
         group by 1
         order by vals desc
@@ -81,7 +87,13 @@ with source_query as (
     from {{ source_table }}
     where true
         {%- for filter in filters %}
+        {%- if filter is not mapping %}
+        and {{ filter }}
+        {%- elif filter.operator|upper == 'CONTAINS' %}
+        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+        {%- else %}
         and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {%- endif %}
         {%- endfor %}
 ),
 {%- if time_grain|lower == 'all'%}
@@ -231,7 +243,13 @@ buckets as (
         cross join edges
     where true
         {%- for filter in filters %}
+        {%- if filter is not mapping %}
+        and {{ filter }}
+        {%- elif filter.operator|upper == 'CONTAINS' %}
+        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+        {%- else %}
         and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {%- endif %}
         {%- endfor %}
 ),
 source_query as (
@@ -330,7 +348,7 @@ with source_query as (
         where true
         {%- for filter in filters %}
         {%- if filter is not mapping %}
-        and filter
+        and {{ filter }}
         {%- elif filter.operator|upper == 'CONTAINS' %}
         and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
         {%- else %}
