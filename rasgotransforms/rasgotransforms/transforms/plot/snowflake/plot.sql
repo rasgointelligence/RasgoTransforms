@@ -26,6 +26,19 @@
 {%- do filters.append({'columnName': x_axis, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
 {%- endif -%}
 
+{%- set filter_statement -%}
+    where true
+        {%- for filter in filters %}
+        {%- if filter is not mapping %}
+        and {{ filter }}
+        {%- elif filter.operator|upper == 'CONTAINS' %}
+        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+        {%- else %}
+        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {%- endif %}
+        {%- endfor %}
+{%- endset -%}
+
 {%- macro get_distinct_values(column) -%}
     {%- set target_column = (metrics.keys()|list)[0] -%}
     {%- set aggregation_type = metrics[target_column][0] -%}
@@ -34,16 +47,7 @@
             to_char({{ column }}) as {{ column }},
             {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct ' in aggregation_type|lower else ''}}{{ target_column }}) as vals
         from {{ source_table }} 
-        where true
-            {%- for filter in filters %}
-            {%- if filter is not mapping %}
-            and {{ filter }}
-            {%- elif filter.operator|upper == 'CONTAINS' %}
-            and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
-            {%- else %}
-            and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
-            {%- endif %}
-            {%- endfor %}
+            {{ filter_statement }}
         group by 1
         order by vals desc
         limit {{ max_num_groups + 1}}
@@ -85,16 +89,7 @@ with source_query as (
         {{ column }}{{ ',' if not loop.last }}
         {%- endfor %}
     from {{ source_table }}
-    where true
-        {%- for filter in filters %}
-        {%- if filter is not mapping %}
-        and {{ filter }}
-        {%- elif filter.operator|upper == 'CONTAINS' %}
-        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
-        {%- else %}
-        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
-        {%- endif %}
-        {%- endfor %}
+    {{ filter_statement }}
 ),
 {%- if time_grain|lower == 'all'%}
 spine as (
@@ -241,16 +236,7 @@ buckets as (
     from
         {{ source_table }}
         cross join edges
-    where true
-        {%- for filter in filters %}
-        {%- if filter is not mapping %}
-        and {{ filter }}
-        {%- elif filter.operator|upper == 'CONTAINS' %}
-        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
-        {%- else %}
-        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
-        {%- endif %}
-        {%- endfor %}
+    {{ filter_statement }}
 ),
 source_query as (
     select
@@ -345,16 +331,7 @@ with source_query as (
         {{ column }}{{ ',' if not loop.last }}
         {%- endfor %}
     from {{ source_table }}
-        where true
-        {%- for filter in filters %}
-        {%- if filter is not mapping %}
-        and {{ filter }}
-        {%- elif filter.operator|upper == 'CONTAINS' %}
-        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
-        {%- else %}
-        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
-        {%- endif %}
-        {%- endfor %}
+    {{ filter_statement }}
 ),
 tidy_data as (
     select
