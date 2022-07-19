@@ -262,7 +262,7 @@ bucket_spine as (
     from table (generator(rowcount => {{ bucket_count }}))
 ),
 spine__values__{{ group_by }} as (
-    select distinct {{ group_by }} from {{ source_table }}
+    select distinct {{ group_by }} from source_query
 ),
 spine as (
     select * from bucket_spine
