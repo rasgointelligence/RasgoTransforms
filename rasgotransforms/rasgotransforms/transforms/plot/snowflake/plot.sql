@@ -235,8 +235,21 @@ buckets as (
         {%- endfor %}
 ),
 source_query as (
-    select {{ '\n        ' + group_by + ',' if group_by}}
+    select
         bucket, 
+        {%- if group_by %}
+        case
+            when to_char({{ group_by }}) in (
+                {%- for val in distinct_values %}
+                '{{ val }}'{{',' if not loop.last else ''}}
+                {%- endfor %}
+            ) then to_char({{ group_by }})
+            {%- if 'None' in distinct_values %}
+            when {{ group_by }} is null then 'None'
+            {%- endif %}
+            else 'Other'
+        end as {{ group_by }},
+        {%- endif %}
         {%- for column in metrics.keys() %}
         {{ column }}{{ ',' if not loop.last }}
         {%- endfor %}
@@ -357,58 +370,47 @@ from pivoted order by {{ x_axis }}_min {{ x_axis_order if x_axis_order }}
 {%- endif %}
 
 {%- else %}
-
-{%- if distinct_vals is defined and distinct_vals %}
-    WITH TEMP AS (
-        SELECT
-        {{ x_axis }}
-        {% for col, aggs in metrics.items() %}
-            {% for distinct_val in distinct_vals %}
-                ,CASE WHEN {{ group_by }} = '{{ distinct_val }}' THEN {{ col }} END AS {{ cleanse_name(distinct_val) }}_{{ col }}
-            {%- endfor %}
+with source_query as (
+    select
+        {{ x_axis }}, 
+        {%- if group_by %}
+        case
+            when to_char({{ group_by }}) in (
+                {%- for val in distinct_values %}
+                '{{ val }}'{{',' if not loop.last else ''}}
+                {%- endfor %}
+            ) then to_char({{ group_by }})
+            {%- if 'None' in distinct_values %}
+            when {{ group_by }} is null then 'None'
+            {%- endif %}
+            else 'Other'
+        end as {{ group_by }},
+        {%- endif %}
+        {%- for column in metrics.keys() %}
+        {{ column }}{{ ',' if not loop.last }}
         {%- endfor %}
-        FROM {{ source_table }}
-    )
-    SELECT
-    {{ x_axis }}
-    {% for col, aggs in metrics.items() %}
-        {% for agg in aggs %}
-            {% for distinct_val in distinct_vals %}
-                ,{{ agg }}({{ cleanse_name(distinct_val) }}_{{ col }}) AS {{ cleanse_name(distinct_val) }}_{{ agg }}_{{ col }}
-            {%- endfor %}
+    from {{ source_table }}
+        where true
+        {%- for filter in filters %}
+        {%- if filter is not mapping %}
+        and filter
+        {%- elif filter.operator|upper == 'CONTAINS' %}
+        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+        {%- else %}
+        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {%- endif %}
         {%- endfor %}
+)
+select
+    {{ x_axis }},{{ '\n    ' + group_by + ',' if group_by}}
+    {%- for column, aggs in metrics.items() %}
+    {%- set oloop = loop -%}
+    {%- for aggregation_type in aggs %}
+    {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in aggregation_type|lower else ''}}{{ column }}) as {{ cleanse_name(aggregation_type + '_' + column)}}{{ '' if loop.last and oloop.last else ',' }}
+    {%- endfor -%}
     {%- endfor %}
-    FROM TEMP
-    GROUP BY {{ x_axis }}
-    {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
-{%- else %}
-    SELECT
-    {{ x_axis }},
-
-    {%- for col, aggs in metrics.items() %}
-        {%- set outer_loop = loop -%}
-        {%- for agg in aggs %}
-            {{ agg }}({{ col }}) as {{ col + '_' + agg }}{{ '' if loop.last and outer_loop.last else ',' }}
-        {%- endfor -%}
-    {%- endfor %}
-    FROM {{ source_table }}
-    {%- if filters is defined and filters %}
-        {% for filter_block in filters %}
-        {%- set oloop = loop -%}
-        {{ 'WHERE ' if oloop.first else ' AND ' }}
-            {%- if filter_block is not mapping -%}
-                {{ filter_block }}
-            {%- else -%}
-                {%- if filter_block['operator'] == 'CONTAINS' -%}
-                    {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
-                {%- else -%}
-                    {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
-                {%- endif -%}
-            {%- endif -%}
-        {%- endfor -%}
-    {%- endif %}
-    GROUP BY {{ x_axis }}
-    {{ ("ORDER BY " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
-{% endif %}
-
+from source_query
+group by 1{{ ', 2' if group_by}}
+{{ ("order by " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
 {%- endif %}
+{# {%- endif %} #}
