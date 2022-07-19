@@ -306,10 +306,58 @@ tidy_data as (
         cross join edges
 )
 
+{%- elif axis_type == 'categorical' -%}
+with source_query as (
+    select
+        {{ x_axis }}, 
+        {%- if group_by %}
+        case
+            when to_char({{ group_by }}) in (
+                {%- for val in distinct_values %}
+                '{{ val }}'{{',' if not loop.last else ''}}
+                {%- endfor %}
+            ) then to_char({{ group_by }})
+            {%- if 'None' in distinct_values %}
+            when {{ group_by }} is null then 'None'
+            {%- endif %}
+            else 'Other'
+        end as {{ group_by }},
+        {%- endif %}
+        {%- for column in metrics.keys() %}
+        {{ column }}{{ ',' if not loop.last }}
+        {%- endfor %}
+    from {{ source_table }}
+        where true
+        {%- for filter in filters %}
+        {%- if filter is not mapping %}
+        and filter
+        {%- elif filter.operator|upper == 'CONTAINS' %}
+        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+        {%- else %}
+        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {%- endif %}
+        {%- endfor %}
+),
+tidy_data as (
+    select
+        {%- if not group_by or not flatten %}
+        {{ x_axis }},
+        {%- else %}
+        {{ x_axis }} as {{ x_axis }}_min,
+        {{ x_axis }} as {{ x_axis }}_max,
+        {%- endif %}{{ '\n        ' + group_by + ',' if group_by}}
+        {%- for column, aggs in metrics.items() %}
+        {%- set oloop = loop -%}
+        {%- for aggregation_type in aggs %}
+        {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in aggregation_type|lower else ''}}{{ column }}) as {{ cleanse_name(aggregation_type + '_' + column)}}{{ '' if loop.last and oloop.last else ',' }}
+        {%- endfor -%}
+        {%- endfor %}
+    from source_query
+    group by 1{{ ', 2' if group_by }}{{ ', 3' if group_by and flatten }}
+)
 {%- endif -%}
-{%- if axis_type in ['date', 'numeric'] -%}
 {%- if not group_by or not flatten %}
-select * from tidy_data order by {{ x_axis }}_min {{ x_axis_order if x_axis_order }}
+select * from tidy_data order by 1 {{ x_axis_order if x_axis_order }}
 {%- else -%}
 ,
 {% set metric_names = [] -%}
@@ -361,56 +409,14 @@ pivoted as (
         {%- endfor %}
 )
 select 
+    {%- if axis_type == 'categorical' %}
+    x_min_{{ metric_names[0] }} as {{ x_axis }},
+    {%- else %}
     x_min_{{ metric_names[0] }} as {{ x_axis }}_min,
     x_max_{{ metric_names[0] }} as {{ x_axis }}_max,
+    {%- endif %}
     {%- for column_name in column_names %}
     {{ column_name }}{{ ',' if not loop.last }}
     {%- endfor %}
-from pivoted order by {{ x_axis }}_min {{ x_axis_order if x_axis_order }}
+from pivoted order by 1 {{ x_axis_order if x_axis_order }}
 {%- endif %}
-
-{%- else %}
-with source_query as (
-    select
-        {{ x_axis }}, 
-        {%- if group_by %}
-        case
-            when to_char({{ group_by }}) in (
-                {%- for val in distinct_values %}
-                '{{ val }}'{{',' if not loop.last else ''}}
-                {%- endfor %}
-            ) then to_char({{ group_by }})
-            {%- if 'None' in distinct_values %}
-            when {{ group_by }} is null then 'None'
-            {%- endif %}
-            else 'Other'
-        end as {{ group_by }},
-        {%- endif %}
-        {%- for column in metrics.keys() %}
-        {{ column }}{{ ',' if not loop.last }}
-        {%- endfor %}
-    from {{ source_table }}
-        where true
-        {%- for filter in filters %}
-        {%- if filter is not mapping %}
-        and filter
-        {%- elif filter.operator|upper == 'CONTAINS' %}
-        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
-        {%- else %}
-        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
-        {%- endif %}
-        {%- endfor %}
-)
-select
-    {{ x_axis }},{{ '\n    ' + group_by + ',' if group_by}}
-    {%- for column, aggs in metrics.items() %}
-    {%- set oloop = loop -%}
-    {%- for aggregation_type in aggs %}
-    {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in aggregation_type|lower else ''}}{{ column }}) as {{ cleanse_name(aggregation_type + '_' + column)}}{{ '' if loop.last and oloop.last else ',' }}
-    {%- endfor -%}
-    {%- endfor %}
-from source_query
-group by 1{{ ', 2' if group_by}}
-{{ ("order by " + x_axis + " " + x_axis_order) if x_axis_order else '' }}
-{%- endif %}
-{# {%- endif %} #}
