@@ -96,9 +96,9 @@ joined as (
         cross join spine
 ),
 tidy_data as (
-    select {{ '\n        ' + group_by + ',' if group_by }}
+    select
         {{ x_axis }}_min,
-        {{ x_axis }}_max,
+        {{ x_axis }}_max, {{ '\n        ' + group_by + ',' if group_by }}
         {%- for column, aggs in metrics.items() %}
         {%- set oloop = loop %}
         {%- for aggregation_type in aggs %}
@@ -179,13 +179,13 @@ bounded as (
     from joined
 ),
 tidy_data as (
-    select {{ '\n        ' + group_by if group_by }}
+    select
         cast(period as timestamp) as {{ x_axis }}_min,
         {%- if time_grain|lower == 'quarter' %}
         dateadd('second', -1, dateadd('month',3, {{ x_axis }}_min)) as {{ x_axis }}_max,
         {%- else %}
         dateadd('second', -1, dateadd('{{ time_grain }}',1, {{ x_axis }}_min)) as {{ x_axis }}_max,
-        {%- endif %}
+        {%- endif %}{{ '\n        ' + group_by  + ',' if group_by }}
         {%- for column, aggs in metrics.items() %}
         {%- set oloop = loop %}
         {%- for aggregation_type in aggs %}
@@ -280,14 +280,15 @@ joined as (
     group by 1{{ ', 2' if group_by }}
 ),
 tidy_data as (
-    select {{ group_by + ',' if group_by }}
-        {%- for column, aggs in metrics.items() %}
-        {%- for aggregation_type in aggs %}
-        {{ cleanse_name(aggregation_type + '_' + column)}},
-        {%- endfor %}
-        {%- endfor %}
+    select 
         min_val+((bucket-1)*bucket_size) as {{ x_axis }}_min,
-        min_val+(bucket*bucket_size) as {{ x_axis }}_max
+        min_val+(bucket*bucket_size) as {{ x_axis }}_max, {{ '\n        ' + group_by + ',' if group_by }}
+        {%- for column, aggs in metrics.items() %}
+        {%- set oloop = loop %}
+        {%- for aggregation_type in aggs %}
+        {{ cleanse_name(aggregation_type + '_' + column)}}{{ '' if loop.last and oloop.last else ',' }}
+        {%- endfor %}
+        {%- endfor %}
     from joined
         cross join edges
 )
