@@ -4,10 +4,41 @@
 {%- set alias = 'metric_value' if not alias else alias -%}
 {%- set distinct = true if 'distinct' in aggregation_type|lower else false -%}
 {%- set aggregation_type = aggregation_type|upper|replace('_', '')|replace('DISTINCT', '')|replace('MEAN', 'AVG') -%}
-
+{%- set flatten = flatten if flatten is defined else true -%}
+{%- set max_num_groups = max_num_groups if max_num_groups is defined else 10 -%}
 {# {%- set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 -%} #}
 {%- do filters.append({'columnName': time_dimension, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) -%}
 {%- do filters.append({'columnName': time_dimension, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
+{%- if dimensions and dimensions|length > 1 -%}
+{{ raise_exception('Currently, only one dimension can be passed to group by')}}
+{%- endif -%}
+
+{%- macro get_distinct_values(column) -%}
+    {%- set distinct_val_query %}
+        select
+            cast({{ column }} as string) as {{ column }},
+            {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct ' in aggregation_type|lower else ''}}{{ target_expression }}) as vals
+        from {{ source_table }}
+            {{ filter_statement }}
+        group by 1
+        order by vals desc
+        limit {{ max_num_groups + 1}}
+    {%- endset -%}
+    {%- set distinct_vals = run_query(distinct_val_query) -%}
+    {%- for val in distinct_vals.itertuples() -%}
+        {%- for column in distinct_vals.columns[:-1] -%}
+            {{ val[column] }}{{'_' if not loop.last else ''}}
+        {%- endfor -%}
+        {{ '|$|' if not loop.last else ''}}
+    {%- endfor %}
+{%- endmacro -%}
+
+{%- if dimensions -%}
+{%- set distinct_values = get_distinct_values(dimensions[0]).split('|$|') -%}
+{%- if distinct_values|length > max_num_groups %}
+{%- set distinct_values = distinct_values[:-1] + ['Other'] -%}
+{%- endif -%}
+{%- endif -%}
 
 
 {%- set filter_statement -%}
@@ -27,7 +58,17 @@ with source_query as (
     select
         cast(date_trunc(cast({{ time_dimension }} as date), day) as date) as date_day,
         {%- for dimension in dimensions %}
-        {{ dimension }},
+        case
+            when cast({{ dimension }} as string) in (
+                {%- for val in distinct_values %}
+                '{{ val }}'{{',' if not loop.last else ''}}
+                {%- endfor %}
+            ) then cast({{ dimension }} as string)
+            {%- if 'None' in distinct_values %}
+            when {{ dimension }} is null then 'None'
+            {%- endif %}
+            else 'Other'
+        end as {{ dimension }},
         {%- endfor %}
         {{ target_expression }} as property_to_aggregate
     from {{ source_table }}
@@ -125,4 +166,35 @@ tidy_data as (
     order by {{ range(1, dimensions|length + 2)|join(', ') }}
 )
 {%- endif %}
-select * from tidy_data
+{%- if not dimensions or not flatten %}
+select * from tidy_data order by 1
+{%- else -%}
+, 
+pivoted as (
+    select *
+    from (
+        select 
+            {{ time_dimension }}_min,
+            {{ time_dimension }}_max,
+            {{ alias }},
+            {%- for dimension in dimensions %}
+            {{ dimension }}{{ ',' if not loop.last }}
+            {%- endfor %}
+        from tidy_data
+    )
+    pivot (
+        sum({{ alias }}) as {{ alias }} 
+        for {{ dimensions[0] }} in (
+            {% for val in distinct_values -%}
+            {%- if val is string -%}
+            '{{ val }}'
+            {%- else -%}
+            {{ val }}
+            {%- endif -%}
+            {{', ' if not loop.last else ''}}
+            {%- endfor %}
+        )
+    )
+)
+select * from pivoted order by 1
+{%- endif -%}
