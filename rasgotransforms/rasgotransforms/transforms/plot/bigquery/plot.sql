@@ -264,9 +264,8 @@ spine as (
 ),
 {%- else %}
 spine as (
-    select
-        row_number() over (order by null) as bucket
-    from table (generator(rowcount => {{ bucket_count }}))
+    select bucket 
+    from unnest(generate_array(1, {{ bucket_count }})) as bucket
 ),
 {%- endif %}
 joined as (
@@ -306,11 +305,11 @@ with source_query as (
         {{ x_axis }},
         {%- if group_by %}
         case
-            when to_char({{ group_by }}) in (
+            when cast({{ group_by }} as string) in (
                 {%- for val in distinct_values %}
                 '{{ val }}'{{',' if not loop.last else ''}}
                 {%- endfor %}
-            ) then to_char({{ group_by }})
+            ) then cast({{ group_by }} as string)
             {%- if 'None' in distinct_values %}
             when {{ group_by }} is null then 'None'
             {%- endif %}
