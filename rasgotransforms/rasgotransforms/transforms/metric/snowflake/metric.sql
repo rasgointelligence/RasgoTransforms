@@ -1,10 +1,27 @@
 {%- set start_date = '2010-01-01' if not start_date else start_date -%}
+{%- set end_date = '2030-01-01' if not end_date else end_date -%}
 {%- set num_days = 7300 if not num_days else num_days -%}
 {%- set alias = 'metric_value' if not alias else alias -%}
 {%- set distinct = true if 'distinct' in aggregation_type|lower else false -%}
 {%- set aggregation_type = aggregation_type|upper|replace('_', '')|replace('DISTINCT', '')|replace('MEAN', 'AVG') -%}
 {%- set flatten = flatten if flatten is defined else true -%}
 {%- set max_num_groups = max_num_groups if max_num_groups is defined else 10 -%}
+{%- set filters = filters if filters is defined else [] -%}
+{%- do filters.append({'columnName': time_dimension, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) -%}
+{%- do filters.append({'columnName': time_dimension, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
+
+{%- set filter_statement -%}
+    where true
+        {%- for filter in filters %}
+        {%- if filter is not mapping %}
+        and {{ filter }}
+        {%- elif filter.operator|upper == 'CONTAINS' %}
+        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+        {%- else %}
+        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {%- endif %}
+        {%- endfor %}
+{%- endset -%}
 
 {%- macro get_distinct_values(columns) -%}
     {%- set distinct_val_query %}
@@ -14,10 +31,7 @@
             {%- endfor %}
             {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}{{ target_expression}}) as vals
         from {{ source_table }} 
-        where {{ time_dimension }} >= '{{ start_date }}'
-            {%- for filter in filters %}
-            and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
-            {%- endfor %}
+        {{ filter_statement }}
         group by {{ range(1, dimensions|length + 1)|join(', ') }}
         order by vals desc
         limit {{ max_num_groups + 1}}
@@ -56,10 +70,7 @@ with source_query as (
         {%- endfor %}
         {{ target_expression }} as property_to_aggregate
     from {{ source_table }}
-    where {{ time_dimension }} >= '{{ start_date }}'
-        {%- for filter in filters %}
-        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
-        {%- endfor %}
+    {{ filter_statement }}
 ),
 calendar as (
     select
