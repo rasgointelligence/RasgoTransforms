@@ -219,8 +219,8 @@ buckets as (
         min_val,
         max_val,
         bucket_size,
-        cast({{ x_axis }} as float) as col_a_val,
-        width_bucket(col_a_val, min_val, max_val, {{ bucket_count }}) as bucket,
+        cast({{ x_axis }} as numeric) as col_a_val,
+        range_bucket(cast({{ x_axis }} as numeric), generate_array(min_val, max_val, (max_val - min_val)/{{ bucket_count }})) as bucket,
         {%- for column in metrics.keys() %}
         {{ column }}{{ ',' if not loop.last }}
         {%- endfor %}
@@ -234,11 +234,11 @@ source_query as (
         bucket,
         {%- if group_by %}
         case
-            when to_char({{ group_by }}) in (
+            when cast({{ group_by }} as string) in (
                 {%- for val in distinct_values %}
                 '{{ val }}'{{',' if not loop.last else ''}}
                 {%- endfor %}
-            ) then to_char({{ group_by }})
+            ) then cast({{ group_by }} as string)
             {%- if 'None' in distinct_values %}
             when {{ group_by }} is null then 'None'
             {%- endif %}
@@ -252,9 +252,8 @@ source_query as (
 ),
 {%- if group_by %}
 bucket_spine as (
-    select
-        row_number() over (order by null) as bucket
-    from table (generator(rowcount => {{ bucket_count }}))
+    select bucket 
+    from unnest(generate_array(1, {{ bucket_count }})) as bucket
 ),
 spine__values__{{ group_by }} as (
     select distinct {{ group_by }} from source_query
@@ -278,7 +277,7 @@ joined as (
         {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in aggregation_type|lower else ''}}source_query.{{ column }}) as {{ cleanse_name(aggregation_type + '_' + column)}},
         {%- endfor %}
         {%- endfor %}
-        boolor_agg(source_query.bucket is not null) as has_data
+        logical_or(source_query.bucket is not null) as has_data
     from spine
     left outer join source_query on source_query.bucket = spine.bucket
         {%- if group_by %}
