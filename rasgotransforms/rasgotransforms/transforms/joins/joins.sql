@@ -65,10 +65,10 @@ FROM {{ source_table }}
 {% for join_dict in join_dicts %}
 {%- set outer_loop = loop -%}
 {{ join_dict["join_type"] }} JOIN {{ join_dict["table_b"] }}
-{% if join_dict["join_type"]|upper != 'CROSS' -%}
-ON {%- for join_col1, join_col2 in join_dict["join_on"].items() %}
+{%- if join_dict["join_type"]|upper != 'CROSS' -%}
+ON {%- for join_col1, join_col2 in join_dict["join_on"].items() -%}
 {{ " AND " if loop.index != 1 else "" }}
 {{ table_from_fqtn(source_table) if outer_loop.index == 1 else table_from_fqtn(join_dict["table_a"]) }}.{{ join_col1 }} = {{ table_from_fqtn(join_dict["table_b"]) }}.{{ join_col2 }}
-{%- endfor %}
+{% endfor %}
 {%- endif -%}
 {% endfor -%}
