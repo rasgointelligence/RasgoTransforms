@@ -62,7 +62,7 @@ Macro for getting the column selection in full JOIN statement; This includes add
 {# Create the Final Join Statement #}
 SELECT {{get_columns_to_select_in_query()}}
 FROM {{ source_table }}
-{% for join_dict in join_dicts -%}
+{% for join_dict in join_dicts %}
 {%- set outer_loop = loop -%}
 {{ join_dict["join_type"] }} JOIN {{ join_dict["table_b"] }}
 {% if join_dict["join_type"]|upper != 'CROSS' -%}
