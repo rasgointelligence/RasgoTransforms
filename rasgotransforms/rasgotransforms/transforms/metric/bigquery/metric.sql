@@ -1,4 +1,4 @@
-{%- set start_date = '2010-01-01' if not start_date else start_date -%}
+{%- set start_date = '2010-01-01' if not start_date else start_date|string -%}
 {%- set end_date = '2030-01-01' if not end_date else end_date -%}
 {%- set num_days = 7300 if not num_days else num_days -%}
 {%- set alias = 'metric_value' if not alias else alias -%}
