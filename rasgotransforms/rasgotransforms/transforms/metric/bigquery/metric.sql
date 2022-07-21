@@ -1,5 +1,5 @@
 {%- set start_date = '2010-01-01' if not start_date else start_date|string -%}
-{%- set end_date = '2030-01-01' if not end_date else end_date -%}
+{%- set end_date = '2030-01-01' if not end_date else end_date|string -%}
 {%- set num_days = 7300 if not num_days else num_days -%}
 {%- set alias = 'metric_value' if not alias else alias -%}
 {%- set distinct = true if 'distinct' in aggregation_type|lower else false -%}
@@ -77,8 +77,8 @@ with source_query as (
 {%- if time_grain|lower == 'all'%}
 spine as (
     select
-        cast('{{ start_date }}' as date) as {{ time_dimension }}_min,
-        cast('{{ end_date }}' as date) as {{ time_dimension }}_max
+        cast('{{ start_date }}' as date) as PERIOD_MIN,
+        cast('{{ end_date }}' as date) as PERIOD_MAX
 ),
 joined as (
     select *
@@ -87,8 +87,8 @@ joined as (
 ),
 tidy_data as (
     select
-        {{ time_dimension }}_min,
-        {{ time_dimension }}_max,
+        PERIOD_MIN,
+        PERIOD_MAX,
         {%- for dimension in dimensions %}
         {{ dimension }},
         {%- endfor %}
@@ -150,11 +150,11 @@ bounded as (
 ),
 tidy_data as (
     select
-        cast(period as timestamp) as {{ time_dimension }}_min,
+        cast(period as timestamp) as PERIOD_MIN,
         {%- if time_grain|lower == 'quarter' %}
-        cast(date_add(period, INTERVAL 3 month) as timestamp) as {{ time_dimension }}_max,
+        cast(date_add(period, INTERVAL 3 month) as timestamp) as PERIOD_MAX,
         {%- else %}
-        cast(date_add(period, INTERVAL 1 {{ time_grain }}) as timestamp) as {{ time_dimension }}_max,
+        cast(date_add(period, INTERVAL 1 {{ time_grain }}) as timestamp) as PERIOD_MAX,
         {%- endif %}
         {%- for dimension in dimensions %}
         {{ dimension }},
@@ -174,8 +174,8 @@ pivoted as (
     select *
     from (
         select 
-            {{ time_dimension }}_min,
-            {{ time_dimension }}_max,
+            PERIOD_MIN,
+            PERIOD_MAX,
             {{ alias }},
             {%- for dimension in dimensions %}
             {{ dimension }}{{ ',' if not loop.last }}
