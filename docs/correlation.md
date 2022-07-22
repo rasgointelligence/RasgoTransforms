@@ -16,7 +16,7 @@ Run pairwise correlation on all numeric columns in the source_table
 ```python
 ds = rasgo.get.dataset(id)
 
-ds2 = ds.correlation()
+ds2 = ds.correlation(rows_to_sample=1000)
 ds2.preview()
 ```
 
