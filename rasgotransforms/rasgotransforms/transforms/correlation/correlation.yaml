@@ -5,9 +5,10 @@ context:
 tags:
 description: Run pairwise correlation on all numeric columns in the source_table
 arguments:
-  none:
-    type: none
-    description: this transform does not take any arguments
+  rows_to_sample:
+    type: value
+    is_optional: true
+    description: number of rows to sample from the table before calculating correlation
 example_code: |
   ds = rasgo.get.dataset(id)
 

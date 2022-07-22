@@ -8,12 +8,17 @@
     {%- endif -%}
 {%- endfor -%}
 
+WITH source_sampled as (
+    SELECT * from {{ source_table }}
+    {% if rows_to_sample is defined %} SAMPLE ({{ rows_to_sample }} ROWS) {% endif -%}
+)
+
 SELECT * FROM (
 {%- for combo in itertools.product(column_list, repeat=2) -%}
     SELECT '{{ combo[0] }}' as COLUMN_A,
     '{{ combo[1] }}' as COLUMN_B,
     CORR({{ combo[0] }}, {{ combo[1] }}) as Correlation
-    FROM {{ source_table }}
+    FROM source_sampled
     {% if not loop.last %} UNION {% endif -%}
 {%- endfor -%}
 )
