@@ -6,9 +6,9 @@ Run pairwise correlation on all numeric columns in the source_table
 
 ## Parameters
 
-| Name | Type |                Description                 | Is Optional |
-| ---- | ---- | ------------------------------------------ | ----------- |
-| none | none | this transform does not take any arguments |             |
+|      Name      | Type  |                              Description                               | Is Optional |
+| -------------- | ----- | ---------------------------------------------------------------------- | ----------- |
+| rows_to_sample | value | number of rows to sample from the table before calculating correlation | True        |
 
 
 ## Example
