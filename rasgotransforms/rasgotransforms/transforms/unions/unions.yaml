@@ -1,0 +1,30 @@
+name: union
+tags:
+  - table
+  - reshape
+  - join
+description: |
+  Union one or multiple tables with the base table.
+  Looks at all columns in each table and finds columns in common across all of them to keep in the final table.
+arguments:
+  union_tables:
+    type: table_list
+    description: tables to union with the base table
+  remove_duplicates:
+    type: boolean
+    description: |
+      Defaults to False.
+      Set to True to use UNION, which removes duplicate rows.
+      Set to False to use UNION ALL, which keeps rows that are duplicated.
+    is_optional: true
+example_code: |
+  d1 = rasgo.get.dataset(dataset_id)
+  d2 = rasgo.get.dataset(dataset_id_2)
+  d3 = rasgo.get.dataset(dataset_id_3)
+
+  union_ds = d1.unions(
+      union_tables=[d2.fqtn, d3.fqtn]
+      remove_duplicates=True
+  )
+
+  union_ds.preview()
