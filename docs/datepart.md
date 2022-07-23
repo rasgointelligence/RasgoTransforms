@@ -24,6 +24,7 @@ ds2 = ds.datepart(dates={
     'DATE2_STR':'month'
   })
 ds2.preview()
+
 ```
 
 ## Source Code
