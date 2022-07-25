@@ -7,7 +7,7 @@ SELECT *,
     GENERATE_ARRAY(
       (SELECT MIN({{ column }}) FROM {{ source_table }})
       ,(SELECT MAX({{ column }}) FROM {{ source_table }})
-      ,(SELECT MAX({{ column }}) - MIN({{ column }})/20 FROM {{ source_table }})
+      ,(SELECT (MAX({{ column }}) - MIN({{ column }}))/20 FROM {{ source_table }})
     )
   ) AS {{column}}_{{bin_count}}_EWB
 {%- else %}
