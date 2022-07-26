@@ -10,28 +10,38 @@
 
 {%- macro get_select_column(name, col) -%}
     {%- if col.type is defined -%}
-        REPLACE ALL THE BAD CASTS
-        {%- if col.type == 'something in casts' -%}
-            {%- set source_col = 'cast(' + name + ' as ' + col.type + ')' -%}
-        {%- elif col.type == 'something else in casts' -%}
-            {%- set source_col = 'cast(' + name + ' as ' + col.type + ')' -%}
+        {%- if col.type|lower == 'float' -%}
+            {%- set source_col = 'cast(' + name + ' as FLOAT64)' -%}
+        {%- elif col.type|lower == 'number' -%}
+            {%- set source_col = 'cast(' + name + ' as NUMERIC)' -%}
         {%- else -%}
             {%- set source_col = 'cast(' + name + ' as ' + col.type + ')' -%}
         {%- endif -%}
     {%- else -%}
         {%- set source_col = name -%}
     {%- endif -%}
-    {%- set source_col = 'cast(' + name + ' as ' + col.type + ')'  if col.type is defined else name-%}
     {% set output_col_name = name if col.name is not defined else cleanse_name(col.name) %}
     {%- set impute_expression = 'NULL' -%}
     {%- if col.impute is not defined -%}
         {%- set output = source_col -%}
     {%- else -%}
-        {%- if col.impute | lower in  ['mean', 'median', 'mode', 'max', 'min', 'sum', 'avg', 'count'] -%}
-            {%- set impute = 'avg' if col.impute == 'mean' else col.impute -%}
+        {%- if col.impute | lower in  ['mean', 'mode', 'max', 'min', 'sum', 'avg', 'count'] -%}
+            {%- set impute = 'avg' if col.impute|lower == 'mean' else col.impute -%}
             {%- set impute_expression = impute + '(' + source_col + ') over ()' -%}
         {%- elif col.impute|lower == 'count_distinct' -%}
             {%- set impute_expression = 'count(distinct ' + source_col + ') over ()' -%}
+        {%- elif col.impute|lower == "median" -%}
+            {%- if col.type is defined -%}
+                {%- if col.type|lower == 'float' -%}
+                    {%- set impute_expression = 'cast(PERCENTILE_CONT(' +  source_col + ', 0.5) over () as FLOAT64)' -%}
+                {%- elif col.type|lower == 'number' -%}
+                    {%- set impute_expression = 'cast(PERCENTILE_CONT(' +  source_col + ', 0.5) over () as NUMERIC)' -%}
+                {%- else -%}
+                    {%- set impute_expression = 'cast(PERCENTILE_CONT(' +  source_col + ', 0.5) over () as ' + col.type + ')' -%}
+                {%- endif -%}
+            {%- else -%}
+                {%- set impute_expression = 'PERCENTILE_CONT(' +  source_col + ', 0.5) over ()' -%}
+            {%- endif -%}
         {%- else -%}
             {%- set impute_expression = "'" + col.impute + "'" if col.impute is string else col.impute|string -%}
         {%- endif -%}
