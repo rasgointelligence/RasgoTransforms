@@ -6,11 +6,11 @@ Deduplicate a table based on a passed-in composite key. Once an order column and
 
 ## Parameters
 
-|     Name     |    Type     |                                 Description                                  | Is Optional |
-| ------------ | ----------- | ---------------------------------------------------------------------------- | ----------- |
-| natural_key  | column_list | Columns forming the grain at which to remove duplicates                      |             |
-| order_col    | column_list | Columns by which to order the result set, such that the first result is kept |             |
-| order_method | value       | Can be "desc" or "asc". Sets the order behavior for the chosen `order_col`.  |             |
+|     Name     |      Type      |                                 Description                                  | Is Optional |
+| ------------ | -------------- | ---------------------------------------------------------------------------- | ----------- |
+| natural_key  | column_list    | Columns forming the grain at which to remove duplicates                      |             |
+| order_col    | column_list    | Columns by which to order the result set, such that the first result is kept |             |
+| order_method | sort_direction | Sets the order behavior for the chosen `order_col`. Can be ASC or DESC.      |             |
 
 
 ## Example
