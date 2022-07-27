@@ -64,7 +64,7 @@
 {%- if group_by -%}
 {%- set distinct_values = get_distinct_values(group_by).split('|$|') -%}
 {%- if distinct_values|length > max_num_groups %}
-{%- set distinct_values = distinct_values[:-1] + ['Other'] -%}
+{%- set distinct_values = distinct_values[:-1] + ['_OtherGroup'] -%}
 {%- endif -%}
 {%- endif -%}
 
@@ -82,7 +82,7 @@ with source_query as (
             {%- if 'None' in distinct_values %}
             when {{ group_by }} is null then 'None'
             {%- endif %}
-            else 'Other'
+            else '_OtherGroup'
         end as {{ group_by }},
         {%- endif %}
         {%- for column in metrics.keys() %}
@@ -251,7 +251,7 @@ source_query as (
             {%- if 'None' in distinct_values %}
             when {{ group_by }} is null then 'None'
             {%- endif %}
-            else 'Other'
+            else '_OtherGroup'
         end as {{ group_by }},
         {%- endif %}
         {%- for column in metrics.keys() %}
@@ -324,7 +324,7 @@ with source_query as (
             {%- if 'None' in distinct_values %}
             when {{ group_by }} is null then 'None'
             {%- endif %}
-            else 'Other'
+            else '_OtherGroup'
         end as {{ group_by }},
         {%- endif %}
         {%- for column in metrics.keys() %}
