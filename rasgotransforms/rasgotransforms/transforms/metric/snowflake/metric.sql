@@ -48,7 +48,7 @@
 {%- if dimensions -%}
 {%- set distinct_values = get_distinct_values(dimensions).split('|$|') -%}
 {%- if distinct_values|length > max_num_groups %}
-{%- set distinct_values = distinct_values[:-1] + ['Other'] -%}
+{%- set distinct_values = distinct_values[:-1] + ['_OtherGroup'] -%}
 {%- endif -%}
 {%- endif -%}
 
@@ -65,7 +65,7 @@ with source_query as (
             {%- if 'None' in distinct_values %}
             when {{ dimension }} is null then 'None'
             {%- endif %}
-            else 'Other'
+            else '_OtherGroup'
         end as {{ dimension }},
         {%- endfor %}
         {{ target_expression }} as property_to_aggregate
