@@ -21,15 +21,21 @@ SELECT * FROM (
     FROM {{ source_table }}
 )
 PIVOT ( 
-    {{ agg_method }} ( {{ pivot_column }} ) as _
+    {%- if agg_method|lower == "median" %}
+        {{ raise_exception('BigQuery does not support median aggregation while pivoting.') }}
+    {%- else %}
+        {{ agg_method }} ( {{ pivot_column }} ) as _
+    {%- endif %}
     FOR {{ value_column }} IN ( 
         {%- for val in distinct_vals %}
         {%- if val is string -%}
-        '{{ val }}'
+            '{{ val }}'
+        {%- elif val is none -%}
+            NULL
         {%- else -%}
-        {{ val }}
+            {{ val }}
         {%- endif -%}
-        {{', ' if not loop.last else ''}}
+            {{', ' if not loop.last else ''}}
         {%- endfor -%}
      )
 )
