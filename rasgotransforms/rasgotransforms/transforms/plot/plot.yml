@@ -29,7 +29,7 @@ arguments:
     description: Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order
     is_optional: true
   group_by:
-    type: column
+    type: column_list
     description: A categorical column by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each distinct value in the group by column. If this column has more than 20 distinct values, the plot will not generate.
     is_optional: true
   timeseries_options:
