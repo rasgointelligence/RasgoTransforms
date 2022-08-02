@@ -99,12 +99,7 @@ def serve_rasgo_transform_snippets() -> List[Dict[str, str]]:
     snippets_files = [x for x in snippet_dir_path.rglob("*.sql")]
     for snippet in snippets_files:
         with open(snippet) as s_file:
-            output_list.append(
-                {
-                    "snippet_name": snippet.name.replace(".sql", ""),
-                    "snippet_code": s_file.read()
-                }
-            )
+            output_list.append({"snippet_name": snippet.name.replace(".sql", ""), "snippet_code": s_file.read()})
     return output_list
 
 
