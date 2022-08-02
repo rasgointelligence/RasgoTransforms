@@ -28,7 +28,12 @@ setup(
         'Rasgo': 'https://www.rasgoml.com/',
     },
     license='GNU Affero General Public License v3 or later (AGPLv3+)',
-    packages=['rasgotransforms', 'rasgotransforms/transforms', 'rasgotransforms/render'],
+    packages=[
+        'rasgotransforms',
+        'rasgotransforms/snippets',
+        'rasgotransforms/transforms',
+        'rasgotransforms/render',
+    ],
     package_data={
         'rasgotransforms': [
             'transforms/**/*.yaml',
@@ -36,6 +41,7 @@ setup(
             'transforms/**/*.py',
             'transforms/**/**/*.sql',
             'transforms/**/**/*.py',
+            'snippets/*.sql',
         ]
     },
     install_requires=requirements,
