@@ -5,9 +5,9 @@ WITH base_table as (
 {%- endfor %}
     FROM {{ source_table }}
 ),
-filtered_base as (
+filtered as (
     SELECT *
-    FROM {{ base_table }}
+    FROM base_table
 {%- for filter in filters %}
     {{ " WHERE " if loop.first else "" }}
     {%- if filter is not mapping %}
@@ -19,24 +19,31 @@ filtered_base as (
     {%- endif %}
     {{ " AND " if not loop.last else "" }}
 {%- endfor %}
-),
+)
 {%- if summarize is defined -%}
 ,
-aggregated_base as (
+aggregated as (
     SELECT
+    {%- if group_by is defined %}
+    {{ group_by | join(', ') }},
+    {%- endif %}
 {%- for column, aggs in summarize.items() %}
     {%- set oloop = loop %}
     {%- for aggregation_type in aggs %}
         {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in aggregation_type|lower else ''}}{{ column }}) as {{ cleanse_name(aggregation_type + '_' + column)}}{{ ',' if not (loop.last and oloop.last) }}
     {%- endfor %}
 {%- endfor %}
-    FROM {{ filtered_base }}
+    FROM filtered
+    {%- if group_by is defined %}
     GROUP BY {{ group_by | join(', ') }}
+    {%- endif %}
 ) 
 SELECT *
-FROM aggregated_base
-{%- else -%}
+FROM aggregated
+{% else %}
 SELECT *
-FROM filtered_base
+FROM filtered
+{%- endif -%}
+{%- if order_by_columns is defined %}
 ORDER BY {{ order_by_columns | join(', ') }} {{ order_by_direction }}
 {%- endif -%}
