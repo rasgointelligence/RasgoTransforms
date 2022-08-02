@@ -29,11 +29,11 @@ PIVOT (
     FOR {{ value_column }} IN ( 
         {%- for val in distinct_vals %}
         {%- if val is string -%}
-            '{{ val }}'
+            '{{ val }}' {{ cleanse_name(val) }}
         {%- elif val is none -%}
-            NULL
+            NULL NULL_REC
         {%- else -%}
-            {{ val }}
+            {{ val }} {{ cleanse_name(val) }}
         {%- endif -%}
             {{', ' if not loop.last else ''}}
         {%- endfor -%}
