@@ -90,6 +90,24 @@ def serve_rasgo_transform_templates(datawarehouse: str) -> List[TransformTemplat
     return template_list
 
 
+def serve_rasgo_transform_snippets() -> List[Dict[str, str]]:
+    """
+    Returns a list of Rasgo Transform Snippets
+    """
+    output_list = []
+    snippet_dir_path = _get_root_dir() / "snippets"
+    snippets_files = [x for x in snippet_dir_path.rglob("*.sql")]
+    for snippet in snippets_files:
+        with open(snippet) as s_file:
+            output_list.append(
+                {
+                    "snippet_name": snippet.name.replace(".sql", ""),
+                    "snippet_code": s_file.read()
+                }
+            )
+    return output_list
+
+
 def _check_datawarehouse(input_value: str) -> str:
     supported_dws = "'" + "', '".join([e.value for e in DataWarehouse]) + "'"
     try:
