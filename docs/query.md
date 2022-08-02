@@ -3,6 +3,7 @@
 # query
 
 Simple SQL query builder. Helps to do 1 or multiple of these steps:
+  - selecting columns
   - adding computed columns
   - filtering your data
   - aggregating columns across rows
@@ -28,6 +29,17 @@ The order of operations in the SQL follows the list above.
 ```python
 ds = rasgo.get.dataset(id)
 
+ds2 = ds.query(
+  new_columns=['LEFT(LEAD_SOURCE, 3)'],
+  filters=[LEAD_SOURCE = 'Outbound'],
+  summarize={
+          'ID': ['COUNT'],
+          'AMOUNT':['SUM']},
+  group_by=['STAGE_NAME'],
+  order_by_columns=['STAGE_NAME'],
+  order_by_direction='ASC')
+
+ds2.preview()
 ```
 
 ## Source Code
