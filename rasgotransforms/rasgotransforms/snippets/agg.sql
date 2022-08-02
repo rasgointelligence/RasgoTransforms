@@ -1,0 +1,1 @@
+{{ agg }}( column_name )
