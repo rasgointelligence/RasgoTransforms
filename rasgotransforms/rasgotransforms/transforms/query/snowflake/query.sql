@@ -20,7 +20,7 @@ filtered as (
     {{ " AND " if not loop.last else "" }}
 {%- endfor %}
 )
-{%- if summarize is defined -%}
+{%- if summarize is defined and summarize|length -%}
 ,
 aggregated as (
     SELECT
