@@ -3,13 +3,24 @@
 # query
 
 Simple SQL query builder. Helps to do 1 or multiple of these steps:
-  - selecting columns
-  - adding computed columns
-  - filtering your data
-  - aggregating columns across rows
-  - sorting your data
+  1. adding computed columns
+  2. filtering your data
+  3. summarize columns across rows
+  4. sorting your data
 
 The order of operations in the SQL follows the list above.
+
+New_Columns:
+Takes a SQL expression and adds it to the table as a new column. i.e.: LEFT(ACCOUNT_ID, 5)
+
+Filters:
+Adds row filters to the WHERE part of the query
+
+Summarize and Group_By:
+Aggregate a column and group by another column
+
+Order_By_Columns and Order_By_Direction:
+Order the final table by one or more columns
 
 
 ## Parameters
