@@ -1,3 +1,9 @@
+{%- set source_col_names = get_columns(source_table) -%}
+{%- for column_name in source_col_names.keys() -%}
+    {%- if column_name not in columns.keys() -%}
+        {%- do columns.__setitem__(column_name, {}) -%}
+    {%- endif  -%}
+{%- endfor -%}
 {%- set drop_cols = [] -%}
 {%- for column in columns.keys() -%}
     {%- if columns[column].drop -%}
