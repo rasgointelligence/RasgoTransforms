@@ -21,10 +21,10 @@ repos:
     - id: mixed-line-ending
     - id: trailing-whitespace
       args: [--markdown-linebreak-ext=md]
-      exclude: 'rasgotransforms/rasgotransforms/transforms|^docs'
+      exclude: 'rasgotransforms/rasgotransforms/transforms|rasgotransforms/rasgotransforms/snippets|^docs'
     - id: check-executables-have-shebangs
     - id: end-of-file-fixer
-      exclude: 'rasgotransforms/rasgotransforms/transforms|^docs|^.sql'
+      exclude: 'rasgotransforms/rasgotransforms/transforms|rasgotransforms/rasgotransforms/snippets|^docs'
     - id: no-commit-to-branch
   - repo: https://github.com/psf/black
     rev: 22.3.0
