@@ -1,0 +1,65 @@
+name: query
+tags:
+  - query
+  - default
+description: |
+  Simple SQL query builder. Helps to do 1 or multiple of these steps:
+    1. adding computed columns
+    2. filtering your data
+    3. summarize columns across rows
+    4. sorting your data
+
+  The order of operations in the SQL follows the list above.
+
+  New_Columns:
+  Takes a SQL expression and adds it to the table as a new column. i.e.: LEFT(ACCOUNT_ID, 5)
+
+  Filters:
+  Adds row filters to the WHERE part of the query
+
+  Summarize and Group_By:
+  Aggregate a column and group by another column
+
+  Order_By_Columns and Order_By_Direction:
+  Order the final table by one or more columns
+
+arguments:
+  new_columns:
+    type: math_list
+    description: One or more SQL expressions to create new calculated columns in your table
+    is_optional: true
+  filters:
+    type: filter_list
+    description: Remove rows using filter logic on one or more columns
+    is_optional: true
+  summarize:
+    type: column_agg_list
+    description: Columns to summarize
+    is_optional: true
+  group_by:
+    type: column_list
+    description: One or more columns to group by A categorical column by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each distinct value in the group by column. If this column has more than 20 distinct values, the plot will not generate.
+    is_optional: true
+  order_by_columns:
+    type: column_list
+    description: Pick one or more columns to order the data by
+    is_optional: true
+  order_by_direction:
+    type: sort_direction
+    description: Order the data ASC or DESC 
+    is_optional: true
+
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.query(
+    new_columns=['LEFT(LEAD_SOURCE, 3)'],
+    filters=[LEAD_SOURCE = 'Outbound'],
+    summarize={
+            'ID': ['COUNT'],
+            'AMOUNT':['SUM']},
+    group_by=['STAGE_NAME'],
+    order_by_columns=['STAGE_NAME'],
+    order_by_direction='ASC')
+  
+  ds2.preview()
