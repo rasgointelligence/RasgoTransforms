@@ -1,1 +1,1 @@
-{{ column_name }}
+{{ column }}
