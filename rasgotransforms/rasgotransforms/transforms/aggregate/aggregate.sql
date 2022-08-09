@@ -1,5 +1,5 @@
 {%- set aggregations = aggregations.copy() %}
-{%- if 'numeric columns' in aggregations.keys() %}
+{%- if 'numeric columns' in aggregations.keys() and aggregations['numeric columns']|length > 0 %}
     {%- set all_columns = get_columns(source_table) %}
     {%- for column, column_type in all_columns.items() %}
         {%- if column not in aggregations.keys() and column_type|lower in ['int', 'integer', 'bigint', 'smallint', 'number', 'numeric', 'float', 'float4', 'float8', 'decimal', 'double precision', 'real'] %}
@@ -9,8 +9,8 @@
     {%- set _ = aggregations.pop('numeric columns') %}
 {%- endif -%}
 
-{%- if 'nonnumeric columns' in aggregations.keys() %}
-    {%- set all_columns = get_columns(source_table) %}
+{%- if 'nonnumeric columns' in aggregations.keys() and aggregations['nonnumeric columns']|length > 0 %}
+    {%- set all_columns = all_columns if all_columns is defined else get_columns(source_table) %}
     {%- for column, column_type in all_columns.items() %}
         {%- if column not in aggregations.keys() and column_type|lower not in ['int', 'integer', 'bigint', 'smallint', 'number', 'numeric', 'float', 'float4', 'float8', 'decimal', 'double precision', 'real'] %}
             {%- do aggregations.setdefault(column, []).extend(aggregations['nonnumeric columns']) %}
