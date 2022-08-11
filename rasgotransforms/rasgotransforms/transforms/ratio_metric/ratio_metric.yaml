@@ -9,13 +9,10 @@ arguments:
     description: The date/datetime column by which the metric will be aggregated
   metrics:
     type: agg_mapping
-    description: A mapping of column names to an aggregate method
+    description: list of objects that define metrics as a column name, agg method, and alias. Each metric used in the target_expression must be in this list of metrics, the target_expression refers to metrics by their alias.
   target_expression:
     type: column
-    description: The target column used to calculate the metric, can also be a sql string '(e.g. cast(target_column as string)')
-  aggregation_type:
-    type: agg
-    description: the Aggregation method used to calculate the metric (e.g. 'sum', 'count_distinct', 'max')
+    description: The target expression used to create the ratio metric
   time_grain:
     type: string
     description: The time grain (day, week, month, quarter, year) used to create the datespine that the metric is aggregated by
@@ -48,11 +45,14 @@ arguments:
 example_code: |
   ds = rasgo.get.dataset(id)
 
-  ds2 = ds.metric(
+  ds2 = ds.ratio_metric(
       source_table="DBTTEST.TUTORIAL.ORDERS",
       time_dimension='ORDERDATE',
-      target_expression=SALESAMOUNT',
-      aggregation_type='sum',
+      metrics=[
+        {'alias': 'SALES_REVENUE', 'column': 'SALESAMOUNT', 'agg_method': 'SUM'},
+        {'alias': 'SALES_VOLUME', 'column': 'ORDERNUMBER', 'agg_method': 'COUNT DISTINCT'}
+      ],
+      target_expression='SALES_REVENUE / SALES_VOLUME',
       alias='weekly_sales',
       time_grain='week',
       dimensions=['PRODUCTKEY'],
@@ -64,7 +64,7 @@ example_code: |
         },
         {
           'field': 'DEPARTMENT',
-          'operator': 'like'
+          'operator': 'like',
           'value': "'%electronics'"
         }
       ]
