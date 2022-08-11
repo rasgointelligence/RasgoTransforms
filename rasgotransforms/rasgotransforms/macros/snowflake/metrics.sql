@@ -1,43 +1,5 @@
 {% from 'filter.sql' import get_filter_statement %}
 
-{% macro get_distinct_vals(
-    columns,
-    target_metric,
-    max_vals,
-    source_table,
-    filters
-) %}
-{% set filter_statement = get_filter_statement(filters) %}
-{% set distinct_val_query %}
-    select
-        concat(
-            {% for column in columns %}
-            {{ column }}{{", '_', " if not loop.last}}
-            {% endfor %}
-        ) as dimensions,
-        {{ target_metric.agg_method|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct ' in target_metric.agg_method|lower else ''}}{{ target_metric.column }}) as vals
-    from {{ source_table }}
-        {{ filter_statement }}
-    group by 1
-    order by vals desc
-    limit {{ max_vals + 1}}
-{% endset %}
-{% set query_result = run_query(distinct_val_query) %}
-{% set distinct_vals = [] %}
-{% for val in query_result.itertuples() %}
-{% set distinct_val = [] %}
-{% for column in query_result.columns[:-1] %}
-{% do distinct_val.append(val[column]) %}
-{% if not loop.last %} {% do distinct_val.append("_") %} {% endif %}
-{% endfor %}
-{% do distinct_vals.append("_".join(distinct_val)) %}
-{% endfor %}
-{% if distinct_vals | length > max_vals %}
-{% set distinct_vals = distinct_vals[:-1] + ["_OtherGroup"] %}
-{% endif %}
-{{ distinct_vals | to_json }}
-{% endmacro %}
-
 {% macro calculate_timeseries_metric_values(
     metrics,
     time_dimension,
@@ -93,7 +55,7 @@ with
         select
             {{ time_dimension }}_min,
             {{ time_dimension }}_max,
-            {{ '\n        dimensions,' if dimensions }}
+            {{ 'dimensions,' if dimensions }}
             {% for metric in metrics %}
             {{ metric.agg_method | lower | replace("_", "") | replace("distinct", "") }} (
                 {{ "distinct " if "distinct" in metric.agg_method | lower else "" }}{{ metric.column }}
@@ -174,7 +136,7 @@ with
                 'second', -1, dateadd('{{ time_grain }}', 1, {{ time_dimension }}_min)
             ) as {{ time_dimension }}_max,
             {% endif %}
-            {{ 'dimensions,' if dimensions else '' }}
+            {{ 'dimensions,' if dimensions }}
             {% for metric in metrics %}
             {{ metric.alias }}{{ ',' if not loop.last }}
             {% endfor %}
@@ -182,7 +144,7 @@ with
         where period >= lower_bound and period <= upper_bound
         order by 1, 2{{ ', 3' if dimensions }}
     )
+{% endif %}
 select *
 from tidy_data
-{% endif %}
 {% endmacro %}

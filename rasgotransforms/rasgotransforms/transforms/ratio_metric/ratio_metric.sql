@@ -1,4 +1,5 @@
-{% from 'metrics.sql' import calculate_timeseries_metric_values, get_distinct_vals %}
+{% from 'metrics.sql' import calculate_timeseries_metric_values %}
+{% from 'distinct_values.sql' import get_distinct_vals %}
 {% set start_date = '2010-01-01' if not start_date else start_date|string %}
 {% set end_date = '2030-01-01' if not end_date else end_date|string %}
 {% set alias = 'metric_value' if not alias else alias %}
@@ -35,9 +36,7 @@ with metric_values as (
 ) select
     {{ time_dimension }}_min,
     {{ time_dimension }}_max,
-    {% if dimensions %}
-    dimensions,
-    {% endif %}
+    {{ 'dimensions,' if dimensions }}
     {{ target_expression }} as {{ alias }}
 from metric_values
 
