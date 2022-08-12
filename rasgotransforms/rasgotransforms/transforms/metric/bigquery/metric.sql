@@ -10,7 +10,7 @@
 {%- do filters.append({'columnName': time_dimension, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) -%}
 {%- do filters.append({'columnName': time_dimension, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
 {%- if dimensions and dimensions|length > 1 -%}
-{{ raise_exception('Currently, only one dimension can be passed to group by')}}
+{{ raise_exception('Currently, only one dimension can be passed to group by') }}
 {%- endif -%}
 
 {%- macro get_distinct_values(column) -%}
@@ -24,13 +24,13 @@
         order by vals desc
         limit {{ max_num_groups + 1}}
     {%- endset -%}
-    {%- set distinct_vals = run_query(distinct_val_query) -%}
-    {%- for val in distinct_vals.itertuples() -%}
-        {%- for column in distinct_vals.columns[:-1] -%}
-            {{ val[column] }}{{'_' if not loop.last else ''}}
-        {%- endfor -%}
-        {{ '|$|' if not loop.last else ''}}
-    {%- endfor %}
+{%- set distinct_vals = run_query(distinct_val_query) -%}
+{%- for val in distinct_vals.itertuples() -%}
+{%- for column in distinct_vals.columns[:-1] -%}
+{{ val[column] }}{{ '_' if not loop.last else '' }}
+{%- endfor -%}
+{{ '|$|' if not loop.last else '' }}
+{%- endfor %}
 {%- endmacro -%}
 
 {%- if dimensions -%}
@@ -54,147 +54,148 @@
         {%- endfor %}
 {%- endset -%}
 
-with source_query as (
-    select
-        cast(date_trunc(cast({{ time_dimension }} as date), day) as date) as date_day,
-        {%- for dimension in dimensions %}
-        case
-            when cast({{ dimension }} as string) in (
-                {%- for val in distinct_values %}
-                '{{ val }}'{{',' if not loop.last else ''}}
-                {%- endfor %}
-            ) then cast({{ dimension }} as string)
-            {%- if 'None' in distinct_values %}
-            when {{ dimension }} is null then 'None'
-            {%- endif %}
-            else '_OtherGroup'
-        end as {{ dimension }},
-        {%- endfor %}
-        {{ target_expression }} as property_to_aggregate
-    from {{ source_table }}
-    {{ filter_statement }}
-),
-{%- if time_grain|lower == 'all'%}
-spine as (
-    select
-        cast('{{ start_date }}' as date) as PERIOD_MIN,
-        cast('{{ end_date }}' as date) as PERIOD_MAX
-),
-joined as (
-    select *
-    from source_query
-        cross join spine
-),
-tidy_data as (
-    select
-        PERIOD_MIN,
-        PERIOD_MAX,
-        {%- for dimension in dimensions %}
-        {{ dimension }},
-        {%- endfor %}
-        {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}joined.property_to_aggregate) as {{ alias }},
-    from joined
-    group by {{ range(1, dimensions|length + 3)|join(', ') }}
-)
-{%- else %}
-calendar as (
-  select
-    date_day,
-    date_trunc(date_day, week) as date_week,
-    date_trunc(date_day, month) as date_month,
-    date_trunc(date_day, quarter) as date_quarter,
-    date_trunc(date_day, year) as date_year
-    from unnest(generate_date_array('{{ start_date }}', '{{ end_date }}')) as date_day
-),
-spine__time as (
+with
+    source_query as (
         select
-        date_{{ time_grain }} as period,
-        date_day
-        from calendar
-),
-{%- for dimension in dimensions %}
-spine__values__{{ dimension }} as (
-    select distinct {{ dimension }}
-    from source_query
-),
-{%- endfor %}
-spine as (
-    select *
-    from spine__time
-        {%- for dimension in dimensions %}
-        cross join spine__values__{{ dimension }}
-        {%- endfor %}
-),
-joined as (
-    select
-        spine.period,
-        {%- for dimension in dimensions %}
-        spine.{{ dimension }},
-        {%- endfor %}
-        {{ aggregation_type }}({{ 'distinct ' if distinct else ''}}source_query.property_to_aggregate) as {{ alias }},
-        logical_or(source_query.date_day is not null) as has_data
-    from spine
-    left outer join source_query on source_query.date_day = spine.date_day
-        {%- for dimension in dimensions %}
-        and (source_query.{{ dimension }} = spine.{{ dimension }}
-            or source_query.{{ dimension }} is null and spine.{{ dimension }} is null)
-        {%- endfor %}
-    group by {{ range(1, dimensions|length + 2)|join(', ') }}
-),
-bounded as (
-    select
-        *,
-            min(case when has_data then period end) over ()  as lower_bound,
-            max(case when has_data then period end) over ()  as upper_bound
-    from joined
-),
-tidy_data as (
-    select
-        cast(period as timestamp) as PERIOD_MIN,
-        {%- if time_grain|lower == 'quarter' %}
-        cast(date_add(period, INTERVAL 3 month) as timestamp) as PERIOD_MAX,
-        {%- else %}
-        cast(date_add(period, INTERVAL 1 {{ time_grain }}) as timestamp) as PERIOD_MAX,
-        {%- endif %}
-        {%- for dimension in dimensions %}
-        {{ dimension }},
-        {%- endfor %}
-        coalesce({{ alias }}, 0) as {{ alias }}
-    from bounded
-    where period >= lower_bound
-    and period <= upper_bound
-    order by {{ range(1, dimensions|length + 2)|join(', ') }}
-)
-{%- endif %}
-{%- if not dimensions or not flatten %}
-select * from tidy_data order by 1
-{%- else -%}
-, 
-pivoted as (
-    select *
-    from (
-        select 
-            PERIOD_MIN,
-            PERIOD_MAX,
-            {{ alias }},
+            cast(
+                date_trunc(cast({{ time_dimension }} as date), day) as date
+            ) as date_day,
             {%- for dimension in dimensions %}
-            {{ dimension }}{{ ',' if not loop.last }}
+            case
+                when
+                    cast({{ dimension }} as string) in (
+                        {%- for val in distinct_values %}
+                        '{{ val }}'{{ ',' if not loop.last else '' }}
+                        {%- endfor %}
+                    )
+                then cast({{ dimension }} as string)
+                {%- if 'None' in distinct_values %}
+                when {{ dimension }} is null then 'None'
+                {%- endif %}
+                else '_OtherGroup'
+            end as {{ dimension }},
             {%- endfor %}
-        from tidy_data
+            {{ target_expression }} as property_to_aggregate
+        from {{ source_table }} {{ filter_statement }}
+    ),
+    {%- if time_grain|lower == 'all' %}
+    spine as (
+        select
+            cast('{{ start_date }}' as date) as period_min,
+            cast('{{ end_date }}' as date) as period_max
+    ),
+    joined as (select * from source_query cross join spine),
+    tidy_data as (
+        select
+            period_min,
+            period_max,
+            {%- for dimension in dimensions %} {{ dimension }}, {%- endfor %}
+            {{ aggregation_type }} (
+                {{ 'distinct ' if distinct else '' }}joined.property_to_aggregate
+            ) as {{ alias }},
+        from joined
+        group by {{ range(1, dimensions|length + 3)|join(', ') }}
     )
-    pivot (
-        sum({{ alias }}) as {{ alias }} 
-        for {{ dimensions[0] }} in (
-            {% for val in distinct_values -%}
-            {%- if val is string -%}
-            '{{ val }}'
-            {%- else -%}
-            {{ val }}
-            {%- endif -%}
-            {{', ' if not loop.last else ''}}
+    {%- else %}
+    calendar as (
+        select
+            date_day,
+            date_trunc(date_day, week) as date_week,
+            date_trunc(date_day, month) as date_month,
+            date_trunc(date_day, quarter) as date_quarter,
+            date_trunc(date_day, year) as date_year
+        from
+            unnest(
+                generate_date_array('{{ start_date }}', '{{ end_date }}')
+            ) as date_day
+    ),
+    spine__time as (select date_{{ time_grain }} as period, date_day from calendar),
+    {%- for dimension in dimensions %}
+    spine__values__{{ dimension }} as (
+        select distinct {{ dimension }} from source_query
+    ),
+    {%- endfor %}
+    spine as (
+        select *
+        from spine__time
+        {%- for dimension in dimensions %} cross join spine__values__{{ dimension }}
+        {%- endfor %}
+    ),
+    joined as (
+        select
+            spine.period,
+            {%- for dimension in dimensions %} spine.{{ dimension }},
             {%- endfor %}
-        )
+            {{ aggregation_type }} (
+                {{ 'distinct ' if distinct else '' }}source_query.property_to_aggregate
+            ) as {{ alias }},
+            logical_or(source_query.date_day is not null) as has_data
+        from spine
+        left outer join
+            source_query on source_query.date_day = spine.date_day
+            {%- for dimension in dimensions %}
+            and (
+                source_query.{{ dimension }} = spine.{{ dimension }}
+                or source_query.{{ dimension }} is null
+                and spine.{{ dimension }} is null
+            )
+            {%- endfor %}
+        group by {{ range(1, dimensions|length + 2)|join(', ') }}
+    ),
+    bounded as (
+        select
+            *,
+            min(case when has_data then period end) over () as lower_bound,
+            max(case when has_data then period end) over () as upper_bound
+        from joined
+    ),
+    tidy_data as (
+        select
+            cast(period as timestamp) as period_min,
+            {%- if time_grain|lower == 'quarter' %}
+            cast(date_add(period, interval 3 month) as timestamp) as period_max,
+            {%- else %}
+            cast(
+                date_add(period, interval 1 {{ time_grain }}) as timestamp
+            ) as period_max,
+            {%- endif %}
+            {%- for dimension in dimensions %} {{ dimension }},
+            {%- endfor %}
+            coalesce({{ alias }}, 0) as {{ alias }}
+        from bounded
+        where period >= lower_bound and period <= upper_bound
+        order by {{ range(1, dimensions|length + 2)|join(', ') }}
     )
-)
-select * from pivoted order by 1
+    {%- endif %}
+{%- if not dimensions or not flatten %} select * from tidy_data order by 1
+{%- else -%}
+    ,
+    pivoted as (
+        select *
+        from
+            (
+                select
+                    period_min,
+                    period_max,
+                    {{ alias }},
+                    {%- for dimension in dimensions %}
+                    {{ dimension }}{{ ',' if not loop.last }}
+                    {%- endfor %}
+                from tidy_data
+            )
+            pivot(
+                sum({{ alias }}) as {{ alias }}
+                for {{ dimensions[0] }} in (
+                    {% for val in distinct_values -%}
+                    {%- if val is string -%}'{{ val }}'
+                    {%- else -%}{{ val }}
+                    {%- endif -%}
+                    {{ ', ' if not loop.last else '' }}
+                    {%- endfor %}
+                )
+            )
+    )
+select *
+from pivoted
+order by 1
 {%- endif -%}

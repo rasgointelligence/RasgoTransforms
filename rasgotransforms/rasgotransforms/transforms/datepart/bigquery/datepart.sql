@@ -1,15 +1,25 @@
-SELECT *,
-{%- for target_col, date_part in dates.items() %}
-  {%- if date_part|lower == 'weekiso' %}
-    EXTRACT(ISOWEEK FROM {{ target_col }}) AS {{ target_col }}_ISOWEEK {{ ", " if not loop.last else "" }}
-  {%- elif date_part|lower == 'dayofweekiso' %}
-    MOD(EXTRACT(DAYOFWEEK FROM {{ target_col }}) + 5, 7) + 1 AS {{ target_col }}_ISODAYOFWEEK {{ ", " if not loop.last else "" }}
-  {%- elif date_part|lower == 'yearofweekiso' %}
-    EXTRACT(ISOYEAR FROM {{ target_col }}) AS {{ target_col }}_ISOYEAR {{ ", " if not loop.last else "" }}
-  {%- elif date_part|lower == 'yearofweek' %}
-    EXTRACT(YEAR FROM {{ target_col }}) AS {{ target_col }}_YEAR {{ ", " if not loop.last else "" }}
-  {%- else %}
-    EXTRACT({{ date_part }} FROM {{ target_col }}) AS {{ target_col }}_{{ date_part }} {{ ", " if not loop.last else "" }}
-  {%- endif %}
-{%- endfor %}
-FROM {{ source_table }}
+select
+    *,
+    {%- for target_col, date_part in dates.items() %}
+    {%- if date_part|lower == 'weekiso' %}
+    extract(
+        isoweek from {{ target_col }}
+    ) as {{ target_col }}_isoweek {{ ", " if not loop.last else "" }}
+    {%- elif date_part|lower == 'dayofweekiso' %}
+    mod(extract(dayofweek from {{ target_col }}) + 5, 7)
+    + 1 as {{ target_col }}_isodayofweek {{ ", " if not loop.last else "" }}
+    {%- elif date_part|lower == 'yearofweekiso' %}
+    extract(
+        isoyear from {{ target_col }}
+    ) as {{ target_col }}_isoyear {{ ", " if not loop.last else "" }}
+    {%- elif date_part|lower == 'yearofweek' %}
+    extract(
+        year from {{ target_col }}
+    ) as {{ target_col }}_year {{ ", " if not loop.last else "" }}
+    {%- else %}
+    extract(
+        {{ date_part }} from {{ target_col }}
+    ) as {{ target_col }}_{{ date_part }} {{ ", " if not loop.last else "" }}
+    {%- endif %}
+    {%- endfor %}
+from {{ source_table }}

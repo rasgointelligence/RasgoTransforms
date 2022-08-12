@@ -1,13 +1,11 @@
 {%- for i in range((stage|length) - 1) -%}
-    SELECT
-    '{{ stage[i] }}_' || CAST({{ stage[i] }} AS STRING) AS SOURCE_NODE,
-    '{{ stage[i+1] }}_' || CAST({{ stage[i+1] }} AS STRING) AS DEST_NODE,
-    COUNT(*) AS WIDTH
-FROM {{ source_table }}
-GROUP BY
-    SOURCE_NODE,
-    DEST_NODE
-HAVING
-    SOURCE_NODE IS NOT NULL AND DEST_NODE IS NOT NULL
-{{ "UNION ALL" if not loop.last else "" }}
+select
+    '{{ stage[i] }}_' || cast({{ stage[i] }} as string) as source_node,
+    '{{ stage[i+1] }}_' || cast({{ stage[i+1] }} as string) as dest_node,
+    count(*) as width
+from {{ source_table }}
+group by source_node, dest_node
+having
+    source_node is not null and dest_node is not null
+    {{ "UNION ALL" if not loop.last else "" }}
 {% endfor %}

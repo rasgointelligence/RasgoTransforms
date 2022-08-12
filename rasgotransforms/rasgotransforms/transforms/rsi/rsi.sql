@@ -1,36 +1,54 @@
-WITH CTE_LAG1 AS (
-SELECT *,
-        lag({{ value_col }}, 1) over (partition by {{ partition_col }} order by {{ order_col }}) as LAG_{{ value_col }}
-from {{ source_table }}
-) , 
-CTE_DELTA AS (
-SELECT *
-    , {{ value_col }} - LAG_{{ value_col }}  as DELTA
-FROM CTE_LAG1
-) , 
-CTE_GAINLOSS_SPLIT AS (
-SELECT *
-    , CASE WHEN DELTA > 0 THEN DELTA WHEN DELTA = 0 THEN 0 ELSE 0 END as GAIN
-    , CASE WHEN DELTA < 0 THEN abs(DELTA) WHEN DELTA = 0 THEN 0 ELSE 0 END as LOSS
-FROM CTE_DELTA
-) , 
-CTE_MOVINGAVG AS (
-SELECT *
-, avg(GAIN) OVER(PARTITION BY {{ partition_col }} ORDER BY {{ order_col }} ROWS BETWEEN {{ window - 1 }} PRECEDING AND CURRENT ROW) AS AVG_GAIN_{{ window }}
-, avg(LOSS) OVER(PARTITION BY {{ partition_col }} ORDER BY {{ order_col }} ROWS BETWEEN {{ window - 1 }} PRECEDING AND CURRENT ROW) AS AVG_LOSS_{{ window }}
-FROM CTE_GAINLOSS_SPLIT
-) , 
-CTE_RSI AS (
-SELECT *
-    , CASE WHEN AVG_LOSS_{{ window }}=0 THEN 100 ELSE 100 - (100 / (1+(AVG_GAIN_{{ window }} / AVG_LOSS_{{ window }}))) END as {{ value_col }}_RSI_{{ window }}
-FROM CTE_MOVINGAVG
-) ,
-CTE_FINAL AS (
-SELECT {{ order_col }}, {{ partition_col }}, {{ value_col }}_RSI_{{ window }} 
-FROM CTE_RSI
-)
-SELECT A.*, B.{{ value_col }}_RSI_{{ window }}
-FROM {{ source_table }} A
-INNER JOIN CTE_FINAL B
-ON A.{{ partition_col }} = B.{{ partition_col }}
-AND A.{{ order_col }} = B.{{ order_col }}
+with
+    cte_lag1 as (
+        select
+            *,
+            lag({{ value_col }}, 1) over (
+                partition by {{ partition_col }} order by {{ order_col }}
+            ) as lag_{{ value_col }}
+        from {{ source_table }}
+    ),
+    cte_delta as (
+        select *, {{ value_col }} - lag_{{ value_col }} as delta from cte_lag1
+    ),
+    cte_gainloss_split as (
+        select
+            *,
+            case when delta > 0 then delta when delta = 0 then 0 else 0 end as gain,
+            case when delta < 0 then abs(delta) when delta = 0 then 0 else 0 end as loss
+        from cte_delta
+    ),
+    cte_movingavg as (
+        select
+            *,
+            avg(gain) over (
+                partition by {{ partition_col }}
+                order by {{ order_col }}
+                rows between {{ window - 1 }} preceding and current row
+            ) as avg_gain_{{ window }},
+            avg(loss) over (
+                partition by {{ partition_col }}
+                order by {{ order_col }}
+                rows between {{ window - 1 }} preceding and current row
+            ) as avg_loss_{{ window }}
+        from cte_gainloss_split
+    ),
+    cte_rsi as (
+        select
+            *,
+            case
+                when avg_loss_{{ window }}= 0
+                then 100
+                else 100 - (100 / (1 + (avg_gain_{{ window }} / avg_loss_{{ window }})))
+            end as {{ value_col }}_rsi_{{ window }}
+        from cte_movingavg
+    ),
+    cte_final as (
+        select {{ order_col }}, {{ partition_col }}, {{ value_col }}_rsi_{{ window }}
+        from cte_rsi
+    )
+select a.*, b.{{ value_col }}_rsi_{{ window }}
+from {{ source_table }} a
+inner join
+    cte_final b
+    on a.{{ partition_col }} = b.{{ partition_col }}
+    and a.{{ order_col }} = b.{{ order_col }}

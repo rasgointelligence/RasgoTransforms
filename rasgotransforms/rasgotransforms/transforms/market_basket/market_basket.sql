@@ -1,13 +1,17 @@
-WITH order_detail as
-(SELECT {{transaction_id}},
-listagg({{agg_column}}, '{{sep}}')
-WITHIN group (order by {{agg_column}}) as {{agg_column}}_listagg,
-COUNT({{agg_column}}) as num_products
-FROM {{ source_table }}
-GROUP BY {{transaction_id}} )
+with
+    order_detail as (
+        select
+            {{ transaction_id }},
+            listagg({{ agg_column }}, '{{sep}}') within group (
+                order by {{ agg_column }}
+            ) as {{ agg_column }}_listagg,
+            count({{ agg_column }}) as num_products
+        from {{ source_table }}
+        group by {{ transaction_id }}
+    )
 
-SELECT {{agg_column}}_listagg, count({{transaction_id}}) as NumTransactions
-FROM order_detail
+select {{ agg_column }}_listagg, count({{ transaction_id }}) as numtransactions
+from order_detail
 where num_products > 1
-GROUP BY {{agg_column}}_listagg
-order by count({{transaction_id}}) desc
+group by {{ agg_column }}_listagg
+order by count({{ transaction_id }}) desc

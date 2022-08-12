@@ -1,7 +1,14 @@
-SELECT
-*
-FROM {{ source_table }}
-QUALIFY ROW_NUMBER() OVER (
-    PARTITION BY {%- for col in natural_key %} {{col}}{{"," if not loop.last else ""}} {%- endfor %}
-    ORDER BY {%- for col in order_col %} {{col}}{{"," if not loop.last else ""}} {%- endfor %} {{order_method}}
-) = 1
+select *
+from {{ source_table }}
+qualify
+    row_number() over (
+        partition by
+            {%- for col in natural_key %}
+            {{ col }}{{ "," if not loop.last else "" }}
+            {%- endfor %}
+        order by
+            {%- for col in order_col %}
+            {{ col }}{{ "," if not loop.last else "" }}
+            {%- endfor %} {{ order_method }}
+    )
+    = 1

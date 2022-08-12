@@ -1,21 +1,31 @@
-WITH CTE_SEQUENCES AS (
-  SELECT
-    T.*,
-    ROW_NUMBER() OVER (PARTITION BY {%- for group_item in group_by %} {{ group_item }},{%- endfor -%} {{ value_col }} ORDER BY {{ order_col }}) AS RN_R97_B42_O,
-    ROW_NUMBER() OVER (ORDER BY {%- for group_item in group_by %} {{ group_item }},{%- endfor -%} {{ order_col }}) AS RN_R97_B42_E
-  FROM
-    {{ source_table }} T
-)
-SELECT
-  {%- for group_item in group_by %} S.{{ group_item }},{%- endfor -%}
-  S.{{ value_col }} as REPEATED_VALUE,
-  MIN(S.{{ order_col }}) AS FLATLINE_START_DATE,
-  MAX(S.{{ order_col }}) AS FLATLINE_END_DATE,
-  COUNT(*) AS OCCURRENCE_COUNT
-FROM
-  CTE_SEQUENCES S
-GROUP BY
-  {%- for group_item in group_by %} S.{{ group_item }},{%- endfor -%}
-  S.{{ value_col }},
-  S.RN_R97_B42_E - S.RN_R97_B42_O
-HAVING COUNT(*) > {{ min_repeat_count }}
+with
+    cte_sequences as (
+        select
+            t.*,
+            row_number() over (
+                partition by
+                    {%- for group_item in group_by %}
+                    {{ group_item }},
+                    {%- endfor -%} {{ value_col }}
+                order by {{ order_col }}
+            ) as rn_r97_b42_o,
+            row_number() over (
+                order by
+                    {%- for group_item in group_by %}
+                    {{ group_item }},
+                    {%- endfor -%} {{ order_col }}
+            ) as rn_r97_b42_e
+        from {{ source_table }} t
+    )
+select
+    {%- for group_item in group_by %} s.{{ group_item }},{%- endfor -%}
+    s.{{ value_col }} as repeated_value,
+    min(s.{{ order_col }}) as flatline_start_date,
+    max(s.{{ order_col }}) as flatline_end_date,
+    count(*) as occurrence_count
+from cte_sequences s
+group by
+    {%- for group_item in group_by %} s.{{ group_item }},{%- endfor -%}
+    s.{{ value_col }},
+    s.rn_r97_b42_e - s.rn_r97_b42_o
+having count(*) > {{ min_repeat_count }}

@@ -3,14 +3,18 @@
 
 {%- if method|lower == 'label' -%}
 
-with distinct_values as (
-    select 
-        array_agg(distinct {{ column }}) within group (order by {{ column }} asc) as ALL_VALUES_ARRAY 
-    from {{ source_table }}
-)
-select {{ untouched_cols|join(',') }},
-    ALL_VALUES_ARRAY,
-    array_position({{ column }}::variant,ALL_VALUES_ARRAY) as {{ alias }}
+with
+    distinct_values as (
+        select
+            array_agg(distinct {{ column }}) within group (
+                order by {{ column }} asc
+            ) as all_values_array
+        from {{ source_table }}
+    )
+select
+    {{ untouched_cols|join(',') }},
+    all_values_array,
+    array_position({{ column }}::variant, all_values_array) as {{ alias }}
 from distinct_values, {{ source_table }}
 
 {%- elif method|lower == 'target' -%}
@@ -18,39 +22,40 @@ from distinct_values, {{ source_table }}
 {%- if target is not defined -%}
 {{ raise_exception("The 'target' parameter must be defined when using the target encoding method") }}
 {%- endif -%}
-with means as (
-    select 
-        distinct {{column}} as value, 
-        ROUND(AVG({{target}}), 3) as {{alias}}
-    from {{ source_table }}
-    group by value
-)
-select 
-    {% if overwrite_columns -%} 
-    {%- for col in untouched_cols -%}
-    t.{{col}},
-    {%- endfor %}
-    {% else -%}
-    t.*,
+with
+    means as (
+        select distinct
+            {{ column }} as value, round(avg({{ target }}), 3) as {{ alias }}
+        from {{ source_table }}
+        group by value
+    )
+select
+    {% if overwrite_columns -%}
+    {%- for col in untouched_cols -%} t.{{ col }}, {%- endfor %}
+    {% else -%} t.*,
     {%- endif -%}
-    m.{{alias}}
+    m.{{ alias }}
 from {{ source_table }} t
-left join
-    means m on t.{{column}} = m.value
+left join means m on t.{{ column }} = m.value
 
 {%- elif method|lower == 'oh' -%}
 
 {%- set distinct_col_vals =  run_query("SELECT DISTINCT " +  column + " FROM " + source_table)[column].to_list() -%}
-SELECT {{ untouched_cols|join(',') }},
-{%- for val in distinct_col_vals %}
+select
+    {{ untouched_cols|join(',') }},
+    {%- for val in distinct_col_vals %}
     {%- if val is not none %}
-    CASE WHEN {{ column }} = {{ "'" ~ val ~ "'"}} THEN 1 ELSE 0 END as {{ cleanse_name(column ~ '_' ~ val) }}{{ ', ' if not loop.last else '' }}
+    case
+        when {{ column }} = {{ "'" ~ val ~ "'" }} then 1 else 0
+    end as {{ cleanse_name(column ~ '_' ~ val) }}{{ ', ' if not loop.last else '' }}
     {%- else %}
-    CASE WHEN {{ column }} IS NULL THEN 1 ELSE 0 END as {{ column }}_IS_NULL{{ ', ' if not loop.last else '' }}
+    case
+        when {{ column }} is null then 1 else 0
+    end as {{ column }}_is_null{{ ', ' if not loop.last else '' }}
     {%- endif -%}
-{% endfor %}
-FROM {{ source_table }}
+    {% endfor %}
+from {{ source_table }}
 
 {%- else -%}
-{{ raise_exception("Method '" + method + "' is not recognized. Accepted encoding methods are 'label', 'target', and 'oh'")}}
+{{ raise_exception("Method '" + method + "' is not recognized. Accepted encoding methods are 'label', 'target', and 'oh'") }}
 {%- endif -%}

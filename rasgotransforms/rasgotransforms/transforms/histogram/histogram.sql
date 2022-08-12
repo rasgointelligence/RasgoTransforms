@@ -1,54 +1,61 @@
-{%- if num_buckets is not defined -%}
-    {%- set bucket_count = 200 -%}
-{%- else -%}
-    {%- set bucket_count = num_buckets -%}
+{%- if num_buckets is not defined -%} {%- set bucket_count = 200 -%}
+{%- else -%} {%- set bucket_count = num_buckets -%}
 {%- endif -%}
 
-WITH COUNTS AS (
-SELECT
-  REPLACE('{{ column }}','"') AS FEATURE
-  ,COL AS VAL
-  ,COUNT(1) AS REC_CT
-FROM
-  (SELECT CAST({{ column }} AS FLOAT) AS COL FROM {{ source_table }}
-  {%- if filters is defined and filters %}
-    {% for filter_block in filters %}
-        {%- set oloop = loop -%}
-        {{ 'WHERE ' if oloop.first else ' AND ' }}
-            {%- if filter_block is not mapping -%}
-                {{ filter_block }}
-            {%- else -%}
-                {%- if filter_block['operator'] == 'CONTAINS' -%}
-                    {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
-                {%- else -%}
+with
+    counts as (
+        select replace('{{ column }}', '"') as feature, col as val, count(1) as rec_ct
+        from
+            (
+                select cast({{ column }} as float) as col
+                from
+                    {{ source_table }}
+                    {%- if filters is defined and filters %}
+                    {% for filter_block in filters %}
+                    {%- set oloop = loop -%}
+                    {{ 'WHERE ' if oloop.first else ' AND ' }}
+                    {%- if filter_block is not mapping -%} {{ filter_block }}
+                    {%- else -%}
+                    {%- if filter_block['operator'] == 'CONTAINS' -%}
+                    {{ filter_block['operator'] }} (
+                        {{ filter_block['columnName'] }},
+                        {{ filter_block['comparisonValue'] }}
+                    )
+                    {%- else -%}
                     {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
-                {%- endif -%}
-            {%- endif -%}
-    {%- endfor -%}
-  {%- endif -%}
-  )
-WHERE
-  COL IS NOT NULL
-GROUP BY 2),
-CALCS AS (SELECT MIN(VAL)-1 MIN_VAL, MAX(VAL)+1 MAX_VAL FROM COUNTS),
-EDGES AS (SELECT MIN_VAL, MAX_VAL, (MIN_VAL-MAX_VAL) VAL_RANGE, ((MAX_VAL-MIN_VAL)/{{ bucket_count }}) BUCKET_SIZE FROM CALCS),
-FREQS AS (
-SELECT
-  FEATURE
-  ,VAL
-  ,REC_CT
-  ,WIDTH_BUCKET(VAL, MIN_VAL, MAX_VAL, {{ bucket_count }}) AS HIST_BUCKET
-  ,MIN_VAL
-  ,MAX_VAL
-  ,BUCKET_SIZE
-FROM
-  COUNTS
-CROSS JOIN EDGES)
-SELECT
-  MIN_VAL+((HIST_BUCKET-1)*BUCKET_SIZE) AS {{ column }}_MIN
-  ,MIN_VAL+(HIST_BUCKET*BUCKET_SIZE) AS {{ column }}_MAX
-  ,SUM(REC_CT) AS RECORD_COUNT
-FROM
-  FREQS
-GROUP BY 1,2
+                    {%- endif -%}
+                    {%- endif -%}
+                    {%- endfor -%}
+                    {%- endif -%}
+            )
+        where col is not null
+        group by 2
+    ),
+    calcs as (select min(val) -1 min_val, max(val) + 1 max_val from counts),
+    edges as (
+        select
+            min_val,
+            max_val,
+            (min_val - max_val) val_range,
+            ((max_val - min_val) /{{ bucket_count }}) bucket_size
+        from calcs
+    ),
+    freqs as (
+        select
+            feature,
+            val,
+            rec_ct,
+            width_bucket(val, min_val, max_val, {{ bucket_count }}) as hist_bucket,
+            min_val,
+            max_val,
+            bucket_size
+        from counts
+        cross join edges
+    )
+select
+    min_val + ((hist_bucket -1) * bucket_size) as {{ column }}_min,
+    min_val + (hist_bucket * bucket_size) as {{ column }}_max,
+    sum(rec_ct) as record_count
+from freqs
+group by 1, 2
 order by 1

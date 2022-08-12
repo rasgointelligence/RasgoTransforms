@@ -1,2 +1,6 @@
-SELECT * FROM {{ source_table }}
-UNPIVOT( {{ value_column }} for {{ name_column }} in ( {{ column_list | join(', ')}} ))
+select *
+from
+    {{ source_table }}
+    unpivot(
+        {{ value_column }} for {{ name_column }} in ({{ column_list | join(', ') }})
+    )

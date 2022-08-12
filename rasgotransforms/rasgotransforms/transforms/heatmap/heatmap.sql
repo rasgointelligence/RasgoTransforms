@@ -1,66 +1,77 @@
-{%- if num_buckets is not defined -%}
-    {%- set bucket_count = 100 -%}
-{%- else -%}
-    {%- set bucket_count = num_buckets -%}
+{%- if num_buckets is not defined -%} {%- set bucket_count = 100 -%}
+{%- else -%} {%- set bucket_count = num_buckets -%}
 {%- endif -%}
-WITH AXIS_RANGE AS (
-  -- Use a user-defined axis column to calculate the min & max of the axis (and buckets on the axis)
-  SELECT
-    MIN({{ x_axis }})-1 AS MIN_X_VAL
-   ,MAX({{ x_axis }})+1 AS MAX_X_VAL
-   ,MIN({{ y_axis }})-1 AS MIN_Y_VAL
-   ,MAX({{ y_axis }})+1 AS MAX_Y_VAL
-  FROM
-    {{ source_table }}
-  WHERE
-    {{ x_axis }} IS NOT NULL
-), EDGES AS (
-SELECT MIN_X_VAL, MAX_X_VAL, (MIN_X_VAL-MAX_X_VAL) X_VAL_RANGE, ((MAX_X_VAL-MIN_X_VAL)/{{ bucket_count }}) X_BUCKET_SIZE,
-  MIN_Y_VAL, MAX_Y_VAL, (MIN_Y_VAL-MAX_Y_VAL) Y_VAL_RANGE, ((MAX_Y_VAL-MIN_Y_VAL)/{{ bucket_count }}) Y_BUCKET_SIZE
-  FROM AXIS_RANGE
-),
-BUCKETS AS (
-  SELECT
-    -- Assigns a bucket to each value of each column in user's column list
-    -- Row count of result set should match the row count of the raw table
-    MIN_X_VAL
-   ,MAX_X_VAL
-   ,X_BUCKET_SIZE
-   ,MIN_Y_VAL
-   ,MAX_Y_VAL
-   ,Y_BUCKET_SIZE
-   ,CAST({{ x_axis }} AS FLOAT) AS COL_X_VAL
-   ,WIDTH_BUCKET(COL_X_VAL, MIN_X_VAL, MAX_X_VAL, {{ bucket_count }}) AS COL_X_BUCKET
-   ,CAST({{ y_axis }} AS FLOAT) AS COL_Y_VAL
-   ,WIDTH_BUCKET(COL_Y_VAL, MIN_Y_VAL, MAX_Y_VAL, {{ bucket_count }}) AS COL_Y_BUCKET
-  FROM
-    {{ source_table }}
-    CROSS JOIN EDGES
-    {%- if filters is defined and filters %}
-        {% for filter_block in filters %}
-          {%- set oloop = loop -%}
-          {{ 'WHERE ' if oloop.first else ' AND ' }}
-              {%- if filter_block is not mapping -%}
-                  {{ filter_block }}
-              {%- else -%}
-                  {%- if filter_block['operator'] == 'CONTAINS' -%}
-                      {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
-                  {%- else -%}
-                      {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
-                  {%- endif -%}
-              {%- endif -%}
-        {%- endfor -%}
-    {%- endif -%}
-)
+with
+    axis_range as (
+        -- Use a user-defined axis column to calculate the min & max of the axis (and
+        -- buckets on the axis)
+        select
+            min({{ x_axis }}) -1 as min_x_val,
+            max({{ x_axis }}) + 1 as max_x_val,
+            min({{ y_axis }}) -1 as min_y_val,
+            max({{ y_axis }}) + 1 as max_y_val
+        from {{ source_table }}
+        where {{ x_axis }} is not null
+    ),
+    edges as (
+        select
+            min_x_val,
+            max_x_val,
+            (min_x_val - max_x_val) x_val_range,
+            ((max_x_val - min_x_val) /{{ bucket_count }}) x_bucket_size,
+            min_y_val,
+            max_y_val,
+            (min_y_val - max_y_val) y_val_range,
+            ((max_y_val - min_y_val) /{{ bucket_count }}) y_bucket_size
+        from axis_range
+    ),
+    buckets as (
+        select
+            -- Assigns a bucket to each value of each column in user's column list
+            -- Row count of result set should match the row count of the raw table
+            min_x_val,
+            max_x_val,
+            x_bucket_size,
+            min_y_val,
+            max_y_val,
+            y_bucket_size,
+            cast({{ x_axis }} as float) as col_x_val,
+            width_bucket(
+                col_x_val, min_x_val, max_x_val, {{ bucket_count }}
+            ) as col_x_bucket,
+            cast({{ y_axis }} as float) as col_y_val,
+            width_bucket(
+                col_y_val, min_y_val, max_y_val, {{ bucket_count }}
+            ) as col_y_bucket
+        from {{ source_table }}
+        cross join
+            edges
+            {%- if filters is defined and filters %}
+            {% for filter_block in filters %}
+            {%- set oloop = loop -%}
+            {{ 'WHERE ' if oloop.first else ' AND ' }}
+            {%- if filter_block is not mapping -%} {{ filter_block }}
+            {%- else -%}
+            {%- if filter_block['operator'] == 'CONTAINS' -%}
+            {{ filter_block['operator'] }} (
+                {{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }}
+            )
+            {%- else -%}
+            {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+            {%- endif -%}
+            {%- endif -%}
+            {%- endfor -%}
+            {%- endif -%}
+    )
 -- Run final aggregates on the buckets
-SELECT
-   MIN_X_VAL+((COL_X_BUCKET-1)*X_BUCKET_SIZE) AS {{ x_axis }}_MIN
-   ,MIN_X_VAL+(COL_X_BUCKET*X_BUCKET_SIZE) AS {{ x_axis }}_MAX
-   ,MIN_Y_VAL+((COL_Y_BUCKET-1)*Y_BUCKET_SIZE) AS {{ y_axis }}_MIN
-   ,MIN_Y_VAL+(COL_Y_BUCKET*Y_BUCKET_SIZE) AS {{ y_axis }}_MAX
-   ,COUNT(COL_Y_VAL)+COUNT(COL_X_VAL) as DENSITY
+select
+    min_x_val + ((col_x_bucket -1) * x_bucket_size) as {{ x_axis }}_min,
+    min_x_val + (col_x_bucket * x_bucket_size) as {{ x_axis }}_max,
+    min_y_val + ((col_y_bucket -1) * y_bucket_size) as {{ y_axis }}_min,
+    min_y_val + (col_y_bucket * y_bucket_size) as {{ y_axis }}_max,
+    count(col_y_val) + count(col_x_val) as density
 
-FROM BUCKETS
-WHERE {{ x_axis }}_MIN is not NULL and {{ y_axis }}_MIN is not NULL
-GROUP BY 1, 2, 3, 4
-ORDER BY 1, 3
+from buckets
+where {{ x_axis }}_min is not null and {{ y_axis }}_min is not null
+group by 1, 2, 3, 4
+order by 1, 3
