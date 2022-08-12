@@ -1,20 +1,18 @@
-SELECT *
-{% for col, aggs in aggregations.items() -%}
-  {%- for agg in aggs -%}
+select
+    *
+    {% for col, aggs in aggregations.items() -%}
+    {%- for agg in aggs -%}
     {%- for offset in offsets %}
-      {% set normalized_offset = -offset %}
-      , {{ agg }}({{ col }}) OVER( 
-        {%- if group_by %}
-        PARTITION BY {{ group_by | join(", ") }} 
-        {% endif -%}
-        ORDER BY {{ order_by | join(", ") }} 
+    {% set normalized_offset = -offset %},
+    {{ agg }} ({{ col }}) over (
+        {%- if group_by %}partition by {{ group_by | join(", ") }} {% endif -%}
+        order by {{ order_by | join(", ") }}
         {% if normalized_offset > 0 -%}
-        ROWS BETWEEN CURRENT ROW AND {{ normalized_offset }} FOLLOWING
-        {% else -%}
-        ROWS BETWEEN {{ normalized_offset|abs }} PRECEDING AND CURRENT ROW
+        rows between current row and {{ normalized_offset }} following
+        {% else -%} rows between {{ normalized_offset|abs }} preceding and current row
         {% endif -%}
-      ) as {{ cleanse_name(agg + '_' + col + '_' + offset|string) }}
+    ) as {{ cleanse_name(agg + '_' + col + '_' + offset|string) }}
     {%- endfor -%}
-  {%- endfor -%}
-{%- endfor %}
-FROM {{ source_table }}
+    {%- endfor -%}
+    {%- endfor %}
+from {{ source_table }}

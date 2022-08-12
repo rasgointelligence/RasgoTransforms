@@ -1,8 +1,9 @@
-SELECT 
-*,
-CASE
-{%- for condition in conditions %} 
-    {{"WHEN " + condition[0] }} THEN {{ condition[1] }} {% endfor %}
-    ELSE {{ default }}
-END AS {{ cleanse_name(alias) }}
-FROM {{ source_table }}
+select
+    *,
+    case
+        {%- for condition in conditions %}
+        {{ "WHEN " + condition[0] }} then {{ condition[1] }}
+        {% endfor %}
+        else {{ default }}
+    end as {{ cleanse_name(alias) }}
+from {{ source_table }}

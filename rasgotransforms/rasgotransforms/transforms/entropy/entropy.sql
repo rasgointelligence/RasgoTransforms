@@ -4,49 +4,43 @@
 
 {%- set final_col_list=[] -%}
 
-WITH 
-{% for col in columns %}
+with
+    {% for col in columns %}
     {%- if loop.index == 1 -%}
     {%- set ns.base_cte = 'CTE_' ~ col ~ '_ENTROPY' -%}
     {%- endif -%}
-CTE_{{ col }} AS (
-SELECT 
-    {{ group_by | join(', ') }},
-    {{ col }},
-    COUNT(1) AS C 
-FROM {{ source_table }}
-GROUP BY {{ group_by | join(', ') }},{{ col }}
-),
-CTE_{{ col }}_RATIO AS (
-SELECT 
-    {{ group_by | join(', ') }},
-    {{ col }},
-    C / SUM(C) OVER (PARTITION BY {{ group_by | join(', ') }}) AS P
-FROM CTE_{{ col }}
-),
-CTE_{{ col }}_ENTROPY AS (
-SELECT 
-    {{ group_by | join(', ') }},
-    -SUM(P*LOG(2,P)) AS {{ col }}_ENTROPY
-FROM CTE_{{ col }}_RATIO
-GROUP BY {{ group_by | join(', ') }}
-){{ '' if loop.last else ', ' }}
-{%- do final_col_list.append('CTE_' ~ col ~ '_ENTROPY.' ~ col ~ '_ENTROPY') -%}
-{%- endfor %} 
+    cte_{{ col }} as (
+        select {{ group_by | join(', ') }}, {{ col }}, count(1) as c
+        from {{ source_table }}
+        group by {{ group_by | join(', ') }},{{ col }}
+    ),
+    cte_{{ col }}_ratio as (
+        select
+            {{ group_by | join(', ') }},
+            {{ col }},
+            c / sum(c) over (partition by {{ group_by | join(', ') }}) as p
+        from cte_{{ col }}
+    ),
+    cte_{{ col }}_entropy as (
+        select {{ group_by | join(', ') }}, - sum(p * log(2, p)) as {{ col }}_entropy
+        from cte_{{ col }}_ratio
+        group by {{ group_by | join(', ') }}
+    ){{ '' if loop.last else ', ' }}
+    {%- do final_col_list.append('CTE_' ~ col ~ '_ENTROPY.' ~ col ~ '_ENTROPY') -%}
+    {%- endfor %}
 
-SELECT 
-{%- for group_item in group_by %}
-    {{ ns.base_cte }}.{{ group_item}},
-{%- endfor -%}
-{{ final_col_list|join(', ') }}
-FROM 
+select
+    {%- for group_item in group_by %} {{ ns.base_cte }}.{{ group_item }}, {%- endfor -%}
+    {{ final_col_list|join(', ') }}
+from
 {% for col in columns %}
-    {%- if loop.index == 1 -%}
-CTE_{{ col }}_ENTROPY 
-    {%- else %}
-        LEFT OUTER JOIN CTE_{{ col }}_ENTROPY ON
-        {%- for group_item in group_by %}
-        {{ ns.base_cte }}.{{ group_item }} = CTE_{{ col }}_ENTROPY.{{ group_item }}{{ '' if loop.last else ' AND ' }}
-        {%- endfor -%}
-    {%- endif -%}
+    {%- if loop.index == 1 -%} cte_{{ col }}_entropy
+{%- else %}
+left outer join
+    cte_{{ col }}_entropy
+    on {%- for group_item in group_by %}
+    {{ ns.base_cte }}.{{ group_item }}
+    = cte_{{ col }}_entropy.{{ group_item }}{{ '' if loop.last else ' AND ' }}
+    {%- endfor -%}
+{%- endif -%}
 {%- endfor -%}

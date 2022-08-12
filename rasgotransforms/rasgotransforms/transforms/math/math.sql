@@ -1,23 +1,24 @@
 {%- if names -%}
-    {%- if names|length != math_ops|length -%}
+{%- if names|length != math_ops|length -%}
 
 {{ raise_exception('Provide a new column alias for each math operation') }}
 
-    {%- elif names|length == math_ops|length -%}
+{%- elif names|length == math_ops|length -%}
 
-SELECT *
-{%- for math_op in math_ops %}
-    , {{math_op}} as {{cleanse_name(names[loop.index-1])}}
-{%- endfor %}
-FROM {{source_table}}
+select
+    *
+    {%- for math_op in math_ops %}
+    , {{ math_op }} as {{ cleanse_name(names[loop.index-1]) }}
+    {%- endfor %}
+from {{ source_table }}
 
-    {%- endif -%}
+{%- endif -%}
 {%- else -%}
 
-SELECT *
-{%- for math_op in math_ops %}
-    , {{math_op}} as {{cleanse_name(math_op)}}
-{%- endfor %}
-FROM {{source_table}}
+select
+    *
+    {%- for math_op in math_ops %}, {{ math_op }} as {{ cleanse_name(math_op) }}
+    {%- endfor %}
+from {{ source_table }}
 
 {%- endif -%}

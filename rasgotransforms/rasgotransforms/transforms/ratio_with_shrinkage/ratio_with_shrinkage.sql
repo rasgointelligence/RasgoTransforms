@@ -1,47 +1,23 @@
 {# the strange __var__ names are meant to prevent collisions #}
-
 {%- set source_col_names = get_columns(source_table) -%}
-WITH CTE_AGG AS (
-  SELECT 
-    *, 
-    {{ numerator }} / {{ denom }} as RAW__PCT 
-  FROM 
-    {{ source_table }}
-), 
-CTE_FILTER AS (
-  SELECT 
-    * 
-  FROM 
-    CTE_AGG 
-  WHERE 
-    {{ denom }} >= {{ min_cutoff }}
-), 
-CTE_STATS AS (
-  SELECT 
-    AVG(RAW__PCT) AS __U__, 
-    VARIANCE_SAMP(RAW__PCT) AS __V__ 
-  FROM 
-    CTE_FILTER
-), 
-CTE_JOINED AS (
-  SELECT 
-    * 
-  FROM CTE_AGG 
-  CROSS JOIN CTE_STATS
-), 
-CTE_COEF AS (
-  SELECT 
-    *, 
-    __U__ * (
-    __U__ * (1 - __U__)/ __V__ - 1
-    ) AS __ALPHA__, 
-    __ALPHA__ * (1 - __U__)/ __U__ AS __BETA__ 
-  FROM 
-    CTE_JOINED
-) 
-SELECT 
-  {{ source_col_names | join(', ') }},
-  RAW__PCT, 
-  ({{ numerator }} + __ALPHA__) / ({{ denom }} + __ALPHA__ + __BETA__) AS ADJ__PCT 
-FROM 
-  CTE_COEF
+with
+    cte_agg as (
+        select *, {{ numerator }} / {{ denom }} as raw__pct from {{ source_table }}
+    ),
+    cte_filter as (select * from cte_agg where {{ denom }} >= {{ min_cutoff }}),
+    cte_stats as (
+        select avg(raw__pct) as __u__, variance_samp(raw__pct) as __v__ from cte_filter
+    ),
+    cte_joined as (select * from cte_agg cross join cte_stats),
+    cte_coef as (
+        select
+            *,
+            __u__ * (__u__ * (1 - __u__) / __v__ - 1) as __alpha__,
+            __alpha__ * (1 - __u__) / __u__ as __beta__
+        from cte_joined
+    )
+select
+    {{ source_col_names | join(', ') }},
+    raw__pct,
+    ({{ numerator }} + __alpha__) / ({{ denom }} + __alpha__ + __beta__) as adj__pct
+from cte_coef

@@ -9,18 +9,18 @@
 {%- set exclude_cols = (exclude_cols|join(',')|upper).split(',') -%}
 {% set include_cols = [] -%}
 {% for column_name in source_col_names -%}
-    {% if column_name.upper() not in exclude_cols -%}
-         {% do include_cols.append(column_name) -%}
-    {% endif -%}
+{% if column_name.upper() not in exclude_cols -%}
+{% do include_cols.append(column_name) -%}
+{% endif -%}
 {% endfor -%}
 {%- endif -%}
 
 {%- if include_cols is defined -%}
-SELECT
-{%- for col in include_cols %}
-    {{col}}{{ ", " if not loop.last else " " }}
-{%- endfor %}
-FROM {{source_table}}
+select
+    {%- for col in include_cols %}
+    {{ col }}{{ ", " if not loop.last else " " }}
+    {%- endfor %}
+from {{ source_table }}
 {%- endif -%}
 
 {%- endif -%}

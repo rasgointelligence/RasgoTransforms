@@ -2,20 +2,25 @@
 
 {%- set alias = alias if alias is defined else cleanse_name('RANK_' + '_'.join(rank_columns)) -%}
 
-SELECT {{ untouched_cols }},
-{%- if rank_type == 'dense' %}
-  DENSE_RANK() OVER(
-{% elif rank_type == 'percent' %}
-  PERCENT_RANK() OVER(
-{% elif rank_type == 'unique' %}
-  ROW_NUMBER() OVER(
-{%- else -%}
-  RANK() OVER(
-{% endif %}
-    {% if partition_by -%}
-    PARTITION BY {% for col in partition_by -%}{{col}}{{ ", " if not loop.last else " " }}{%- endfor %}
-    {% endif -%}
-    ORDER BY {% for col in rank_columns -%}{{col}}{% if order %} {{ order }}{% endif %}{{ ", " if not loop.last else " " }}{%- endfor %}
-  ) AS {{ alias }}
-FROM {{ source_table }}
-{% if qualify_filter %}QUALIFY {{ alias }} {{ qualify_filter }}{% endif %}
+select
+    {{ untouched_cols }},
+    {%- if rank_type == 'dense' %}
+    dense_rank() over (
+    {% elif rank_type == 'percent' %}
+    percent_rank() over (
+    {% elif rank_type == 'unique' %} row_number() over ( {%- else -%} rank() over (
+    {% endif %}
+        {% if partition_by -%}
+        partition by
+            {% for col in partition_by -%}
+            {{ col }}{{ ", " if not loop.last else " " }}
+            {%- endfor %}
+        {% endif -%}
+        order by
+            {% for col in rank_columns -%}
+            {{ col }}
+            {% if order %} {{ order }}{% endif %} {{ ", " if not loop.last else " " }}
+            {%- endfor %}
+    ) as {{ alias }}
+from {{ source_table }}
+{% if qualify_filter %} qualify {{ alias }} {{ qualify_filter }}{% endif %}
