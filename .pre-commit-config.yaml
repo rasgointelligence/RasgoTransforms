@@ -31,11 +31,11 @@ repos:
     hooks:
       - id: black
         args: [--line-length=120, --skip-string-normalization]
-  - repo: https://github.com/tconbeer/sqlfmt
-    rev: v0.10.1
-    hooks:
-      - id: sqlfmt
-        language_version: python
+#  - repo: https://github.com/tconbeer/sqlfmt
+#    rev: v0.10.1
+#    hooks:
+#      - id: sqlfmt
+#        language_version: python
 
 ci:
   autofix_commit_msg: '[pre-commit.ci] auto fixes from pre-commit.com hooks'
