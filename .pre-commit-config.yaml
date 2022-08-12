@@ -31,6 +31,12 @@ repos:
     hooks:
       - id: black
         args: [--line-length=120, --skip-string-normalization]
+  - repo: https://github.com/tconbeer/sqlfmt
+    rev: v0.10.1
+    hooks:
+      - id: sqlfmt
+        language_version: python
+        exclude: 'rasgotransforms/rasgotransforms/transforms|rasgotransforms/rasgotransforms/snippets'
 ci:
   autofix_commit_msg: '[pre-commit.ci] auto fixes from pre-commit.com hooks'
   autofix_prs: true
