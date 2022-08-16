@@ -53,13 +53,18 @@ class RasgoEnvironment(Environment):
 
     @property
     def rasgo_filters(self):
-        return {"todatetime": datetime.fromisoformat, "to_json": json.dumps, "from_json": json.loads}
+        return {
+            "todatetime": datetime.fromisoformat,
+            "to_json": json.dumps,
+            "from_json": json.loads,
+            "to_set": lambda x: set(x),
+        }
 
     def render(
         self,
         source_code: str,
-        source_table: str,
         arguments: dict,
+        source_table: str = None,
         source_columns: Optional[Dict[str, Dict[str, str]]] = None,
         override_globals: Optional[Dict[str, Callable]] = None,
     ) -> str:
