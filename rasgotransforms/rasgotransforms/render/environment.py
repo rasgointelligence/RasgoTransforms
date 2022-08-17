@@ -85,6 +85,8 @@ class RasgoEnvironment(Environment):
                 return source_columns[fqtn]
 
             override_globals['get_columns'] = get_columns
+        if 'get_columns' in override_globals:
+            self.globals['get_columns'] = override_globals['get_columns']
         try:
             template = self.from_string(source_code)
             rendered = template.render(**arguments, **override_globals)
