@@ -1,4 +1,4 @@
-{% from 'metrics.sql' import calculate_timeseries_metric_values %}
+{% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values %}
 {% set start_date = '2010-01-01' if not start_date else start_date|string %}
 {% set end_date = '2030-01-01' if not end_date else end_date|string %}
 {% set alias = 'metric_value' if not alias else alias %}

@@ -1,4 +1,4 @@
-{% from 'metrics.sql' import calculate_timeseries_metric_values %}
+{% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values %}
 
 {% macro calculate_expression_metric_values(
     name,

@@ -1,53 +1,29 @@
 {% from 'filter.sql' import get_filter_statement %}
 
 {% macro calculate_timeseries_metric_values(
-    metrics,
+    aggregations,
     time_dimension,
     dimensions,
     start_date,
     end_date,
     time_grain,
     source_table,
-    filters,
-    distinct_vals
+    filters
 ) %}
 {% set filter_statement = get_filter_statement(filters) %}
 with
-    combined_dimensions as (
-        select
-            *,
-            concat(
-                ''{{ ',' if dimensions }}
-                {% for column in dimensions %}
-                {{ column }}{{ ", '_', " if not loop.last }}
-                {% endfor %}
-            ) as dimensions
-        from {{ source_table }}
-    ),
     source_query as (
         select
             cast(
                 date_trunc(cast({{ time_dimension }} as date), day) as date
             ) as date_day,
-            {% if dimensions %}
-            case
-                when
-                    dimensions in (
-                        {% for val in distinct_vals %}
-                        '{{ val }}'{{ ',' if not loop.last else '' }}
-                        {% endfor %}
-                    )
-                then dimensions
-                {% if 'None' in distinct_vals %}
-                when dimensions is null then 'None'
-                {% endif %}
-                else '_OtherGroup'
-            end as dimensions,
-            {% endif %}
-            {% for metric in metrics %}
-            {{ metric.column }}{{ ',' if not loop.last }}
+            {% for dimension in dimensions %}
+            {{ dimension }},
             {% endfor %}
-        from combined_dimensions {{ filter_statement }}
+            {% for aggregation in aggregations %}
+            {{ aggregation.column }}{{ ',' if not loop.last }}
+            {% endfor %}
+        from {{ source_table }} {{ filter_statement | indent }}
     ),
     {% if time_grain|lower == 'all' %}
     spine as (
@@ -60,14 +36,16 @@ with
         select
             {{ time_dimension }}_min,
             {{ time_dimension }}_max,
-            {{ 'dimensions,' if dimensions }}
-            {% for metric in metrics %}
-            {{ metric.agg_method|lower|replace('_', '')|replace('distinct', '') }} (
-                {{ 'distinct ' if 'distinct' in metric.agg_method|lower else '' }}{{ metric.column }}
-            ) as {{ metric.alias }}{{ ',' if not loop.last }}
+            {% for dimension in dimensions %}
+            {{ dimension }},
+            {% endfor %}
+            {% for aggregation in aggregations %}
+            {{ aggregation.method|lower|replace('_', '')|replace('distinct', '') }} (
+                {{ 'distinct ' if 'distinct' in aggregation.method|lower else '' }}{{ aggregation.column }}
+            ) as {{ aggregation.alias }}{{ ',' if not loop.last }}
             {% endfor %}
         from joined
-        group by 1, 2{{ ', 3' if dimensions }}
+        group by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
     )
     {% else %}
     calendar as (
@@ -84,32 +62,42 @@ with
     ),
     {% if dimensions %}
     spine__time as (select date_{{ time_grain }} as period, date_day from calendar),
-    spine__values__dimensions as (select distinct dimensions from source_query),
-    spine as (select * from spine__time cross join spine__values__dimensions),
+    {% for dimension in dimensions %}
+    spine__values__{{ dimension }} as (select distinct {{ dimension }} from source_query),
+    {% endfor %}
+    spine as (
+        select *
+        from spine__time
+            {% for dimension in dimensions %}
+            cross join spine__values__{{ dimension }}
+            {% endfor %}
+    ),
     {% else %}
     spine as (select date_{{ time_grain }} as period, date_day from calendar),
     {% endif %}
     joined as (
         select
             spine.period,
-            {{ 'spine.dimensions,' if dimensions }}
-            {% for metric in metrics %}
-            {{ metric.agg_method | lower | replace("_", "") | replace("distinct", "") }} (
-                {{ "distinct " if "distinct" in metric.agg_method | lower else "" }} source_query.{{ metric.column }}
-            ) as {{ metric.alias }},
+            {% for dimension in dimensions %}
+            spine.{{ dimension }},
+            {% endfor %}
+            {% for aggregation in aggregations %}
+            {{ aggregation.method | lower | replace("_", "") | replace("distinct", "") }} (
+                {{ "distinct " if "distinct" in aggregation.method | lower else "" }} source_query.{{ aggregation.column }}
+            ) as {{ aggregation.alias }},
             {% endfor %}
             logical_or(source_query.date_day is not null) as has_data
         from spine
         left outer join
             source_query on source_query.date_day = spine.date_day
-            {% if dimensions %}
+            {% for dimension in dimensions %}
             and (
-                source_query.dimensions = spine.dimensions
-                or source_query.dimensions is null
-                and spine.dimensions is null
+                source_query.{{ dimension }} = spine.{{ dimension }}
+                or source_query.{{ dimension }} is null
+                and spine.{{ dimension }} is null
             )
-            {% endif %}
-        group by 1{{ ', 2' if dimensions }}
+            {% endfor %}
+        group by {% for i in range(1, 2 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n'}}{% endfor %}
     ),
     bounded as (
         select
@@ -131,13 +119,12 @@ with
             ) as {{ time_dimension }}_max,
             {% endif %}
             {{ 'dimensions,' if dimensions }}
-            {% for metric in metrics %} {{ metric.alias }}{{ ',' if not loop.last }}
+            {% for aggregation in aggregations %} {{ aggregation.alias }}{{ ',' if not loop.last }}
             {% endfor %}
         from bounded
         where period >= lower_bound and period <= upper_bound
-        order by 1, 2{{ ', 3' if dimensions }}
+        order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n'}}{% endfor %}
     )
     {% endif %}
-select *
-from tidy_data
+    select * from tidy_data
 {% endmacro %}

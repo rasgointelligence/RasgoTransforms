@@ -43,7 +43,7 @@ with
             {% for aggregation in aggregations %}
             {{ aggregation.method | lower | replace("_", "") | replace("distinct", "") }} (
                 {{ "distinct " if "distinct" in aggregation.method | lower else "" }}{{ aggregation.column }}
-            ){{ ',' if not loop.last }}
+            ) as {{ aggregation.alias }}{{ ',' if not loop.last }}
             {% endfor %}
         from joined
         group by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
@@ -136,6 +136,6 @@ with
         where period >= lower_bound and period <= upper_bound
         order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n'}}{% endfor %}
     )
-{% endif %}
+    {% endif %}
     select * from tidy_data
 {% endmacro %}

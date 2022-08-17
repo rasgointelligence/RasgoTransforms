@@ -1,4 +1,4 @@
-{% from 'metrics.sql' import calculate_timeseries_metric_values %}
+{% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values %}
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'combine_groups.sql' import combine_groups %}
 {% set start_date = '2010-01-01' if not start_date else start_date|string %}
