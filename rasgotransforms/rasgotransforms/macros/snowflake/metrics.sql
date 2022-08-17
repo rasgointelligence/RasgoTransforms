@@ -1,7 +1,7 @@
 {% from 'filter.sql' import get_filter_statement %}
 
 {% macro calculate_timeseries_metric_values(
-    metrics,
+    aggregations,
     time_dimension,
     dimensions,
     start_date,
@@ -21,8 +21,8 @@ with
             {% for dimension in dimensions %}
             {{ dimension }},
             {% endfor %}
-            {% for metric in metrics %}
-            {{ metric.column }}{{ ',' if not loop.last }}
+            {% for aggregation in aggregations %}
+            {{ aggregation.column }}{{ ',' if not loop.last }}
             {% endfor %}
         from {{ source_table }} {{ filter_statement | indent }}
     ),
@@ -40,9 +40,9 @@ with
             {% for dimension in dimensions %}
             {{ dimension }},
             {% endfor %}
-            {% for metric in metrics %}
-            {{ metric.agg_method | lower | replace("_", "") | replace("distinct", "") }} (
-                {{ "distinct " if "distinct" in metric.agg_method | lower else "" }}{{ metric.column }}
+            {% for aggregation in aggregations %}
+            {{ aggregation.method | lower | replace("_", "") | replace("distinct", "") }} (
+                {{ "distinct " if "distinct" in aggregation.method | lower else "" }}{{ aggregation.column }}
             ){{ ',' if not loop.last }}
             {% endfor %}
         from joined
@@ -93,10 +93,10 @@ with
             {% for dimension in dimensions %}
             spine.{{ dimension }},
             {% endfor %}
-            {% for metric in metrics %}
-            {{ metric.agg_method | lower | replace("_", "") | replace("distinct", "") }} (
-                {{ "distinct " if "distinct" in metric.agg_method | lower else "" }} source_query.{{ metric.column }}
-            ) as {{ metric.alias }},
+            {% for aggregation in aggregations %}
+            {{ aggregation.method | lower | replace("_", "") | replace("distinct", "") }} (
+                {{ "distinct " if "distinct" in aggregation.method | lower else "" }} source_query.{{ aggregation.column }}
+            ) as {{ aggregation.alias }},
             {% endfor %}
             boolor_agg(source_query.date_day is not null) as has_data
         from spine
@@ -129,8 +129,8 @@ with
             {% for dimension in dimensions %}
             {{ dimension }},
             {% endfor %}
-            {% for metric in metrics %}
-            {{ metric.alias }}{{ ',' if not loop.last }}
+            {% for aggregation in aggregations %}
+            {{ aggregation.alias }}{{ ',' if not loop.last }}
             {% endfor %}
         from bounded
         where period >= lower_bound and period <= upper_bound

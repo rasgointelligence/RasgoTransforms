@@ -1,12 +1,14 @@
 {% from 'metrics.sql' import calculate_timeseries_metric_values %}
-{% set start_date = '2010-01-01' if not start_date else start_date|string %}
-{% set end_date = '2030-01-01' if not end_date else end_date|string %}
-{% set alias = 'metric_value' if not alias else alias %}
-{% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
-{% set filters = filters if filters is defined else [] %}
-{% do filters.append({'columnName': time_dimension, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) %}
-{% do filters.append({'columnName': time_dimension, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) %}
 
+{% macro calculate_expression_metric_values(
+    name,
+    metrics,
+    target_expression,
+    dimensions,
+    start_date,
+    end_date,
+    time_grain
+) %}
 {% set dimensions_by_table = {} %}
 {% for metric in metrics %}
     {% if dimensions %}
@@ -24,14 +26,14 @@
     {% endif %}
 {% endfor %}
 
+{#{% set base_query %}#}
 with
-{% if type|lower == 'expression' %}
 {% for metric in metrics %}
     {{ metric.name }}__values as (
         {{ calculate_timeseries_metric_values(
-            metrics=[{
+            aggregations=[{
                 'column': metric.target_expression,
-                'agg_method': metric.type,
+                'method': metric.type,
                 'alias': metric.name
             }],
             time_dimension=metric.time_dimension,
@@ -82,4 +84,16 @@ with
         {{ target_expression }} as {{ name }}
     from joined
     order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
-{% endif %}
+{#{% endset %}#}
+
+{#{{ combine_groups(#}
+{#        query=base_query,#}
+{#        keep_columns=['period_min', 'period_max', name],#}
+{#        dimensions=dimensions,#}
+{#        max_num_groups=max_num_groups,#}
+{#        target_metric={#}
+{#            'column': name,#}
+{#            'agg_method': 'max'#}
+{#        }#}
+{#) }}#}
+{% endmacro %}
