@@ -42,6 +42,8 @@ setup(
             'transforms/**/**/*.sql',
             'transforms/**/**/*.py',
             'snippets/*.sql',
+            'macros/*.sql',
+            'macros/**/*.sql',
         ]
     },
     install_requires=requirements,
