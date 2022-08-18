@@ -117,7 +117,7 @@ class RasgoLoader(BaseLoader):
         self.root_path = root_path
 
     def get_source(self, environment: RasgoEnvironment, template):
-        template_path = self.root_path / environment.dw_type.name / template
+        template_path = self.root_path / environment.dw_type.value / template
         if not template_path.exists():
             template_path = self.root_path / template
             if not template_path.exists():
