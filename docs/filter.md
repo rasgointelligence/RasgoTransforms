@@ -9,9 +9,10 @@ Filter the dataset. Supports two types of filters:
 
 ## Parameters
 
-| Name  |    Type     |                Description                | Is Optional |
-| ----- | ----------- | ----------------------------------------- | ----------- |
-| items | filter_list | list of dictionaries representing filters |             |
+|    Name    |      Type       |                            Description                             | Is Optional |
+| ---------- | --------------- | ------------------------------------------------------------------ | ----------- |
+| items      | filter_list     | list of dictionaries representing filters                          |             |
+| all_or_any | compoundBoolean | apply either all filters or check if rows match any of the filters |             |
 
 
 ## Example
