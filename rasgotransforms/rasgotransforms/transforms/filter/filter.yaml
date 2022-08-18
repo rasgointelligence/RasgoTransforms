@@ -11,6 +11,9 @@ arguments:
   items:
     type: filter_list
     description: list of dictionaries representing filters
+  all_or_any:
+    type: compoundBoolean
+    description: apply either all filters or check if rows match any of the filters
 example_code: |
   ds = rasgo.get.dataset(74)
   

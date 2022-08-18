@@ -10,7 +10,7 @@ SELECT *
 FROM {{ source_table }}
 {% for filter_block in items %}
 {%- set oloop = loop -%}
-{{ 'WHERE ' if oloop.first else ' AND ' }}
+{{ 'WHERE ' if oloop.first else ' ' ~ all_or_any ~ ' ' }}
 {%- if filter_block is not mapping -%}
 {{ filter_block }}
 {%- else -%}
