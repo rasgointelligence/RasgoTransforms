@@ -1,7 +1,7 @@
 {% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values, calculate_continuous_metric_values, calculate_categorical_metric_values %}
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
-{% from 'combine_groups.sql' import combine_groups %}
 {% from 'distinct_values.sql' import get_distinct_vals %}
+{% from 'pivot.sql' import pivot_plot_values %}
 {% set flatten = flatten if flatten is defined else true %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
 {% set bucket_count = num_buckets if num_buckets is defined else 200 %}
@@ -31,19 +31,23 @@
 {% do filters.append({'columnName': x_axis, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) %}
 {% endif %}
 
-{% set metric_names = {} %}
+{% set table_metrics = {} %}
+{% set metric_names = [] %}
 {% set aggregations = [] %}
 {% for column, agg_methods in metrics.items() %}
 {% for agg_method in agg_methods %}
+{% set metric_name = cleanse_name(column + '_' + agg_method) %}
 {% do aggregations.append({
     'column': column,
     'method': agg_method,
-    'alias': cleanse_name(column + '_' + agg_method)
+    'alias': metric_name
 }) %}
-{% do metric_names.setdefault('aggregation_metrics', []).append(cleanse_name(column + '_' + agg_method)) %}
+{% do table_metrics.setdefault('aggregation_metrics', []).append(metric_name) %}
+{% do metric_names.append(metric_name) %}
 {% endfor %}
 {% endfor %}
 
+{% if dimensions %}
 {% set distinct_values = get_distinct_vals(
     columns=dimensions,
     target_metric=metrics[0] if metrics else None,
@@ -51,8 +55,9 @@
     source_table=source_table,
     filters=filters
 ) | from_json %}
+{% endif %}
 
-{#{% set base_query %}#}
+{% set base_query %}
 {# Date Axis #}
 {% if axis_type == 'date' %}
 with
@@ -64,7 +69,7 @@ with
 {% if 'targetExpression' in metric %}
 {% do metric.__setitem__('target_expression', metric.targetExpression) %}
 {% endif %}
-{% do metric_names.__setitem__('expression_metric__' + metric.name, [metric.name]) %}
+{% do table_metrics.__setitem__('expression_metric__' + metric.name, [metric.name]) %}
 expression_metric__{{ metric.name }} as (
     {{ calculate_expression_metric_values(
         name=metric.name,
@@ -96,16 +101,16 @@ aggregation_metrics as (
 {% endif %}
 
 {# Join expression and aggregation metrics #}
-{% set dimensions = ['dimensions'] %}
-{% set tables = metric_names.keys()|list %}
+{% set dimensions = ['dimensions'] if dimensions%}
+{% set tables = table_metrics.keys()|list %}
 joined as (
     select
-        {{ tables[0] }}.period_min,
-        {{ tables[0] }}.period_max,
+        {{ tables[0] }}.period_min as {{ x_axis }}_min,
+        {{ tables[0] }}.period_max as {{  x_axis }}_max,
         {% for dimension in dimensions %}
         {{ tables[0] }}.{{ dimension }},
         {% endfor %}
-        {% for table, metric_names in metric_names.items() %}
+        {% for table, metric_names in table_metrics.items() %}
         {% set oloop = loop %}
         {% for metric_name in metric_names %}
         {{ table }}.{{ metric_name }}{{ ',' if not (loop.last and oloop.last) }}
@@ -146,23 +151,17 @@ order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop
     distinct_values=distinct_values
 ) }}
 {% endif %}
-{#{% endset %}#}
+{% endset %}
 
-{# Combine all dimensions into one column #}
-{#{% set keep_columns=['period_min', 'period_max'] %}#}
-{#{% for table, metric_names in metric_names.items() %}#}
-{#{% set oloop = loop %}#}
-{#{% for metric_name in metric_names %}#}
-{#{% do keep_columns.append(metric_name) %}#}
-{#{% endfor %}#}
-{#{% endfor %}#}
-{#{{ combine_groups(#}
-{#        query=base_query,#}
-{#        keep_columns=keep_columns,#}
-{#        dimensions=dimensions,#}
-{#        max_num_groups=max_num_groups,#}
-{#        target_metric={#}
-{#            'column': keep_columns[2],#}
-{#            'agg_method': 'sum'#}
-{#        }#}
-{#) }}#}
+{% if dimensions %}
+{{ pivot_plot_values(
+    base_query=base_query,
+    x_axis=x_axis,
+    metric_names=metric_names,
+    distinct_values=distinct_values,
+    axis_type=axis_type,
+    x_axis_order=x_axis_order
+) }}
+{% else %}
+{{ base_query }}
+{% endif %}
