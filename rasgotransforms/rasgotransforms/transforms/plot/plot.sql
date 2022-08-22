@@ -1,6 +1,7 @@
 {% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values, calculate_continuous_metric_values, calculate_categorical_metric_values %}
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'combine_groups.sql' import combine_groups %}
+{% from 'distinct_values.sql' import get_distinct_vals %}
 {% set flatten = flatten if flatten is defined else true %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
 {% set bucket_count = num_buckets if num_buckets is defined else 200 %}
@@ -43,11 +44,26 @@
 {% endfor %}
 {% endfor %}
 
+{% set distinct_values = get_distinct_vals(
+    columns=dimensions,
+    target_metric=metrics[0] if metrics else None,
+    max_vals=max_num_groups,
+    source_table=source_table,
+    filters=filters
+) | from_json %}
+
+{#{% set base_query %}#}
 {# Date Axis #}
 {% if axis_type == 'date' %}
 with
 {# Expression Metrics #}
 {% for metric in expression_metrics %}
+{% if 'metricDependencies' in metric %}
+{% do metric.__setitem__('metric_dependencies', metric.metricDependencies) %}
+{% endif %}
+{% if 'targetExpression' in metric %}
+{% do metric.__setitem__('target_expression', metric.targetExpression) %}
+{% endif %}
 {% do metric_names.__setitem__('expression_metric__' + metric.name, [metric.name]) %}
 expression_metric__{{ metric.name }} as (
     {{ calculate_expression_metric_values(
@@ -73,17 +89,19 @@ aggregation_metrics as (
         end_date=end_date,
         time_grain=time_grain,
         source_table=source_table,
-        filters=filters
+        filters=filters,
+        distinct_values=distinct_values
     ) | indent }}
 ),
 {% endif %}
 
 {# Join expression and aggregation metrics #}
+{% set dimensions = ['dimensions'] %}
 {% set tables = metric_names.keys()|list %}
 joined as (
     select
-        {{ tables[0] }}.period_min as {{ x_axis }}_min,
-        {{ tables[0] }}.period_max as {{ x_axis }}_max,
+        {{ tables[0] }}.period_min,
+        {{ tables[0] }}.period_max,
         {% for dimension in dimensions %}
         {{ tables[0] }}.{{ dimension }},
         {% endfor %}
@@ -113,7 +131,8 @@ order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop
     dimensions=dimensions,
     source_table=source_table,
     filters=filters,
-    bucket_count=bucket_count
+    bucket_count=bucket_count,
+    distinct_values=distinct_values
 ) }}
 
 {# Categorical Axis #}
@@ -123,7 +142,27 @@ order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop
     x_axis=x_axis,
     dimensions=dimensions,
     source_table=source_table,
-    filters=filters
+    filters=filters,
+    distinct_values=distinct_values
 ) }}
-
 {% endif %}
+{#{% endset %}#}
+
+{# Combine all dimensions into one column #}
+{#{% set keep_columns=['period_min', 'period_max'] %}#}
+{#{% for table, metric_names in metric_names.items() %}#}
+{#{% set oloop = loop %}#}
+{#{% for metric_name in metric_names %}#}
+{#{% do keep_columns.append(metric_name) %}#}
+{#{% endfor %}#}
+{#{% endfor %}#}
+{#{{ combine_groups(#}
+{#        query=base_query,#}
+{#        keep_columns=keep_columns,#}
+{#        dimensions=dimensions,#}
+{#        max_num_groups=max_num_groups,#}
+{#        target_metric={#}
+{#            'column': keep_columns[2],#}
+{#            'agg_method': 'sum'#}
+{#        }#}
+{#) }}#}

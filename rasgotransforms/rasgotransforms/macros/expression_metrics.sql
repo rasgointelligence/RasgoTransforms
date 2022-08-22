@@ -11,6 +11,12 @@
 ) %}
 {% set dimensions_by_table = {} %}
 {% for metric in metrics %}
+    {% if 'targetExpression' in metric %}
+        {% do metric.__setitem__('target_expression', metric.targetExpression) %}
+    {% endif %}
+    {% if 'timeDimension' in metric %}
+        {% do metric.__setitem__('time_dimension', metric.timeDimension) %}
+    {% endif %}
     {% if dimensions %}
         {% if metric.source_table not in dimensions_by_table %}
             {% set columns = get_columns(metric.source_table) %}

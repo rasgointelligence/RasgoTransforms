@@ -8,7 +8,8 @@
     end_date,
     time_grain,
     source_table,
-    filters
+    filters,
+    distinct_values
 ) %}
 {% set filter_statement = get_filter_statement(filters) %}
 {% set aggregation_columns = []|to_set %}
@@ -16,19 +17,48 @@
 {% do aggregation_columns.add(aggregation.column) %}
 {% endfor %}
 with
+    {% if distinct_values and dimensions %}
+    combined_dimensions as (
+        select
+            concat(''{{',' if group_by}}
+                {%- for column in group_by %}
+                {{ column }}{{", '_', " if not loop.last}}
+                {%- endfor %}
+            ) as dimensions
+        from {{ source_table }}
+    ),
+    {% endif %}
     source_query as (
         select
             cast(
                 date_trunc(cast({{ time_dimension }} as date), day) as date
             ) as date_day,
+            {% if distinct_values and dimensions %}
+            case
+                when dimensions in (
+                        {%- for val in distinct_values %}
+                        '{{ val }}'{{',' if not loop.last else ''}}
+                        {%- endfor %}
+                    ) then dimensions
+                {% if 'None' in distinct_values %}
+                when dimensions is null then 'None'
+                {% endif %}
+                else '_OtherGroup'
+            end as dimensions,
+            {% else %}
             {% for dimension in dimensions %}
             {{ dimension }},
             {% endfor %}
+            {% endif %}
             {% for column in aggregation_columns %}
             {{ column }}{{ ',' if not loop.last }}
             {% endfor %}
-        from {{ source_table }} {{ filter_statement | indent }}
+        from {{ source_table if not (distinct_values and dimensions) else 'combined_dimensions'}}
+            {{ filter_statement | indent }}
     ),
+    {% if distinct_values and dimensions %}
+    {% set dimensions=['dimensions'] %}
+    {% endif %}
     {% if time_grain|lower == 'all' %}
     spine as (
         select
@@ -143,14 +173,27 @@ with
     dimensions,
     source_table,
     bucket_count,
-    filters
+    filters,
+    distinct_values
 ) %}
 {% set filter_statement = get_filter_statement(filters) %}
 {% set aggregation_columns = []|to_set %}
 {% for aggregation in aggregations %}
 {% do aggregation_columns.add(aggregation.column) %}
 {% endfor %}
-with axis_range as (
+with
+{% if distinct_values and dimensions %}
+combined_dimensions as (
+    select
+        concat(''{{',' if group_by}}
+            {%- for column in group_by %}
+            {{ column }}{{", '_', " if not loop.last}}
+            {%- endfor %}
+        ) as dimensions
+    from {{ source_table }}
+),
+{% endif %}
+axis_range as (
     select
         min({{ x_axis }}) - 1 as min_val,
         max({{ x_axis }}) + 1 as max_val
@@ -167,9 +210,13 @@ edges as (
 ),
 buckets as (
     select
+        {% if distinct_values %}
+        dimensions,
+        {% else %}
         {% for column in dimensions %}
         {{ column }},
         {% endfor %}
+        {% endif %}
         min_val,
         max_val,
         bucket_size,
@@ -179,21 +226,38 @@ buckets as (
         {{ column }}{{ ',' if not loop.last }}
         {% endfor %}
     from
-        {{ source_table }}
+        {{ source_table if not (distinct_values and dimensions) else 'combined_dimensions'}}
         cross join edges
     {{ filter_statement | indent }}
 ),
 source_query as (
     select
         bucket,
+        {% if distinct_values and dimensions %}
+        case
+            when dimensions in (
+                    {%- for val in distinct_values %}
+                    '{{ val }}'{{',' if not loop.last else ''}}
+                    {%- endfor %}
+                ) then dimensions
+            {% if 'None' in distinct_values %}
+            when dimensions is null then 'None'
+            {% endif %}
+            else '_OtherGroup'
+        end as dimensions,
+        {% else %}
         {% for dimension in dimensions %}
         {{ dimension }},
         {% endfor %}
+        {% endif %}
         {% for column in aggregation_columns %}
         {{ column }}{{ ',' if not loop.last }}
         {% endfor %}
     from buckets
 ),
+{% if distinct_values and dimensions %}
+{% set dimensions = ['dimensions'] %}
+{% endif %}
 {% if dimensions %}
 bucket_spine as (
     select bucket
@@ -262,25 +326,55 @@ select * from tidy_data
     x_axis,
     dimensions,
     source_table,
-    filters
+    filters,
+    distinct_values
 ) %}
 {% set filter_statement = get_filter_statement(filters) %}
 {% set aggregation_columns = []|to_set %}
 {% for aggregation in aggregations %}
 {% do aggregation_columns.add(aggregation.column) %}
 {% endfor %}
-with source_query as (
+with
+{% if distinct_values and dimensions %}
+combined_dimensions as (
+    select
+        concat(''{{',' if group_by}}
+            {%- for column in group_by %}
+            {{ column }}{{", '_', " if not loop.last}}
+            {%- endfor %}
+        ) as dimensions
+    from {{ source_table }}
+),
+{% endif %}
+source_query as (
     select
         {{ x_axis }},
+        {% if distinct_values and dimensions %}
+        case
+            when dimensions in (
+                    {%- for val in distinct_values %}
+                    '{{ val }}'{{',' if not loop.last else ''}}
+                    {%- endfor %}
+                ) then dimensions
+            {% if 'None' in distinct_values %}
+            when dimensions is null then 'None'
+            {% endif %}
+            else '_OtherGroup'
+        end as dimensions,
+        {% else %}
         {% for dimension in dimensions %}
-        {{ dimensions }},
+        {{ dimension }},
         {% endfor %}
+        {% endif %}
         {% for column in aggregation_columns %}
         {{ column }}{{ ',' if not loop.last }}
         {% endfor %}
-    from {{ source_table }}
+    from {{ source_table if not (distinct_values and dimensions) else 'combined_dimensions'}}
     {{ filter_statement }}
 ),
+{% if distinct_values and dimensions %}
+{% set dimensions = ['dimensions'] %}
+{% endif %}
 tidy_data as (
     select
         {{ x_axis }} as {{ x_axis }}_min,

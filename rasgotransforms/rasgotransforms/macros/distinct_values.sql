@@ -15,7 +15,11 @@
             {{ column }}{{", '_', " if not loop.last}}
             {% endfor %}
         ) as dimensions,
-        {{ target_metric.agg_method|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct ' in target_metric.agg_method|lower else ''}}{{ target_metric.column }}) as vals
+        {% if target_metric %}
+        {{ target_metric.method|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct ' in target_metric.method|lower else ''}}{{ target_metric.column }}) as vals
+        {% else %}
+        sum(0) as vals
+        {% endif %}
     from {{ source_table }}
         {{ filter_statement }}
     group by 1
