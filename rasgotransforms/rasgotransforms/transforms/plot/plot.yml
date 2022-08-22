@@ -16,6 +16,9 @@ arguments:
   metrics:
     type: column_agg_list
     description: numeric, quantitative values that you can measure
+  expression_metrics:
+    type: metric_list
+    description: List of metric definitions for expression metrics to include in the plot
   num_buckets:
     type: value
     description: max number of buckets to create; defaults to 200
@@ -28,7 +31,7 @@ arguments:
     type: sort_direction
     description: Either ASC or DESC, depending on if you'd like to order your bar chart X-axis returned in ascending or descending order
     is_optional: true
-  group_by:
+  dimensions:
     type: column_list
     description: A categorical column by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each distinct value in the group by column. If this column has more than 20 distinct values, the plot will not generate.
     is_optional: true

@@ -11,6 +11,10 @@
     filters
 ) %}
 {% set filter_statement = get_filter_statement(filters) %}
+{% set aggregation_columns = []|to_set %}
+{% for aggregation in aggregations %}
+{% do aggregation_columns.add(aggregation.column) %}
+{% endfor %}
 with
     source_query as (
         select
@@ -20,8 +24,8 @@ with
             {% for dimension in dimensions %}
             {{ dimension }},
             {% endfor %}
-            {% for aggregation in aggregations %}
-            {{ aggregation.column }}{{ ',' if not loop.last }}
+            {% for column in aggregation_columns %}
+            {{ column }}{{ ',' if not loop.last }}
             {% endfor %}
         from {{ source_table }} {{ filter_statement | indent }}
     ),
@@ -108,18 +112,21 @@ with
     ),
     tidy_data as (
         select
-            cast(period as timestamp) as {{ time_dimension }}_min,
+            cast(period as timestamp) as period_min,
             {% if time_grain|lower == 'quarter' %}
             cast(
                 date_add(period, interval 3 month) as timestamp
-            ) as {{ time_dimension }}_max,
+            ) as period_max,
             {% else %}
             cast(
                 date_add(period, interval 1 {{ time_grain }}) as timestamp
-            ) as {{ time_dimension }}_max,
+            ) as period_max,
             {% endif %}
-            {{ 'dimensions,' if dimensions }}
-            {% for aggregation in aggregations %} {{ aggregation.alias }}{{ ',' if not loop.last }}
+            {% for dimension in dimensions %}
+            {{ dimension }},
+            {% endfor %}
+            {% for aggregation in aggregations %}
+            {{ aggregation.alias }}{{ ',' if not loop.last }}
             {% endfor %}
         from bounded
         where period >= lower_bound and period <= upper_bound
@@ -127,4 +134,168 @@ with
     )
     {% endif %}
     select * from tidy_data
+{% endmacro %}
+
+
+{% macro calculate_continuous_metric_values(
+    aggregations,
+    x_axis,
+    dimensions,
+    source_table,
+    bucket_count,
+    filters
+) %}
+{% set filter_statement = get_filter_statement(filters) %}
+{% set aggregation_columns = []|to_set %}
+{% for aggregation in aggregations %}
+{% do aggregation_columns.add(aggregation.column) %}
+{% endfor %}
+with axis_range as (
+    select
+        min({{ x_axis }}) - 1 as min_val,
+        max({{ x_axis }}) + 1 as max_val
+    from {{ source_table }}
+    where {{ x_axis }} is not null
+),
+edges as (
+    select
+        min_val,
+        max_val,
+        (min_val-max_val) val_range,
+        ((max_val-min_val)/{{ bucket_count }}) bucket_size
+    from axis_range
+),
+buckets as (
+    select
+        {% for column in dimensions %}
+        {{ column }},
+        {% endfor %}
+        min_val,
+        max_val,
+        bucket_size,
+        cast({{ x_axis }} as float) as col_a_val,
+        range_bucket(cast({{ x_axis }} as numeric), generate_array(min_val, max_val, (max_val - min_val)/{{ bucket_count }})) as bucket,
+        {% for column in aggregation_columns %}
+        {{ column }}{{ ',' if not loop.last }}
+        {% endfor %}
+    from
+        {{ source_table }}
+        cross join edges
+    {{ filter_statement | indent }}
+),
+source_query as (
+    select
+        bucket,
+        {% for dimension in dimensions %}
+        {{ dimension }},
+        {% endfor %}
+        {% for column in aggregation_columns %}
+        {{ column }}{{ ',' if not loop.last }}
+        {% endfor %}
+    from buckets
+),
+{% if dimensions %}
+bucket_spine as (
+    select bucket
+    from unnest(generate_array(1, {{ bucket_count }})) as bucket
+),
+{% for dimension in dimensions %}
+spine__values__{{ dimension }} as (
+    select distinct {{ dimension }} from source_query
+),
+{% endfor %}
+spine as (
+    select * from bucket_spine
+        {% for dimension in dimensions %}
+        cross join spine__values__{{ dimension }}
+        {% endfor %}
+),
+{% else %}
+spine as (
+    select bucket
+    from unnest(generate_array(1, {{ bucket_count }})) as bucket
+),
+{% endif %}
+joined as (
+    select
+        spine.bucket,
+        {% for dimension in dimensions %}
+        spine.{{ dimension }},
+        {% endfor %}
+        {% for aggregation in aggregations %}
+        {{ aggregation.method | lower | replace("_", "") | replace("distinct", "") }} (
+            {{ "distinct " if "distinct" in aggregation.method | lower else "" }} source_query.{{ aggregation.column }}
+        ) as {{ aggregation.alias }},
+        {% endfor %}
+        logical_or(source_query.bucket is not null) as has_data
+    from spine
+    left outer join
+        source_query on source_query.bucket = spine.bucket
+        {% for dimension in dimensions %}
+        and (
+            source_query.{{ dimension }} = spine.{{ dimension }}
+            or source_query.{{ dimension }} is null
+            and spine.{{ dimension }} is null
+        )
+        {% endfor %}
+    group by {% for i in range(1, 2 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n'}}{% endfor %}
+),
+tidy_data as (
+    select
+        min_val+((bucket-1)*bucket_size) as {{ x_axis }}_min,
+        min_val+(bucket*bucket_size) as {{ x_axis }}_max,
+        {% for dimension in dimensions %}
+        {{ dimension }},
+        {% endfor %}
+        {% for aggregation in aggregations %}
+        {{ aggregation.alias }}{{ ',' if not loop.last }}
+        {% endfor %}
+    from joined
+        cross join edges
+    order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n'}}{% endfor %}
+)
+select * from tidy_data
+{% endmacro %}
+
+{% macro calculate_categorical_metric_values(
+    aggregations,
+    x_axis,
+    dimensions,
+    source_table,
+    filters
+) %}
+{% set filter_statement = get_filter_statement(filters) %}
+{% set aggregation_columns = []|to_set %}
+{% for aggregation in aggregations %}
+{% do aggregation_columns.add(aggregation.column) %}
+{% endfor %}
+with source_query as (
+    select
+        {{ x_axis }},
+        {% for dimension in dimensions %}
+        {{ dimensions }},
+        {% endfor %}
+        {% for column in aggregation_columns %}
+        {{ column }}{{ ',' if not loop.last }}
+        {% endfor %}
+    from {{ source_table }}
+    {{ filter_statement }}
+),
+tidy_data as (
+    select
+        {{ x_axis }} as {{ x_axis }}_min,
+        {{ x_axis }} as {{ x_axis }}_max,
+        {% for dimension in dimensions %}
+        {{ dimension }},
+        {% endfor %}
+        {% for aggregation in aggregations %}
+        {{ aggregation.method | lower | replace("_", "") | replace("distinct", "") }} (
+            {{ "distinct " if "distinct" in aggregation.method | lower else "" }} source_query.{{ aggregation.column }}
+        ) as {{ aggregation.alias }}{{ ',' if not loop.last }}
+        {% endfor %}
+    from source_query
+    group by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
+)
+select * from tidy_data
+order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
 {% endmacro %}
