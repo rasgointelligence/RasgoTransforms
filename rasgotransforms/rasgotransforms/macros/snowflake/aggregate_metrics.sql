@@ -123,9 +123,8 @@ with
             {% for aggregation in aggregations %}
             {{ aggregation.method | lower | replace("_", "") | replace("distinct", "") }} (
                 {{ "distinct " if "distinct" in aggregation.method | lower else "" }} source_query.{{ aggregation.column }}
-            ) as {{ aggregation.alias }},
+            ) as {{ aggregation.alias }}{{ ',' if not loop.last }}
             {% endfor %}
-            boolor_agg(source_query.date_day is not null) as has_data
         from spine
         left outer join
             source_query on source_query.date_day = spine.date_day
@@ -137,13 +136,6 @@ with
             )
             {% endfor %}
         group by {% for i in range(1, 2 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n'}}{% endfor %}
-    ),
-    bounded as (
-        select
-            *,
-            min(case when has_data then period end) over () as lower_bound,
-            max(case when has_data then period end) over () as upper_bound
-        from joined
     ),
     tidy_data as (
         select
@@ -159,8 +151,7 @@ with
             {% for aggregation in aggregations %}
             {{ aggregation.alias }}{{ ',' if not loop.last }}
             {% endfor %}
-        from bounded
-        where period >= lower_bound and period <= upper_bound
+        from joined
         order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n'}}{% endfor %}
     )
     {% endif %}
