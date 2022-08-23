@@ -24,7 +24,7 @@ ds2 = ds.filter(items=['PRODUCTKEY < 500'])
 ds2.preview()
 
 # full filtering with a column, operator, and comparison value
-ds3 = ds.filter(items=[{'columnName':'PRODUCTKEY', 'operator':'>', 'comparisonValue':'101', 'compoundBoolean': 'OR'}])
+ds3 = ds.filter(items=[{'columnName':'PRODUCTKEY', 'operator':'>', 'comparisonValue':'101'}])
 ds3.preview()
 ```
 
