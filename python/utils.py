@@ -159,6 +159,8 @@ def parse_transform_args_from_yaml(transform_yaml: Dict) -> List[Dict[str, str]]
     """
     transform_args = []
     for arg_name, arg_meta_data in transform_yaml['arguments'].items():
+        if 'is_optional' not in arg_meta_data:
+            arg_meta_data['is_optional'] = False
         transform_args.append({**{'name': arg_name}, **arg_meta_data})
     return transform_args
 
