@@ -23,21 +23,34 @@
 {{ raise_exception("Parameter 'timeseries_options' must be given when 'x_axis' is a column of type datetime")}}
 {%- endif -%}
 {%- set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 -%}
-{%- do filters.append({'columnName': x_axis, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) -%}
-{%- do filters.append({'columnName': x_axis, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
+{%- set time_filter  -%}
+({{ x_axis }} >= '{{ start_date }}' AND {{ x_axis }} <= '{{ end_date }}') {{ 'AND' if filters }}
+{%- endset %}
 {%- endif -%}
 
 {%- set filter_statement -%}
-    where true
+    {%- if filters or time_filter is defined %}
+    {%- set logical_operator = namespace(value='AND') %}
+    {%- for filter in filters %}
+    {%- if filter is mapping and 'compoundBoolean' in filter %}
+        {%- set logical_operator.value = filter['compoundBoolean'] %}
+    {%- endif %}
+    {%- endfor %}
+    where {{ time_filter if time_filter is defined }}
+        {%- if filters %}
+        (
         {%- for filter in filters %}
         {%- if filter is not mapping %}
-        and {{ filter }}
+        {{ logical_operator.value if not loop.first}} {{ filter }}
         {%- elif filter.operator|upper == 'CONTAINS' %}
-        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+        {{ logical_operator.value if not loop.first}} {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
         {%- else %}
-        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {{ logical_operator.value if not loop.first}} {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
         {%- endif %}
         {%- endfor %}
+        )
+        {%- endif %}
+    {%- endif %}
 {%- endset -%}
 
 {%- macro get_distinct_values(columns) -%}
