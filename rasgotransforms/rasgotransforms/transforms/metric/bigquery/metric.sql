@@ -7,8 +7,9 @@
 {%- set flatten = flatten if flatten is defined else true -%}
 {%- set max_num_groups = max_num_groups if max_num_groups is defined else 10 -%}
 {# {%- set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 -%} #}
-{%- do filters.append({'columnName': time_dimension, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) -%}
-{%- do filters.append({'columnName': time_dimension, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) -%}
+{%- set time_filter  -%}
+({{ time_dimension }} >= '{{ start_date }}' AND {{ time_dimension }} <= '{{ end_date }}') {{ 'AND' if filters }}
+{%- endset %}
 {%- if dimensions and dimensions|length > 1 -%}
 {{ raise_exception('Currently, only one dimension can be passed to group by')}}
 {%- endif -%}
@@ -42,16 +43,28 @@
 
 
 {%- set filter_statement -%}
-    where true
+    {%- if filters or time_filter is defined %}
+    {%- set logical_operator = namespace(value='AND') %}
+    {%- for filter in filters %}
+    {%- if filter is mapping and 'compoundBoolean' in filter %}
+        {%- set logical_operator.value = filter['compoundBoolean'] %}
+    {%- endif %}
+    {%- endfor %}
+    where {{ time_filter if time_filter is defined }}
+        {%- if filters %}
+        (
         {%- for filter in filters %}
         {%- if filter is not mapping %}
-        and {{ filter }}
+        {{ logical_operator.value if not loop.first}} {{ filter }}
         {%- elif filter.operator|upper == 'CONTAINS' %}
-        and {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+        {{ logical_operator.value if not loop.first}} {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
         {%- else %}
-        and {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {{ logical_operator.value if not loop.first}} {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
         {%- endif %}
         {%- endfor %}
+        )
+        {%- endif %}
+    {%- endif %}
 {%- endset -%}
 
 with source_query as (
