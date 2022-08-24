@@ -2,6 +2,7 @@
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
+{% set dimensions = group_by if group_by is defined else [] %}
 {% set flatten = flatten if flatten is defined else true %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
 {% set bucket_count = num_buckets if num_buckets is defined else 200 %}
@@ -63,6 +64,7 @@
 with
 {# Expression Metrics #}
 {% for metric in expression_metrics %}
+{% do metric_names.append(metric.name) %}
 {% if 'metricDependencies' in metric %}
 {% do metric.__setitem__('metric_dependencies', metric.metricDependencies) %}
 {% endif %}
@@ -78,7 +80,8 @@ expression_metric__{{ metric.name }} as (
         dimensions=dimensions,
         start_date=start_date,
         end_date=end_date,
-        time_grain=time_grain
+        time_grain=time_grain,
+        distinct_values=distinct_values
     ) | indent }}
 ),
 {% endfor %}

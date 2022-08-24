@@ -7,7 +7,8 @@
     dimensions,
     start_date,
     end_date,
-    time_grain
+    time_grain,
+    distinct_values
 ) %}
 {% set dimensions_by_table = {} %}
 {% for metric in metrics %}
@@ -32,6 +33,14 @@
     {% endif %}
 {% endfor %}
 
+{% if distinct_values %}
+    {% for i in range(metrics|length) %}
+        {% if metrics[i].dimensions != metrics[0].dimensions %}
+            {{ raise_exception('Dimensions must exist for all metric dependencies') }}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
 {#{% set base_query %}#}
 with
 {% for metric in metrics %}
@@ -48,11 +57,18 @@ with
             end_date=end_date,
             time_grain=time_grain,
             source_table=metric.source_table,
-            filters=metric.filters
+            filters=metric.filters,
+            distinct_values=distinct_values
             ) | indent
         }}
     ),
 {% endfor %}
+{% if distinct_values and dimensions %}
+{% for metric in metrics %}
+{% do metric.__setitem__('dimensions', ['dimensions']) %}
+{% endfor %}
+{% set dimensions = ['dimensions'] %}
+{% endif %}
     joined as (
         select
             m0.period_min,
