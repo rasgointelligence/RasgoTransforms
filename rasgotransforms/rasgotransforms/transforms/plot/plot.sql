@@ -2,6 +2,7 @@
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
+{% from 'filter.sql' import get_metric_filter_statement %}
 {% set dimensions = group_by if group_by is defined else [] %}
 {% set flatten = flatten if flatten is defined else true %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
@@ -28,8 +29,6 @@
 {{ raise_exception("Parameter 'timeseries_options' must be given when 'x_axis' is a column of type datetime")}}
 {% endif %}
 {% set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 %}
-{% do filters.append({'columnName': x_axis, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) %}
-{% do filters.append({'columnName': x_axis, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) %}
 {% endif %}
 
 {% set table_metrics = {} %}
@@ -49,12 +48,18 @@
 {% endfor %}
 
 {% if dimensions %}
+{% set distinct_vals_filter = get_metric_filter_statement(
+        x_axis=x_axis,
+        start_date=start_date,
+        end_date=end_date,
+        filters=filters
+) if start_date is defined else filters %}
 {% set distinct_values = get_distinct_vals(
     columns=dimensions,
     target_metric=metrics[0] if metrics else None,
     max_vals=max_num_groups,
     source_table=source_table,
-    filters=filters
+    filters=distinct_vals_filter
 ) | from_json %}
 {% endif %}
 

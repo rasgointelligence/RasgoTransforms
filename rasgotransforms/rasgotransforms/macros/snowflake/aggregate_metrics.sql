@@ -1,4 +1,4 @@
-{% from 'filter.sql' import get_filter_statement %}
+{% from 'filter.sql' import get_metric_filter_statement, get_filter_statement %}
 
 {% macro calculate_timeseries_metric_values(
     aggregations,
@@ -12,7 +12,7 @@
     distinct_values
 ) %}
 {% set num_days = (end_date | todatetime - start_date | todatetime).days %}
-{% set filter_statement = get_filter_statement(filters) %}
+{% set filter_statement = get_metric_filter_statement(x_axis=time_dimension, start_date=start_date, end_date=end_date, filters=filters) %}
 {% set aggregation_columns = []|to_set %}
 {% for aggregation in aggregations %}
 {% do aggregation_columns.add(aggregation.column) %}
@@ -48,7 +48,8 @@ with
             {% for column in aggregation_columns %}
             {{ column }}{{ ',' if not loop.last }}
             {% endfor %}
-        from {{ source_table }} {{ filter_statement | indent }}
+        from {{ source_table }}
+        {{ filter_statement | indent }}
     ),
     {% if distinct_values and dimensions %}
     {% set dimensions = ['dimensions'] %}
