@@ -171,5 +171,17 @@ order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop
     x_axis_order=x_axis_order
 ) }}
 {% else %}
+{% if axis_type == 'categorical' %}
+with base_query as (
+    {{ base_query | indent }}
+)
+select
+    {{ x_axis }}_min as {{ x_axis }},
+    {% for metric_name in metric_names %}
+    {{ metric_name }}{{ ',' if not loop.last }}
+    {% endfor %}
+from base_query
+{% else %}
 {{ base_query }}
+{% endif %}
 {% endif %}
