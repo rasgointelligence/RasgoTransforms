@@ -2,7 +2,11 @@
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'combine_groups.sql' import combine_groups %}
 {% set start_date = '2010-01-01' if not start_date else start_date|string %}
-{% set end_date = '2030-01-01' if not end_date else end_date|string %}
+{% if not end_date %}
+{% set end_date = ((start_date|string|todatetime).now().date())|string %}
+{% else %}
+{% set end_date = end_date|string %}
+{% endif %}
 {% set alias = 'metric_value' if not alias else alias %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
 {% set filters = filters if filters is defined else [] %}
