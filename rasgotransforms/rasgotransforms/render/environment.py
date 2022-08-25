@@ -15,14 +15,7 @@ from rasgotransforms.main import DataWarehouse
 
 class RasgoEnvironment(Environment):
     def __init__(self, dw_type: str, run_query: Callable, *args, **kwargs):
-        super().__init__(
-            *args,
-            extensions=self.rasgo_extensions,
-            loader=RasgoLoader(),
-            trim_blocks=True,
-            lstrip_blocks=True,
-            **kwargs
-        )
+        super().__init__(*args, extensions=self.rasgo_extensions, loader=RasgoLoader(), **kwargs)
         self._dw_type = DataWarehouse(dw_type)
         for filter_name, method in self.rasgo_filters.items():
             self.filters[filter_name] = method
@@ -92,7 +85,7 @@ class RasgoEnvironment(Environment):
             rendered = template.render(**arguments, **override_globals)
         except Exception as e:
             raise RenderException(e)
-        return trim_blank_lines(rendered)
+        return rendered
 
 
 def cleanse_template_symbol(symbol: str) -> str:
