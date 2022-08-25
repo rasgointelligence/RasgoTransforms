@@ -10,9 +10,9 @@ arguments:
   target_expression:
     type: column
     description: The target column used to calculate the metric, can also be a sql string '(e.g. cast(target_column as string)')
-  aggregation_type:
+  type:
     type: agg
-    description: the Aggregation method used to calculate the metric (e.g. 'sum', 'count_distinct', 'max')
+    description: the Aggregation method used to calculate the metric (e.g. 'sum', 'count_distinct', 'max') or 'expression' if the metric is an expression metric
   time_grain:
     type: string
     description: The time grain (day, week, month, quarter, year) used to create the datespine that the metric is aggregated by
@@ -24,26 +24,25 @@ arguments:
     type: filter_list
     description: List of objects containing filters used to filter the source data. A filter object must contain the fields 'field', 'operator', and 'value'. String values should be wrapped in single quotes.
     is_optional: true
-  alias:
+  name:
     type: string
     description: The name of the output metric value column
-    is_optional: true
   start_date:
     type: timestamp
     description: The start of the period for which metric values will be calculated (2010-01-01 if unset)
     is_optional: true
-  num_days:
-    type: int
-    description: The number of days after the start_date for which metric values will be calculated (7300 if unset)
-    is_optional: true
-  flatten:
-    type: bool
-    description: "(Default: true) If true, the resulting data will be pivoted on the distinct dimension columns"
+  end_date:
+    type: timestamp
+    description: The start of the period for which metric values will be calculated (2010-01-01 if unset)
     is_optional: true
   max_num_groups:
     type: int
     description: |
       (Default: 10) The maximum number of groups in a dimention to group by. Groups are ordered by number of records and the top groups are chosen and others are added to a 'Other' group.
+    is_optional: true
+  metric_dependencies:
+    type: metric_list
+    description: If the type is 'expression' metric, this is a list of all metrics used in the expression
     is_optional: true
 
 example_code: |

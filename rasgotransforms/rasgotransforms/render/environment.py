@@ -1,19 +1,43 @@
-from jinja2 import Environment
 import re
 from datetime import datetime
 from itertools import combinations, permutations, product
 from typing import Callable, Optional, Dict
+from pathlib import Path
+from os.path import getmtime
+
+from jinja2 import Environment, BaseLoader
+from jinja2.exceptions import TemplateNotFound
+import json
+
 from rasgotransforms.exceptions import RenderException
+from rasgotransforms.main import DataWarehouse
 
 
 class RasgoEnvironment(Environment):
-    def __init__(self, run_query: Callable, *args, **kwargs):
-        super().__init__(*args, extensions=self.rasgo_extensions, **kwargs)
+    def __init__(self, dw_type: str, run_query: Callable, *args, **kwargs):
+        super().__init__(
+            *args,
+            extensions=self.rasgo_extensions,
+            loader=RasgoLoader(),
+            trim_blocks=True,
+            lstrip_blocks=True,
+            **kwargs
+        )
+        self._dw_type = DataWarehouse(dw_type)
         for filter_name, method in self.rasgo_filters.items():
             self.filters[filter_name] = method
         for name, value in self.rasgo_globals.items():
             self.globals[name] = value
-        self.globals['run_query'] = run_query
+        self._run_query = run_query
+        self.globals['run_query'] = self._run_query
+
+    @property
+    def dw_type(self) -> DataWarehouse:
+        return self._dw_type
+
+    @dw_type.setter
+    def dw_type(self, dw_type: str):
+        self._dw_type = DataWarehouse(dw_type)
 
     @property
     def rasgo_extensions(self):
@@ -29,13 +53,18 @@ class RasgoEnvironment(Environment):
 
     @property
     def rasgo_filters(self):
-        return {"todatetime": datetime.fromisoformat}
+        return {
+            "todatetime": datetime.fromisoformat,
+            "to_json": json.dumps,
+            "from_json": json.loads,
+            "to_set": lambda x: set(x),
+        }
 
     def render(
         self,
         source_code: str,
-        source_table: str,
         arguments: dict,
+        source_table: str = None,
         source_columns: Optional[Dict[str, Dict[str, str]]] = None,
         override_globals: Optional[Dict[str, Callable]] = None,
     ) -> str:
@@ -56,12 +85,14 @@ class RasgoEnvironment(Environment):
                 return source_columns[fqtn]
 
             override_globals['get_columns'] = get_columns
+        if 'get_columns' in override_globals:
+            self.globals['get_columns'] = override_globals['get_columns']
         try:
             template = self.from_string(source_code)
             rendered = template.render(**arguments, **override_globals)
         except Exception as e:
             raise RenderException(e)
-        return rendered
+        return trim_blank_lines(rendered)
 
 
 def cleanse_template_symbol(symbol: str) -> str:
@@ -73,3 +104,23 @@ def cleanse_template_symbol(symbol: str) -> str:
 
 def raise_exception(message: str) -> None:
     raise Exception(message)
+
+
+def trim_blank_lines(sql: str) -> str:
+    return re.sub(r'[\n][\s]*\n', '\n', sql)
+
+
+class RasgoLoader(BaseLoader):
+    def __init__(self, root_path=None):
+        if not root_path:
+            root_path = Path(__file__).parent.parent / 'macros'
+        self.root_path = root_path
+
+    def get_source(self, environment: RasgoEnvironment, template):
+        template_path = self.root_path / environment.dw_type.value / template
+        if not template_path.exists():
+            template_path = self.root_path / template
+            if not template_path.exists():
+                raise TemplateNotFound(template)
+        mtime = getmtime(template_path)
+        return template_path.read_text(), template_path, lambda: mtime == getmtime(template_path)
