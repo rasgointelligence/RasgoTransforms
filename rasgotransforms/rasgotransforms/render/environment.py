@@ -19,8 +19,6 @@ class RasgoEnvironment(Environment):
             *args,
             extensions=self.rasgo_extensions,
             loader=RasgoLoader(),
-            trim_blocks=True,
-            lstrip_blocks=True,
             **kwargs
         )
         self._dw_type = DataWarehouse(dw_type)
@@ -92,7 +90,7 @@ class RasgoEnvironment(Environment):
             rendered = template.render(**arguments, **override_globals)
         except Exception as e:
             raise RenderException(e)
-        return trim_blank_lines(rendered)
+        return rendered
 
 
 def cleanse_template_symbol(symbol: str) -> str:
