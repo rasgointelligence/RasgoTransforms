@@ -59,7 +59,7 @@ with
             source_table=metric.source_table,
             filters=metric.filters,
             distinct_values=distinct_values
-            ) | indent
+            ) | indent(8)
         }}
     ),
 {% endfor %}

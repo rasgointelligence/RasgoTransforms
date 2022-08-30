@@ -2,7 +2,7 @@
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
-{% from 'filter.sql' import get_metric_filter_statement %}
+{% from 'filter.sql' import get_filter_statement %}
 {% set dimensions = group_by if group_by is defined else [] %}
 {% set flatten = flatten if flatten is defined else true %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
@@ -53,18 +53,24 @@
 {% endfor %}
 
 {% if dimensions %}
-{% set distinct_vals_filter = get_metric_filter_statement(
-        x_axis=x_axis,
-        start_date=start_date,
-        end_date=end_date,
-        filters=filters
-) if start_date is defined else filters %}
+{% if start_date is defined %}
+{% set date_filter %}
+({{ x_axis }} >= '{{ start_date }}' AND {{ x_axis }} <= '{{ end_date }}')
+{% endset %}
+{% set distinct_vals_filters = get_filter_statement([
+    date_filter,
+    get_filter_statement(filters)
+]) if start_date is defined else filters %}
+{% else %}
+{% set distinct_vals_filters = filters %}
+{% endif %}
+
 {% set distinct_values = get_distinct_vals(
     columns=dimensions,
     target_metric=metrics[0] if metrics else None,
     max_vals=max_num_groups,
     source_table=source_table,
-    filters=distinct_vals_filter
+    filters=distinct_vals_filters
 ) | from_json %}
 {% endif %}
 

@@ -10,8 +10,6 @@
 {% set alias = 'metric_value' if not alias else alias %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
 {% set filters = filters if filters is defined else [] %}
-{% do filters.append({'columnName': time_dimension, 'operator': '>=', 'comparisonValue': "'" + start_date + "'" }) %}
-{% do filters.append({'columnName': time_dimension, 'operator': '<=', 'comparisonValue': "'" + end_date + "'" }) %}
 
 {% if type|lower == 'expression' %}
 
