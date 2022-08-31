@@ -32,10 +32,20 @@
 {% for val in query_result.itertuples() %}
 {% set distinct_val = [] %}
 {% for column in query_result.columns[:-1] %}
+{% if val[column] %}
 {% do distinct_val.append(val[column]) %}
+{% else %}
+{% do distinct_val.append('$NULLVALUE$') %}
+{% endif %}
 {% if not loop.last %} {% do distinct_val.append("_") %} {% endif %}
 {% endfor %}
+{% if '$NULLVALUE$' not in distinct_val %}
 {% do distinct_vals.append("_".join(distinct_val)) %}
+{% else %}
+{% if 'None' not in distinct_vals %}
+{% do distinct_vals.append('None') %}
+{% endif %}
+{% endif %}
 {% endfor %}
 {% if distinct_vals | length > max_vals %}
 {% set distinct_vals = distinct_vals[:-1] + ["_OtherGroup"] %}
