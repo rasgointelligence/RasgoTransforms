@@ -54,7 +54,8 @@ with
             {{ column }}{{ ',' if not loop.last }}
             {% endfor %}
         from {{ source_table if not (distinct_values and dimensions) else 'combined_dimensions'}}
-            {{ filter_statement | indent }}
+        where ({{ time_dimension }} >= '{{ start_date }}' and {{ time_dimension }} <= '{{ end_date }}') and
+            {{ filter_statement | indent(12) }}
     ),
     {% if distinct_values and dimensions %}
     {% set dimensions=['dimensions'] %}
@@ -219,7 +220,8 @@ buckets as (
     from
         {{ source_table if not (distinct_values and dimensions) else 'combined_dimensions'}}
         cross join edges
-    {{ filter_statement | indent }}
+    where
+        {{ filter_statement | indent(8) }}
 ),
 source_query as (
     select
@@ -361,7 +363,8 @@ source_query as (
         {{ column }}{{ ',' if not loop.last }}
         {% endfor %}
     from {{ source_table if not (distinct_values and dimensions) else 'combined_dimensions'}}
-    {{ filter_statement }}
+    where
+        {{ filter_statement | indent(8) }}
 ),
 {% if distinct_values and dimensions %}
 {% set dimensions = ['dimensions'] %}

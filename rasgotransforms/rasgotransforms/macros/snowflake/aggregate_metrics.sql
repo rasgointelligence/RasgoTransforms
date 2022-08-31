@@ -1,4 +1,4 @@
-{% from 'filter.sql' import get_metric_filter_statement, get_filter_statement %}
+{% from 'filter.sql' import get_filter_statement %}
 
 {% macro calculate_timeseries_metric_values(
     aggregations,
@@ -12,7 +12,7 @@
     distinct_values
 ) %}
 {% set num_days = (end_date | todatetime - start_date | todatetime).days %}
-{% set filter_statement = get_metric_filter_statement(x_axis=time_dimension, start_date=start_date, end_date=end_date, filters=filters) %}
+{% set filter_statement = get_filter_statement(filters) %}
 {% set aggregation_columns = []|to_set %}
 {% for aggregation in aggregations %}
 {% do aggregation_columns.add(aggregation.column) %}
@@ -49,7 +49,8 @@ with
             {{ column }}{{ ',' if not loop.last }}
             {% endfor %}
         from {{ source_table }}
-        {{ filter_statement | indent }}
+        where ({{ time_dimension }} >= '{{ start_date }}' and {{ time_dimension }} <= '{{ end_date }}') and
+            {{ filter_statement | indent(12) }}
     ),
     {% if distinct_values and dimensions %}
     {% set dimensions = ['dimensions'] %}
@@ -204,7 +205,8 @@ buckets as (
     from
         {{ source_table }}
         cross join edges
-    {{ filter_statement | indent }}
+    where
+        {{ filter_statement | indent(8) }}
 ),
 source_query as (
     select
@@ -346,7 +348,8 @@ with source_query as (
         {{ column }}{{ ',' if not loop.last }}
         {% endfor %}
     from {{ source_table }}
-    {{ filter_statement }}
+    where
+        {{ filter_statement | indent(8) }}
 ),
 {% if distinct_values and dimensions %}
 {% set dimensions = ['dimensions'] %}

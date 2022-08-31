@@ -21,7 +21,8 @@
         sum(0) as vals
         {% endif %}
     from {{ source_table }}
-        {{ filter_statement }}
+    where
+        {{ filter_statement | indent }}
     group by 1
     order by vals desc
     limit {{ max_vals + 1}}
@@ -72,7 +73,8 @@
         ) as dimensions,
         coalesce({{ target_metric.agg_method|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct ' in target_metric.agg_method|lower else ''}}{{ target_metric.column }}), 0) as vals
     from distinct_vals_source_query
-        {{ filter_statement }}
+    where
+        {{ filter_statement | indent}}
     group by 1
     order by vals desc
     limit {{ max_vals + 1}}
