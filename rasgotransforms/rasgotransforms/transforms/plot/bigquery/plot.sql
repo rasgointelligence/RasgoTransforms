@@ -27,6 +27,8 @@
 ({{ x_axis }} >= '{{ start_date }}' AND {{ x_axis }} <= '{{ end_date }}') {{ 'AND' if filters }}
 {%- endset %}
 {%- endif -%}
+{% if expression_metrics is defined %}
+{% endif %}
 
 {%- set filter_statement -%}
     {%- if filters or time_filter is defined %}

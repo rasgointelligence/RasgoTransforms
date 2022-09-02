@@ -18,7 +18,9 @@ class TestJinja:
     def test_transforms_jinja(self, transform: TransformTemplate):
         environment = RasgoEnvironment(dw_type='snowflake', run_query=None)
         LOGGER.info(f'Validating {transform.name}')
-        declared_arg_names = set([arg['name'] for arg in transform.arguments]).union({'source_table'})
+        declared_arg_names = set([arg['name'] for arg in transform.arguments if arg['name'] != 'none']).union(
+            {'source_table'}
+        )
         global_arg_names = set([g for g in environment.rasgo_globals.keys()]).union({'get_columns'})
         parsed_template = environment.parse(transform.source_code)
         parsed_arg_names = meta.find_undeclared_variables(parsed_template)
