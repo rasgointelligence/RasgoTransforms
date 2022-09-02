@@ -14,7 +14,7 @@ from rasgotransforms.main import DataWarehouse
 
 
 class RasgoEnvironment(Environment):
-    def __init__(self, dw_type: str, run_query: Callable, *args, **kwargs):
+    def __init__(self, dw_type: str, run_query: Optional[Callable] = None, *args, **kwargs):
         super().__init__(*args, extensions=self.rasgo_extensions, loader=RasgoLoader(), **kwargs)
         self._dw_type = DataWarehouse(dw_type)
         for filter_name, method in self.rasgo_filters.items():

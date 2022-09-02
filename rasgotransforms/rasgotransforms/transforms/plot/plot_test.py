@@ -1,9 +1,12 @@
 import unittest
 
+import pytest
+
 from rasgotransforms.render import RasgoEnvironment
-from rasgotransforms.tests.utils import run_query, get_columns, get_source_code, save_artifacts
+from rasgotransforms.testing_utils import run_query, get_columns, get_source_code, save_artifacts
 
 
+@pytest.mark.skip(reason='Requires a connection to the data warehouse')
 class TestPlotTransform(unittest.TestCase):
     def test_datetime_no_dimensions(self):
         source_code = get_source_code('plot')
