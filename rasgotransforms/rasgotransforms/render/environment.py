@@ -14,8 +14,10 @@ from rasgotransforms.main import DataWarehouse
 
 
 class RasgoEnvironment(Environment):
-    def __init__(self, dw_type: str, run_query: Optional[Callable] = None, *args, **kwargs):
+    def __init__(self, run_query: Optional[Callable] = None, dw_type: Optional[str] = None, *args, **kwargs):
         super().__init__(*args, extensions=self.rasgo_extensions, loader=RasgoLoader(), **kwargs)
+        if not dw_type:
+            dw_type = 'snowflake'
         self._dw_type = DataWarehouse(dw_type)
         for filter_name, method in self.rasgo_filters.items():
             self.filters[filter_name] = method
