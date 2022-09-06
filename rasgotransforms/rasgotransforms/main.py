@@ -6,7 +6,7 @@ import os
 from enum import Enum
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import yaml
 
@@ -32,13 +32,20 @@ class TransformTemplate:
     """
 
     def __init__(
-        self, name: str, arguments: List[dict], source_code: str, description: str = None, tags: List[str] = None
+        self,
+        name: str,
+        arguments: List[dict],
+        source_code: str,
+        description: str = None,
+        tags: List[str] = None,
+        dw_type: Optional[str] = None,
     ):
         self.name = name
         self.arguments = arguments
         self.source_code = source_code
         self.description = description
         self.tags = tags
+        self.dw_type = dw_type
 
     def __repr__(self) -> str:
         arg_str = ", ".join(f'{arg.get("name")}: {arg.get("type")}' for arg in self.arguments)
@@ -67,7 +74,7 @@ def serve_rasgo_transform_templates(datawarehouse: str) -> List[TransformTemplat
     datawarehouse = _check_datawarehouse(datawarehouse)
 
     template_list = []
-    transform_yamls = _load_all_yaml_files(datawarehouse)
+    transform_yamls = _load_all_yaml_files()
     for transform_name, transform_yaml in transform_yamls.items():
         try:
             transform_source_code = _get_transform_source_code(
@@ -134,11 +141,10 @@ def _get_transform_source_code(transform_name: str, datawarehouse: str) -> str:
     return source_code
 
 
-def _load_all_yaml_files(datawarehouse: str) -> Dict[str, Dict]:
+def _load_all_yaml_files() -> Dict[str, Dict]:
     """
     Load and return all the yaml files in the dir <root>/<transform_type>_transforms
     """
-    datawarehouse = _check_datawarehouse(datawarehouse)
     transform_yamls = defaultdict(dict)
 
     transform_dir_path = _get_root_dir() / "transforms"
