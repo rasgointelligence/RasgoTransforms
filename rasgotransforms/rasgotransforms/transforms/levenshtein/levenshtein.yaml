@@ -7,7 +7,7 @@ arguments:
   columns1:
     type: column_list
     description: first list of string columns
-  column2:
+  columns2:
     type: column_list
     description: second list of string columns
 example_code: |

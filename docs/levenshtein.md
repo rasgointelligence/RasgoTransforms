@@ -9,7 +9,7 @@ Calculate the edit distance between pairwise combinations of string columns
 |   Name   |    Type     |          Description          | Is Optional |
 | -------- | ----------- | ----------------------------- | ----------- |
 | columns1 | column_list | first list of string columns  |             |
-| column2  | column_list | second list of string columns |             |
+| columns2 | column_list | second list of string columns |             |
 
 
 ## Example
