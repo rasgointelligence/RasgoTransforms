@@ -4,7 +4,7 @@ tags:
   - data_cleaning
 description: Add a suffix to each column name
 arguments:
-  suffix:
+  prefix:
     type: value
     description: text to suffix each column name with
 example_code: |

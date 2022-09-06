@@ -8,7 +8,7 @@ Add a suffix to each column name
 
 |  Name  | Type  |             Description              | Is Optional |
 | ------ | ----- | ------------------------------------ | ----------- |
-| suffix | value | text to suffix each column name with |             |
+| prefix | value | text to suffix each column name with |             |
 
 
 ## Example
