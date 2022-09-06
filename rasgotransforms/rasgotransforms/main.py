@@ -6,7 +6,7 @@ import os
 from enum import Enum
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import yaml
 
@@ -32,13 +32,20 @@ class TransformTemplate:
     """
 
     def __init__(
-        self, name: str, arguments: List[dict], source_code: str, description: str = None, tags: List[str] = None
+        self,
+        name: str,
+        arguments: List[dict],
+        source_code: str,
+        description: str = None,
+        tags: List[str] = None,
+        dw_type: Optional[str] = None,
     ):
         self.name = name
         self.arguments = arguments
         self.source_code = source_code
         self.description = description
         self.tags = tags
+        self.dw_type = dw_type
 
     def __repr__(self) -> str:
         arg_str = ", ".join(f'{arg.get("name")}: {arg.get("type")}' for arg in self.arguments)

@@ -109,6 +109,7 @@ def get_all_transform_templates() -> List[TransformTemplate]:
                     arguments=transform_args,
                     description=transform_yaml.get('description'),
                     tags=transform_yaml.get('tags'),
+                    dw_type=dw_type if dw_type != 'generic' else None,
                 )
             )
     return template_list

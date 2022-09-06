@@ -16,7 +16,7 @@ transforms = get_all_transform_templates()
 class TestJinja:
     @pytest.mark.parametrize("transform", transforms, ids=[t.name for t in transforms])
     def test_transforms_jinja(self, transform: TransformTemplate):
-        environment = RasgoEnvironment(dw_type='snowflake', run_query=None)
+        environment = RasgoEnvironment(dw_type=transform.dw_type, run_query=None)
         LOGGER.info(f'Validating {transform.name}')
         declared_arg_names = set([arg['name'] for arg in transform.arguments if arg['name'] != 'none']).union(
             {'source_table'}

@@ -38,7 +38,6 @@ with
         )
     ),
     {%- endfor %}
-    {%- endfor %}
     pivoted as (
         select *
         from pivoted__{{ metric_names[0] }}
