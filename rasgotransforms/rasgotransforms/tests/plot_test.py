@@ -3,7 +3,7 @@ import unittest
 import pytest
 
 from rasgotransforms.render import RasgoEnvironment
-from rasgotransforms.testing_utils import run_query, get_columns, get_source_code, save_artifacts
+from rasgotransforms.tests.utils_test import run_query, get_columns, get_source_code, save_artifacts
 
 
 @pytest.mark.skip(reason='Requires a connection to the data warehouse')

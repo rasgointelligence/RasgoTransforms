@@ -12,11 +12,11 @@ from jinja2.nodes import Macro
 from rasgotransforms.main import _load_all_yaml_files, _parse_transform_args_from_yaml, TransformTemplate
 from rasgotransforms.render import RasgoEnvironment
 
-DOTENV_PATH = Path(os.path.dirname(__file__)).parent.parent / ".env"
+DOTENV_PATH = Path(os.path.dirname(__file__)).parent / ".env"
 load_dotenv(DOTENV_PATH)
 
-TRANSFORMS_DIR = Path(os.path.dirname(__file__)) / "transforms"
-MACROS_DIR = Path(os.path.dirname(__file__)) / "macros"
+TRANSFORMS_DIR = Path(os.path.dirname(__file__)).parent / "transforms"
+MACROS_DIR = Path(os.path.dirname(__file__)).parent / "macros"
 SNOWFLAKE_ACCOUNT = os.environ.get('SNOWFLAKE_ACCOUNT')
 SNOWFLAKE_WAREHOUSE = os.environ.get('SNOWFLAKE_WAREHOUSE')
 SNOWFLAKE_USER = os.environ.get('SNOWFLAKE_USER')
@@ -34,19 +34,22 @@ CREDS = {
 }
 
 
-def query_into_dataframe(query) -> pd.DataFrame:
+def run_query(query_str: str) -> pd.DataFrame:
+    """
+    Method which can be used to instantiate RasgoEnvironment and render jinja which utilizes 'run_query'. This method
+    is only usable if the datawarehouse credentials exist in the environment variables
+    """
     cursor = sf_connector.connect(**CREDS).cursor()
-    query_return = cursor.execute(query).fetch_pandas_all()
+    query_return = cursor.execute(f"SELECT * FROM ({query_str}) AS subq LIMIT 100").fetch_pandas_all()
     cursor.close()
     return query_return
 
 
-def run_query(query_str: str) -> pd.DataFrame:
-    # print(f'Running query:\n{query_str}\n')
-    return query_into_dataframe(f"SELECT * FROM ({query_str}) AS subq LIMIT 100")
-
-
 def get_columns(source_table: str) -> dict:
+    """
+    Method which can be used to instantiate RasgoEnvironment and render jinja which utilizes 'get_columns'. This method
+    is only usable if the datawarehouse credentials exist in the environment variables
+    """
     database, schema, table_name = source_table.split('.')
     query_string = f"""
     SELECT COLUMN_NAME, DATA_TYPE
@@ -78,7 +81,7 @@ def save_artifacts(args: dict, sql: str, output: pd.DataFrame):
         output.to_csv(artifact_subdir / "output.csv", index=False)
 
 
-def _get_templates(transform_name: str) -> dict:
+def get_templates(transform_name: str) -> dict:
     """
     Return all versions of a transform's source code mapped to the dw type
     """
@@ -95,11 +98,10 @@ def get_all_transform_templates() -> List[TransformTemplate]:
     """
     Return a list of all Rasgo Transform Templates
     """
-
     template_list = []
     transform_yamls = _load_all_yaml_files()
     for transform_name, transform_yaml in transform_yamls.items():
-        transform_templates = _get_templates(transform_name=transform_name)
+        transform_templates = get_templates(transform_name=transform_name)
         transform_args = _parse_transform_args_from_yaml(transform_yaml)
         for dw_type, transform_source_code in transform_templates.items():
             template_list.append(
@@ -116,6 +118,9 @@ def get_all_transform_templates() -> List[TransformTemplate]:
 
 
 def get_all_macros() -> dict:
+    """
+    Returns a mapping of .sql template file names to the macros contained in the file
+    """
     environment = RasgoEnvironment(dw_type='snowflake', run_query=None)
     all_macros = {}
     for macro_file in MACROS_DIR.glob('**/*.sql'):

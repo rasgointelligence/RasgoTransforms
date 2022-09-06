@@ -5,7 +5,7 @@ from jinja2.nodes import FromImport
 import pytest
 
 from rasgotransforms.main import TransformTemplate
-from rasgotransforms.testing_utils import get_all_transform_templates, get_all_macros
+from rasgotransforms.tests.utils_test import get_all_transform_templates, get_all_macros
 from rasgotransforms.render import RasgoEnvironment
 
 LOGGER = logging.getLogger(__name__)
