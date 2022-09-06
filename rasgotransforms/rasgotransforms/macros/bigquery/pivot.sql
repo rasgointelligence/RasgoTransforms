@@ -24,39 +24,38 @@ with
         pivot (
             sum( {{ metric_name }} ) as {{ metric_name }}
             for dimensions in (
-                {%- for val in distinct_values %}
-                {%- set column_name = metric_name + '_' + (val|string) -%}
-                {%- do column_names.append(column_name) -%}
-                {%- if val is string -%}
+                {% for val in distinct_values %}
+                {% set column_name = metric_name + '_' + (val|string) %}
+                {% do column_names.append(column_name) %}
+                {% if val is string %}
                 '{{ val }}'
-                {%- else -%}
+                {% else %}
                 {{ val }}
-                {%- endif -%}
+                {% endif %}
                 {{', ' if not loop.last else ''}}
-                {%- endfor -%}
+                {% endfor %}
             )
         )
     ),
-    {%- endfor %}
-    {%- endfor %}
+    {% endfor %}
     pivoted as (
         select *
         from pivoted__{{ metric_names[0] }}
-            {%- for i in range(1, metric_names|length) %}
+            {% for i in range(1, metric_names|length) %}
             left join pivoted__{{ metric_names[i] }}
                 on x_min_{{ metric_names[0] }} = x_min_{{ metric_names[i] }}
                 and x_max_{{ metric_names[0] }} = x_max_{{ metric_names[i] }}
-            {%- endfor %}
+            {% endfor %}
     )
 select
-    {%- if axis_type == 'categorical' %}
+    {% if axis_type == 'categorical' %}
     x_min_{{ metric_names[0] }} as {{ x_axis }},
-    {%- else %}
+    {% else %}
     x_min_{{ metric_names[0] }} as {{ x_axis }}_min,
     x_max_{{ metric_names[0] }} as {{ x_axis }}_max,
-    {%- endif %}
-    {%- for column_name in column_names %}
+    {% endif %}
+    {% for column_name in column_names %}
     {{ column_name }}{{ ',' if not loop.last }}
-    {%- endfor %}
+    {% endfor %}
 from pivoted order by 1 {{ x_axis_order if x_axis_order }}
 {% endmacro %}

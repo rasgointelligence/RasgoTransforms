@@ -63,14 +63,14 @@ with
     {% if time_grain|lower == 'all' %}
     spine as (
         select
-            cast('{{ start_date }}' as timestamp) as {{ time_dimension }}_min,
-            cast('{{ end_date }}' as timestamp) as {{ time_dimension }}_max
+            cast('{{ start_date }}' as timestamp) as period_min,
+            cast('{{ end_date }}' as timestamp) as period_max
     ),
     joined as (select * from source_query cross join spine),
     tidy_data as (
         select
-            {{ time_dimension }}_min,
-            {{ time_dimension }}_max,
+            period_min,
+            period_max,
             {% for dimension in dimensions %}
             {{ dimension }},
             {% endfor %}
