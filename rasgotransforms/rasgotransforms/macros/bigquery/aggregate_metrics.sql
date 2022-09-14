@@ -20,10 +20,14 @@ with
     {% if distinct_values and dimensions %}
     combined_dimensions as (
         select
-            concat(''{{',' if group_by}}
-                {%- for column in group_by %}
+            {{ time_dimension }},
+            {% for column in aggregation_columns %}
+            {{ column }},
+            {% endfor %}
+            concat(''{{',' if dimensions}}
+                {% for column in dimensions %}
                 {{ column }}{{", '_', " if not loop.last}}
-                {%- endfor %}
+                {% endfor %}
             ) as dimensions
         from {{ source_table }}
     ),
@@ -177,8 +181,12 @@ with
 {% if distinct_values and dimensions %}
 combined_dimensions as (
     select
-        concat(''{{',' if group_by}}
-            {%- for column in group_by %}
+        {{ x_axis }},
+        {% for column in aggregation_columns %}
+        {{ column }},
+        {% endfor %}
+        concat(''{{',' if dimensions}}
+            {%- for column in dimensions %}
             {{ column }}{{", '_', " if not loop.last}}
             {%- endfor %}
         ) as dimensions
@@ -212,7 +220,7 @@ buckets as (
         min_val,
         max_val,
         bucket_size,
-        cast({{ x_axis }} as float) as col_a_val,
+        cast({{ x_axis }} as decimal) as col_a_val,
         range_bucket(cast({{ x_axis }} as numeric), generate_array(min_val, max_val, (max_val - min_val)/{{ bucket_count }})) as bucket,
         {% for column in aggregation_columns %}
         {{ column }}{{ ',' if not loop.last }}
@@ -331,8 +339,12 @@ with
 {% if distinct_values and dimensions %}
 combined_dimensions as (
     select
-        concat(''{{',' if group_by}}
-            {%- for column in group_by %}
+        {{ x_axis }},
+        {% for column in aggregation_columns %}
+        {{ column }},
+        {% endfor %}
+        concat(''{{',' if dimensions}}
+            {%- for column in dimensions %}
             {{ column }}{{", '_', " if not loop.last}}
             {%- endfor %}
         ) as dimensions

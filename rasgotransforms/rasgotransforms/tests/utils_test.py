@@ -6,13 +6,14 @@ from typing import List
 
 import pandas as pd
 from snowflake import connector as sf_connector
+from google.cloud import bigquery as bq
 from dotenv import load_dotenv
 from jinja2.nodes import Macro
 
 from rasgotransforms.main import _load_all_yaml_files, _parse_transform_args_from_yaml, TransformTemplate
 from rasgotransforms.render import RasgoEnvironment
 
-DOTENV_PATH = Path(os.path.dirname(__file__)).parent / ".env"
+DOTENV_PATH = Path(os.path.dirname(__file__)).parent.parent.parent / ".env"
 load_dotenv(DOTENV_PATH)
 
 TRANSFORMS_DIR = Path(os.path.dirname(__file__)).parent / "transforms"
@@ -23,7 +24,10 @@ SNOWFLAKE_USER = os.environ.get('SNOWFLAKE_USER')
 SNOWFLAKE_PASSWORD = os.environ.get('SNOWFLAKE_PASSWORD')
 SNOWFLAKE_ROLE = os.environ.get('SNOWFLAKE_ROLE')
 ARTIFACTS_DIR = os.environ.get('ARTIFACTS_DIR')
-
+if os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'):
+    bq_client = bq.Client()
+else:
+    bq_client = None
 
 CREDS = {
     "account": SNOWFLAKE_ACCOUNT,
@@ -34,33 +38,45 @@ CREDS = {
 }
 
 
-def run_query(query_str: str) -> pd.DataFrame:
+def run_query(query_str: str, dw_type: str = 'snowflake') -> pd.DataFrame:
     """
     Method which can be used to instantiate RasgoEnvironment and render jinja which utilizes 'run_query'. This method
     is only usable if the datawarehouse credentials exist in the environment variables
     """
-    cursor = sf_connector.connect(**CREDS).cursor()
-    query_return = cursor.execute(f"SELECT * FROM ({query_str}) AS subq LIMIT 100").fetch_pandas_all()
-    cursor.close()
-    return query_return
+    if dw_type.lower() == 'bigquery':
+        if not bq_client:
+            raise Exception('Bigquery credentials are not setup, (GOOGLE_APPLICATION_CREDENTIALS) must be set')
+        return bq_client.query(query_str).result().to_dataframe()
+    else:
+        cursor = sf_connector.connect(**CREDS).cursor()
+        query_return = cursor.execute(f"SELECT * FROM ({query_str}) AS subq LIMIT 100").fetch_pandas_all()
+        cursor.close()
+        return query_return
 
 
-def get_columns(source_table: str) -> dict:
+def get_columns(source_table: str, dw_type: str = 'snowflake') -> dict:
     """
     Method which can be used to instantiate RasgoEnvironment and render jinja which utilizes 'get_columns'. This method
     is only usable if the datawarehouse credentials exist in the environment variables
     """
-    database, schema, table_name = source_table.split('.')
-    query_string = f"""
-    SELECT COLUMN_NAME, DATA_TYPE
-    FROM {database}.information_schema.columns
-    WHERE TABLE_CATALOG = '{database.upper()}'
-        AND TABLE_SCHEMA = '{schema.upper()}'
-        AND TABLE_NAME = '{table_name.upper()}'
-    """
-    df = run_query(query_string)
-    columns = df.set_index('COLUMN_NAME')['DATA_TYPE'].to_dict()
-    return columns
+    if dw_type.lower() == 'bigquery':
+        if not bq_client:
+            raise Exception('Bigquery credentials are not setup, (GOOGLE_APPLICATION_CREDENTIALS) must be set')
+        table = bq_client.get_table(source_table)
+        schema = table.schema
+        return {schema_field.name: schema_field.field_type for schema_field in schema}
+    else:
+        database, schema, table_name = source_table.split('.')
+        query_string = f"""
+        SELECT COLUMN_NAME, DATA_TYPE
+        FROM {database}.information_schema.columns
+        WHERE TABLE_CATALOG = '{database.upper()}'
+            AND TABLE_SCHEMA = '{schema.upper()}'
+            AND TABLE_NAME = '{table_name.upper()}'
+        """
+        df = run_query(query_string)
+        columns = df.set_index('COLUMN_NAME')['DATA_TYPE'].to_dict()
+        return columns
 
 
 def get_source_code(transform_name):
@@ -68,17 +84,20 @@ def get_source_code(transform_name):
         return fp.read()
 
 
-def save_artifacts(args: dict, sql: str, output: pd.DataFrame):
+def save_artifacts(args: dict = None, sql: str = None, output: pd.DataFrame = None, dw_type: str = 'generic'):
     if ARTIFACTS_DIR:
         test_name = inspect.stack()[1][3]
-        artifact_subdir = Path(ARTIFACTS_DIR) / test_name
+        artifact_subdir = Path(ARTIFACTS_DIR) / test_name / dw_type
         if not artifact_subdir.exists():
             artifact_subdir.mkdir(parents=True)
-        with open(artifact_subdir / "args.json", "w") as fp:
-            json.dump(args, fp)
-        with open(artifact_subdir / "query.sql", "w") as fp:
-            fp.write(sql)
-        output.to_csv(artifact_subdir / "output.csv", index=False)
+        if args:
+            with open(artifact_subdir / "args.json", "w") as fp:
+                json.dump(args, fp)
+        if sql:
+            with open(artifact_subdir / "query.sql", "w") as fp:
+                fp.write(sql)
+        if output is not None:
+            output.to_csv(artifact_subdir / "output.csv", index=False)
 
 
 def get_templates(transform_name: str) -> dict:
