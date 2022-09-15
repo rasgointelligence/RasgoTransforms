@@ -19,18 +19,18 @@ with
                 {{ x_axis }}_max as x_max_{{ metric_name }},
                 {{ metric_name }},
                 dimensions
-            from tidy_data
+            from base_query
         )
         pivot (
             sum( {{ metric_name }} ) as {{ metric_name }}
             for dimensions in (
                 {% for val in distinct_values %}
-                {% set column_name = metric_name + '_' + (val|string) %}
+                {% set column_name = metric_name + '_' + cleanse_name(val|string) %}
                 {% do column_names.append(column_name) %}
                 {% if val is string %}
-                '{{ val }}'
+                '{{ val }}' {{ cleanse_name(val) }}
                 {% else %}
-                {{ val }}
+                {{ val }} {{ cleanse_name(val) }}
                 {% endif %}
                 {{', ' if not loop.last else ''}}
                 {% endfor %}

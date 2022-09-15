@@ -145,3 +145,4 @@ cython_debug/
 .DS_Store
 .idea
 test_artifacts/
+artifacts/
