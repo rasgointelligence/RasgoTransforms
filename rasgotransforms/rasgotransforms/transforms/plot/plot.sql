@@ -73,7 +73,7 @@
     filters=distinct_vals_filters
 ) | from_json %}
 {% if distinct_values is not defined or not distinct_values %}
-    {{ raise_exception('This query produces an empty result set') }}
+    {{ raise_exception('This query returns 0 rows. Please adjust the inputs and try again.') }}
 {% endif %}
 {% endif %}
 
