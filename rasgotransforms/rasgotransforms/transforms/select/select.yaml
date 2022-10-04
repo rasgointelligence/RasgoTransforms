@@ -1,0 +1,15 @@
+name: select
+tags:
+  - column
+  - table
+description: |
+  select * from a table
+
+arguments:
+  none:
+    type: none
+    description: this transform does not take any arguments
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.select()
