@@ -1,0 +1,15 @@
+name: rename
+tags:
+  - column
+  - data_cleaning
+  - data_quality
+description: |
+  Rename columns by converting all names to uppercase and removing non-SQL safe characters.
+arguments:
+  none:
+    type: none
+    description: this transform does not take any arguments
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds2 = ds.uppercase_columns()
