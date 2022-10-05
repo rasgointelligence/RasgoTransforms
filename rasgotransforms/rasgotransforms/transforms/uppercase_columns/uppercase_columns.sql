@@ -2,6 +2,6 @@
 
 SELECT
 {%- for col in source_col_names %}
-    '{{ col }}' as {{ cleanse_name(col) | upper }}{{ ", " if not loop.last else "" }}
+    "{{ col }}" as {{ cleanse_name(col) | upper }}{{ ", " if not loop.last else "" }}
 {%- endfor %}
 FROM {{ source_table }}
