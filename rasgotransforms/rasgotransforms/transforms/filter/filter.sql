@@ -9,5 +9,5 @@
 
 select *
 from {{ source_table }}
-where true and
+where
     {{ get_filter_statement(items) | indent }}
