@@ -1,4 +1,4 @@
 """
 Package version for pypi
 """
-__version__ = "2.2.10"
+__version__ = "2.2.11a1"
