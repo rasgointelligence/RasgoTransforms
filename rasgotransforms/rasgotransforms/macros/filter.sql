@@ -33,3 +33,21 @@
 true
 {% endif %}
 {% endmacro %}
+
+
+{% macro combine_filters(filters_a, filters_b, condition) %}
+{% set condition = condition if condition is defined else 'AND' %}
+{% if filters_a and not filters_b %}
+{{ get_filter_statement(filters_a) }}
+{% elif filters_b and not filters_a %}
+{{ get_filter_statement(filters_b) }}
+{% elif not filters_a and not filters_b %}
+true
+{% else %}
+(
+    {{ get_filter_statement(filters_a)|indent }}
+    {{ condition }}
+    {{ get_filter_statement(filters_b)|indent }}
+)
+{% endif %}
+{% endmacro %}
