@@ -20,6 +20,9 @@
     {% if 'timeDimension' in metric %}
         {% do metric.__setitem__('time_dimension', metric.timeDimension) %}
     {% endif %}
+    {% if 'sourceTable' in metric %}
+        {% do metric.__setitem__('source_table', metric.sourceTable) %}
+    {% endif %}
     {% if dimensions %}
         {% if metric.source_table not in dimensions_by_table %}
             {% set columns = get_columns(metric.source_table) %}

@@ -90,6 +90,12 @@ with
 {% if 'targetExpression' in metric %}
 {% do metric.__setitem__('target_expression', metric.targetExpression) %}
 {% endif %}
+{% if 'timeDimension' in metric %}
+{% do metric.__setitem__('time_dimension', metric.timeDimension) %}
+{% endif %}
+{% if 'sourceTable' in metric %}
+{% do metric.__setitem__('source_table', metric.sourceTable) %}
+{% endif %}
 {% do table_metrics.__setitem__('metric__' + metric.name, [metric.name]) %}
 metric__{{ metric.name }} as (
     {% if metric.type|lower == 'expression' %}
