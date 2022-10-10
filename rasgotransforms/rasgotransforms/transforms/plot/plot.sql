@@ -2,7 +2,7 @@
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
-{% from 'filter.sql' import get_filter_statement %}
+{% from 'filter.sql' import get_filter_statement, combine_filters %}
 {% set dimensions = group_by if group_by is defined else [] %}
 {% set flatten = flatten if flatten is defined else true %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
@@ -90,8 +90,15 @@ with
 {% if 'targetExpression' in metric %}
 {% do metric.__setitem__('target_expression', metric.targetExpression) %}
 {% endif %}
-{% do table_metrics.__setitem__('expression_metric__' + metric.name, [metric.name]) %}
-expression_metric__{{ metric.name }} as (
+{% if 'timeDimension' in metric %}
+{% do metric.__setitem__('time_dimension', metric.timeDimension) %}
+{% endif %}
+{% if 'sourceTable' in metric %}
+{% do metric.__setitem__('source_table', metric.sourceTable) %}
+{% endif %}
+{% do table_metrics.__setitem__('metric__' + metric.name, [metric.name]) %}
+metric__{{ metric.name }} as (
+    {% if metric.type|lower == 'expression' %}
     {{ calculate_expression_metric_values(
         name=metric.name,
         metrics=metric.metric_dependencies,
@@ -100,8 +107,26 @@ expression_metric__{{ metric.name }} as (
         start_date=start_date,
         end_date=end_date,
         time_grain=time_grain,
+        distinct_values=distinct_values,
+        filters=combine_filters(metric.filters, filters)
+    ) | indent }}
+    {% else %}
+    {{ calculate_timeseries_metric_values(
+        aggregations=[{
+            'column': metric.target_expression,
+            'method': metric.type,
+            'alias': metric.name
+        }],
+        time_dimension=metric.time_dimension,
+        dimensions=dimensions,
+        start_date=start_date,
+        end_date=end_date,
+        time_grain=time_grain,
+        source_table=metric.source_table,
+        filters=combine_filters(metric.filters, filters),
         distinct_values=distinct_values
     ) | indent }}
+    {% endif %}
 ),
 {% endfor %}
 

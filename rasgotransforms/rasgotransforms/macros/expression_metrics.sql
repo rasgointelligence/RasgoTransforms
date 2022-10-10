@@ -1,4 +1,5 @@
 {% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values %}
+{% from 'filter.sql' import combine_filters %}
 
 {% macro calculate_expression_metric_values(
     name,
@@ -8,7 +9,8 @@
     start_date,
     end_date,
     time_grain,
-    distinct_values
+    distinct_values,
+    filters
 ) %}
 {% set dimensions_by_table = {} %}
 {% for metric in metrics %}
@@ -17,6 +19,9 @@
     {% endif %}
     {% if 'timeDimension' in metric %}
         {% do metric.__setitem__('time_dimension', metric.timeDimension) %}
+    {% endif %}
+    {% if 'sourceTable' in metric %}
+        {% do metric.__setitem__('source_table', metric.sourceTable) %}
     {% endif %}
     {% if dimensions %}
         {% if metric.source_table not in dimensions_by_table %}
@@ -57,7 +62,7 @@ with
             end_date=end_date,
             time_grain=time_grain,
             source_table=metric.source_table,
-            filters=metric.filters,
+            filters=combine_filters(metric.filters, filters),
             distinct_values=distinct_values
             ) | indent(8)
         }}
