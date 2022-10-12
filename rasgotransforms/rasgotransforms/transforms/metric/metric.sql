@@ -1,14 +1,27 @@
 {% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values %}
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'combine_groups.sql' import combine_groups %}
-{% set start_date = '2010-01-01' if not start_date else start_date|string %}
+{% if not start_date %}
+{% set start_date_query %}
+select min(cast({{ time_dimension }} as date)) start_date from {{ source_table }}
+{% endset %}
+{% set start_date_query_result = run_query(start_date_query) %}
+{% if start_date_query_result is none %}
+{{ raise_exception('start_date must be provided when no Data Warehouse connection is available')}}
+{% endif %}
+{% set start_date = start_date_query_result[start_date_query_result.columns[0]][0]|string %}
+{% else %}
+{% set start_date = start_date|string %}
+{% endif %}
+{% set target_expression = target_column if not target_expression else target_expression %}
+{% set type = aggregation if not type else type %}
 {% if not end_date %}
 {% set end_date = ((start_date|string|todatetime).now().date())|string %}
 {% else %}
 {% set end_date = end_date|string %}
 {% endif %}
-{% set alias = 'metric_value' if not alias else alias %}
-{% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
+{% set name = cleanse_name(type + '_' + target_expression) if not (name or alias) else name %}
+{% set name = name if not alias else cleanse_name(alias) %}
 {% set filters = filters if filters is defined else [] %}
 
 {% if type|lower == 'expression' %}
