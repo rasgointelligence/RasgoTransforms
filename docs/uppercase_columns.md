@@ -22,5 +22,5 @@ ds2 = ds.uppercase_columns()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/uppercase_columns/uppercase_columns.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/uppercase_columns/snowflake/uppercase_columns.sql" %}
 
