@@ -22,7 +22,7 @@
     {% if filter is not mapping %}
     {{ logical_operator.value + ' ' if not loop.first }}{{ filter }}
     {% elif filter.operator|upper == 'CONTAINS' %}
-    {{ logical_operator.value + ' ' if not loop.first }}{{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+    {{ logical_operator.value + ' ' if not loop.first }}{{ filter.columnName }} like '%{{ filter.comparisonValue }}%'
     {% else %}
     {{ logical_operator.value + ' ' if not loop.first }}{{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
     {% endif %}
