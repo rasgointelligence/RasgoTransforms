@@ -19,6 +19,12 @@
     {% if filter is not string and filter is not mapping %}
     {% set filter = dict(filter) %}
     {% endif %}
+    {% if 'column_name' in filter %}
+        {% do filter.__setitem__('columnName', filter.column_name) %}
+    {% endif %}
+    {% if 'comparison_value' in filter %}
+        {% do filter.__setitem__('comparisonValue', filter.comparison_value) %}
+    {% endif %}
     {% if filter is not mapping %}
     {{ logical_operator.value + ' ' if not loop.first }}{{ filter }}
     {% elif filter.operator|upper == 'CONTAINS' %}
