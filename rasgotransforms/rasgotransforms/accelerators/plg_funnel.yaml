@@ -28,21 +28,21 @@ operations:
     transform_name: filter
     transform_arguments:
       items:
-      - columnName: IS_DELETED
+      - column_name: IS_DELETED
         operator: '='
-        comparisonValue: 'false'
+        comparison_value: 'false'
       source_table: '{{opportunities}}'
   getclosedwon:
     description: Keep only those opportunities that were closed won in Salesforce
     transform_name: filter
     transform_arguments:
       items:
-      - columnName: IS_DELETED
+      - column_name: IS_DELETED
         operator: '='
-        comparisonValue: 'false'
-      - columnName: IS_WON
+        comparison_value: 'false'
+      - column_name: IS_WON
         operator: '='
-        comparisonValue: 'true'
+        comparison_value: 'true'
       source_table: '{{opportunities}}'
   createweekly:
     description: Create weekly variable
@@ -104,18 +104,18 @@ operations:
     transform_name: filter
     transform_arguments:
       items:
-      - columnName: ORG_TYPE
+      - column_name: ORG_TYPE
         operator: '='
-        comparisonValue: '''ENTERPRISE'''
+        comparison_value: '''ENTERPRISE'''
       source_table: '{{weeklyusers}}'
   plgweeklyusers:
     description: keep free users
     transform_name: filter
     transform_arguments:
       items:
-      - columnName: ORG_TYPE
+      - column_name: ORG_TYPE
         operator: <>
-        comparisonValue: '''ENTERPRISE'''
+        comparison_value: '''ENTERPRISE'''
       source_table: '{{weeklyusers}}'
   plgidweeklyrepeats:
     description: Create variable to record next week PLG user uses product if repeats

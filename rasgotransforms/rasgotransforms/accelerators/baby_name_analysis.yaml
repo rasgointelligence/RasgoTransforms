@@ -52,9 +52,9 @@ operations:
     transform_name: filter
     transform_arguments:
       items:
-        - columnName: BABYNAME
+        - column_name: BABYNAME
           operator: '='
-          comparisonValue: "'{{ baby_name }}'"
+          comparison_value: "'{{ baby_name }}'"
       source_table: '{{convert_to_percent }}'
   most_popular_state:
     transform_name: apply

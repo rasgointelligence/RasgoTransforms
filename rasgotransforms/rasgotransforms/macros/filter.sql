@@ -19,12 +19,18 @@
     {% if filter is not string and filter is not mapping %}
     {% set filter = dict(filter) %}
     {% endif %}
+    {% if 'columnName' in filter %}
+        {% do filter.__setitem__('column_name', filter.columnName) %}
+    {% endif %}
+    {% if 'comparisonValue' in filter %}
+        {% do filter.__setitem__('comparison_value', filter.comparisonValue) %}
+    {% endif %}
     {% if filter is not mapping %}
     {{ logical_operator.value + ' ' if not loop.first }}{{ filter }}
     {% elif filter.operator|upper == 'CONTAINS' %}
-    {{ logical_operator.value + ' ' if not loop.first }}{{ filter.columnName }} like '%{{ filter.comparisonValue }}%'
+    {{ logical_operator.value + ' ' if not loop.first }}{{ filter.column_name }} like '%{{ filter.comparison_value }}%'
     {% else %}
-    {{ logical_operator.value + ' ' if not loop.first }}{{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+    {{ logical_operator.value + ' ' if not loop.first }}{{ filter.column_name }} {{ filter.operator }} {{ filter.comparison_value }}
     {% endif %}
     {% endfor %}
 )
