@@ -14,9 +14,9 @@ FROM {{ source_table }}
             {{ filter_block }}
         {%- else -%}
             {%- if filter_block['operator'] == 'CONTAINS' -%}
-                {{ filter_block['operator'] }}({{ filter_block['columnName'] }}, {{ filter_block['comparisonValue'] }})
+                {{ filter_block['operator'] }}({{ filter_block['column_name'] }}, {{ filter_block['comparison_value'] }})
             {%- else -%}
-                {{ filter_block['columnName'] }} {{ filter_block['operator'] }} {{ filter_block['comparisonValue'] }}
+                {{ filter_block['column_name'] }} {{ filter_block['operator'] }} {{ filter_block['comparison_value'] }}
             {%- endif -%}
         {%- endif -%}
     {%- endfor -%}

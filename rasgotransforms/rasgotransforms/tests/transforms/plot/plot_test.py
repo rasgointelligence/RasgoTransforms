@@ -29,11 +29,11 @@ class TestPlotTransform:
             'metrics': {'SALESAMOUNT': ['SUM', 'AVG']},
             'filters': [
                 {
-                    'columnName': 'UNITPRICE',
+                    'column_name': 'UNITPRICE',
                     'operator': '>=',
-                    'comparisonValue': 1,
+                    'comparison_value': 1,
                 },
-                {'columnName': 'COLOR', 'operator': '=', 'comparisonValue': "'Black'", 'compoundBoolean': 'OR'},
+                {'column_name': 'COLOR', 'operator': '=', 'comparison_value': "'Black'", 'compoundBoolean': 'OR'},
             ],
         }
         environment = RasgoEnvironment(dw_type=dw_type, run_query=partial(run_query, dw_type=dw_type))
@@ -122,9 +122,9 @@ class TestPlotTransform:
             'metrics': {'SALESAMOUNT': ['SUM', 'AVG']},
             'filters': [
                 {
-                    'columnName': 'UNITPRICE',
+                    'column_name': 'UNITPRICE',
                     'operator': '>=',
-                    'comparisonValue': 1,
+                    'comparison_value': 1,
                 }
             ],
         }
@@ -179,9 +179,9 @@ class TestPlotTransform:
             'metrics': {'SALESAMOUNT': ['SUM', 'AVG']},
             'filters': [
                 {
-                    'columnName': 'UNITPRICE',
+                    'column_name': 'UNITPRICE',
                     'operator': '>=',
-                    'comparisonValue': 1,
+                    'comparison_value': 1,
                 }
             ],
         }

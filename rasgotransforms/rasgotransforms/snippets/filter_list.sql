@@ -13,9 +13,9 @@
     {% if filter is not mapping %}
     {{ filters.logical_operator + ' ' if not loop.first }}{{ filter }}
     {% elif filter.operator|upper == 'CONTAINS' %}
-    {{ filters.logical_operator.value + ' ' if not loop.first }}{{ filter.columnName }} like '%{{ filter.comparisonValue }}%'
+    {{ filters.logical_operator.value + ' ' if not loop.first }}{{ filter.column_name }} like '%{{ filter.comparison_value }}%'
     {% else %}
-    {{ filters.logical_operator + ' ' if not loop.first }}{{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+    {{ filters.logical_operator + ' ' if not loop.first }}{{ filter.column_name }} {{ filter.operator }} {{ filter.comparison_value }}
     {% endif %}
     {% endfor %}
 )
