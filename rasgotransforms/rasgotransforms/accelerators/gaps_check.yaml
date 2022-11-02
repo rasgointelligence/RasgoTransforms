@@ -47,9 +47,9 @@ operations:
     transform_name: filter
     transform_arguments:
       items:
-      - columnName: LAG_ISLAND_START_DATETIME__1
+      - column_name: LAG_ISLAND_START_DATETIME__1
         operator: is not NULL
-        comparisonValue: ''
+        comparison_value: ''
       source_table: '{{lag}}'
   datediff:
     transform_name: datediff

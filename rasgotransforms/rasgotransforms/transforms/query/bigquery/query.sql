@@ -13,9 +13,9 @@ filtered as (
     {%- if filter is not mapping %}
         {{ filter }}
     {%- elif filter.operator|upper == 'CONTAINS' %}
-        {{ filter.operator }}({{ filter.columnName }}, {{ filter.comparisonValue }})
+        {{ filter.operator }}({{ filter.column_name }}, {{ filter.comparison_value }})
     {%- else %}
-        {{ filter.columnName }} {{ filter.operator }} {{ filter.comparisonValue }}
+        {{ filter.column_name }} {{ filter.operator }} {{ filter.comparison_value }}
     {%- endif %}
     {{ " AND " if not loop.last else "" }}
 {%- endfor %}
