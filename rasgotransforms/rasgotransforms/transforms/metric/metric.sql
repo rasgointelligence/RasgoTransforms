@@ -33,7 +33,8 @@ select min(cast({{ time_dimension }} as date)) start_date from {{ source_table }
     dimensions=dimensions,
     start_date=start_date,
     end_date=end_date,
-    time_grain=time_grain
+    time_grain=time_grain,
+    secondary_calculations=secondary_calculations
 ) }}
 
 {% else %}
@@ -50,7 +51,8 @@ select min(cast({{ time_dimension }} as date)) start_date from {{ source_table }
     end_date=end_date,
     time_grain=time_grain,
     source_table=source_table,
-    filters=filters
+    filters=filters,
+    secondary_calculations=secondary_calculations
 ) }}
 
 {% endif %}
