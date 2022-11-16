@@ -44,6 +44,7 @@ class RasgoEnvironment(Environment):
             "cleanse_name": cleanse_template_symbol,
             "raise_exception": raise_exception,
             "itertools": {"combinations": combinations, "permutations": permutations, "product": product},
+            "dw_type": lambda: self.dw_type.value,
         }
 
     @property

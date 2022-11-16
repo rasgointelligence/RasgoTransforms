@@ -171,6 +171,7 @@ with
         from tidy_data
     )
     select * from secondary_calculations
+    order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
 {% endmacro %}
 
 
