@@ -1,5 +1,5 @@
 {% macro period_to_date(metric_name, dimensions, calc_config) %}
-{% set alias = metric_name + '_' + calc_config.alias if calc_config.alias is defined else metric_name + '_' + calc_config.period + '_' + calc_config.aggregate %}
+{% set alias = metric_name + '_' + calc_config.alias if calc_config.alias is defined else metric_name + '_' + calc_config.aggregate + '_' + calc_config.period %}
 {{ calc_config.aggregate }}({{ metric_name }})
 over (
     partition by
