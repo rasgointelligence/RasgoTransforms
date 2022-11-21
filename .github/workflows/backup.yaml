@@ -8,7 +8,7 @@ on:
 jobs:
   backup-source:
     runs-on: ubuntu-latest
-    env: 
+    env:
       AWS_ACCESS_KEY_ID: ${{ secrets.S3_BACKUPS_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_BACKUPS_SECRET_ACCESS_KEY }}
 
@@ -17,4 +17,3 @@ jobs:
 
       - name: Push to S3
         run: ./bin/backup-source.sh
-
