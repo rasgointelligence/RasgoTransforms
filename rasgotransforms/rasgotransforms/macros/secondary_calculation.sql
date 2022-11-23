@@ -8,6 +8,7 @@
 {% if secondary_calculations %}
 {% for calc_config in secondary_calculations %}
 {% for metric_name in metric_names %}
+{% if calc_config.metric_names is undefined or metric_name in calc_config.metric_names %}
 {% if calc_config.type == 'period_over_period' %}
 ,{{ period_over_period(
     metric_name=metric_name,
@@ -33,6 +34,7 @@
     dimensions=dimensions,
     calc_config=calc_config
 ) }}
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endfor %}
