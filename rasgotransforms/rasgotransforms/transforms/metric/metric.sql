@@ -1,6 +1,7 @@
 {% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values %}
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'combine_groups.sql' import combine_groups %}
+{% from 'secondary_calculation.sql' import adjust_start_date %}
 {% if not start_date %}
 {% set start_date_query %}
 select min(cast({{ time_dimension }} as date)) start_date from {{ source_table }}
@@ -23,9 +24,11 @@ select min(cast({{ time_dimension }} as date)) start_date from {{ source_table }
 {% set name = cleanse_name(type + '_' + target_expression) if not (name or alias) else name %}
 {% set name = name if not alias else cleanse_name(alias) %}
 {% set filters = filters if filters is defined else [] %}
+{% set original_start_date = start_date %}
+{% set start_date = (adjust_start_date(start_date=start_date, time_grain=time_grain, secondary_calculations=secondary_calculations).strip()|todatetime).date()|string %}
 
+with metric as (
 {% if type|lower == 'expression' %}
-
 {{ calculate_expression_metric_values(
     name=name,
     metrics=metric_dependencies,
@@ -36,9 +39,7 @@ select min(cast({{ time_dimension }} as date)) start_date from {{ source_table }
     time_grain=time_grain,
     secondary_calculations=secondary_calculations
 ) }}
-
 {% else %}
-
 {{ calculate_timeseries_metric_values(
     aggregations=[{
         'column': target_expression,
@@ -54,5 +55,6 @@ select min(cast({{ time_dimension }} as date)) start_date from {{ source_table }
     filters=filters,
     secondary_calculations=secondary_calculations
 ) }}
-
 {% endif %}
+) select * from metric
+where period_min >= '{{ original_start_date }}'

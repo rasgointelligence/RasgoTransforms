@@ -3,7 +3,7 @@
 {% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
 {% from 'filter.sql' import get_filter_statement, combine_filters %}
-{% from 'secondary_calculation.sql' import render_secondary_calculations %}
+{% from 'secondary_calculation.sql' import render_secondary_calculations, adjust_start_date %}
 {% set dimensions = group_by if group_by is defined else [] %}
 {% set flatten = flatten if flatten is defined else true %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
@@ -35,6 +35,8 @@
 {{ raise_exception("Parameter 'timeseries_options' must be given when 'x_axis' is a column of type datetime")}}
 {% endif %}
 {% set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 %}
+{% set original_start_date = start_date %}
+{% set start_date = (adjust_start_date(start_date=start_date, time_grain=time_grain, secondary_calculations=secondary_calculations).strip()|todatetime).date()|string %}
 {% endif %}
 
 {% set table_metrics = {} %}
@@ -191,6 +193,7 @@ secondary_calculations as (
     from joined
 )
 select * from secondary_calculations
+where {{ x_axis }}_min >= '{{ original_start_date }}'
 order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
 {% set secondary_calculation_metrics = [] %}
 {% for calc_config in secondary_calculations %}

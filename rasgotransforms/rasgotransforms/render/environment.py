@@ -1,7 +1,7 @@
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import combinations, permutations, product
-from typing import Callable, Optional, Dict
+from typing import Callable, Optional, Dict, Union
 from pathlib import Path
 from os.path import getmtime
 
@@ -41,10 +41,13 @@ class RasgoEnvironment(Environment):
     @property
     def rasgo_globals(self):
         return {
+            "min": min,
+            "max": max,
             "cleanse_name": cleanse_template_symbol,
             "raise_exception": raise_exception,
             "itertools": {"combinations": combinations, "permutations": permutations, "product": product},
             "dw_type": lambda: self.dw_type.value,
+            "get_timedelta": get_timedelta,
         }
 
     @property
@@ -104,6 +107,27 @@ def raise_exception(message: str) -> None:
 
 def trim_blank_lines(sql: str) -> str:
     return re.sub(r'[\n][\s]*\n', '\n', sql)
+
+
+def get_timedelta(time_grain: str, interval: int) -> timedelta:
+    time_grain = time_grain.lower()
+    if time_grain == 'hour':
+        return timedelta(hours=interval)
+    elif time_grain == 'day':
+        return timedelta(days=interval)
+    elif time_grain == 'week':
+        return timedelta(weeks=interval)
+    elif time_grain == 'month':
+        interval *= 31
+        return timedelta(days=interval)
+    elif time_grain == 'quarter':
+        interval *= 122
+        return timedelta(days=interval)
+    elif time_grain == 'year':
+        interval *= 365
+        return timedelta(days=interval)
+    else:
+        raise RenderException(f"Invalid time grain '{time_grain}'")
 
 
 class RasgoLoader(BaseLoader):
