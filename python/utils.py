@@ -120,7 +120,7 @@ def transform_needs_versioning(
     """
     transform_needs_versioning = (
         description != transform.description
-        or source_code != transform.sourceCode
+        or source_code != transform.source_code
         or set(tags) != set(transform.tags)
         or _transform_args_have_changed(transform, arguments)
         or transform_type != transform.type

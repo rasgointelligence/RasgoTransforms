@@ -14,7 +14,7 @@ from rasgotransforms.main import _load_all_yaml_files, _parse_transform_args_fro
 from rasgotransforms.render import RasgoEnvironment
 
 DOTENV_PATH = Path(os.path.dirname(__file__)).parent.parent.parent / ".env"
-load_dotenv(DOTENV_PATH)
+load_dotenv(DOTENV_PATH, override=True)
 
 TRANSFORMS_DIR = Path(os.path.dirname(__file__)).parent / "transforms"
 MACROS_DIR = Path(os.path.dirname(__file__)).parent / "macros"
