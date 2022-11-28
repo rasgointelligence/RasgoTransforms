@@ -38,7 +38,7 @@ arguments:
   timeseries_options:
     type: timeseries_options
     description: |
-      (Required if 'x_axis' is a date/datetime type) A dictionary containing the start and end dates as well as 
+      (Required if 'x_axis' is a date/datetime type) A dictionary containing the start and end dates as well as
       the time grain which will be used to create the datespine for the x_axis. Time grain options are ('day', 'week', 'month', 'year', 'quarter', and 'all')
       Example: {
         'start_date': '2021-12-01',
@@ -50,6 +50,10 @@ arguments:
     type: int
     description: |
       (Default: 10) If group_by is specified, this is the max number of distinct groups that will be aggregated, all others will by combined in a 'Other' group
+    is_optional: true
+  secondary_calculations:
+    type: secondary_calculation_list
+    description: List of secondary calculations to be applied
     is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)

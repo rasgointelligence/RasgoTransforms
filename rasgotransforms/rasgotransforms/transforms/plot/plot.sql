@@ -3,6 +3,7 @@
 {% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
 {% from 'filter.sql' import get_filter_statement, combine_filters %}
+{% from 'secondary_calculation.sql' import render_secondary_calculations, adjust_start_date %}
 {% set dimensions = group_by if group_by is defined else [] %}
 {% set flatten = flatten if flatten is defined else true %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
@@ -34,6 +35,8 @@
 {{ raise_exception("Parameter 'timeseries_options' must be given when 'x_axis' is a column of type datetime")}}
 {% endif %}
 {% set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 %}
+{% set original_start_date = start_date %}
+{% set start_date = (adjust_start_date(start_date=start_date, time_grain=time_grain, secondary_calculations=secondary_calculations).strip()|todatetime).date()|string %}
 {% endif %}
 
 {% set table_metrics = {} %}
@@ -152,8 +155,8 @@ aggregation_metrics as (
 {% set tables = table_metrics.keys()|list %}
 joined as (
     select
-        {{ tables[0] }}.period_min as {{ x_axis }}_min,
-        {{ tables[0] }}.period_max as {{  x_axis }}_max,
+        {{ tables[0] }}.period_min,
+        {{ tables[0] }}.period_max,
         {% for dimension in dimensions %}
         {{ tables[0] }}.{{ dimension }},
         {% endfor %}
@@ -171,9 +174,34 @@ joined as (
             and {{ tables[0] }}.{{ dimension }} = {{ tables[i] }}.{{ dimension }}
             {% endfor %}
     {% endfor %}
+),
+secondary_calculations as (
+    select
+        period_min as {{ x_axis }}_min,
+        period_max as {{ x_axis }}_max,
+        {% for dimension in dimensions %}
+        {{ dimension }},
+        {% endfor %}
+        {% for metric_name in metric_names %}
+        {{ metric_name }}{{ ',' if not loop.last }}
+        {% endfor %}
+        {{ render_secondary_calculations(
+            metric_names=metric_names,
+            secondary_calculations=secondary_calculations,
+            dimensions=dimensions
+        ) | indent(8) }}
+    from joined
 )
-select * from joined
+select * from secondary_calculations
+where {{ x_axis }}_min >= '{{ original_start_date }}'
 order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
+{% set secondary_calculation_metrics = [] %}
+{% for calc_config in secondary_calculations %}
+{% for metric_name in metric_names %}
+{% do secondary_calculation_metrics.append(metric_name + '_' + calc_config.alias) %}
+{% endfor %}
+{% endfor %}
+{% do metric_names.extend(secondary_calculation_metrics) %}
 
 {# Numeric Axis #}
 {% elif axis_type == 'numeric' %}

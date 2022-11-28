@@ -8,7 +8,7 @@ from rasgotransforms.tests.utils_test import run_query, get_columns, get_source_
 
 LOGGER = logging.getLogger(__name__)
 SNOWFLAKE_TEST_TABLE = 'RASGO.PUBLIC.KH_TEST_TABLE'
-BIGQUERY_TEST_TABLE = 'rasgodb.public.kh_test_view'
+BIGQUERY_TEST_TABLE = 'rasgostaging.public.kh_test_view'
 
 
 @pytest.mark.skip(reason='Requires a connection to the data warehouse')
