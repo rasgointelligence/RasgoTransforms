@@ -38,6 +38,10 @@
 {% set original_start_date = start_date %}
 {% set start_date = (adjust_start_date(start_date=start_date, time_grain=time_grain, secondary_calculations=secondary_calculations).strip()|todatetime).date()|string %}
 {% endif %}
+{% if graph is defined %}
+{% set expression_metrics = graph.metrics %}
+{% set secondary_calculations = graph.calculated_fields %}
+{% endif %}
 
 {% set table_metrics = {} %}
 {% set metric_names = [] %}
