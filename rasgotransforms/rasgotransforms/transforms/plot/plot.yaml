@@ -1,5 +1,6 @@
 name: plot
 type: insight
+operation_type: VIZ
 context:
   chart_type: series
   default_template: true

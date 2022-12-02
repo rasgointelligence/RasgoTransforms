@@ -1,5 +1,6 @@
 name: histogram
 type: insight
+operation_type: VIZ
 context:
   chart_type: series_continuous
 tags:

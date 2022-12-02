@@ -1,5 +1,6 @@
 name: funnel
 type: insight
+operation_type: VIZ
 context:
   chart_type: funnel
 tags:
