@@ -1,5 +1,6 @@
 name: table
 type: insight
+operation_type: VIZ
 context:
   chart_type: data_table
 tags:
