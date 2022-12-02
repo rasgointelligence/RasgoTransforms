@@ -1,5 +1,6 @@
 name: heatmap
 type: insight
+operation_type: VIZ
 context:
   chart_type: heatmap_continuous
 tags:

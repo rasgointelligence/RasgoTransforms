@@ -48,6 +48,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
 
         # Load/parse needed transform data from YAML
         transform_description = transform_yaml.get('description')
+        operation_type = transform_yaml.get('operation_type', 'SQL')
         transform_source_code_variants = utils.get_transform_source_code_all_dws(transform_name=transform_name)
         transform_tags = utils.listify_tags(tags=transform_yaml.get('tags'))
         transform_args = utils.parse_transform_args_from_yaml(transform_yaml)
@@ -68,6 +69,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                 try:
                     rasgo.create.transform(
                         name=transform_name,
+                        operation_type=operation_type,
                         source_code=source_code,
                         arguments=transform_args,
                         description=transform_description,
@@ -93,6 +95,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                     tags=transform_tags,
                     transform_type=transform_type,
                     context=transform_context,
+                    operation_type=operation_type,
                 ):
                     print(
                         f"Versioning transform '{transform_name}'. Updates found "
@@ -103,6 +106,7 @@ def publish_transforms(rasgo_api_key: str, rasgo_domain: str) -> None:
                         rasgo.create.transform(
                             name=transform_name,
                             source_code=source_code,
+                            operation_type=operation_type,
                             arguments=transform_args,
                             description=transform_description,
                             tags=transform_tags,
