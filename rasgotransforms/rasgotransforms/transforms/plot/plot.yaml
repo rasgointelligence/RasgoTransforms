@@ -16,9 +16,9 @@ arguments:
   metrics:
     type: column_agg_list
     description: numeric, quantitative values that you can measure
-  graph:
-    type: graph
-    description: Object that includes list of metrics and list of calculated_fields to plot
+  comparisons:
+    type: comparison_list
+    description: List of input metrics/calculations to plot
   num_buckets:
     type: value
     description: max number of buckets to create; defaults to 200

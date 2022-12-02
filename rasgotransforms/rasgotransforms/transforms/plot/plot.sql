@@ -21,6 +21,20 @@
 {% else %}
     {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {% endif %}
+{% if comparisons is defined %}
+{% set expression_metrics = [] %}
+{% set secondary_calculations = [] %}
+{% for comparison in comparisons %}
+    {% do final_metric_names.append(comparison.name) %}
+    {% if comparison.name not in expression_metrics %}
+        {% do expression_metrics.append(comparison) %}
+    {% endif %}
+    {% if comparison.secondary_calculation is defined and comparison.secondary_calculation.type|lower != 'default' %}
+        {% do comparison.secondary_calculation.__setitem__('metric_names', [comparison.name]) %}
+        {% do secondary_calculations.append(comparison.secondary_calculation) %}
+    {% endif %}
+{% endfor %}
+{% endif %}
 {% if axis_type == 'date' %}
 {% if timeseries_options %}
 {% set start_date = '2010-01-01' if not timeseries_options.start_date else timeseries_options.start_date %}
@@ -37,10 +51,6 @@
 {% set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 %}
 {% set original_start_date = start_date %}
 {% set start_date = (adjust_start_date(start_date=start_date, time_grain=time_grain, secondary_calculations=secondary_calculations).strip()|todatetime).date()|string %}
-{% endif %}
-{% if graph is defined %}
-{% set expression_metrics = graph.metrics %}
-{% set secondary_calculations = graph.calculated_fields %}
 {% endif %}
 
 {% set table_metrics = {} %}
