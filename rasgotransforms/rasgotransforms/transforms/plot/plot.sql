@@ -22,11 +22,12 @@
     {{ raise_exception('The column selected as an axis is not categorical, numeric, or datetime. Please choose an axis that is any of these data types and recreate the transform.') }}
 {% endif %}
 {% if comparisons is defined %}
+{% set expression_metric_names = [] %}
 {% set expression_metrics = [] %}
 {% set secondary_calculations = [] %}
 {% for comparison in comparisons %}
-    {% do final_metric_names.append(comparison.name) %}
-    {% if comparison.name not in expression_metrics %}
+    {% if comparison.name not in expression_metric_names %}
+        {% do expression_metric_names.append(comparison.name) %}
         {% do expression_metrics.append(comparison) %}
     {% endif %}
     {% if comparison.secondary_calculation is defined and comparison.secondary_calculation.type|lower != 'default' %}
