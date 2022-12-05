@@ -17,9 +17,9 @@ arguments:
   metrics:
     type: column_agg_list
     description: numeric, quantitative values that you can measure
-  expression_metrics:
-    type: metric_list
-    description: List of metric definitions for expression metrics to include in the plot
+  comparisons:
+    type: comparison_list
+    description: List of input metrics/calculations to plot
   num_buckets:
     type: value
     description: max number of buckets to create; defaults to 200
@@ -51,10 +51,6 @@ arguments:
     type: int
     description: |
       (Default: 10) If group_by is specified, this is the max number of distinct groups that will be aggregated, all others will by combined in a 'Other' group
-    is_optional: true
-  secondary_calculations:
-    type: secondary_calculation_list
-    description: List of secondary calculations to be applied
     is_optional: true
 example_code: |
   ds = rasgo.get.dataset(id)
