@@ -6,7 +6,7 @@
 {% from 'secondary_calculation.sql' import render_secondary_calculations, adjust_start_date %}
 {% set dimensions = dimensions if dimensions is defined else [] %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
-{% set bucket_count = x_axis.num_buckets if x_axis.num_buckets is defined else 200 %}
+{% set bucket_count = x_axis.bucket_count if x_axis.bucket_count is defined else 200 %}
 {% set filters = filters if filters is defined else [] %}
 {% if x_axis.type == 'timeseries' %}
 {% if x_axis.timeseries_options %}
