@@ -27,6 +27,7 @@ ALLOWED_OPERATORS = (
     "NOT IN",
 )
 
+
 class RasgoEnvironment(Environment):
     def __init__(self, run_query: Optional[Callable] = None, dw_type: Optional[str] = None, *args, **kwargs):
         super().__init__(*args, extensions=self.rasgo_extensions, loader=RasgoLoader(), **kwargs)
@@ -117,11 +118,7 @@ def cleanse_template_symbol(symbol: str) -> str:
     return symbol
 
 
-def combine_filters(
-    filters_a: Union[List, str],
-    filters_b: Union[List, str],
-    condition: str
-) -> str:
+def combine_filters(filters_a: Union[List, str], filters_b: Union[List, str], condition: str) -> str:
     """
     Parse & combine multiple filters, return a single SQL statement
     """
