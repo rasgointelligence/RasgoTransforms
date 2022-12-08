@@ -1,0 +1,19 @@
+name: Backup Source to S3
+
+on:
+  schedule:
+    # Every day at 1am EST
+    - cron:  '0 6 * * *'
+
+jobs:
+  backup-source:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.S3_BACKUPS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_BACKUPS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Push to S3
+        run: ./bin/backup-source.sh

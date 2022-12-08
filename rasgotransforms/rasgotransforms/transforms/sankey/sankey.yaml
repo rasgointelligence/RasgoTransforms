@@ -1,5 +1,6 @@
 name: sankey
 type: insight
+operation_type: VIZ
 context:
   chart_type: sankey
 tags:

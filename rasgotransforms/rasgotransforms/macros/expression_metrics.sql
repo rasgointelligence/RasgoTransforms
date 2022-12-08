@@ -1,4 +1,5 @@
 {% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values %}
+{% from 'secondary_calculation.sql' import render_secondary_calculations %}
 
 {% macro calculate_expression_metric_values(
     name,
@@ -9,7 +10,8 @@
     end_date,
     time_grain,
     distinct_values,
-    filters
+    filters,
+    secondary_calculations
 ) %}
 {% set dimensions_by_table = {} %}
 {% for metric in metrics %}
@@ -100,26 +102,26 @@ with
             {% endfor %}
             {% endfor %}
         {% endfor %}
+    ),
+    tidy_data as (
+        select
+            period_min,
+            period_max,
+            {% for dimension in dimensions %}
+            {{ dimension }},
+            {% endfor %}
+            {{ target_expression }} as {{ name }}
+        from joined
+    ),
+    secondary_calculations as (
+        select *
+            {{ render_secondary_calculations(
+                metric_names=[name],
+                secondary_calculations=secondary_calculations,
+                dimensions=dimensions
+            ) | indent(12) }}
+        from tidy_data
     )
-    select
-        period_min,
-        period_max,
-        {% for dimension in dimensions %}
-        {{ dimension }},
-        {% endfor %}
-        {{ target_expression }} as {{ name }}
-    from joined
-    order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
-{#{% endset %}#}
-
-{#{{ combine_groups(#}
-{#        query=base_query,#}
-{#        keep_columns=['period_min', 'period_max', name],#}
-{#        dimensions=dimensions,#}
-{#        max_num_groups=max_num_groups,#}
-{#        target_metric={#}
-{#            'column': name,#}
-{#            'agg_method': 'max'#}
-{#        }#}
-{#) }}#}
+    select * from secondary_calculations
+        order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
 {% endmacro %}

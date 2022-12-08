@@ -1,3 +1,5 @@
+{% from 'secondary_calculation.sql' import render_secondary_calculations %}
+
 {% macro calculate_timeseries_metric_values(
     aggregations,
     time_dimension,
@@ -7,7 +9,8 @@
     time_grain,
     source_table,
     filters,
-    distinct_values
+    distinct_values,
+    secondary_calculations
 ) %}
 {% set filter_statement = get_filter_statement(filters) %}
 {% set aggregation_columns = []|to_set %}
@@ -83,7 +86,7 @@ with
             {% endfor %}
         from joined
         group by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
-    )
+    ),
     {% else %}
     calendar as (
         select
@@ -155,9 +158,19 @@ with
             {% endfor %}
         from joined
         order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n'}}{% endfor %}
-    )
+    ),
     {% endif %}
-    select * from tidy_data
+    secondary_calculations as (
+        select *
+            {{ render_secondary_calculations(
+                metric_names=aggregations|map(attribute='alias')|list,
+                secondary_calculations=secondary_calculations,
+                dimensions=dimensions
+            ) | indent(12) }}
+        from tidy_data
+    )
+    select * from secondary_calculations
+    order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
 {% endmacro %}
 
 

@@ -1,5 +1,6 @@
 name: plot
 type: insight
+operation_type: VIZ
 context:
   chart_type: series
   default_template: true
@@ -16,9 +17,9 @@ arguments:
   metrics:
     type: column_agg_list
     description: numeric, quantitative values that you can measure
-  expression_metrics:
-    type: metric_list
-    description: List of metric definitions for expression metrics to include in the plot
+  comparisons:
+    type: comparison_list
+    description: List of input metrics/calculations to plot
   num_buckets:
     type: value
     description: max number of buckets to create; defaults to 200
@@ -38,7 +39,7 @@ arguments:
   timeseries_options:
     type: timeseries_options
     description: |
-      (Required if 'x_axis' is a date/datetime type) A dictionary containing the start and end dates as well as 
+      (Required if 'x_axis' is a date/datetime type) A dictionary containing the start and end dates as well as
       the time grain which will be used to create the datespine for the x_axis. Time grain options are ('day', 'week', 'month', 'year', 'quarter', and 'all')
       Example: {
         'start_date': '2021-12-01',

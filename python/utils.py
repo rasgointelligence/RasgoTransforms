@@ -104,6 +104,7 @@ def transform_needs_versioning(
     tags: List[str],
     transform_type: str,
     context: Optional[Dict[str, Any]],
+    operation_type: str,
 ) -> bool:
     """
     Return true if any of the attributes for the transform has
@@ -120,11 +121,12 @@ def transform_needs_versioning(
     """
     transform_needs_versioning = (
         description != transform.description
-        or source_code != transform.sourceCode
+        or source_code != transform.source_code
         or set(tags) != set(transform.tags)
         or _transform_args_have_changed(transform, arguments)
         or transform_type != transform.type
         or context != transform.context
+        or operation_type != transform.operation_type
     )
     return transform_needs_versioning
 
