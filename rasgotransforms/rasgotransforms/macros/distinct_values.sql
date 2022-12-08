@@ -1,5 +1,3 @@
-{% from 'filter.sql' import get_filter_statement %}
-
 {% macro get_distinct_vals(
     columns,
     target_metric,

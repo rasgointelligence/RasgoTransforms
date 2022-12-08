@@ -1,5 +1,3 @@
-{% from 'filter.sql' import get_filter_statement %}
-
 {% macro calculate_timeseries_metric_values(
     aggregations,
     time_dimension,

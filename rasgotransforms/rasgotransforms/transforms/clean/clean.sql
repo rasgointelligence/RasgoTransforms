@@ -34,7 +34,7 @@
     {{ output }} as {{ output_col_name }}
 {%- endmacro -%}
 
-{%- macro get_filter_statement(columns) -%}
+{%- macro get_where_clause(columns) -%}
     {%- set filter_statements = [] -%}
     {%- for column in columns.keys() %}
         {%- set output_col_name = column if columns[column].name is not defined else cleanse_name(columns[column].name) -%}
@@ -46,7 +46,7 @@
         {{ "where " if loop.first else "" }}{{ filter_statement }}{{ " \n    and " if not loop.last else "" }}
     {%- endfor %}
 {%- endmacro -%}
-{%- set filter_statement = get_filter_statement(columns) -%}
+{%- set filter_statement = get_where_clause(columns) -%}
 
 {%- if filter_statement == "" -%}
 select

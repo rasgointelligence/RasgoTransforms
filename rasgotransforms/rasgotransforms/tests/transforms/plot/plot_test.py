@@ -33,7 +33,12 @@ class TestPlotTransform:
                     'operator': '>=',
                     'comparison_value': 1,
                 },
-                {'column_name': 'COLOR', 'operator': '=', 'comparison_value': "'Black'", 'compoundBoolean': 'OR'},
+                {
+                    'column_name': 'COLOR', 
+                    'operator': '=', 
+                    'comparison_value': "'Black'", 
+                    'compoundBoolean': 'OR'
+                },
             ],
         }
         environment = RasgoEnvironment(dw_type=dw_type, run_query=partial(run_query, dw_type=dw_type))
