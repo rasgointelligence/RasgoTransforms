@@ -11,7 +11,7 @@ tags:
   - column distribution
 description: Compare metrics on a timeseries plot
 arguments:
-  comparisons:
+  metrics:
     type: comparison_list
     description: List of input metrics/calculations to plot
   filters:

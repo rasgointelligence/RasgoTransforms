@@ -10,10 +10,10 @@
 {% set expression_metric_names = [] %}
 {% set expression_metrics = [] %}
 {% set secondary_calculations = [] %}
-{% if not comparisons %}
+{% if not metrics %}
 {{ raise_exception('Please select at least one metric to compare') }}
 {% endif %}
-{% for comparison in comparisons %}
+{% for comparison in metrics %}
     {% if comparison.name not in expression_metric_names %}
         {% do expression_metric_names.append(comparison.name) %}
         {% do expression_metrics.append(comparison) %}
@@ -37,7 +37,7 @@
 
 {% if dimensions %}
 {% set date_filter %}
-({{ comparisons[0].time_dimension }} >= '{{ start_date }}' AND {{ comparisons[0].time_dimension }} <= '{{ end_date }}')
+({{ metrics[0].time_dimension }} >= '{{ start_date }}' AND {{ metrics[0].time_dimension }} <= '{{ end_date }}')
 {% endset %}
 {% set distinct_vals_filters = get_filter_statement([
     date_filter,
@@ -48,7 +48,7 @@
     columns=dimensions,
     target_metric=None,
     max_vals=max_num_groups,
-    source_table=comparisons[0].source_table,
+    source_table=metrics[0].source_table,
     filters=distinct_vals_filters
 ) | from_json %}
 {% if distinct_values is not defined or not distinct_values %}
