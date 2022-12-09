@@ -139,24 +139,25 @@ def get_filter_statement(filters: Union[List, str]) -> str:
     if isinstance(filters, str):
         return filters
 
-    filter_string = ""
+    filter_string = "TRUE"
+    compound_boolean = "AND"
     for fil in filters:
-        fil: dict
+        if isinstance(fil, dict):
+            # Handle variable casing from past versions: only support snake eventually
+            column_name = fil.get("column_name", fil.get("columnName"))
+            operator = fil.get("operator")
+            comparison_value = fil.get("comparison_value", fil.get("comparisonValue"))
+            compound_boolean = fil.get("compound_boolean", fil.get("compoundBoolean", compound_boolean))
 
-        # Handle variable casing from past versions: only support snake evnetually
-        column_name = fil.get("column_name", fil.get("columnName"))
-        operator = fil.get("operator")
-        comparison_value = fil.get("comparison_value", fil.get("comparisonValue"))
-        compound_boolean = fil.get("compound_boolean", fil.get("compoundBoolean"), "AND")
+            # Handle override operators
+            if operator not in ALLOWED_OPERATORS:
+                raise_exception(f"operator {operator} is not supported")
+            if operator == "CONTAINS":
+                operator = "LIKE"
 
-        # Handle override operators
-        if operator not in ALLOWED_OPERATORS:
-            raise_exception(f"operator {operator} is not supported")
-        if operator == "CONTAINS":
-            operator = "LIKE"
-
-        compound_boolean = "" if filter_string == "" else compound_boolean
-        filter_string += f"{compound_boolean} {column_name} {operator} {comparison_value} "
+            filter_string += f"{compound_boolean} {column_name} {operator} {comparison_value} \n"
+        elif isinstance(fil, str) and fil != "":
+            filter_string += f"{compound_boolean} {fil}"
 
     return filter_string
 
