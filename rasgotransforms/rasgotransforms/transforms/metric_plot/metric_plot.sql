@@ -40,9 +40,15 @@
 {% for comparison in metrics %}
 {% if comparison.type == 'expression' %}
 {% for dep in comparison.metric_dependencies %}
+{% if 'sourceTable' in dep %}
+{% do dep.__setitem__('source_table', dep.sourceTable) %}
+{% endif %}
 {% do source_tables.add(dep.source_table) %}
 {% endfor %}
 {% else %}
+{% if 'sourceTable' in comparison %}
+{% do comparison.__setitem__('source_table', comparison.sourceTable) %}
+{% endif %}
 {% do source_tables.add(comparison.source_table) %}
 {% endif %}
 {% endfor %}
