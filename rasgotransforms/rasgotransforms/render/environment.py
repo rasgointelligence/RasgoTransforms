@@ -155,9 +155,9 @@ def get_filter_statement(filters: Union[List, str]) -> str:
             if operator == "CONTAINS":
                 operator = "LIKE"
 
-            filter_string += f"{compound_boolean} {column_name} {operator} {comparison_value} \n"
+            filter_string += f" {compound_boolean} {column_name} {operator} {comparison_value} \n"
         elif isinstance(fil, str) and fil != "":
-            filter_string += f"{compound_boolean} {fil}"
+            filter_string += f" {compound_boolean} {fil} \n"
 
     return filter_string
 
