@@ -4,7 +4,7 @@
 {% from 'pivot.sql' import pivot_plot_values %}
 {% from 'filter.sql' import get_filter_statement, combine_filters %}
 {% from 'secondary_calculation.sql' import render_secondary_calculations, adjust_start_date %}
-{% set dimensions = dimensions if dimensions is defined else [] %}
+{% set dimensions = group_by_dimensions if group_by_dimensions is defined else [] %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
 {% set filters = filters if filters is defined else [] %}
 {% set expression_metric_names = [] %}
@@ -36,19 +36,33 @@
 {% set aggregations = [] %}
 
 {% if dimensions %}
+{% set source_tables = []|to_set %}
+{% for comparison in metrics %}
+{% if comparison.type == 'expression' %}
+{% for dep in comparison.metric_dependencies %}
+{% do source_tables.add(dep.source_table) %}
+{% endfor %}
+{% else %}
+{% do source_tables.add(comparison.source_table) %}
+{% endif %}
+{% endfor %}
+{% if source_tables|length != 1 %}
+{{ raise_exception('Cannot add dimensions when comparing metrics with different source tables') }}
+{% endif %}
+{% set source_table = source_tables.pop() %}
 {% set date_filter %}
 ({{ metrics[0].time_dimension }} >= '{{ start_date }}' AND {{ metrics[0].time_dimension }} <= '{{ end_date }}')
 {% endset %}
 {% set distinct_vals_filters = get_filter_statement([
     date_filter,
     get_filter_statement(filters)
-]) if start_date is defined else filters %}
+]) if start_date is defined and metrics[0].type|lower != 'expression' else filters %}
 
 {% set distinct_values = get_distinct_vals(
     columns=dimensions,
     target_metric=None,
     max_vals=max_num_groups,
-    source_table=metrics[0].source_table,
+    source_table=source_table,
     filters=distinct_vals_filters
 ) | from_json %}
 {% if distinct_values is not defined or not distinct_values %}
@@ -154,7 +168,8 @@ where period_min >= '{{ original_start_date }}'
 order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
 {% set secondary_calculation_metrics = [] %}
 {% for calc_config in secondary_calculations %}
-{% for metric_name in metric_names %}
+{% set calc_metric_names = calc_config.metric_names or metric_names %}
+{% for metric_name in calc_metric_names %}
 {% do secondary_calculation_metrics.append(metric_name + '_' + calc_config.alias) %}
 {% endfor %}
 {% endfor %}
