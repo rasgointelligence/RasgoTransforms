@@ -56,6 +56,9 @@
 {{ raise_exception('Cannot add dimensions when comparing metrics with different source tables') }}
 {% endif %}
 {% set source_table = source_tables.pop() %}
+{% if 'timeDimension' in metrics[0] %}
+{% do metrics[0].__setitem__('time_dimension', metrics[0].timeDimension) %}
+{% endif %}
 {% set date_filter %}
 ({{ metrics[0].time_dimension }} >= '{{ start_date }}' AND {{ metrics[0].time_dimension }} <= '{{ end_date }}')
 {% endset %}
