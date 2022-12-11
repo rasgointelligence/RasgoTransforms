@@ -11,7 +11,7 @@
 {% if x_axis.type == 'timeseries' %}
 {% if x_axis.timeseries_options %}
 {% set start_date = '2010-01-01' if not x_axis.timeseries_options.start_date else x_axis.timeseries_options.start_date %}
-{% set end_date = '2030-01-01' if not x_axis.timeseries_options.end_date else x_axis.timeseries_options.end_date %}
+{% set end_date = ((start_date|string|todatetime).now().date()|string) if not x_axis.timeseries_options.end_date else x_axis.timeseries_options.end_date%}
 {% set time_grain = 'day' if not x_axis.timeseries_options.time_grain else x_axis.timeseries_options.time_grain %}
 {% else %}
 {{ raise_exception("Parameter 'x_axis.timeseries_options' must be given when 'x_axis' is a column of type datetime")}}
