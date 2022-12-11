@@ -24,7 +24,6 @@
     {% endif %}
 {% endfor %}
 {% set start_date = '2010-01-01' if not timeseries_options.start_date else timeseries_options.start_date %}
-{% set end_date = '2030-01-01' if not timeseries_options.end_date else timeseries_options.end_date %}
 {% set end_date = ((start_date|string|todatetime).now().date()|string) if not timeseries_options.end_date else timeseries_options.end_date%}
 {% set time_grain = 'day' if not timeseries_options.time_grain else timeseries_options.time_grain %}
 {% set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 %}
