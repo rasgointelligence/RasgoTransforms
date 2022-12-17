@@ -168,9 +168,9 @@ def get_filter_statement(
             if isinstance(comparison_value, dict):
                 # Relative Date filter
                 if "date_part" in comparison_value:
-                    if dw_type == "BIGQUERY":
+                    if dw_type == "bigquery":
                         comparison_value = f"DATE_ADD(CURRENT_DATE(), INTERVAL {comparison_value['offset']} {comparison_value['date_part']})"
-                    elif dw_type == "SNOWFLAKE":
+                    elif dw_type == "snowflake":
                         comparison_value = (
                             f"DATEADD({comparison_value['date_part']}, {comparison_value['offset']}, CURRENT_DATE)"
                         )
@@ -198,19 +198,19 @@ def trim_blank_lines(sql: str) -> str:
 
 def get_timedelta(time_grain: str, interval: int) -> timedelta:
     time_grain = time_grain.lower()
-    if time_grain == 'hour':
+    if time_grain == "hour":
         return timedelta(hours=interval)
-    elif time_grain == 'day':
+    elif time_grain == "day":
         return timedelta(days=interval)
-    elif time_grain == 'week':
+    elif time_grain == "week":
         return timedelta(weeks=interval)
-    elif time_grain == 'month':
+    elif time_grain == "month":
         interval *= 31
         return timedelta(days=interval)
-    elif time_grain == 'quarter':
+    elif time_grain == "quarter":
         interval *= 122
         return timedelta(days=interval)
-    elif time_grain == 'year':
+    elif time_grain == "year":
         interval *= 365
         return timedelta(days=interval)
     else:
