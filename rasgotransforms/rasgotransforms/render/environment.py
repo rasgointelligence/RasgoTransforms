@@ -164,27 +164,19 @@ def get_filter_statement(
             if operator == "CONTAINS":
                 operator = "LIKE"
 
-            # Parse comparison value
+            # Parse complex comparison values
             if isinstance(comparison_value, dict):
                 # Relative Date filter
-                if "date_part" in comparison_value:
+                if date_part := comparison_value.get("date_part", comparison_value.get("datePart")):
                     if dw_type == "bigquery":
-                        comparison_value = f"DATE_ADD(CURRENT_DATE(), INTERVAL {comparison_value['offset']} {comparison_value['date_part']})"
+                        comparison_value = f"DATE_ADD(CURRENT_DATE(), INTERVAL {comparison_value['offset']} {date_part})"
                     elif dw_type == "snowflake":
-                        comparison_value = (
-                            f"DATEADD({comparison_value['date_part']}, {comparison_value['offset']}, CURRENT_DATE)"
-                        )
+                        comparison_value = f"DATEADD({date_part}, {comparison_value['offset']}, CURRENT_DATE)"
                     else:
-                        comparison_value = (
-                            f"CURRENT_DATE + INTERVAL {comparison_value['offset']} {comparison_value['date_part']}"
-                        )
-
-                # Other filter types here...
-
+                        comparison_value = f"(CURRENT_DATE + INTERVAL {comparison_value['offset']} {date_part})"
             filter_string += f" {compound_boolean} {column_name} {operator} {comparison_value} \n"
         elif isinstance(fil, str) and fil != "":
             filter_string += f" {compound_boolean} {fil} \n"
-
     return filter_string
 
 
