@@ -171,9 +171,13 @@ def get_filter_statement(
                     if dw_type == "BIGQUERY":
                         comparison_value = f"DATE_ADD(CURRENT_DATE(), INTERVAL {comparison_value['offset']} {comparison_value['date_part']})"
                     elif dw_type == "SNOWFLAKE":
-                        comparison_value = f"DATEADD({comparison_value['date_part']}, {comparison_value['offset']}, CURRENT_DATE)"
+                        comparison_value = (
+                            f"DATEADD({comparison_value['date_part']}, {comparison_value['offset']}, CURRENT_DATE)"
+                        )
                     else:
-                        comparison_value = f"CURRENT_DATE + INTERVAL {comparison_value['offset']} {comparison_value['date_part']}"
+                        comparison_value = (
+                            f"CURRENT_DATE + INTERVAL {comparison_value['offset']} {comparison_value['date_part']}"
+                        )
 
                 # Other filter types here...
 
