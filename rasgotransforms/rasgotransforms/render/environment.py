@@ -170,7 +170,9 @@ def get_filter_statement(
                 if comparison_value.get("type", "") == "RELATIVEDATE":
                     date_part = comparison_value.get("date_part", comparison_value.get("datePart"))
                     if dw_type == "bigquery":
-                        comparison_value = f"DATE_ADD(CURRENT_DATE(), INTERVAL {comparison_value['offset']} {date_part})"
+                        comparison_value = (
+                            f"DATE_ADD(CURRENT_DATE(), INTERVAL {comparison_value['offset']} {date_part})"
+                        )
                     elif dw_type == "snowflake":
                         comparison_value = f"DATEADD({date_part}, {comparison_value['offset']}, CURRENT_DATE)"
                     else:
