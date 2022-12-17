@@ -1,3 +1,4 @@
+import functools
 import re
 from datetime import datetime, timedelta
 from itertools import combinations, permutations, product
@@ -59,8 +60,8 @@ class RasgoEnvironment(Environment):
             "min": min,
             "max": max,
             "cleanse_name": cleanse_template_symbol,
-            "get_filter_statement": get_filter_statement,
-            "combine_filters": combine_filters,
+            "get_filter_statement": functools.partial(get_filter_statement, dw_type=self.dw_type),
+            "combine_filters": functools.partial(combine_filters, dw_type=self.dw_type),
             "raise_exception": raise_exception,
             "itertools": {"combinations": combinations, "permutations": permutations, "product": product},
             "dw_type": lambda: self.dw_type.value,
@@ -118,21 +119,29 @@ def cleanse_template_symbol(symbol: str) -> str:
     return symbol
 
 
-def combine_filters(filters_a: Union[List, str], filters_b: Union[List, str], condition: str) -> str:
+def combine_filters(
+    filters_a: Union[List, str],
+    filters_b: Union[List, str],
+    condition: str,
+    dw_type: DataWarehouse,
+) -> str:
     """
     Parse & combine multiple filters, return a single SQL statement
     """
     condition = condition or "AND"
     if filters_a and not filters_b:
-        return get_filter_statement(filters_a)
+        return get_filter_statement(filters_a, dw_type)
     elif filters_b and not filters_a:
-        return get_filter_statement(filters_b)
+        return get_filter_statement(filters_b, dw_type)
     elif not filters_a and not filters_b:
-        return "true"
-    return f"({get_filter_statement(filters_a)} {condition} {get_filter_statement(filters_b)})"
+        return "TRUE"
+    return f"({get_filter_statement(filters_a, dw_type)} {condition} {get_filter_statement(filters_b, dw_type)})"
 
 
-def get_filter_statement(filters: Union[List, str]) -> str:
+def get_filter_statement(
+    filters: Union[List, str],
+    dw_type: DataWarehouse,
+) -> str:
     """
     Parse a list of string or dict filters to a simple SQL string
     """
@@ -154,6 +163,19 @@ def get_filter_statement(filters: Union[List, str]) -> str:
                 raise_exception(f"operator {operator} is not supported")
             if operator == "CONTAINS":
                 operator = "LIKE"
+
+            # Parse comparison value
+            if isinstance(comparison_value, dict):
+                # Relative Date filter
+                if "date_part" in comparison_value:
+                    if dw_type == "BIGQUERY":
+                        comparison_value = f"DATE_ADD(CURRENT_DATE(), INTERVAL {comparison_value['offset']} {comparison_value['date_part']})"
+                    elif dw_type == "SNOWFLAKE":
+                        comparison_value = f"DATEADD({comparison_value['date_part']}, {comparison_value['offset']}, CURRENT_DATE)"
+                    else:
+                        comparison_value = f"CURRENT_DATE + INTERVAL {comparison_value['offset']} {comparison_value['date_part']}"
+
+                # Other filter types here...
 
             filter_string += f" {compound_boolean} {column_name} {operator} {comparison_value} \n"
         elif isinstance(fil, str) and fil != "":
