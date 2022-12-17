@@ -167,7 +167,8 @@ def get_filter_statement(
             # Parse complex comparison values
             if isinstance(comparison_value, dict):
                 # Relative Date filter
-                if date_part := comparison_value.get("date_part", comparison_value.get("datePart")):
+                if comparison_value.get("type", "") == "RELATIVEDATE":
+                    date_part = comparison_value.get("date_part", comparison_value.get("datePart"))
                     if dw_type == "bigquery":
                         comparison_value = f"DATE_ADD(CURRENT_DATE(), INTERVAL {comparison_value['offset']} {date_part})"
                     elif dw_type == "snowflake":
