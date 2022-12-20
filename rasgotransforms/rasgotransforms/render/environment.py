@@ -174,9 +174,7 @@ def get_filter_statement(
                         raise_exception("relativedate comparisons must pass arguments: date_part, offset, direction")
                     print(dw_type)
                     if dw_type is DataWarehouse.BIGQUERY:
-                        comparison_value = (
-                            f"DATE_ADD(CURRENT_DATE(), INTERVAL {interval} {date_part})"
-                        )
+                        comparison_value = f"DATE_ADD(CURRENT_DATE(), INTERVAL {interval} {date_part})"
                     elif dw_type is DataWarehouse.SNOWFLAKE:
                         comparison_value = f"DATEADD({date_part}, {interval}, CURRENT_DATE)"
                     else:
