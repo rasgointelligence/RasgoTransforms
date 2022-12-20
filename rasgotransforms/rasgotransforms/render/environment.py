@@ -154,7 +154,7 @@ def get_filter_statement(
         if isinstance(fil, dict):
             # Handle variable casing from past versions: only support snake eventually
             column_name = fil.get("column_name", fil.get("columnName"))
-            operator = fil.get("operator")
+            operator = fil.get("operator", "").upper()
             comparison_value = fil.get("comparison_value", fil.get("comparisonValue"))
             compound_boolean = fil.get("compound_boolean", fil.get("compoundBoolean", compound_boolean))
 
@@ -167,16 +167,20 @@ def get_filter_statement(
             # Parse complex comparison values
             if isinstance(comparison_value, dict):
                 # Relative Date filter
-                if comparison_value.get("type", "") == "RELATIVEDATE":
+                if comparison_value.get("type", "").upper() == "RELATIVEDATE":
                     date_part = comparison_value.get("date_part", comparison_value.get("datePart"))
-                    if dw_type == "bigquery":
+                    interval = f"{'-' if comparison_value['direction'] == 'past' else ''}{comparison_value['offset']}"
+                    if not (date_part and interval):
+                        raise_exception("relativedate comparisons must pass arguments: date_part, offset, direction")
+                    print(dw_type)
+                    if dw_type is DataWarehouse.BIGQUERY:
                         comparison_value = (
-                            f"DATE_ADD(CURRENT_DATE(), INTERVAL {comparison_value['offset']} {date_part})"
+                            f"DATE_ADD(CURRENT_DATE(), INTERVAL {interval} {date_part})"
                         )
-                    elif dw_type == "snowflake":
-                        comparison_value = f"DATEADD({date_part}, {comparison_value['offset']}, CURRENT_DATE)"
+                    elif dw_type is DataWarehouse.SNOWFLAKE:
+                        comparison_value = f"DATEADD({date_part}, {interval}, CURRENT_DATE)"
                     else:
-                        comparison_value = f"(CURRENT_DATE + INTERVAL {comparison_value['offset']} {date_part})"
+                        comparison_value = f"(CURRENT_DATE + INTERVAL '{interval} {date_part}')"
             filter_string += f" {compound_boolean} {column_name} {operator} {comparison_value} \n"
         elif isinstance(fil, str) and fil != "":
             filter_string += f" {compound_boolean} {fil} \n"
