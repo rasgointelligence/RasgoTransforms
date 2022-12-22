@@ -8,7 +8,7 @@ on:
       - main
 
 jobs:
-  publish-accelerators:
+  publish-transforms-to-s3:
     runs-on: ubuntu-latest
     defaults:
       run:
