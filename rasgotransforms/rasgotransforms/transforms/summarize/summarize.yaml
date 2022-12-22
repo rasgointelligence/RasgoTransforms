@@ -1,0 +1,35 @@
+name: summarize
+tags:
+  - query
+  - default
+description: |
+  Filter and then aggregate columns in a table
+
+  The filter is applied first to the table. If no filters are included, then the full table is selected.
+  Next, the table is aggregated.
+
+arguments:
+  filters:
+    type: filter_list
+    description: Remove rows using filter logic on one or more columns
+    is_optional: true
+  summarize:
+    type: column_agg_list
+    description: Columns to summarize
+    is_optional: false
+  group_by:
+    type: column_list
+    description: One or more columns to group by A categorical column by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each distinct value in the group by column. If this column has more than 20 distinct values, the plot will not generate.
+    is_optional: false
+
+example_code: |
+  internet_sales = rasgo.get.dataset(74)
+
+  ds1 = internet_sales.query(
+    summarize={
+        'SALESAMOUNT': ['COUNT', 'SUM'],
+        'CUSTOMERKEY': ['COUNT']
+    },
+    group_by = ['PRODUCTKEY'])
+  
+  ds1.preview()
