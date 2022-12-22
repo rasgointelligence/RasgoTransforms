@@ -1,5 +1,4 @@
 {% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values %}
-{% from 'filter.sql' import combine_filters %}
 {% from 'secondary_calculation.sql' import render_secondary_calculations %}
 
 {% macro calculate_expression_metric_values(

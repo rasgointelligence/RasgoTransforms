@@ -2,7 +2,6 @@
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
 {% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
-{% from 'filter.sql' import get_filter_statement, combine_filters %}
 {% from 'secondary_calculation.sql' import render_secondary_calculations, adjust_start_date %}
 {% set dimensions = dimensions if dimensions is defined else [] %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}

@@ -1,4 +1,3 @@
-{% from 'filter.sql' import get_filter_statement %}
 {% if items is not defined %}
     {% if filter_statements is not defined %}
         {{ raise_exception('items is empty: there are no filters to apply') }}

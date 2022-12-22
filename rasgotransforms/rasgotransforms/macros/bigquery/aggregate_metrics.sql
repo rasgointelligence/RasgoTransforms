@@ -1,4 +1,3 @@
-{% from 'filter.sql' import get_filter_statement %}
 {% from 'secondary_calculation.sql' import render_secondary_calculations %}
 
 {% macro calculate_timeseries_metric_values(
