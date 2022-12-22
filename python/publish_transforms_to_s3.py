@@ -18,11 +18,12 @@ def camel_case(snake_str: str) -> str:
     components = snake_str.split('_')
     return f"{components[0]}{''.join(x.title() for x in components[1:])}"
 
+
 def obj_to_camel(obj: any) -> any:
     # recursively convert the keys of a dict to camel case instead of snake.
     if isinstance(obj, list):
         return [obj_to_camel(i) if isinstance(i, (dict, list)) else i for i in obj]
-    return {camel_case(k):obj_to_camel(v) if isinstance(v, (dict, list)) else v for k, v in obj.items()}
+    return {camel_case(k): obj_to_camel(v) if isinstance(v, (dict, list)) else v for k, v in obj.items()}
 
 
 def get_some_transforms(dw_type: str):
@@ -40,7 +41,7 @@ def publish_transforms() -> None:
     raw_transforms = [y for z in [get_some_transforms(x.name) for x in rasgotransforms.DataWarehouse] for y in z]
     # snake -> camel
     raw_transforms = obj_to_camel(raw_transforms)
-    
+
     print(f'Publishing {len(raw_transforms)} Rasgo Transforms to S3')
 
     # upload to s3 with public read permissions
