@@ -16,11 +16,11 @@
 {% endfor %}
 (
     {% for filter in filters %}
-    
+
     {% if filter is not string and filter is not mapping %}
     {% set filter = dict(filter) %}
     {% endif %}
-    
+
     {% if 'columnName' in filter %}
         {% do filter.__setitem__('column_name', filter.columnName) %}
     {% endif %}
