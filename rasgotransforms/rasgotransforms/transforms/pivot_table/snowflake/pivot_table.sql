@@ -3,6 +3,10 @@
 {%- set distinct_val_query -%}
 select distinct {{ columns }}
 from {{ source_table }}
+{%- if filters is defined %}
+where true AND
+{{ get_filter_statement(filters) | indent }}
+{%- endif %}
 limit 1000
 {%- endset -%}
 
@@ -35,9 +39,7 @@ WITH filtered as (
     {{ get_filter_statement(filters) | indent }}
     {%- endif %}
 )
-
-{%- if columns is defined -%}
-
+{% if columns is defined %}
 SELECT 
     {{ group_by }}
     {{ get_values(distinct_vals) }}
@@ -49,13 +51,10 @@ FROM ( SELECT
 PIVOT ( {{ agg_method }} ( {{ values }} ) FOR {{ columns }} IN ( '{{ distinct_vals | join("', '") }}' ) ) as p
 (   {{ group_by }}
     {{ get_values(distinct_vals) }} )
-
-{%- else -%}
-
+{% else %}
 SELECT
     {{ group_by }}
     {{ agg_method }} ( {{ values }} )
 FROM filtered
-    GROUP BY {{ rows | join(', ') }}
-
+GROUP BY {{ rows | join(', ') }}
 {%- endif -%}
