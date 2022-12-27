@@ -16,13 +16,13 @@
 
 ## Parameters
 
-|    Name     |    Type     |                         Description                         | Is Optional |
-| ----------- | ----------- | ----------------------------------------------------------- | ----------- |
-| values      | column      | column to pivot and aggregate                               |             |
-| aggregation | agg         | method of aggregation (i.e. sum, avg, min, max, etc.)       |             |
-| rows        | column_list | Columns to group by (values become rows in the pivot table) | True        |
-| columns     | column      | column with row values that will become columns             | True        |
-| filters     | filter_list | Filters to apply to the table                               | True        |
+|    Name     |    Type     |                                    Description                                    | Is Optional |
+| ----------- | ----------- | --------------------------------------------------------------------------------- | ----------- |
+| values      | column      | column to pivot and aggregate                                                     |             |
+| aggregation | agg         | method of aggregation to use on the values column (i.e. sum, avg, min, max, etc.) |             |
+| rows        | column_list | Columns to group by (values become rows in the pivot table)                       | True        |
+| columns     | column      | column with row values that will become columns                                   | True        |
+| filters     | filter_list | Filters to apply to the table                                                     | True        |
 
 
 ## Example
@@ -51,10 +51,10 @@ print(ds.preview())
 Transform the Dataset and preview the result:
 
 ```python
-ds2 = ds.pivot(
-  dimensions=['DATE'],
-  pivot_column='CLOSE',
-  value_column='SYMBOL',
+ds2 = ds.pivot_table(
+  rows=['DATE'],
+  values='CLOSE',
+  columns='SYMBOL',
   agg_method='AVG'
 )
 ds2.preview()
