@@ -10,7 +10,12 @@ where true AND
 limit 1000
 {%- endset -%}
 
+{%- if 'distinct' in agg_method|lower and  %}
+
 {%- if columns is defined -%}
+    {%- if 'distinct' in agg_method|lower -%}
+        {{ raise_exception('Unable to count distinct with Columns. Remove Columns and try again.') }}
+    {%- endif -%}
     {%- set results = run_query(distinct_val_query) -%}
     {%- if results is none -%}
         {{ raise_exception('Unable to successfully retrieve distinct values from your data warehouse.') }}
@@ -54,7 +59,8 @@ PIVOT ( {{ agg_method }} ( {{ values }} ) FOR {{ columns }} IN ( '{{ distinct_va
 {% else %}
 SELECT
     {{ group_by }}
-    {{ agg_method }} ( {{ values }} )
+    {{ agg_method|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in agg_method|lower else ''}}{{ values }})
+
 FROM filtered
 {%- if rows is defined %}
 GROUP BY {{ rows | join(', ') }}
