@@ -36,7 +36,7 @@ arguments:
     description: Filters to apply to the table
     is_optional: true
 example_code: |
-  ds2 = ds.pivot(
+  ds2 = ds.pivot_table(
     rows=['DATE'],
     values='CLOSE',
     columns='SYMBOL',
