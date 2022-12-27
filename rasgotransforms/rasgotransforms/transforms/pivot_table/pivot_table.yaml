@@ -19,13 +19,13 @@ description: |
 arguments:
   values: #pivot_column
     type: column
-    description: column to pivot and aggregate
+    description: column to aggregate
   aggregation:
     type: agg
     description: method of aggregation to use on the values column (i.e. sum, avg, min, max, etc.)
   rows: #dimensions
     type: column_list
-    description: Columns to group by (values become rows in the pivot table)
+    description: Columns to group by (column values will become rows)
     is_optional: true
   columns: #value_column
     type: column

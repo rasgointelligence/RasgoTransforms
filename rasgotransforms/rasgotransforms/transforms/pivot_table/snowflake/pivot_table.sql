@@ -56,5 +56,7 @@ SELECT
     {{ group_by }}
     {{ agg_method }} ( {{ values }} )
 FROM filtered
+{%- if rows is defined %}
 GROUP BY {{ rows | join(', ') }}
+{%- endif -%}
 {%- endif -%}
