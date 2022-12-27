@@ -6,11 +6,11 @@ tags:
   - aggregate
 description: Transpose unique values in a single column to generate multiple columns, aggregating as needed. The pivot will dynamically generate a column per unique value, or you can pass a list_of_vals with the unique values you wish to create columns for.
 arguments:
-  rows: #dimensions
+  dimensions:
     type: column_list
-    description: Columns to group you want to show as rows in the pivoted table 
+    description: dimension columns after the pivot runs
     is_optional: true
-  values:
+  pivot_column:
     type: column
     description: column to pivot and aggregate
   value_column:
