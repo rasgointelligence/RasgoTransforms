@@ -22,7 +22,7 @@ arguments:
     description: column to pivot and aggregate
   aggregation:
     type: agg
-    description: method of aggregation (i.e. sum, avg, min, max, etc.)
+    description: method of aggregation to use on the values column (i.e. sum, avg, min, max, etc.)
   rows: #dimensions
     type: column_list
     description: Columns to group by (values become rows in the pivot table)
@@ -37,9 +37,9 @@ arguments:
     is_optional: true
 example_code: |
   ds2 = ds.pivot(
-    dimensions=['DATE'],
-    pivot_column='CLOSE',
-    value_column='SYMBOL',
+    rows=['DATE'],
+    values='CLOSE',
+    columns='SYMBOL',
     agg_method='AVG'
   )
   ds2.preview()
