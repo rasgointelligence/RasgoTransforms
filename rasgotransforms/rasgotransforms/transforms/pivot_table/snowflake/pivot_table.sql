@@ -10,8 +10,6 @@ where true AND
 limit 1000
 {%- endset -%}
 
-{%- if 'distinct' in agg_method|lower and  %}
-
 {%- if columns is defined -%}
     {%- if 'distinct' in agg_method|lower -%}
         {{ raise_exception('Unable to count distinct with Columns. Remove Columns and try again.') }}
