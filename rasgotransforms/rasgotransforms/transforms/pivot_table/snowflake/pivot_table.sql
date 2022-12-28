@@ -24,7 +24,7 @@ limit 1000
 {# Jinja Macro to get the comma separated cleansed name list #}
 {%- macro get_values(distinct_values) -%}
 {%- for val in distinct_vals -%}
-{{ cleanse_name(val) }}{{ ', ' if not loop.last else '' }}
+{{ cleanse_name(val) ~ '_' ~ values }}{{ ', ' if not loop.last else '' }}
 {%- endfor -%}
 {%- endmacro -%}
 
