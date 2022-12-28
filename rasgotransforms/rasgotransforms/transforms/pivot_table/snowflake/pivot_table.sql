@@ -11,7 +11,7 @@ limit 1000
 {%- endset -%}
 
 {%- if columns is defined -%}
-    {%- if 'distinct' in agg_method|lower -%}
+    {%- if 'distinct' in aggregation|lower -%}
         {{ raise_exception('Unable to count distinct with Columns. Remove Columns and try again.') }}
     {%- endif -%}
     {%- set results = run_query(distinct_val_query) -%}
@@ -51,13 +51,13 @@ FROM ( SELECT
     {{ values }}, 
     {{ columns }}
     FROM filtered)
-PIVOT ( {{ agg_method }} ( {{ values }} ) FOR {{ columns }} IN ( '{{ distinct_vals | join("', '") }}' ) ) as p
+PIVOT ( {{ aggregation }} ( {{ values }} ) FOR {{ columns }} IN ( '{{ distinct_vals | join("', '") }}' ) ) as p
 (   {{ group_by }}
     {{ get_values(distinct_vals) }} )
 {% else %}
 SELECT
     {{ group_by }}
-    {{ agg_method|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in agg_method|lower else ''}}{{ values }})
+    {{ aggregation|lower|replace('_', '')|replace('distinct', '') }}({{ 'distinct ' if 'distinct' in aggregation|lower else ''}}{{ values }})
 
 FROM filtered
 {%- if rows is defined %}

@@ -32,7 +32,7 @@ ds2 = ds.pivot_table(
   rows=['DATE'],
   values='CLOSE',
   columns='SYMBOL',
-  agg_method='AVG'
+  aggregation='AVG'
 )
 ds2.preview()
 ```
