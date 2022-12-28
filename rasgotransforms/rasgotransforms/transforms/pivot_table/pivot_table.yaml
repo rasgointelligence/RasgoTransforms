@@ -17,17 +17,17 @@ description: |
   * Filters: filters to apply
 
 arguments:
-  values: #pivot_column
+  values:
     type: column
     description: column to aggregate
   aggregation:
     type: agg
     description: method of aggregation to use on the values column (i.e. sum, avg, min, max, etc.)
-  rows: #dimensions
+  rows:
     type: column_list
     description: Columns to group by (column values will become rows)
     is_optional: true
-  columns: #value_column
+  columns:
     type: column
     description: column with row values that will become columns
     is_optional: true
