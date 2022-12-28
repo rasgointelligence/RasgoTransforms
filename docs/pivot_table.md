@@ -2,16 +2,16 @@
 
 # pivot_table
 
-<h1>Pivot table, powered by SQL.</h1>
+## Pivot table, powered by SQL.
 
-<h2>Required Inputs</h2>
-* Values: the column with values you want to aggregate
-* Aggregation: the method of aggregation for your Values
+### Required Inputs
+- Values: the column with values you want to aggregate
+- Aggregation: the method of aggregation for your Values
 
-<h2>Optional Inputs</h2>
-* Rows: column(s) to group by down
-* Columns: column(s) to pivot across
-* Filters: filters to apply
+### Optional Inputs
+- Rows: column(s) to group by down
+- Columns: column(s) to pivot across
+- Filters: filters to apply
 
 
 ## Parameters
