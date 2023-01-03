@@ -4,6 +4,7 @@ from itertools import combinations, permutations, product
 from typing import Callable, Optional, Dict, Union
 from pathlib import Path
 from os.path import getmtime
+from functools import partial
 
 from jinja2 import Environment, BaseLoader
 from jinja2.exceptions import TemplateNotFound
@@ -48,6 +49,9 @@ class RasgoEnvironment(Environment):
             "itertools": {"combinations": combinations, "permutations": permutations, "product": product},
             "dw_type": lambda: self.dw_type.value,
             "get_timedelta": get_timedelta,
+            "parse_comparison_value": partial(parse_comparison_value, dw_type=self.dw_type),
+            "quote": quote,
+            "adjust_start_date": partial(adjust_start_date, dw_type=self.dw_type),
         }
 
     @property
@@ -121,13 +125,73 @@ def get_timedelta(time_grain: str, interval: int) -> timedelta:
         interval *= 31
         return timedelta(days=interval)
     elif time_grain == 'quarter':
-        interval *= 122
+        interval *= 92
         return timedelta(days=interval)
     elif time_grain == 'year':
         interval *= 365
         return timedelta(days=interval)
     else:
         raise RenderException(f"Invalid time grain '{time_grain}'")
+
+
+def parse_comparison_value(comparison_value, dw_type: DataWarehouse):
+    if not isinstance(comparison_value, dict):
+        return quote(comparison_value)
+    if comparison_value['type'].lower() == 'relativedate':
+        date_part = comparison_value.get('date_part', comparison_value.get('datePart'))
+        if comparison_value['direction'].lower() == 'past':
+            offset = -comparison_value['offset']
+        else:
+            offset = comparison_value['offset']
+        if dw_type == DataWarehouse.SNOWFLAKE:
+            return f"DATEADD({date_part}, {offset}, CURRENT_DATE)"
+        elif dw_type == DataWarehouse.BIGQUERY:
+            return f"DATE_ADD(CURRENT_DATE, INTERVAL {offset} {date_part})"
+        else:
+            return f"(CURRENT_DATE + INTERVAL {offset} {date_part})"
+    else:
+        raise RenderException(f"Invalid comparison value object type '{comparison_value['type']}'")
+
+
+def quote(value):
+    """
+    Helper method used to add quotes around strings only if they don't already exist
+    """
+    if isinstance(value, str) and not value.startswith("'"):
+        return f"'{value}'"
+    else:
+        return value
+
+
+def adjust_start_date(start_date, time_grain, secondary_calculations, dw_type: DataWarehouse):
+    if not secondary_calculations:
+        return parse_comparison_value(start_date, dw_type=dw_type)
+    max_timedelta = timedelta(0)
+    for calc in secondary_calculations:
+        if 'interval' in calc:
+            max_timedelta = max(max_timedelta, get_timedelta(time_grain, calc['interval']))
+        elif 'period' in calc:
+            max_timedelta = max(max_timedelta, get_timedelta(calc['period'], 1))
+
+    if isinstance(start_date, dict):
+        date_part = start_date.get('date_part', start_date.get('datePart', None))
+        if start_date['direction'].lower() == 'past':
+            time_delta = -get_timedelta(date_part, start_date['offset']) - max_timedelta
+        else:
+            time_delta = get_timedelta(date_part, start_date['offset']) - max_timedelta
+        return parse_comparison_value(
+            {
+                'type': 'relativedate',
+                'direction': 'past' if time_delta < timedelta(0) else 'future',
+                'offset': abs(time_delta.days),
+                'date_part': 'DAY',
+            },
+            dw_type=dw_type,
+        )
+
+    if isinstance(start_date, str):
+        start_date = datetime.fromisoformat(start_date)
+    return quote((start_date - max_timedelta).date().isoformat())
 
 
 class RasgoLoader(BaseLoader):
