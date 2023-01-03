@@ -36,7 +36,13 @@
             {% if filter.comparison_value.direction == 'past' %}
                 {% do filter.comparison_value.__setitem__('offset', -filter.comparison_value.offset)  %}
             {% endif %}
-            {% do filter.__setitem__('comparison_value', "(CURRENT_DATE + INTERVAL '" ~ filter.comparison_value.offset ~ filter.comparison_value.date_part ~ "')") %}
+            {% if dw_type() == 'bigquery' %}
+                {% do filter.__setitem__('comparison_value', "DATE_ADD(CURRENT_DATE, INTERVAL " ~ filter.comparison_value.offset ~ " " ~ filter.comparison_value.date_part ~ ")") %}
+            {% elif dw_type() == 'snowflake' %}
+                {% do filter.__setitem__('comparison_value', "DATEADD(" ~ filter.comparison_value.date_part ~ "," ~ filter.comparison_value.offset ~ ", CURRENT_DATE)") %}
+            {% else %}
+                {% do filter.__setitem__('comparison_value', "(CURRENT_DATE + INTERVAL '" ~ filter.comparison_value.offset ~ " " ~ filter.comparison_value.date_part ~ "')") %}
+            {% endif %}
         {% endif %}
     {% endif %}
 
