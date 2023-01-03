@@ -139,16 +139,12 @@ def parse_comparison_value(comparison_value, dw_type: DataWarehouse):
         return quote(comparison_value)
     if comparison_value['type'].lower() == 'relativedate':
         date_part = comparison_value.get('date_part', comparison_value.get('datePart'))
-        if comparison_value['direction'].lower() == 'past':
-            offset = -comparison_value['offset']
-        else:
-            offset = comparison_value['offset']
         if dw_type == DataWarehouse.SNOWFLAKE:
-            return f"DATEADD({date_part}, {offset}, CURRENT_DATE)"
+            return f"DATEADD({date_part}, {comparison_value['offset']}, CURRENT_DATE)"
         elif dw_type == DataWarehouse.BIGQUERY:
-            return f"DATE_ADD(CURRENT_DATE, INTERVAL {offset} {date_part})"
+            return f"DATE_ADD(CURRENT_DATE, INTERVAL {comparison_value['offset']} {date_part})"
         else:
-            return f"(CURRENT_DATE + INTERVAL {offset} {date_part})"
+            return f"(CURRENT_DATE + INTERVAL {comparison_value['offset']} {date_part})"
     else:
         raise RenderException(f"Invalid comparison value object type '{comparison_value['type']}'")
 
@@ -175,10 +171,7 @@ def adjust_start_date(start_date, time_grain, secondary_calculations, dw_type: D
 
     if isinstance(start_date, dict):
         date_part = start_date.get('date_part', start_date.get('datePart', None))
-        if start_date['direction'].lower() == 'past':
-            time_delta = -get_timedelta(date_part, start_date['offset']) - max_timedelta
-        else:
-            time_delta = get_timedelta(date_part, start_date['offset']) - max_timedelta
+        time_delta = -get_timedelta(date_part, start_date['offset']) - max_timedelta
         return parse_comparison_value(
             {
                 'type': 'relativedate',
