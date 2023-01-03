@@ -171,12 +171,11 @@ def adjust_start_date(start_date, time_grain, secondary_calculations, dw_type: D
 
     if isinstance(start_date, dict):
         date_part = start_date.get('date_part', start_date.get('datePart', None))
-        time_delta = -get_timedelta(date_part, start_date['offset']) - max_timedelta
+        time_delta = get_timedelta(date_part, start_date['offset']) - max_timedelta
         return parse_comparison_value(
             {
                 'type': 'relativedate',
-                'direction': 'past' if time_delta < timedelta(0) else 'future',
-                'offset': abs(time_delta.days),
+                'offset': time_delta.days,
                 'date_part': 'DAY',
             },
             dw_type=dw_type,
