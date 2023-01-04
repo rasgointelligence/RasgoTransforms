@@ -3,20 +3,19 @@
 {% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
 {% from 'filter.sql' import get_filter_statement, combine_filters %}
-{% from 'secondary_calculation.sql' import render_secondary_calculations, adjust_start_date %}
+{% from 'secondary_calculation.sql' import render_secondary_calculations %}
 {% set dimensions = dimensions if dimensions is defined else [] %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
 {% set bucket_count = x_axis.bucket_count if x_axis.bucket_count is defined else 200 %}
 {% set filters = filters if filters is defined else [] %}
 {% if x_axis.type == 'timeseries' %}
 {% if x_axis.timeseries_options %}
-{% set start_date = '2010-01-01' if not x_axis.timeseries_options.start_date else x_axis.timeseries_options.start_date %}
-{% set end_date = ((start_date|string|todatetime).now().date()|string) if not x_axis.timeseries_options.end_date else x_axis.timeseries_options.end_date%}
+{% set start_date = parse_comparison_value(x_axis.timeseries_options.start_date) %}
+{% set end_date = 'CURRENT_DATE' if not x_axis.timeseries_options.end_date else parse_comparison_value(x_axis.timeseries_options.end_date) %}
 {% set time_grain = 'day' if not x_axis.timeseries_options.time_grain else x_axis.timeseries_options.time_grain %}
 {% else %}
 {{ raise_exception("Parameter 'x_axis.timeseries_options' must be given when 'x_axis' is a column of type datetime")}}
 {% endif %}
-{% set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 %}
 {% endif %}
 {% set column_agg_list = aggregations %}
 
@@ -37,7 +36,7 @@
 {% if dimensions %}
 {% if start_date is defined %}
 {% set date_filter %}
-({{ x_axis.column }} >= '{{ start_date }}' AND {{ x_axis.column }} <= '{{ end_date }}')
+({{ x_axis.column }} >= {{ start_date }} AND {{ x_axis.column }} <= {{ end_date }})
 {% endset %}
 {% set distinct_vals_filters = get_filter_statement([
     date_filter,
