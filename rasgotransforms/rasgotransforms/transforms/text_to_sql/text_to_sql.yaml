@@ -1,0 +1,20 @@
+name: text_to_sql
+tags:
+  - custom
+description: |
+  A transform that uses AI to generate a SQL statement based on user-provided text.
+  Describe the results you want to see, review the generated query, and make final edits to match your expectations.
+arguments:
+  text:
+    type: string
+    description: |
+      Text description of the query you want to generate.
+      Example: total revenue for the Southwest region last year
+example_code: |
+  ds = rasgo.get.dataset(fqtn='DB.SCHEMA.IOWA_LIQUOR_SALES')
+
+  ds2 = ds.text_to_sql(
+    text='total bottles sold in Des Moines last year'
+  )
+  ds2.sql()
+  ds2.preview()
