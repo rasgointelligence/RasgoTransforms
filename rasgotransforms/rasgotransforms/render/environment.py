@@ -113,21 +113,42 @@ def trim_blank_lines(sql: str) -> str:
     return re.sub(r'[\n][\s]*\n', '\n', sql)
 
 
-def get_timedelta(time_grain: str, interval: int) -> timedelta:
+def get_timedelta(time_grain: str, interval: int = None) -> timedelta:
     time_grain = time_grain.lower()
+    current_time = datetime.utcnow()
     if time_grain == 'hour':
+        if not interval:
+            return current_time - current_time.replace(minute=0, second=0, microsecond=0)
         return timedelta(hours=interval)
     elif time_grain == 'day':
+        if not interval:
+            return current_time - current_time.replace(minute=0, second=0, microsecond=0)
         return timedelta(days=interval)
     elif time_grain == 'week':
+        if not interval:
+            return timedelta(
+                days=current_time.isoweekday(),
+                hours=current_time.hour,
+                minutes=current_time.minute,
+                seconds=current_time.second,
+                microseconds=current_time.microsecond,
+            )
         return timedelta(weeks=interval)
     elif time_grain == 'month':
+        if not interval:
+            return current_time - current_time.replace(day=1, minute=0, second=0, microsecond=0)
         interval *= 31
         return timedelta(days=interval)
     elif time_grain == 'quarter':
+        if not interval:
+            return current_time - current_time.replace(
+                month=((current_time.month - 1) // 3) * 3 + 1, day=1, minute=0, second=0, microsecond=0
+            )
         interval *= 92
         return timedelta(days=interval)
     elif time_grain == 'year':
+        if not interval:
+            return current_time - current_time.replace(month=1, day=1, minute=0, second=0, microsecond=0)
         interval *= 365
         return timedelta(days=interval)
     else:
@@ -140,11 +161,20 @@ def parse_comparison_value(comparison_value, dw_type: DataWarehouse):
     if comparison_value['type'].lower() == 'relativedate':
         date_part = comparison_value.get('date_part', comparison_value.get('datePart'))
         if dw_type == DataWarehouse.SNOWFLAKE:
-            return f"DATEADD({date_part}, {comparison_value['offset']}, CURRENT_DATE)"
+            if not comparison_value['offset']:
+                return f"DATE_TRUNC({date_part}, CURRENT_DATE)"
+            else:
+                return f"DATEADD({date_part}, {comparison_value['offset']}, CURRENT_DATE)"
         elif dw_type == DataWarehouse.BIGQUERY:
-            return f"DATE_ADD(CURRENT_DATE, INTERVAL {comparison_value['offset']} {date_part})"
+            if not comparison_value['offset']:
+                return f"DATE_TRUNC(CURRENT_DATE, {date_part})"
+            else:
+                return f"DATE_ADD(CURRENT_DATE, INTERVAL {comparison_value['offset']} {date_part})"
         else:
-            return f"(CURRENT_DATE + INTERVAL {comparison_value['offset']} {date_part})"
+            if not comparison_value['offset']:
+                return f"DATE_TRUNC({date_part}, CURRENT_DATE)"
+            else:
+                return f"(CURRENT_DATE + INTERVAL {comparison_value['offset']} {date_part})"
     else:
         raise RenderException(f"Invalid comparison value object type '{comparison_value['type']}'")
 
