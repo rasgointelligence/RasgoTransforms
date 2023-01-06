@@ -2,15 +2,16 @@
 
 # text_to_sql
 
-A transform that uses AI to generate a SQL statement based on user-provided text.
-Describe the results you want to see, review the generated query, and make final edits to match your expectations.
+## Text to SQL, powered by OpenAI.
+### Required Inputs
+- Text: a prompt describing the SQL query that you want OpenAI to generate for you. Add as much context as possible to help OpenAI generate a useful query. Avoid using relative date terms like "last year" because OpenAI doesn't have any knowledge past 2021.
 
 
 ## Parameters
 
-| Name |  Type  |                                                  Description                                                   | Is Optional |
-| ---- | ------ | -------------------------------------------------------------------------------------------------------------- | ----------- |
-| text | string | Text description of the query you want to generate. Example: total revenue for the Southwest region last year  |             |
+| Name |  Type  |                                                 Description                                                  | Is Optional |
+| ---- | ------ | ------------------------------------------------------------------------------------------------------------ | ----------- |
+| text | custom | Text description of the query you want to generate. Example: total revenue for the Southwest region in 2021  |             |
 
 
 ## Example
