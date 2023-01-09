@@ -71,5 +71,5 @@
         {% set adjusted_date.value = min(adjusted_date.value, start_date - get_timedelta(calc['period'], 1)) %}
     {% endif %}
 {% endfor %}
-{{ adjusted_date.value }} blah blah blah
+{{ adjusted_date.value }}
 {% endmacro %}
