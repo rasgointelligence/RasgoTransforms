@@ -13,7 +13,6 @@
     distinct_values,
     secondary_calculations
 ) %}
-{% set num_days = (end_date | todatetime - start_date | todatetime).days %}
 {% set filter_statement = get_filter_statement(filters) %}
 {% set aggregation_columns = []|to_set %}
 {% for aggregation in aggregations %}
@@ -51,7 +50,7 @@ with
             {{ column }}{{ ',' if not loop.last }}
             {% endfor %}
         from {{ source_table }}
-        where ({{ time_dimension }} >= '{{ start_date }}' and {{ time_dimension }} <= '{{ end_date }}') and
+        where ({{ time_dimension }} >= {{ start_date }} and {{ time_dimension }} <= {{ end_date }}) and
             {{ filter_statement | indent(12) }}
     ),
     {% if distinct_values and dimensions %}
@@ -60,8 +59,8 @@ with
     {% if time_grain | lower == "all" %}
     spine as (
         select
-            cast('{{ start_date }}' as timestamp_ntz) as period_min,
-            cast('{{ end_date }}' as timestamp_ntz) as period_max
+            cast({{ start_date }} as timestamp_ntz) as period_min,
+            cast({{ end_date }} as timestamp_ntz) as period_max
     ),
     joined as (select * from source_query cross join spine),
     tidy_data as (
@@ -85,7 +84,7 @@ with
             row_number() over (order by null) as interval_id,
             cast(
                 dateadd(
-                    'day', interval_id -1, '{{ start_date }}'::timestamp_ntz
+                    'day', interval_id -1, start_date
                 ) as date
             ) as date_day,
             cast(date_trunc('week', date_day) as date) as date_week,
@@ -101,7 +100,10 @@ with
                 then date_from_parts(year(date_day), 10, 1)
             end as date_quarter,
             cast(date_trunc('year', date_day) as date) as date_year
-        from table(generator(rowcount => {{ num_days }}))
+        from
+            (select {{ start_date }}::date start_date, {{ end_date }}::date end_date)
+            join table(generator(rowcount => 10000))
+            qualify interval_id < 2 + end_date - start_date
     ),
     {% if dimensions %}
     spine__time as (select date_{{ time_grain }} as period, date_day from calendar),

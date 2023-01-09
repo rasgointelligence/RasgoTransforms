@@ -59,17 +59,3 @@
     {% endif %}
 {% endfor %}
 {% endmacro %}
-
-{% macro adjust_start_date(start_date, time_grain, secondary_calculations) %}
-{% set start_date = start_date|string|todatetime %}
-{% set adjusted_date = namespace(value=start_date) %}
-{% for calc in secondary_calculations %}
-    {% if 'interval' in calc %}
-        {% set adjusted_date.value = min(adjusted_date.value, start_date - get_timedelta(time_grain, calc['interval'])) %}
-    {% endif %}
-    {% if 'period' in calc %}
-        {% set adjusted_date.value = min(adjusted_date.value, start_date - get_timedelta(calc['period'], 1)) %}
-    {% endif %}
-{% endfor %}
-{{ adjusted_date.value }}
-{% endmacro %}
