@@ -52,6 +52,7 @@ class RasgoEnvironment(Environment):
             "parse_comparison_value": partial(parse_comparison_value, dw_type=self.dw_type),
             "quote": quote,
             "adjust_start_date": partial(adjust_start_date, dw_type=self.dw_type),
+            "is_date_string": is_date_string,
         }
 
     @property
@@ -221,6 +222,17 @@ def quote(value):
         return f"'{value}'"
     else:
         return value
+
+
+def is_date_string(value: str) -> bool:
+    """
+    Test to determine if string is a date string
+    """
+    try:
+        datetime.fromisoformat(value)
+        return True
+    except ValueError:
+        return False
 
 
 def adjust_start_date(start_date, time_grain, secondary_calculations, dw_type: DataWarehouse):

@@ -18,6 +18,12 @@
 {% for aggregation in aggregations %}
 {% do aggregation_columns.add(aggregation.column) %}
 {% endfor %}
+{% if is_date_string(start_date) %}
+{% set start_date = quote(start_date) %}
+{% endif %}
+{% if is_date_string(end_date) %}
+{% set end_date = quote(end_date) %}
+{% endif %}
 with
     {% if distinct_values and dimensions %}
     combined_dimensions as (
