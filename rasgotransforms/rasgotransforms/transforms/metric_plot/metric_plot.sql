@@ -3,7 +3,7 @@
 {% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
 {% from 'filter.sql' import get_filter_statement, combine_filters %}
-{% from 'secondary_calculation.sql' import render_secondary_calculations, adjust_start_date %}
+{% from 'secondary_calculation.sql' import render_secondary_calculations %}
 {% set dimensions = group_by_dimensions if group_by_dimensions is defined else [] %}
 {% set max_num_groups = max_num_groups if max_num_groups is defined else 10 %}
 {% set filters = filters if filters is defined else [] %}
@@ -23,12 +23,10 @@
         {% do secondary_calculations.append(comparison.secondary_calculation) %}
     {% endif %}
 {% endfor %}
-{% set start_date = '2010-01-01' if not timeseries_options.start_date else timeseries_options.start_date %}
-{% set end_date = ((start_date|string|todatetime).now().date()|string) if not timeseries_options.end_date else timeseries_options.end_date%}
+{% set original_start_date = parse_comparison_value(timeseries_options.start_date) %}
+{% set end_date = 'CURRENT_DATE' if not timeseries_options.end_date else parse_comparison_value(timeseries_options.end_date) %}
 {% set time_grain = 'day' if not timeseries_options.time_grain else timeseries_options.time_grain %}
-{% set num_days = (end_date|string|todatetime - start_date|string|todatetime).days + 1 %}
-{% set original_start_date = start_date %}
-{% set start_date = (adjust_start_date(start_date=start_date, time_grain=time_grain, secondary_calculations=secondary_calculations).strip()|todatetime).date()|string %}
+{% set start_date = adjust_start_date(start_date=timeseries_options.start_date, time_grain=time_grain, secondary_calculations=secondary_calculations) %}
 
 {% set table_metrics = {} %}
 {% set metric_names = [] %}
@@ -59,7 +57,7 @@
 {% do metrics[0].__setitem__('time_dimension', metrics[0].timeDimension) %}
 {% endif %}
 {% set date_filter %}
-({{ metrics[0].time_dimension }} >= '{{ start_date }}' AND {{ metrics[0].time_dimension }} <= '{{ end_date }}')
+({{ metrics[0].time_dimension }} >= {{ start_date }} AND {{ metrics[0].time_dimension }} <= {{ end_date }})
 {% endset %}
 {% set distinct_vals_filters = get_filter_statement([
     date_filter,
@@ -172,7 +170,7 @@ secondary_calculations as (
     from joined
 )
 select * from secondary_calculations
-where period_min >= '{{ original_start_date }}'
+where period_min >= {{ original_start_date }}
 order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop.last else '\n' }}{% endfor %}
 {% set secondary_calculation_metrics = [] %}
 {% for calc_config in secondary_calculations %}

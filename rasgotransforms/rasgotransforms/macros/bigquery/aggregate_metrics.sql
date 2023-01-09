@@ -18,6 +18,12 @@
 {% for aggregation in aggregations %}
 {% do aggregation_columns.add(aggregation.column) %}
 {% endfor %}
+{% if is_date_string(start_date) %}
+{% set start_date = quote(start_date) %}
+{% endif %}
+{% if is_date_string(end_date) %}
+{% set end_date = quote(end_date) %}
+{% endif %}
 with
     {% if distinct_values and dimensions %}
     combined_dimensions as (
@@ -60,7 +66,7 @@ with
             {{ column }}{{ ',' if not loop.last }}
             {% endfor %}
         from {{ source_table if not (distinct_values and dimensions) else 'combined_dimensions'}}
-        where ({{ time_dimension }} >= '{{ start_date }}' and {{ time_dimension }} <= '{{ end_date }}') and
+        where ({{ time_dimension }} >= {{ start_date }} and {{ time_dimension }} <= {{ end_date }}) and
             {{ filter_statement | indent(12) }}
     ),
     {% if distinct_values and dimensions %}
@@ -69,8 +75,8 @@ with
     {% if time_grain|lower == 'all' %}
     spine as (
         select
-            cast('{{ start_date }}' as timestamp) as period_min,
-            cast('{{ end_date }}' as timestamp) as period_max
+            cast({{ start_date }} as date) as period_min,
+            cast({{ end_date }} as date) as period_max
     ),
     joined as (select * from source_query cross join spine),
     tidy_data as (
@@ -98,7 +104,7 @@ with
             date_trunc(date_day, year) as date_year
         from
             unnest(
-                generate_date_array('{{ start_date }}', '{{ end_date }}')
+                generate_date_array({{ start_date }}, {{ end_date }})
             ) as date_day
     ),
     {% if dimensions %}
@@ -141,15 +147,11 @@ with
     ),
     tidy_data as (
         select
-            cast(period as timestamp) as period_min,
+            period as period_min,
             {% if time_grain|lower == 'quarter' %}
-            cast(
-                date_add(period, interval 3 month) as timestamp
-            ) as period_max,
+            date_add(period, interval 3 month) as period_max,
             {% else %}
-            cast(
-                date_add(period, interval 1 {{ time_grain }}) as timestamp
-            ) as period_max,
+            date_add(period, interval 1 {{ time_grain }}) as period_max,
             {% endif %}
             {% for dimension in dimensions %}
             {{ dimension }},
