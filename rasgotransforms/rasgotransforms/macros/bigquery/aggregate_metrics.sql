@@ -38,6 +38,8 @@ with
                 {% endfor %}
             ) as dimensions
         from {{ source_table }}
+        where ({{ time_dimension }} >= {{ start_date }} and {{ time_dimension }} <= {{ end_date }}) and
+            {{ filter_statement | indent(12) }}
     ),
     {% endif %}
     source_query as (
@@ -66,8 +68,10 @@ with
             {{ column }}{{ ',' if not loop.last }}
             {% endfor %}
         from {{ source_table if not (distinct_values and dimensions) else 'combined_dimensions'}}
+        {% if not (distinct_values and dimensions) %}
         where ({{ time_dimension }} >= {{ start_date }} and {{ time_dimension }} <= {{ end_date }}) and
             {{ filter_statement | indent(12) }}
+        {% endif %}
     ),
     {% if distinct_values and dimensions %}
     {% set dimensions=['dimensions'] %}
