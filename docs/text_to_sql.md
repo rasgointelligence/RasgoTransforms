@@ -9,9 +9,9 @@
 
 ## Parameters
 
-| Name |  Type  |                                                 Description                                                  | Is Optional |
-| ---- | ------ | ------------------------------------------------------------------------------------------------------------ | ----------- |
-| text | custom | Text description of the query you want to generate. Example: total revenue for the Southwest region in 2021  |             |
+| Name |    Type     |                                                 Description                                                  | Is Optional |
+| ---- | ----------- | ------------------------------------------------------------------------------------------------------------ | ----------- |
+| text | string-long | Text description of the query you want to generate. Example: total revenue for the Southwest region in 2021  |             |
 
 
 ## Example
