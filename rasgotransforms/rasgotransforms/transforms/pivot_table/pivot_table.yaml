@@ -18,11 +18,8 @@ description: |
 
 arguments:
   values:
-    type: column
-    description: column to aggregate
-  aggregation:
-    type: agg
-    description: method of aggregation to use on the values column (i.e. sum, avg, min, max, etc.)
+    type: column_agg_list
+    description: columns to aggregate
   rows:
     type: column_list
     description: Columns to group by (column values will become rows)
