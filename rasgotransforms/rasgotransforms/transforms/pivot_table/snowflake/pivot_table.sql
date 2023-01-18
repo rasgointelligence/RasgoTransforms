@@ -7,7 +7,7 @@ from {{ source_table }}
 where true AND
 {{ get_filter_statement(filters) | indent }}
 {%- endif %}
-limit 1000
+limit 500
 {%- endset -%}
 
 {%- if columns is defined -%}

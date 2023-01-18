@@ -16,6 +16,9 @@ description: |
   - Columns: column(s) to pivot across
   - Filters: filters to apply
 
+  ### Notes
+  - Applies a hard limit of 500 distinct values in the 'columns' column
+
 arguments:
   values:
     type: column_agg_list
