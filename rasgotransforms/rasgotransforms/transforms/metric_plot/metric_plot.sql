@@ -27,6 +27,7 @@
 {% set end_date = 'CURRENT_DATE' if not timeseries_options.end_date else parse_comparison_value(timeseries_options.end_date) %}
 {% set time_grain = 'day' if not timeseries_options.time_grain else timeseries_options.time_grain %}
 {% set start_date = adjust_start_date(start_date=timeseries_options.start_date, time_grain=time_grain, secondary_calculations=secondary_calculations) %}
+{% set expression_metrics = combine_metrics(expression_metrics) %}
 
 {% set table_metrics = {} %}
 {% set metric_names = [] %}
@@ -80,7 +81,7 @@
 with
 {# Expression Metrics #}
 {% for metric in expression_metrics %}
-{% do metric_names.append(metric.name) %}
+{% do metric_names.extend(metric.names) %}
 {% if 'metricDependencies' in metric %}
 {% do metric.__setitem__('metric_dependencies', metric.metricDependencies) %}
 {% endif %}
@@ -93,7 +94,7 @@ with
 {% if 'sourceTable' in metric %}
 {% do metric.__setitem__('source_table', metric.sourceTable) %}
 {% endif %}
-{% do table_metrics.__setitem__('metric__' + metric.name, [metric.name]) %}
+{% do table_metrics.__setitem__('metric__' + metric.name, metric.names) %}
 metric__{{ metric.name }} as (
     {% if metric.type|lower == 'expression' %}
     {{ calculate_expression_metric_values(
@@ -109,11 +110,7 @@ metric__{{ metric.name }} as (
     ) | indent }}
     {% else %}
     {{ calculate_timeseries_metric_values(
-        aggregations=[{
-            'column': metric.target_expression,
-            'method': metric.type,
-            'alias': metric.name
-        }],
+        aggregations=metric.aggregations,
         time_dimension=metric.time_dimension,
         dimensions=dimensions,
         start_date=start_date,

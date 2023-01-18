@@ -6,17 +6,12 @@ Calculate metric values given a metric definition
 
 ## Parameters
 
-|      Name      |    Type     |                                                                                          Description                                                                                           | Is Optional |
-| -------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| time_dimension | column      | The date/datetime column by which the metric will be aggregated                                                                                                                                |             |
-| target_column  | column      | The target column used to calculate the metric, can also be a sql string '(e.g. cast(target_column as string)')                                                                                |             |
-| aggregation    | agg         | the Aggregation method used to calculate the metric (e.g. 'sum', 'count_distinct', 'max') or 'expression' if the metric is an expression metric                                                |             |
-| time_grain     | date_part   | The time grain (day, week, month, quarter, year) used to create the datespine that the metric is aggregated by                                                                                 |             |
-| alias          | string      | The name of the output metric value column                                                                                                                                                     | True        |
-| dimensions     | column_list | List of columns used to group by in metric aggregation                                                                                                                                         | True        |
-| filters        | filter_list | List of objects containing filters used to filter the source data. A filter object must contain the fields 'field', 'operator', and 'value'. String values should be wrapped in single quotes. | True        |
-| start_date     | timestamp   | The start of the period for which metric values will be calculated (2010-01-01 if unset)                                                                                                       | True        |
-| end_date       | timestamp   | The end of the period for which metric values will be calculated (current day if unset)                                                                                                        | True        |
+|        Name         |        Type        |                                                                                                                                                                           Description                                                                                                                                                                           | Is Optional |
+| ------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| metrics             | comparison_list    | List of input metrics/calculations to plot                                                                                                                                                                                                                                                                                                                      |             |
+| filters             | filter_list        | Filter logic on one or more columns. Can choose between a simple comparison filter or advanced filter using free text.                                                                                                                                                                                                                                          | True        |
+| group_by_dimensions | dimension_list     | Categorical column(s) by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each distinct value in the group by column. If this column has more than 20 distinct values, the plot will not generate.                                                                                                     | True        |
+| timeseries_options  | timeseries_options | (Required if 'x_axis' is a date/datetime type) A dictionary containing the start and end dates as well as the time grain which will be used to create the datespine for the x_axis. Time grain options are ('day', 'week', 'month', 'year', 'quarter', and 'all') Example: {   'start_date': '2021-12-01',   'end_date': '2022-07-01',   'time_grain': 'day' }  |             |
 
 
 ## Example
@@ -25,24 +20,33 @@ Calculate metric values given a metric definition
 ds = rasgo.get.dataset(id)
 
 ds2 = ds.metric(
-    time_dimension='ORDERDATE',
-    column='SALESAMOUNT',
-    aggregation='sum',
-    alias='weekly_sales',
-    time_grain='week',
-    dimensions=['PRODUCTKEY'],
-    filters=[
+    metrics=[
       {
-        'field': 'UNITPRICE',
-        'operator': '>=',
-        'value': 1
-      },
-      {
-        'field': 'DEPARTMENT',
-        'operator': 'like'
-        'value': "'%electronics'"
+        "name": "AW_Sales_Revenue",
+        "sourceTable": "RASGOLOCAL.PUBLIC.FQLUSMVCMIDATYSA",
+        "type": "SUM",
+        "aggregationType": "SUM",
+        "targetExpression": "SALESAMOUNT",
+        "timeDimension": "ORDERDATE",
+        "metricDependencies": [],
       }
-    ]
+    ],
+    filters=[],
+    timeseries_options={
+      "time_grain": "DAY",
+      "start_date": {
+        "direction": "past",
+        "offset": 30,
+        "datePart": "DAY",
+        "type": "relative_date"
+      },
+      "end_date": {
+        "direction": "past",
+        "offset": 0,
+        "datePart": "DAY",
+        "type": "relative_date"
+      }
+    }
 )
 ds2.preview()
 
