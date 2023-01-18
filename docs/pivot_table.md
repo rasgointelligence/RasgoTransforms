@@ -13,6 +13,9 @@
 - Columns: column(s) to pivot across
 - Filters: filters to apply
 
+### Notes
+- Applies a hard limit of 500 distinct values in the 'columns' column
+
 
 ## Parameters
 
@@ -38,5 +41,5 @@ ds2.preview()
 
 ## Source Code
 
-{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/pivot_table/pivot_table.sql" %}
+{% embed url="https://github.com/rasgointelligence/RasgoTransforms/blob/main/rasgotransforms/rasgotransforms/transforms/pivot_table/snowflake/pivot_table.sql" %}
 
