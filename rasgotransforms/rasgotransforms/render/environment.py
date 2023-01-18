@@ -53,6 +53,7 @@ class RasgoEnvironment(Environment):
             "quote": quote,
             "adjust_start_date": partial(adjust_start_date, dw_type=self.dw_type),
             "is_date_string": is_date_string,
+            "combine_metrics": combine_metrics,
         }
 
     @property
@@ -104,6 +105,32 @@ def cleanse_template_symbol(symbol: str) -> str:
     symbol = re.sub('[^A-Za-z0-9_]+', '', symbol)
     symbol = '_' + symbol if not symbol or symbol[0].isdecimal() else symbol
     return symbol
+
+
+def combine_metrics(metrics: list) -> list:
+    combined_metrics = {}
+    output = []
+    for metric in metrics:
+        if metric.get('type', 'expression').lower() == 'expression':
+            metric['names'] = [metric.get('name')]
+            output.append(metric)
+        else:
+            combined_metrics.setdefault(metric.get('sourceTable'), []).append(metric)
+    for source, metrics_to_combine in combined_metrics.items():
+        combined_metric = metrics_to_combine[0]
+        combined_metric['aggregations'] = []
+        combined_metric['names'] = []
+        for metric_to_combine in metrics_to_combine:
+            combined_metric['names'].append(metric_to_combine.get('name'))
+            combined_metric['aggregations'].append(
+                {
+                    'column': metric_to_combine.get('targetExpression'),
+                    'method': metric_to_combine.get('type'),
+                    'alias': metric_to_combine.get('name'),
+                }
+            )
+        output.append(combined_metric)
+    return output
 
 
 def raise_exception(message: str) -> None:
