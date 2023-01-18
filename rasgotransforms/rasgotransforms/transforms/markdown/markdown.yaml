@@ -2,7 +2,7 @@ name: markdown
 type: insight
 operation_type: VIZ
 context:
-  chart_type: markdown
+  chart_type: data_table
 tags:
   - markdown
 description: |
@@ -15,4 +15,5 @@ arguments:
   markdown:
     type: string-long
     description: raw markdown
+example_code: |
   not_sure_you_should_be_coding_with_this
