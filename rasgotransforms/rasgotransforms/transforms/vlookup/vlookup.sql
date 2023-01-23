@@ -17,11 +17,11 @@
 SELECT base.*, 
 {%- for column in lookup_table_cols %}
     {%- if column in source_col_names -%}
-        lookup.{{ column }} as {{ lookup_table_name }}_{{ column }}{{ ', ' if not loop.last }}
+        lookupt.{{ column }} as {{ lookup_table_name }}_{{ column }}{{ ', ' if not loop.last }}
     {%- else -%}
         {{ column }}{{ ', ' if not loop.last }}
     {%- endif -%}
 {%- endfor %}
 FROM {{ source_table }} base
-LEFT OUTER JOIN {{ lookup_table }} lookup
-on base.{{ lookup_column }} = lookup.{{ lookup_column }}
+LEFT OUTER JOIN {{ lookup_table }} lookupt
+on base.{{ lookup_column }} = lookupt.{{ lookup_column }}
