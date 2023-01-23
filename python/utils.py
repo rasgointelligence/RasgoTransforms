@@ -229,6 +229,7 @@ def _transform_args_have_changed(
             db_arg.description != yaml_arg['description']
             or db_arg.is_optional != yaml_arg.get('is_optional', False)
             or db_arg.type != yaml_arg['type']
+            or db_arg.context != yaml_arg.get('context')
         ):
             return True
 
