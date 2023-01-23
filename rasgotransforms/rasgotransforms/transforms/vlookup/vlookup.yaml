@@ -31,6 +31,8 @@ arguments:
     description: |
       Columns to keep from the lookup table
     is_optional: true
+    context:
+      tableArg: lookup_table
 example_code: |
   internet_sales = rasgo.get.dataset(74)
   customer = rasgo.get.dataset(55)
