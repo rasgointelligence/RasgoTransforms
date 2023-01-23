@@ -1,4 +1,4 @@
 boto3
-pyrasgo>=0.4.27
+pyrasgo>=2.5.1
 pytablewriter
 pyyaml
