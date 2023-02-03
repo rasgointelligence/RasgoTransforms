@@ -1,0 +1,28 @@
+name: new_columns
+tags:
+  - column
+  - math
+description: |
+  ## Build new columns, using SQL formulas.
+
+  ### Required Inputs
+  - Calculated Column: the formula for the new column you want to build
+
+  ### Optional Inputs
+  - Alias: name for your columns
+
+  ### Notes
+  - Supports any SQL column functions that are compatible with your data warehouse
+
+arguments:
+  calculated_columns:
+    type: calculated_column_list
+    description: List of SQL formulas to generate new columns
+example_code: |
+  ds2 = ds.new_columns(
+      calculated_columns={
+            calcuated_column: 'POWER(COLUMN_NAME, 3)',
+            alias: 'COLUMN_NAME_Cubed'
+          }
+      )
+  ds2.preview()
