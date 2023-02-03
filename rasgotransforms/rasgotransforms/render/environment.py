@@ -1,7 +1,7 @@
 import re
 from datetime import datetime, timedelta
 from itertools import combinations, permutations, product
-from typing import Callable, Optional, Dict, Union
+from typing import Callable, Optional, Dict
 from pathlib import Path
 from os.path import getmtime
 from functools import partial
@@ -42,18 +42,20 @@ class RasgoEnvironment(Environment):
     @property
     def rasgo_globals(self):
         return {
-            "min": min,
-            "max": max,
+            "adjust_start_date": partial(adjust_start_date, dw_type=self.dw_type),
             "cleanse_name": cleanse_template_symbol,
-            "raise_exception": raise_exception,
-            "itertools": {"combinations": combinations, "permutations": permutations, "product": product},
+            "combine_metrics": combine_metrics,
             "dw_type": lambda: self.dw_type.value,
             "get_timedelta": get_timedelta,
+            "is_date_string": is_date_string,
+            "itertools": {"combinations": combinations, "permutations": permutations, "product": product},
+            "min": min,
+            "max": max,
             "parse_comparison_value": partial(parse_comparison_value, dw_type=self.dw_type),
             "quote": quote,
-            "adjust_start_date": partial(adjust_start_date, dw_type=self.dw_type),
-            "is_date_string": is_date_string,
-            "combine_metrics": combine_metrics,
+            "raise_exception": raise_exception,
+            "ref_dataset": ref_not_found,
+            "ref_metric": ref_not_found,
         }
 
     @property
@@ -135,6 +137,10 @@ def combine_metrics(metrics: list) -> list:
 
 def raise_exception(message: str) -> None:
     raise Exception(message)
+
+
+def ref_not_found(*args, **kwargs):
+    raise NotImplementedError("`ref_` functions are only supported in the Rasgo API")
 
 
 def trim_blank_lines(sql: str) -> str:

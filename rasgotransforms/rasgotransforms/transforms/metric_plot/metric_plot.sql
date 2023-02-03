@@ -10,10 +10,22 @@
 {% set expression_metric_names = [] %}
 {% set expression_metrics = [] %}
 {% set secondary_calculations = [] %}
+
 {% if not metrics %}
-{{ raise_exception('Please select at least one metric to compare') }}
+{{ raise_exception('Please select at least one metric to plot') }}
 {% endif %}
+
 {% for comparison in metrics %}
+    {% if 'resourceKey' in comparison %}
+    {% do comparison.__setitem__('resource_key', comparison.resourceKey) %}
+    {% endif %}
+    {% if 'resource_key' not in comparison%}
+    {{ raise_exception('Must pass resource_key to plot a metric') }}
+    {% endif %}
+    {# Expand metric dict if user passed in keys #}
+    {% if 'target_expression' not in comparison and 'targetExpression' not in comparison %}
+        {% do comparison.update(ref_metric(comparison.resource_key)) %}
+    {% endif %}
     {% if comparison.name not in expression_metric_names %}
         {% do expression_metric_names.append(comparison.name) %}
         {% do expression_metrics.append(comparison) %}
