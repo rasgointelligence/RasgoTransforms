@@ -5,8 +5,7 @@
 ## Pivot table, powered by SQL.
 
 ### Required Inputs
-- Values: the column with values you want to aggregate
-- Aggregation: the method of aggregation for your Values
+- Values: a dictionary of the column with values you want to aggregate & the method of aggregation for your values
 
 ### Optional Inputs
 - Rows: column(s) to group by down
@@ -32,9 +31,11 @@
 ```python
 ds2 = ds.pivot_table(
   rows=['DATE'],
-  values='CLOSE',
+  values={
+      'CLOSE': ['SUM', 'AVG'],
+      'OPEN': ['SUM', 'AVG']
+  },
   columns='SYMBOL',
-  aggregation='AVG'
 )
 ds2.preview()
 ```

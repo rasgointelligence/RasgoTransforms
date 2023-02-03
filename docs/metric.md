@@ -22,13 +22,13 @@ ds = rasgo.get.dataset(id)
 ds2 = ds.metric(
     metrics=[
       {
+        "resource_key": "AWS_SALES_REV",
         "name": "AW_Sales_Revenue",
-        "sourceTable": "RASGOLOCAL.PUBLIC.FQLUSMVCMIDATYSA",
+        "source_table": "RASGOLOCAL.PUBLIC.FQLUSMVCMIDATYSA",
         "type": "SUM",
-        "aggregationType": "SUM",
-        "targetExpression": "SALESAMOUNT",
-        "timeDimension": "ORDERDATE",
-        "metricDependencies": [],
+        "target_expression": "SALESAMOUNT",
+        "time_dimension": "ORDERDATE",
+        "metric_dependencies": [],
       }
     ],
     filters=[],
