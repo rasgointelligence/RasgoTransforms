@@ -22,7 +22,6 @@ ds = rasgo.get.dataset(id)
 ds2 = ds.metric(
     metrics=[
       {
-        "resource_key": "AWS_SALES_REV",
         "name": "AW_Sales_Revenue",
         "source_table": "RASGOLOCAL.PUBLIC.FQLUSMVCMIDATYSA",
         "type": "SUM",
