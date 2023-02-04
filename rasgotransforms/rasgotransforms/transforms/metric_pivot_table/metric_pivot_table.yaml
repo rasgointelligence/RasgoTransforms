@@ -1,0 +1,56 @@
+name: metric_pivot_table
+tags:
+  - table
+  - reshape
+  - math
+  - aggregate
+description: |
+  ## Pivot table for metrics, powered by SQL.
+
+  ### Required Inputs
+  - Metrics: a dictionary of the metric values you want to aggregate
+
+  ### Optional Inputs
+  - Rows: column(s) to group by down
+  - Columns: column(s) to pivot across
+  - Filters: filters to apply
+
+  ### Notes
+  - Applies a hard limit of 500 distinct values in the 'columns' column
+
+arguments:
+  metrics:
+    type: comparison_list
+    description: columns to aggregate
+  rows:
+    type: dimension_list
+    description: Dimensions to group by (column values will become rows)
+    is_optional: true
+  columns:
+    type: dimension_list
+    description: Dimensions with row values that will become columns
+    is_optional: true
+  filters:
+    type: filter_list
+    description: Filters to apply to the table
+    is_optional: true
+  timeseries_options:
+    type: timeseries_options
+    description: |
+      A dictionary containing the start and end dates as well as the time grain which will be used to create the datespine.
+      Time grain options are ('day', 'week', 'month', 'year', 'quarter', and 'all')
+      Example: {
+        "start_date": "2021-12-01",
+        "end_date": "2022-07-01",
+        "time_grain": "day"
+      }
+example_code: |
+  ds2 = ds.pivot_table(
+    rows=['DATE'],
+    values={
+        'CLOSE': ['SUM', 'AVG'],
+        'OPEN': ['SUM', 'AVG']
+    },
+    columns='SYMBOL',
+  )
+  ds2.preview()

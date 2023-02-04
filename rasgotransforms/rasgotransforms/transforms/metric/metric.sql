@@ -18,11 +18,8 @@
     {% if 'resourceKey' in comparison %}
     {% do comparison.__setitem__('resource_key', comparison.resourceKey) %}
     {% endif %}
-    {% if 'resource_key' not in comparison %}
-        {{ raise_exception('Must pass resource_key to plot a metric') }}
-    {% endif %}
-    {# Expand metric dict if user passed in keys #}
-    {% if 'target_expression' not in comparison and 'targetExpression' not in comparison %}
+    {% if 'resource_key' in comparison %}
+        {# Lookup metric if receiving key instead of metric dict #}
         {% do comparison.update(ref_metric(comparison.resource_key)) %}
     {% endif %}
     {% if comparison.name not in expression_metric_names %}
