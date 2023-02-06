@@ -43,6 +43,7 @@ class RasgoEnvironment(Environment):
     def rasgo_globals(self):
         return {
             "adjust_start_date": partial(adjust_start_date, dw_type=self.dw_type),
+            "cleanse_keys": cleanse_keys,
             "cleanse_name": cleanse_template_symbol,
             "combine_metrics": combine_metrics,
             "dw_type": lambda: self.dw_type.value,
@@ -52,6 +53,7 @@ class RasgoEnvironment(Environment):
             "min": min,
             "max": max,
             "parse_comparison_value": partial(parse_comparison_value, dw_type=self.dw_type),
+            "print": print,
             "quote": quote,
             "raise_exception": raise_exception,
             "ref_dataset": ref_not_found,
@@ -100,6 +102,45 @@ class RasgoEnvironment(Environment):
         except Exception as e:
             raise RenderException(e)
         return trim_blank_lines(rendered)
+
+
+def cleanse_keys(thing_with_keys):
+    """
+    If input object has dictionary keys, convert them from camel case to snake case
+    """
+    pattern = re.compile(r'(?<!^)(?=[A-Z])')
+    def replace_key(key: str) -> str:
+        return pattern.sub('_', key).lower()
+
+    def cleanse_list_case(list_of_dicts: list) -> list:
+        list_response = []
+        for list_item in list_of_dicts:
+            if isinstance(list_item, dict):
+                list_response.append(cleanse_dict_case(list_item))
+            elif isinstance(list_item, list):
+                list_response.append(cleanse_list_case(list_item))
+            else:
+                list_response.append(list_item)
+        return list_response
+
+    def cleanse_dict_case(dictionary: dict) -> dict:
+        dict_response = {}
+        for k, v in dictionary.items():
+            if isinstance(v, dict):
+                dict_response[replace_key(k)] = cleanse_dict_case(v)
+            elif isinstance(v, list):
+                dict_response[replace_key(k)] = cleanse_list_case(v)
+            else:
+                dict_response[replace_key(k)] = v
+        return dict_response
+
+    if isinstance(thing_with_keys, dict):
+        response = cleanse_dict_case(thing_with_keys)
+    elif isinstance(thing_with_keys, list):
+        response = cleanse_list_case(thing_with_keys)
+    else:
+        response = thing_with_keys
+    return response
 
 
 def cleanse_template_symbol(symbol: str) -> str:
@@ -261,6 +302,8 @@ def is_date_string(value: str) -> bool:
     """
     Test to determine if string is a date string
     """
+    if not isinstance(value, str):
+        return False
     try:
         datetime.fromisoformat(value)
         return True

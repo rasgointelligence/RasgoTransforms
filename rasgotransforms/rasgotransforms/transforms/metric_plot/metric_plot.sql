@@ -11,14 +11,13 @@
 {% set expression_metrics = [] %}
 {% set secondary_calculations = [] %}
 
-{% if not metrics %}
-{{ raise_exception('Please select at least one metric to plot') }}
+{% if metrics %}
+    {% set metrics = cleanse_keys(metrics) %}
+{% else %}
+    {{ raise_exception('Please select at least one metric to plot') }}
 {% endif %}
 
 {% for comparison in metrics %}
-    {% if 'resourceKey' in comparison %}
-    {% do comparison.__setitem__('resource_key', comparison.resourceKey) %}
-    {% endif %}
     {% if 'resource_key' in comparison %}
         {# Lookup metric if receiving key instead of metric dict #}
         {% do comparison.update(ref_metric(comparison.resource_key)) %}
@@ -47,15 +46,9 @@
 {% for comparison in metrics %}
 {% if comparison.type == 'expression' %}
 {% for dep in comparison.metric_dependencies %}
-{% if 'sourceTable' in dep %}
-{% do dep.__setitem__('source_table', dep.sourceTable) %}
-{% endif %}
 {% do source_tables.add(dep.source_table) %}
 {% endfor %}
 {% else %}
-{% if 'sourceTable' in comparison %}
-{% do comparison.__setitem__('source_table', comparison.sourceTable) %}
-{% endif %}
 {% do source_tables.add(comparison.source_table) %}
 {% endif %}
 {% endfor %}
@@ -63,9 +56,6 @@
 {{ raise_exception('Cannot add dimensions when comparing metrics with different source tables') }}
 {% endif %}
 {% set source_table = source_tables.pop() %}
-{% if 'timeDimension' in metrics[0] %}
-{% do metrics[0].__setitem__('time_dimension', metrics[0].timeDimension) %}
-{% endif %}
 {% set date_filter %}
 ({{ metrics[0].time_dimension }} >= {{ start_date }} AND {{ metrics[0].time_dimension }} <= {{ end_date }})
 {% endset %}
@@ -91,18 +81,6 @@ with
 {# Expression Metrics #}
 {% for metric in expression_metrics %}
 {% do metric_names.extend(metric.names) %}
-{% if 'metricDependencies' in metric %}
-{% do metric.__setitem__('metric_dependencies', metric.metricDependencies) %}
-{% endif %}
-{% if 'targetExpression' in metric %}
-{% do metric.__setitem__('target_expression', metric.targetExpression) %}
-{% endif %}
-{% if 'timeDimension' in metric %}
-{% do metric.__setitem__('time_dimension', metric.timeDimension) %}
-{% endif %}
-{% if 'sourceTable' in metric %}
-{% do metric.__setitem__('source_table', metric.sourceTable) %}
-{% endif %}
 {% do table_metrics.__setitem__('metric__' + metric.name, metric.names) %}
 metric__{{ metric.name }} as (
     {% if metric.type|lower == 'expression' %}

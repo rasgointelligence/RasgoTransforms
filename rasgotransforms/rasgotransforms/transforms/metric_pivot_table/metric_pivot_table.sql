@@ -24,6 +24,8 @@ limit 500
     {%- set group_by = '' -%}
 {%- endif -%}
 
+{% set metrics = cleanse_keys(metrics) %}
+
 WITH filtered as (
     SELECT *
     FROM {{ source_table }}
@@ -38,9 +40,6 @@ SELECT
 {%- for this_val in distinct_vals -%}
   {%- set oloop = loop %}
   {%- for metric in metrics %}
-    {% if 'resourceKey' in metric %}
-    {% do metric.__setitem__('resource_key', metric.resourceKey) %}
-    {% endif %}
     {% if 'resource_key' in metric %}
         {# Lookup metric if receiving key instead of metric dict #}
         {% do metric.update(ref_metric(metric.resource_key)) %}
@@ -64,9 +63,6 @@ GROUP BY {{ rows | join(', ') }}
 SELECT
     {{ group_by }}
     {%- for metric in metrics %}
-        {% if 'resourceKey' in metric %}
-        {% do metric.__setitem__('resource_key', metric.resourceKey) %}
-        {% endif %}
         {% if 'resource_key' in metric %}
             {# Lookup metric if receiving key instead of metric dict #}
             {% do metric.update(ref_metric(metric.resource_key)) %}

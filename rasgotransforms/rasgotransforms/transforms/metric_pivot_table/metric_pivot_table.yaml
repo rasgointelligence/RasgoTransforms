@@ -34,23 +34,13 @@ arguments:
     type: filter_list
     description: Filters to apply to the table
     is_optional: true
-  timeseries_options:
-    type: timeseries_options
-    description: |
-      A dictionary containing the start and end dates as well as the time grain which will be used to create the datespine.
-      Time grain options are ('day', 'week', 'month', 'year', 'quarter', and 'all')
-      Example: {
-        "start_date": "2021-12-01",
-        "end_date": "2022-07-01",
-        "time_grain": "day"
-      }
 example_code: |
   ds2 = ds.pivot_table(
     rows=['DATE'],
-    values={
-        'CLOSE': ['SUM', 'AVG'],
-        'OPEN': ['SUM', 'AVG']
-    },
+    metrics=[
+      {'resource_key': 'MAX_OPEN_PRICE'},
+      {'resource_key': 'MIN_CLOSE_PRICE'}
+    ],
     columns='SYMBOL',
   )
   ds2.preview()
