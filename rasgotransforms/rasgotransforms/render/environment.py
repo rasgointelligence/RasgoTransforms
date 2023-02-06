@@ -109,6 +109,7 @@ def cleanse_keys(thing_with_keys):
     If input object has dictionary keys, convert them from camel case to snake case
     """
     pattern = re.compile(r'(?<!^)(?=[A-Z])')
+
     def replace_key(key: str) -> str:
         return pattern.sub('_', key).lower()
 
