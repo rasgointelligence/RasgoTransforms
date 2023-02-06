@@ -19,6 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Access Transform Directory
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            git config --global --add safe.directory /__w/RasgoTransforms/RasgoTransforms
+          fi
+
       - name: Install Python Requirments
         run: |
           python -m pip install --upgrade pip
@@ -30,7 +36,6 @@ jobs:
       - name: Git Commit Generated Transform Docs
         run: |
           if [[ `git status --porcelain` ]]; then
-            git config --global --add safe.directory /__w/RasgoTransforms/RasgoTransforms
             git add -A
             git config user.name GitHub
             git config user.email noreply@github.com
