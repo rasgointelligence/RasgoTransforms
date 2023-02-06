@@ -22,7 +22,6 @@ ds = rasgo.get.dataset(id)
 ds2 = ds.metric_plot(
   metrics=[
     {
-      "resource_key": "TOTAL_SALES",
       "name": "Total_Sales"
       "type": "SUM",
       "source_table": "RASGO.PUBLIC.SALES",
