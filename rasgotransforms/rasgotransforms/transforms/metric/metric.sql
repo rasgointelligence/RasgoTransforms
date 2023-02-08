@@ -1,6 +1,5 @@
 {% from 'aggregate_metrics.sql' import calculate_timeseries_metric_values %}
 {% from 'expression_metrics.sql' import calculate_expression_metric_values %}
-{% from 'distinct_values.sql' import get_distinct_vals %}
 {% from 'pivot.sql' import pivot_plot_values %}
 {% from 'filter.sql' import get_filter_statement, combine_filters %}
 {% from 'secondary_calculation.sql' import render_secondary_calculations %}
@@ -62,17 +61,6 @@
     date_filter,
     get_filter_statement(filters)
 ]) if start_date is defined and metrics[0].type|lower != 'expression' else filters %}
-
-{% set distinct_values = get_distinct_vals(
-    columns=dimensions,
-    target_metric=None,
-    max_vals=max_num_groups,
-    source_table=source_table,
-    filters=distinct_vals_filters
-) | from_json %}
-{% if distinct_values is not defined or not distinct_values %}
-    {{ raise_exception('This query returns 0 rows. Please adjust the inputs and try again.') }}
-{% endif %}
 {% endif %}
 
 {% set base_query %}
@@ -91,7 +79,6 @@ metric__{{ metric.name }} as (
         start_date=start_date,
         end_date=end_date,
         time_grain=time_grain,
-        distinct_values=distinct_values,
         filters=combine_filters(metric.filters, filters)
     ) | indent }}
     {% else %}
@@ -107,15 +94,13 @@ metric__{{ metric.name }} as (
         end_date=end_date,
         time_grain=time_grain,
         source_table=metric.source_table,
-        filters=combine_filters(metric.filters, filters),
-        distinct_values=distinct_values
+        filters=combine_filters(metric.filters, filters)
     ) | indent }}
     {% endif %}
 ),
 {% endfor %}
 
 {# Join expression and aggregation metrics #}
-{% set dimensions = ['dimensions'] if dimensions %}
 {% set tables = table_metrics.keys()|list %}
 joined as (
     select
@@ -169,15 +154,4 @@ order by {% for i in range(1, 3 + dimensions|length) %}{{ i }}{{ ',' if not loop
 {% do metric_names.extend(secondary_calculation_metrics) %}
 {% endset %}
 
-{% if dimensions %}
-{{ pivot_plot_values(
-    base_query=base_query,
-    x_axis='period',
-    metric_names=metric_names,
-    distinct_values=distinct_values,
-    axis_type=axis_type,
-    x_axis_order=x_axis_order
-) }}
-{% else %}
 {{ base_query }}
-{% endif %}
