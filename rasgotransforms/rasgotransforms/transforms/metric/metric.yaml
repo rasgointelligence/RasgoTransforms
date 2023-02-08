@@ -1,5 +1,4 @@
 name: metric
-# type: accelerator
 description: Calculate metric values given a metric definition
 arguments:
   metrics:
