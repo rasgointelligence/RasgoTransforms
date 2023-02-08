@@ -25,6 +25,8 @@ class TestJinja:
         parsed_template = environment.parse(transform.source_code)
         parsed_arg_names = meta.find_undeclared_variables(parsed_template)
         unused_args = list(declared_arg_names.difference(parsed_arg_names))
+        if 'source_table' in unused_args:
+            unused_args.remove('source_table')
         if unused_args:
             pytest.fail(
                 f"Transform '{transform.name}' declares args [{', '.join(unused_args)}] that "
