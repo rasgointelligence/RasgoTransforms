@@ -28,10 +28,16 @@
         {% do secondary_calculations.append(comparison.secondary_calculation) %}
     {% endif %}
 {% endfor %}
-{% set original_start_date = parse_comparison_value(timeseries_options.start_date) %}
-{% set end_date = 'CURRENT_DATE' if not timeseries_options.end_date else parse_comparison_value(timeseries_options.end_date) %}
-{% set time_grain = 'day' if not timeseries_options.time_grain else timeseries_options.time_grain %}
-{% set start_date = adjust_start_date(start_date=timeseries_options.start_date, time_grain=time_grain, secondary_calculations=secondary_calculations) %}
+{% if date_settings.start_date == '' %}
+{% do date_settings.__setitem__('start_date', '1900-01-01') %}
+{% endif %}
+{% set original_start_date = parse_comparison_value(date_settings.start_date) %}
+{% set end_date = 'CURRENT_DATE' if not date_settings.end_date else parse_comparison_value(date_settings.end_date) %}
+{% set time_grain = 'day' if not date_settings.time_grain else date_settings.time_grain %}
+{% if time_grain|lower == 'all' and secondary_calculations|length > 0 %}
+{{ raise_exception("Secondary calculations are not allowed when the time grain is 'all'") }}
+{% endif %}
+{% set start_date = adjust_start_date(start_date=date_settings.start_date, time_grain=time_grain, secondary_calculations=secondary_calculations) %}
 {% set unique_metrics = combine_metrics(unique_metrics) %}
 
 {% set table_metrics = {} %}
