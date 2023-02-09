@@ -16,6 +16,7 @@
     filters,
     secondary_calculations
 ) %}
+{% set metrics = cleanse_keys(metrics) %}
 {% set dimensions_by_table = {} %}
 {% for metric in metrics %}
     {% if dimensions %}
