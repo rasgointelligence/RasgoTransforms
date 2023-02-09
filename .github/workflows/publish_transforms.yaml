@@ -3,9 +3,12 @@
 name: Publish Transforms
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment that transforms will be published to'
+        default: 'all'
+        required: true
 
 jobs:
   publish-transforms:
@@ -21,6 +24,8 @@ jobs:
       PYTHONPATH: /__w/RasgoTransforms/RasgoTransforms
       RASGO_COMMUNITY_API_KEY: ${{ secrets.RASGO_COMMUNITY_API_KEY }}
       RASGO_STAGING_COMMUNITY_API_KEY: ${{ secrets.RASGO_STAGING_COMMUNITY_API_KEY }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.S3_UPLOAD_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_UPLOAD_SECRET_ACCESS_KEY }}
 
     steps:
       - uses: actions/checkout@v2
@@ -31,7 +36,13 @@ jobs:
           pip install -r python/requirements.txt
 
       - name: Publish Transforms on Prod
+        if: github.event.inputs.environment == 'production' || github.event.inputs.environment == 'all'
         run: python python/publish_transforms.py "$RASGO_COMMUNITY_API_KEY" -d production
 
       - name: Publish Transforms on Staging
+        if: github.event.inputs.environment == 'staging' || github.event.inputs.environment == 'all'
         run: python python/publish_transforms.py "$RASGO_STAGING_COMMUNITY_API_KEY" -d staging
+
+      - name: Publish Transforms to S3
+        if: github.event.inputs.environment == 's3' || github.event.inputs.environment == 'all'
+        run: python python/publish_transforms_to_s3.py

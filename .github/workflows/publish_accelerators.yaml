@@ -3,9 +3,12 @@
 name: Publish Accelerators
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment that accelerators will be published to'
+        default: 'all'
+        required: true
 
 jobs:
   publish-accelerators:
@@ -31,7 +34,9 @@ jobs:
           pip install -r python/requirements.txt
 
       - name: Publish Accelerators on Prod
+        if: github.event.inputs.environment == 'production' || github.event.inputs.environment == 'all'
         run: python python/publish_accelerators.py "$RASGO_COMMUNITY_API_KEY" -d production
 
       - name: Publish Accelerators on Staging
+        if: github.event.inputs.environment == 'staging' || github.event.inputs.environment == 'all'
         run: python python/publish_accelerators.py "$RASGO_STAGING_COMMUNITY_API_KEY" -d staging
