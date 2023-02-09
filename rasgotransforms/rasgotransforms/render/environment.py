@@ -159,7 +159,7 @@ def combine_metrics(metrics: list) -> list:
             metric['names'] = [metric.get('name')]
             output.append(metric)
         else:
-            combined_metrics.setdefault(metric.get('source_table'), []).append(metric)
+            combined_metrics.setdefault(metric.get('source_table', metric.get('sourceTable')), []).append(metric)
     for source, metrics_to_combine in combined_metrics.items():
         combined_metric = metrics_to_combine[0]
         combined_metric['aggregations'] = []
@@ -168,7 +168,7 @@ def combine_metrics(metrics: list) -> list:
             combined_metric['names'].append(metric_to_combine.get('name'))
             combined_metric['aggregations'].append(
                 {
-                    'column': metric_to_combine.get('target_expression'),
+                    'column': metric_to_combine.get('target_expression', metric_to_combine.get('targetExpression')),
                     'method': metric_to_combine.get('type'),
                     'alias': metric_to_combine.get('name'),
                 }
