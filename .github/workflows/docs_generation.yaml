@@ -21,9 +21,7 @@ jobs:
 
       - name: Access Transform Directory
         run: |
-          if [[ `git status --porcelain` ]]; then
-            git config --global --add safe.directory /__w/RasgoTransforms/RasgoTransforms
-          fi
+          git config --global --add safe.directory /__w/RasgoTransforms/RasgoTransforms
 
       - name: Install Python Requirments
         run: |
