@@ -87,11 +87,7 @@ metric__{{ metric.name }} as (
     {% else %}
     {# Normal Metrics #}
     {{ calculate_timeseries_metric_values(
-        aggregations=[{
-            'column': metric.target_expression,
-            'method': metric.type,
-            'alias': metric.name
-        }],
+        aggregations=metric.aggregations,
         time_dimension=metric.time_dimension,
         dimensions=dimensions,
         start_date=start_date,
