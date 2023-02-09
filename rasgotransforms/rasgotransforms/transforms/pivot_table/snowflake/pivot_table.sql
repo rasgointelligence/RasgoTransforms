@@ -43,7 +43,7 @@ SELECT
         {{ aggregation_type|lower|replace('_', '')|replace('distinct', '') }}(
             {{ 'distinct ' if 'distinct' in aggregation_type|lower else ''}}
             case
-            when {{ columns }} = '{{ this_val }}' then {{ column }}
+            when {{ columns }} = '{{ this_val|replace("'", "\'") }}' then {{ column }}
             else null
             end
         )

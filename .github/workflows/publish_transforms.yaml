@@ -28,7 +28,11 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_UPLOAD_SECRET_ACCESS_KEY }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - name: Access Transform Directory
+        run: |
+          git config --global --add safe.directory /__w/RasgoTransforms/RasgoTransforms
 
       - name: Install Python Requirements
         run: |

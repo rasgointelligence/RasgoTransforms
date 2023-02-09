@@ -1,7 +1,7 @@
 import re
 from datetime import datetime, timedelta
 from itertools import combinations, permutations, product
-from typing import Callable, Optional, Dict, Union
+from typing import Callable, Optional, Dict
 from pathlib import Path
 from os.path import getmtime
 from functools import partial
@@ -42,18 +42,22 @@ class RasgoEnvironment(Environment):
     @property
     def rasgo_globals(self):
         return {
-            "min": min,
-            "max": max,
+            "adjust_start_date": partial(adjust_start_date, dw_type=self.dw_type),
+            "cleanse_keys": cleanse_keys,
             "cleanse_name": cleanse_template_symbol,
-            "raise_exception": raise_exception,
-            "itertools": {"combinations": combinations, "permutations": permutations, "product": product},
+            "combine_metrics": combine_metrics,
             "dw_type": lambda: self.dw_type.value,
             "get_timedelta": get_timedelta,
-            "parse_comparison_value": partial(parse_comparison_value, dw_type=self.dw_type),
-            "quote": quote,
-            "adjust_start_date": partial(adjust_start_date, dw_type=self.dw_type),
             "is_date_string": is_date_string,
-            "combine_metrics": combine_metrics,
+            "itertools": {"combinations": combinations, "permutations": permutations, "product": product},
+            "min": min,
+            "max": max,
+            "parse_comparison_value": partial(parse_comparison_value, dw_type=self.dw_type),
+            "print": print,
+            "quote": quote,
+            "raise_exception": raise_exception,
+            "ref_dataset": ref_not_found,
+            "ref_metric": ref_not_found,
         }
 
     @property
@@ -100,6 +104,46 @@ class RasgoEnvironment(Environment):
         return trim_blank_lines(rendered)
 
 
+def cleanse_keys(thing_with_keys):
+    """
+    If input object has dictionary keys, convert them from camel case to snake case
+    """
+    pattern = re.compile(r'(?<!^)(?=[A-Z])')
+
+    def replace_key(key: str) -> str:
+        return pattern.sub('_', key).lower()
+
+    def cleanse_list_case(list_of_dicts: list) -> list:
+        list_response = []
+        for list_item in list_of_dicts:
+            if isinstance(list_item, dict):
+                list_response.append(cleanse_dict_case(list_item))
+            elif isinstance(list_item, list):
+                list_response.append(cleanse_list_case(list_item))
+            else:
+                list_response.append(list_item)
+        return list_response
+
+    def cleanse_dict_case(dictionary: dict) -> dict:
+        dict_response = {}
+        for k, v in dictionary.items():
+            if isinstance(v, dict):
+                dict_response[replace_key(k)] = cleanse_dict_case(v)
+            elif isinstance(v, list):
+                dict_response[replace_key(k)] = cleanse_list_case(v)
+            else:
+                dict_response[replace_key(k)] = v
+        return dict_response
+
+    if isinstance(thing_with_keys, dict):
+        response = cleanse_dict_case(thing_with_keys)
+    elif isinstance(thing_with_keys, list):
+        response = cleanse_list_case(thing_with_keys)
+    else:
+        response = thing_with_keys
+    return response
+
+
 def cleanse_template_symbol(symbol: str) -> str:
     symbol = str(symbol).strip().replace(' ', '_').replace('-', '_')
     symbol = re.sub('[^A-Za-z0-9_]+', '', symbol)
@@ -115,7 +159,7 @@ def combine_metrics(metrics: list) -> list:
             metric['names'] = [metric.get('name')]
             output.append(metric)
         else:
-            combined_metrics.setdefault(metric.get('sourceTable'), []).append(metric)
+            combined_metrics.setdefault(metric.get('source_table'), []).append(metric)
     for source, metrics_to_combine in combined_metrics.items():
         combined_metric = metrics_to_combine[0]
         combined_metric['aggregations'] = []
@@ -124,7 +168,7 @@ def combine_metrics(metrics: list) -> list:
             combined_metric['names'].append(metric_to_combine.get('name'))
             combined_metric['aggregations'].append(
                 {
-                    'column': metric_to_combine.get('targetExpression'),
+                    'column': metric_to_combine.get('target_expression'),
                     'method': metric_to_combine.get('type'),
                     'alias': metric_to_combine.get('name'),
                 }
@@ -135,6 +179,10 @@ def combine_metrics(metrics: list) -> list:
 
 def raise_exception(message: str) -> None:
     raise Exception(message)
+
+
+def ref_not_found(*args, **kwargs):
+    raise NotImplementedError("`ref_` functions are only supported in the Rasgo API")
 
 
 def trim_blank_lines(sql: str) -> str:
@@ -223,6 +271,8 @@ def parse_comparison_value(comparison_value, dw_type: DataWarehouse):
     else:
         comparison_value['offset'] = abs(offset)
     date_part = comparison_value.get('date_part', comparison_value.get('datePart'))
+    if date_part.lower() == 'all':
+        date_part = 'DAY'
     if comparison_value['type'].lower() == 'relative_date':
         if dw_type == DataWarehouse.SNOWFLAKE:
             return f"DATEADD({date_part}, {comparison_value['offset']}, CURRENT_DATE)"
@@ -255,6 +305,8 @@ def is_date_string(value: str) -> bool:
     """
     Test to determine if string is a date string
     """
+    if not isinstance(value, str):
+        return False
     try:
         datetime.fromisoformat(value)
         return True

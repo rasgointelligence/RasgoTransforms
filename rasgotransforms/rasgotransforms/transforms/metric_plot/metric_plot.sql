@@ -10,10 +10,18 @@
 {% set expression_metric_names = [] %}
 {% set expression_metrics = [] %}
 {% set secondary_calculations = [] %}
-{% if not metrics %}
-{{ raise_exception('Please select at least one metric to compare') }}
+
+{% if metrics %}
+    {% set metrics = cleanse_keys(metrics) %}
+{% else %}
+    {{ raise_exception('Please select at least one metric to plot') }}
 {% endif %}
+
 {% for comparison in metrics %}
+    {% if 'resource_key' in comparison %}
+        {# Lookup metric if receiving key instead of metric dict #}
+        {% do comparison.update(ref_metric(comparison.resource_key)) %}
+    {% endif %}
     {% if comparison.name not in expression_metric_names %}
         {% do expression_metric_names.append(comparison.name) %}
         {% do expression_metrics.append(comparison) %}
@@ -23,9 +31,15 @@
         {% do secondary_calculations.append(comparison.secondary_calculation) %}
     {% endif %}
 {% endfor %}
+{% if timeseries_options.start_date == '' %}
+{% do timeseries_options.__setitem__('start_date', '1900-01-01') %}
+{% endif %}
 {% set original_start_date = parse_comparison_value(timeseries_options.start_date) %}
 {% set end_date = 'CURRENT_DATE' if not timeseries_options.end_date else parse_comparison_value(timeseries_options.end_date) %}
 {% set time_grain = 'day' if not timeseries_options.time_grain else timeseries_options.time_grain %}
+{% if time_grain|lower == 'all' and secondary_calculations|length > 0 %}
+{{ raise_exception("Secondary calculations are not allowed when the time grain is 'all'") }}
+{% endif %}
 {% set start_date = adjust_start_date(start_date=timeseries_options.start_date, time_grain=time_grain, secondary_calculations=secondary_calculations) %}
 {% set expression_metrics = combine_metrics(expression_metrics) %}
 
@@ -38,15 +52,9 @@
 {% for comparison in metrics %}
 {% if comparison.type == 'expression' %}
 {% for dep in comparison.metric_dependencies %}
-{% if 'sourceTable' in dep %}
-{% do dep.__setitem__('source_table', dep.sourceTable) %}
-{% endif %}
 {% do source_tables.add(dep.source_table) %}
 {% endfor %}
 {% else %}
-{% if 'sourceTable' in comparison %}
-{% do comparison.__setitem__('source_table', comparison.sourceTable) %}
-{% endif %}
 {% do source_tables.add(comparison.source_table) %}
 {% endif %}
 {% endfor %}
@@ -54,9 +62,6 @@
 {{ raise_exception('Cannot add dimensions when comparing metrics with different source tables') }}
 {% endif %}
 {% set source_table = source_tables.pop() %}
-{% if 'timeDimension' in metrics[0] %}
-{% do metrics[0].__setitem__('time_dimension', metrics[0].timeDimension) %}
-{% endif %}
 {% set date_filter %}
 ({{ metrics[0].time_dimension }} >= {{ start_date }} AND {{ metrics[0].time_dimension }} <= {{ end_date }})
 {% endset %}
@@ -82,18 +87,6 @@ with
 {# Expression Metrics #}
 {% for metric in expression_metrics %}
 {% do metric_names.extend(metric.names) %}
-{% if 'metricDependencies' in metric %}
-{% do metric.__setitem__('metric_dependencies', metric.metricDependencies) %}
-{% endif %}
-{% if 'targetExpression' in metric %}
-{% do metric.__setitem__('target_expression', metric.targetExpression) %}
-{% endif %}
-{% if 'timeDimension' in metric %}
-{% do metric.__setitem__('time_dimension', metric.timeDimension) %}
-{% endif %}
-{% if 'sourceTable' in metric %}
-{% do metric.__setitem__('source_table', metric.sourceTable) %}
-{% endif %}
 {% do table_metrics.__setitem__('metric__' + metric.name, metric.names) %}
 metric__{{ metric.name }} as (
     {% if metric.type|lower == 'expression' %}
