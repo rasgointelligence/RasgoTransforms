@@ -22,11 +22,10 @@ def get_root_dir() -> Path:
     """
     Get and return the root directory absolute path of this git repo
     """
-    # cmd = ["git", "rev-parse", "--show-toplevel"]
-    # root_dir_bytes = subprocess.check_output(cmd)
-    # root_dir_str = root_dir_bytes.decode('utf-8').strip()
-    # return Path(root_dir_str)
-    return Path("./")
+    cmd = ["git", "rev-parse", "--show-toplevel"]
+    root_dir_bytes = subprocess.check_output(cmd)
+    root_dir_str = root_dir_bytes.decode('utf-8').strip()
+    return Path(root_dir_str)
 
 
 DOCS_DIR = get_root_dir() / 'docs'
