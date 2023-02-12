@@ -1,0 +1,19 @@
+name: profile_column
+tags:
+  - table
+description:  |
+  ## Analyze the distinct values in a column
+
+  ### Required Inputs
+  - Column: the column you want to profile
+
+  ### Notes
+  - Only supports profiling one column at a time
+arguments:
+  column_name:
+    type: column
+    description: The column you want to profile
+example_code: |
+  ds = rasgo.get.dataset(id)
+
+  ds.profile_column(column_name = 'IMPORTANTCOLUMN')
