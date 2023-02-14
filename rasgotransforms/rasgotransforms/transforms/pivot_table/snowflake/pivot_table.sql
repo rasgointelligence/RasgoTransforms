@@ -7,6 +7,7 @@ from {{ source_table }}
 where true AND
 {{ get_filter_statement(filters) | indent }}
 {%- endif %}
+ORDER BY 1 desc 
 limit 500
 {%- endset -%}
 
