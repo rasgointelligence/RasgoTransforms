@@ -36,6 +36,8 @@
     {{ logical_operator.value + ' ' if not loop.first }}{{ filter }}
     {% elif filter.operator|upper == 'CONTAINS' %}
     {{ logical_operator.value + ' ' if not loop.first }}{{ filter.column_name }} LIKE '%{{ filter.comparison_value }}%'
+    {% elif filter.operator|upper == 'NOT CONTAINS' %}
+    {{ logical_operator.value + ' ' if not loop.first }}{{ filter.column_name }} NOT LIKE '%{{ filter.comparison_value }}%'
     {% else %}
     {{ logical_operator.value + ' ' if not loop.first }}{{ filter.column_name }} {{ filter.operator }} {{ filter.comparison_value }}
     {% endif %}
