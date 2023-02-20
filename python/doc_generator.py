@@ -36,7 +36,7 @@ def save_transform_docs() -> None:
         md_file_path.parent.mkdir(exist_ok=True)
         md_file_path.write_text(markdown)
     for file in utils.DOCS_DIR.glob("*.md"):
-        if file.name.lower().rstrip('.md') not in transforms.keys():
+        if file.name.lower().replace('.md', '') not in transforms.keys():
             os.remove(file)
 
 
