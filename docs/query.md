@@ -2,37 +2,34 @@
 
 # query
 
-Simple SQL query builder. Helps to do 1 or multiple of these steps:
-  1. adding computed columns
+## Construct a full SQL Query without writing it.
+
+Supports any of these steps:
+  1. adding new calculated columns
   2. filtering your data
   3. summarize columns across rows
   4. sorting your data
 
-The order of operations in the SQL follows the list above.
+### Optional Inputs
+- New Columns: Adds new columns to the base table via valid SQL functions
+- Filters: filters to apply to the base table
+- Summarize and Group_By: Aggregate a column and group by another column
+- Order_By_Columns and Order_By_Direction:   Order the final table by one or more columns
 
-New_Columns:
-Takes a SQL expression and adds it to the table as a new column. i.e.: LEFT(ACCOUNT_ID, 5)
-
-Filters:
-Adds row filters to the WHERE part of the query
-
-Summarize and Group_By:
-Aggregate a column and group by another column
-
-Order_By_Columns and Order_By_Direction:
-Order the final table by one or more columns
+### Notes
+- If you choose to summarize any columns, then you must pick column(s) to group by as well
 
 
 ## Parameters
 
-|        Name        |      Type       |                                                                                                                                        Description                                                                                                                                         | Is Optional |
-| ------------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| new_columns        | math_list       | One or more SQL expressions to create new calculated columns in your table                                                                                                                                                                                                                 | True        |
-| filters            | filter_list     | Remove rows using filter logic on one or more columns                                                                                                                                                                                                                                      | True        |
-| summarize          | column_agg_list | Columns to summarize                                                                                                                                                                                                                                                                       | True        |
-| group_by           | column_list     | One or more columns to group by A categorical column by which to pivot the calculated metrics. Including this argument will generate a new metric calculation for each distinct value in the group by column. If this column has more than 20 distinct values, the plot will not generate. | True        |
-| order_by_columns   | column_list     | Pick one or more columns to order the data by                                                                                                                                                                                                                                              | True        |
-| order_by_direction | sort_direction  | Order the data ASC or DESC                                                                                                                                                                                                                                                                 | True        |
+|        Name        |           Type            |                                     Description                                      | Is Optional |
+| ------------------ | ------------------------- | ------------------------------------------------------------------------------------ | ----------- |
+| new_columns        | calculated_column_list    | One or more SQL expressions to create new calculated columns in your table           | True        |
+| filters            | filter_list               | Remove rows using filter logic on one or more columns                                | True        |
+| summarize          | column_agg_list           | Columns to summarize                                                                 | True        |
+| group_by           | column_or_expression_list | One or more columns to group by. Supports calculated fields via valid SQL functions. | True        |
+| order_by_columns   | column_list               | Pick one or more columns to order the data by                                        | True        |
+| order_by_direction | sort_direction            | Order the data ASC or DESC                                                           | True        |
 
 
 ## Example
