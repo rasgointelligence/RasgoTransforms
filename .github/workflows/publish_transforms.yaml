@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment that transforms will be published to'
+        description: 'Environment that transforms will be published to [s3, staging, production, all]'
         default: 'all'
         required: true
 
