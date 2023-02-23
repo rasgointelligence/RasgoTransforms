@@ -18,12 +18,12 @@
 
 ## Parameters
 
-|  Name   |      Type       |                     Description                      | Is Optional |
-| ------- | --------------- | ---------------------------------------------------- | ----------- |
-| values  | column_agg_list | columns to aggregate                                 |             |
-| rows    | column_list     | Columns to group by (column values will become rows) | True        |
-| columns | column          | column with row values that will become columns      | True        |
-| filters | filter_list     | Filters to apply to the table                        | True        |
+|  Name   |           Type            |                                                     Description                                                      | Is Optional |
+| ------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------- |
+| values  | column_agg_list           | columns to aggregate                                                                                                 |             |
+| rows    | column_or_expression_list | Columns to group by (column values will become rows). Supports calculated fields via valid SQL functions.            | True        |
+| columns | column_or_expression      | Column with distinct values that will be pivoted into columns. Supports a calculated field via a valid SQL function. | True        |
+| filters | filter_list               | Filters to apply to the table                                                                                        | True        |
 
 
 ## Example

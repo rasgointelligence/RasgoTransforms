@@ -23,12 +23,12 @@ arguments:
     type: column_agg_list
     description: columns to aggregate
   rows:
-    type: column_list
-    description: Columns to group by (column values will become rows)
+    type: column_or_expression_list
+    description: Columns to group by (column values will become rows). Supports calculated fields via valid SQL functions.
     is_optional: true
   columns:
-    type: column
-    description: column with row values that will become columns
+    type: column_or_expression
+    description: Column with distinct values that will be pivoted into columns. Supports a calculated field via a valid SQL function.
     is_optional: true
   filters:
     type: filter_list
