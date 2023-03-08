@@ -1,0 +1,1 @@
+{{ column_or_expression_list | join(',') }}

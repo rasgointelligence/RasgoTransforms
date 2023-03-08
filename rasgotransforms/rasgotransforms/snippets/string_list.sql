@@ -1,0 +1,1 @@
+{% for string in string_list %}'{{ string }}'{{ ',' if not loop.last }}{% endfor %}
