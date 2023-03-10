@@ -23,6 +23,12 @@ arguments:
   comparison_values:
     type: column_agg_list
     description: Columns to aggregate to create metrics for the comparison
+  group_a_filters:
+    type: filter_list
+    description: Filters that define Group A for the comparison
+  group_b_filters:
+    type: filter_list
+    description: Filters that define Group B for the comparison
   comparison_dimensions:
     type: column_or_expression_list
     description: Dimensions to group by before comparing groups. Supports calculated fields via valid SQL functions.
@@ -31,11 +37,5 @@ arguments:
     type: filter_list
     description: Filters to apply to the underlying data before segmenting into groups
     is_optional: true
-  group_a_filters:
-    type: filter_list
-    description: Filters that define Group A for the comparison
-  group_b_filters:
-    type: filter_list
-    description: Filters that define Group B for the comparison
 example_code: |
   
