@@ -31,15 +31,7 @@
 ## Example
 
 ```python
-ds2 = ds.pivot_table(
-  rows=['DATE'],
-  values={
-      'CLOSE': ['SUM', 'AVG'],
-      'OPEN': ['SUM', 'AVG']
-  },
-  columns='SYMBOL',
-)
-ds2.preview()
+
 ```
 
 ## Source Code
