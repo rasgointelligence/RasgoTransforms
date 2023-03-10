@@ -28,7 +28,7 @@ SELECT
     WHERE  
     {{ get_filter_statement(group_a_filters) | indent }}
     {%- endif %}
-    {%- if comparison_dimensions is defined and comparison_dimensions|length -%}
+    {%- if comparison_dimensions is defined and comparison_dimensions|length %}
     GROUP BY {{ comparison_dimensions | join(', ') }}
     {%- endif %}
 ),
@@ -46,14 +46,14 @@ SELECT
     WHERE 
     {{ get_filter_statement(group_b_filters) | indent }}
     {%- endif %}
-    {%- if comparison_dimensions is defined and comparison_dimensions|length -%}
+    {%- if comparison_dimensions is defined and comparison_dimensions|length %}
     GROUP BY {{ comparison_dimensions | join(', ') }}
     {%- endif %}
 )
 
 SELECT * 
 FROM 
-{%- if comparison_dimensions is defined and comparison_dimensions|length -%}
+{%- if comparison_dimensions is defined and comparison_dimensions|length %}
 group_a INNER JOIN group_b
 USING ({{ comparison_dimensions | join(', ') }}) 
 ORDER BY {{ comparison_dimensions | join(' DESC, ') }}  
