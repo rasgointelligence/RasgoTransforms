@@ -1,0 +1,41 @@
+name: comparison
+tags:
+  - table
+  - reshape
+  - math
+  - aggregate
+description: |
+  ## Comparison that calculates the same metrics across two different groups of rows from the same table.
+
+  ### Required Inputs
+  - Comparison Values: Columns with aggregation methods to use as metrics for the comparison between groups
+  - Group A Filters: Filters that define the rows that belong to group A
+  - Group B Filters: Filters that define the rows that belong to group B
+
+  ### Optional Inputs
+  - Comparison Dimensions: Dimensions to compare the groups by
+  - Shared Filters: Filter the whole table before you run the comparison
+
+  ### Notes
+  - When choosing your comparison dimensions, try to pick columns that apply to both of your groups
+
+arguments:
+  comparison_values:
+    type: column_agg_list
+    description: Columns to aggregate to create metrics for the comparison
+  group_a_filters:
+    type: filter_list
+    description: Filters that define Group A for the comparison
+  group_b_filters:
+    type: filter_list
+    description: Filters that define Group B for the comparison
+  comparison_dimensions:
+    type: column_or_expression_list
+    description: Dimensions to group by before comparing groups. Supports calculated fields via valid SQL functions.
+    is_optional: true
+  shared_filters:
+    type: filter_list
+    description: Filters to apply to the underlying data before segmenting into groups
+    is_optional: true
+example_code: |
+  
