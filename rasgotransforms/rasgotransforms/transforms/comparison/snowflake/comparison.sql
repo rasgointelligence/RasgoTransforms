@@ -54,7 +54,7 @@ SELECT
 SELECT * 
 FROM 
 {%- if comparison_dimensions is defined and comparison_dimensions|length %}
-group_a INNER JOIN group_b
+group_a FULL OUTER JOIN group_b
 USING ({{ comparison_dimensions | join(', ') }}) 
 ORDER BY {{ comparison_dimensions | join(' DESC, ') }}  
 NULLS LAST
