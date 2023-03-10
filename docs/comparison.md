@@ -22,10 +22,10 @@
 |         Name          |           Type            |                                             Description                                             | Is Optional |
 | --------------------- | ------------------------- | --------------------------------------------------------------------------------------------------- | ----------- |
 | comparison_values     | column_agg_list           | Columns to aggregate to create metrics for the comparison                                           |             |
-| comparison_dimensions | column_or_expression_list | Dimensions to group by before comparing groups. Supports calculated fields via valid SQL functions. | True        |
-| shared_filters        | filter_list               | Filters to apply to the underlying data before segmenting into groups                               | True        |
 | group_a_filters       | filter_list               | Filters that define Group A for the comparison                                                      |             |
 | group_b_filters       | filter_list               | Filters that define Group B for the comparison                                                      |             |
+| comparison_dimensions | column_or_expression_list | Dimensions to group by before comparing groups. Supports calculated fields via valid SQL functions. | True        |
+| shared_filters        | filter_list               | Filters to apply to the underlying data before segmenting into groups                               | True        |
 
 
 ## Example
