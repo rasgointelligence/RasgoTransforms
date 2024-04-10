@@ -20,10 +20,11 @@ class DataWarehouse(Enum):
     """
 
     BIGQUERY = "bigquery"
-    SNOWFLAKE = "snowflake"
-    POSTGRESQL = "postgresql"
+    DELTALAKE = "deltalake"
     MYSQL = "mysql"
+    POSTGRESQL = "postgresql"
     REDSHIFT = "redshift"
+    SNOWFLAKE = "snowflake"
 
 
 class TransformTemplate:
