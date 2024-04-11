@@ -10,7 +10,7 @@ authors = [
 ]
 description = "Open-source SQL transform templates provided by RasgoML."
 readme = "DESCRIPTION.md"
-requires-python = ">=3.8"
+requires-python = ">=3.7"
 license = {text = "GNU Affero General Public License v3 or later (AGPLv3+)"}
 classifiers = [
         'Development Status :: 3 - Alpha',
