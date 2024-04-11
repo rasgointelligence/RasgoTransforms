@@ -1,3 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rasgotransforms"
+version = "2.7.8"
+authors = [
+    {name = "Rasgo Intelligence", email = "patrick@rasgoml.com"},
+]
+description = "Open-source SQL transform templates provided by RasgoML."
+readme = "DESCRIPTION.md"
+requires-python = ">=3.8"
+license = {text = "GNU Affero General Public License v3 or later (AGPLv3+)"}
+classifiers = [
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Developers',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Topic :: Database',
+        'Topic :: Scientific/Engineering :: Information Analysis',
+        'Topic :: Software Development :: Code Generators',
+]
+dependencies = [
+    "jinja2>=2.0",
+    "pyyaml>=5.0",
+]
+
+[project.urls]
+Homepage = "https://rasgoml.com"
+
+[tool.setuptools.packages.find]
+where = ["rasgotransforms"]
+exclude = ["tests*", "accelerators*"]
+
+[tool.setuptools.package-data]
+rasgotransforms = [
+    'transforms/**/*.yaml',
+    'transforms/**/*.sql',
+    'transforms/**/*.py',
+    'transforms/**/**/*.sql',
+    'transforms/**/**/*.py',
+    'snippets/*.sql',
+    'macros/*.sql',
+    'macros/**/*.sql',
+]
+
 [tool.pytest.ini_options]
 log_cli = true
 log_cli_level = "WARNING"
